@@ -21,5 +21,9 @@ matter to control where it appears and what it's called.
 
 ## Publish
 
-Merging to `main` publishes the site with GitHub Pages. To use a custom domain, change `url` and
-`baseUrl` in `docusaurus.config.js`, and update the `bogware.github.io` links in the Go code.
+To publish with GitHub Pages, set **Settings > Pages > Source** to **GitHub Actions** and add a repository
+variable named `PAGES_ENABLED` with the value `true`. Merging to `main` then publishes the site. GitHub
+Pages needs a public repository, or a paid plan for a private one.
+
+To use a custom domain, change `url` and `baseUrl` in `docusaurus.config.js`, and update the
+`bogware.github.io` links in the Go code.
