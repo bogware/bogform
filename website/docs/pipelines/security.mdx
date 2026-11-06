@@ -1,0 +1,46 @@
+---
+sidebar_position: 6
+sidebar_label: Security
+description: |-
+  Run Bogform safely from your pipelines.
+---
+
+# Pipeline security
+
+A pipeline that runs Bogform holds the keys to your infrastructure. Follow these practices.
+
+## A plan runs code
+
+Planning isn't read-only for your pipeline. A configuration can run programs through the `external` data
+source, and providers can run whatever a pull request's author adds to the lock file. **Treat a plan on a
+pull request as running that author's code with the pipeline's credentials.**
+
+- Give plan jobs a read-only role, and keep the role that can make changes for apply jobs.
+- Don't run plans for pull requests from forks with access to any secrets. GitHub Actions' `pull_request`
+  trigger already withholds them. Don't use `pull_request_target` to run Bogform.
+- Limit the apply role's trust policy to your protected branch or environment.
+
+## Use short-lived credentials
+
+Use your platform's OIDC support rather than storing cloud keys as secrets. There's nothing long-lived to
+leak, and access is tied to a specific repository and environment.
+
+## Require approval to apply
+
+Use your platform's environment approvals. `bogform ci apply` doesn't ask for approval itself, because
+pipelines have nobody to answer.
+
+## What Bogform does for you
+
+- **Refuses to apply from pull requests,** unless you use `-allow-pull-request-apply`.
+- **Keeps the comment token private.** `BOG_CI_TOKEN` is removed from the environment of everything that
+  Bogform runs, so configuration and providers can't read it.
+- **Doesn't include attribute values in reports.** `report.json` lists resource addresses and actions.
+- **Protects comments from injection.** Resource names and plan text can't escape their code formatting.
+- **Keeps plans out of Git.** The `.bogform-ci` directory ignores its own contents.
+
+## Plan text can still contain private data
+
+Bogform redacts values marked as sensitive in comments, but not values that aren't marked. If people who
+can read your pull requests shouldn't see planned values, use `-no-output`, which shows only the list of
+changes. Pipeline logs also contain the plan, so check who can read them.

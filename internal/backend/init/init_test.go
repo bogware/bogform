@@ -26,6 +26,7 @@ func TestInit_backend(t *testing.T) {
 		{"consul", "*consul.Backend", "consul"},
 		{"cos", "*cos.Backend", "cos"},
 		{"gcs", "*gcs.Backend", "gcs"},
+		{"git", "*git.Backend", "git"},
 		{"inmem", "*inmem.Backend", "inmem"},
 		{"pg", "*pg.Backend", "pg"},
 		{"s3", "*s3.Backend", "s3"},

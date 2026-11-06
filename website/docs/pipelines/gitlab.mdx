@@ -1,0 +1,43 @@
+---
+sidebar_position: 2
+sidebar_label: GitLab CI
+description: |-
+  Run Bogform from GitLab CI.
+---
+
+# GitLab CI
+
+```shell
+bogform ci init gitlab
+```
+
+This creates `.gitlab-ci.yml`, which plans on merge requests and applies on your default branch. If you
+already have a `.gitlab-ci.yml`, run the command in an empty directory, and
+merge the two jobs into yours.
+
+## Allow comments on merge requests
+
+A job's built-in token can't write comments. Create a project access token with the `api` scope and the
+Reporter role, and add it as a masked CI/CD variable named `BOG_CI_TOKEN`. Without it, plans still run
+and Bogform shows a warning.
+
+## Sign in to your cloud provider
+
+Use [ID tokens](https://docs.gitlab.com/ci/secrets/id_token_authentication/) rather than stored keys. For
+example, on AWS:
+
+```yaml
+default:
+  id_tokens:
+    AWS_WEB_IDENTITY_TOKEN_VALUE:
+      aud: https://gitlab.com
+  before_script:
+    - export AWS_WEB_IDENTITY_TOKEN_FILE=$(mktemp)
+    - printf '%s' "$AWS_WEB_IDENTITY_TOKEN_VALUE" > "$AWS_WEB_IDENTITY_TOKEN_FILE"
+    - export AWS_ROLE_ARN=arn:aws:iam::123456789012:role/bogform
+```
+
+## Require approval
+
+Protect the `production` environment in **Settings > CI/CD > Protected environments** and add approvers.
+The pipeline uses a resource group, so only one job at a time can change this infrastructure.

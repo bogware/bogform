@@ -16,12 +16,11 @@ bogform apply
 
 ## Status
 
-Bogform is in early development. The rename and cleanup are underway, and these ways of running it
-are planned:
+Bogform is in early development. These are the ways to run it:
 
-- **Local:** run the `bogform` command on your own machine. This works today.
-- **Repository (planned):** plan on pull requests and apply on merge, using GitHub Actions, GitLab CI,
-  Azure Pipelines, or Bitbucket Pipelines, with state in low-cost object storage.
+- **Local:** run the `bogform` command on your own machine.
+- **Repository:** plan on pull requests and apply on merge, using GitHub Actions, GitLab CI, Azure
+  Pipelines, or Bitbucket Pipelines. Run `bogform ci init` to add a pipeline to your repository.
 - **Self-hosted web (planned):** a dashboard you deploy to your own AWS account for your organization,
   using CloudFront, AWS Lambda, and any Postgres database. It starts runs in your existing pipelines,
   so there are no runners to host.

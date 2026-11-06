@@ -50,14 +50,14 @@ jobs:
       matrix:
         include:
           - { runson: ubuntu-latest, goos: linux, goarch: "amd64" }
-          - { runson: ubuntu-24.04-arm, goos: linux, goarch: "arm64" }
-          - { runson: macos-latest, goos: darwin, goarch: "amd64" }
-          - { runson: windows-latest, goos: windows, goarch: "amd64" }
-          - { runson: windows-11-arm, goos: windows, goarch: "arm64" }
+          # GitHub bills macOS and Windows minutes at higher rates, so run them for releases and on demand.
+          - { runson: macos-latest, goos: darwin, goarch: "amd64", release: true }
+          - { runson: windows-latest, goos: windows, goarch: "amd64", release: true }
       fail-fast: false
 
     name: "End-to-end Tests for ${{ matrix.goos }}_${{ matrix.goarch }}"
     runs-on: ${{ matrix.runson }}
+    if: ${{ !matrix.release || github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/') }}
     env:
       TF_APPEND_USER_AGENT: E2E-Test
       TF_ACC: 1

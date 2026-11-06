@@ -1,0 +1,33 @@
+---
+sidebar_position: 3
+sidebar_label: Azure Pipelines
+description: |-
+  Run Bogform from Azure Pipelines.
+---
+
+# Azure Pipelines
+
+```shell
+bogform ci init azure
+```
+
+This creates `azure-pipelines.yml`, which plans on pull requests and applies on your default branch.
+
+## Connect the pipeline
+
+1. Create a pipeline from `azure-pipelines.yml`.
+2. On Azure Repos, pull requests run through a branch policy. Add this pipeline as a **build validation**
+   policy on your default branch.
+3. Allow comments: in **Project settings > Repositories > Security**, give your project's build service
+   the **Contribute to pull requests** permission.
+
+## Sign in to your cloud provider
+
+Use a service connection with workload identity federation rather than stored keys. To use one from a
+script, run Bogform in an `AzureCLI@2` task with `addSpnToEnvironment: true`, and set `ARM_USE_OIDC`,
+`ARM_CLIENT_ID`, `ARM_TENANT_ID`, and `ARM_SUBSCRIPTION_ID` from its variables.
+
+## Require approval
+
+Add an **Approvals** check to the `production` environment in **Pipelines > Environments**. Each apply
+then waits for approval.

@@ -1,0 +1,42 @@
+---
+sidebar_position: 4
+sidebar_label: Bitbucket Pipelines
+description: |-
+  Run Bogform from Bitbucket Pipelines.
+---
+
+# Bitbucket Pipelines
+
+```shell
+bogform ci init bitbucket
+```
+
+This creates `bitbucket-pipelines.yml`, which plans on pull requests and applies on your default branch.
+
+## Allow comments on pull requests
+
+Create a repository access token with permission to write pull requests, and add it as a secured
+repository variable named `BOG_CI_TOKEN`. Without it, plans still run and Bogform shows a warning.
+
+Bitbucket doesn't render collapsible sections, so comments show the plan's text directly. It's shortened
+if it's over Bitbucket's limit. Use `-no-output` to show only the list of changes.
+
+## Sign in to your cloud provider
+
+Add `oidc: true` to the step, then use `BITBUCKET_STEP_OIDC_TOKEN` rather than stored keys. For example,
+on AWS:
+
+```yaml
+- step:
+    oidc: true
+    script:
+      - export AWS_ROLE_ARN=arn:aws:iam::123456789012:role/bogform
+      - export AWS_WEB_IDENTITY_TOKEN_FILE=$(mktemp)
+      - printf '%s' "$BITBUCKET_STEP_OIDC_TOKEN" > "$AWS_WEB_IDENTITY_TOKEN_FILE"
+      - bogform ci plan
+```
+
+## Require approval
+
+The apply step uses the `production` deployment environment. Deployment permissions, such as requiring a
+passing pull request or limiting who can deploy, depend on your Bitbucket plan.

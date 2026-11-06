@@ -1,0 +1,79 @@
+---
+sidebar_label: git
+description: The git backend stores encrypted state on a dedicated branch of a Git repository.
+---
+
+# Backend Type: git
+
+Stores state on a dedicated branch of a Git repository, so you don't need any cloud storage. Use it for
+small projects and personal infrastructure. For most teams, [object storage](../../../pipelines/state.mdx)
+is a better choice.
+
+State can hold secrets, and Git keeps every version permanently. So this backend **refuses to store
+unencrypted state** unless you set `allow_unencrypted = true`.
+
+## Example
+
+```hcl
+terraform {
+  backend "git" {}
+
+  encryption {
+    key_provider "pbkdf2" "main" {
+      passphrase = var.state_passphrase
+    }
+    method "aes_gcm" "main" {
+      keys = key_provider.pbkdf2.main
+    }
+    state {
+      method = method.aes_gcm.main
+    }
+    plan {
+      method = method.aes_gcm.main
+    }
+  }
+}
+
+variable "state_passphrase" {
+  type      = string
+  sensitive = true
+}
+```
+
+By default, this uses the `origin` remote of the current repository and writes to the `bogform-state`
+branch. Your pipeline's token needs permission to push to that branch and to branches under
+`bogform-locks/`.
+
+Use a [key provider](../../state/encryption.mdx#key-providers) such as AWS KMS if you have one, or keep
+the passphrase in your pipeline's secrets. If you lose the passphrase, the state can't be recovered.
+
+## Configuration
+
+| Argument | Description | Default |
+|---|---|---|
+| `repository` | The URL of the Git repository. Can also be set with `BOG_GIT_STATE_REPOSITORY` | The `origin` remote |
+| `branch` | The branch that holds state. Use a branch that only Bogform writes to | `bogform-state` |
+| `path` | The path of the state file on the branch | `terraform.tfstate` |
+| `allow_unencrypted` | Allow storing unencrypted state | `false` |
+
+Credentials come from your Git configuration, as they do for your other Git commands. The backend never
+prompts for them, so a missing credential fails straight away.
+
+## Locking
+
+A lock is a branch under `bogform-locks/`. Git only accepts the push that creates it if the branch doesn't
+exist yet, so only one of any number of concurrent runs can hold it. If a run is interrupted, release its
+lock with [`bogform force-unlock`](../../../cli/commands/force-unlock.mdx).
+
+## Workspaces
+
+The default workspace's state is at `path`. Other workspaces are at `workspaces/<name>/<path>`.
+
+## Limitations
+
+- The `git` command must be available, so use the standard container image, not the `-minimal` one.
+- Every update is a commit, so the branch's history grows. Fetches only download the latest commit, so
+  this doesn't slow down runs.
+- Deleting a workspace or an old state doesn't remove it from history. Rewrite the branch's history if
+  you need to remove it permanently.
+- Branch protection rules must allow Bogform to update `bogform-state`, and to create and delete branches under `bogform-locks/`.

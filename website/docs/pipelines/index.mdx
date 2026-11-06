@@ -1,0 +1,72 @@
+---
+sidebar_position: 3
+sidebar_label: Pipelines
+description: |-
+  Run Bogform from your repository's pipelines, with plan comments on pull requests and applies on merge.
+---
+
+# Run Bogform from your repository
+
+You can run your whole infrastructure workflow from your repository, with no hosted platform. Pull
+requests get a comment showing the plan, and merging applies it.
+
+## Add a pipeline
+
+Run this from the root of your repository:
+
+```shell
+bogform ci init
+```
+
+Bogform works out your platform from the `origin` remote and writes a pipeline file. To choose a
+platform, name it, such as `bogform ci init gitlab`. The file is yours to edit, and it doesn't depend
+on any Bogform service.
+
+| Platform | Command | File |
+|---|---|---|
+| [GitHub Actions](./github.mdx) | `bogform ci init github` | `.github/workflows/bogform.yml` |
+| [GitLab CI](./gitlab.mdx) | `bogform ci init gitlab` | `.gitlab-ci.yml` |
+| [Azure Pipelines](./azure.mdx) | `bogform ci init azure` | `azure-pipelines.yml` |
+| [Bitbucket Pipelines](./bitbucket.mdx) | `bogform ci init bitbucket` | `bitbucket-pipelines.yml` |
+
+Then:
+
+1. [Choose where to store state](./state.mdx). Pipelines start from a clean checkout, so state on
+   local disk is lost after each run.
+2. Give the pipeline access to your cloud account. Follow the [security guidance](./security.mdx).
+3. Require approval for the `production` environment, so that a person approves each apply.
+
+## What the commands do
+
+| Command | What it does | Exit code |
+|---|---|---|
+| `bogform ci plan` | Initializes, creates a plan, and comments on the pull request | `0` unless it fails |
+| `bogform ci apply` | Initializes, creates a plan, and applies it | `0` unless it fails |
+| `bogform ci drift` | Compares real infrastructure with the state | `0` if unchanged, `1` if it fails, `2` if it drifted |
+| `bogform ci init` | Adds a pipeline file to your repository | |
+| `bogform ci context` | Shows what Bogform detected about the pipeline | |
+
+These options work with `plan`, `apply`, and `drift`:
+
+| Option | Purpose |
+|---|---|
+| `-workspace=NAME` | Use this workspace, creating it if needed |
+| `-var=NAME=VALUE` | Set an input variable. Can be used more than once |
+| `-var-file=FILE` | Load input variables from a file. Can be used more than once |
+| `-arg=OPTION` | Pass another option to the plan command, such as `-arg=-parallelism=5` |
+| `-no-comment` | Don't comment on the pull request |
+| `-no-output` | Show only the list of changes in comments and summaries, not the plan's text |
+
+To use a directory other than the current one, use the global `-chdir` option:
+`bogform -chdir=infra/prod ci plan`.
+
+## Several environments or directories
+
+Use one job for each directory or workspace. Each gets its own comment on the pull request, which is
+updated in place on later runs.
+
+## Reports
+
+Each run writes `.bogform-ci/report.json`, with the status, the commit, and the list of changed
+resources. It holds no attribute values. Bogform creates a `.gitignore` in that directory so its
+contents, including the saved plan, aren't committed.

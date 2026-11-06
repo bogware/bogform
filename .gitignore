@@ -43,3 +43,6 @@ dist/
 # Development temp folder
 tmp
 website/.docusaurus
+
+# Plans and reports from "bogform ci"
+.bogform-ci/

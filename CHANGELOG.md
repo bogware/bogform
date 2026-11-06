@@ -10,6 +10,13 @@ BREAKING CHANGES:
 - The `cloud` block and the `remote` backend are no longer supported. Configurations that use them
   fail with steps for moving state to a supported backend.
 
+NEW FEATURES:
+
+- Added `bogform ci` to run Bogform from GitHub Actions, GitLab CI, Azure Pipelines, and Bitbucket
+  Pipelines. It comments on pull requests with the plan, and `bogform ci init` adds a pipeline to your
+  repository.
+- Added the `git` backend, which stores encrypted state on a dedicated branch of a Git repository.
+
 ENHANCEMENTS:
 
 - The executable is now named `bogform`.

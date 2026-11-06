@@ -1,0 +1,61 @@
+---
+sidebar_position: 5
+sidebar_label: Where to store state
+description: |-
+  Choose a low-cost place to store state for your pipelines.
+---
+
+# Where to store state
+
+Pipelines start from a clean checkout, so state must live somewhere else. **Object storage is the best
+choice for most teams.** It typically costs pennies a month, it supports locking, and it keeps versions.
+
+## Object storage (recommended)
+
+This example uses S3, whose built-in locking doesn't need a DynamoDB table:
+
+```hcl
+terraform {
+  backend "s3" {
+    bucket       = "example-corp-bogform-state"
+    key          = "my-app/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true
+  }
+}
+```
+
+Create the bucket once, with versioning on and public access blocked:
+
+```shell
+aws s3api create-bucket --bucket example-corp-bogform-state --region us-east-1
+aws s3api put-bucket-versioning --bucket example-corp-bogform-state \
+  --versioning-configuration Status=Enabled
+aws s3api put-public-access-block --bucket example-corp-bogform-state \
+  --public-access-block-configuration \
+  BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
+```
+
+The [`gcs`](../language/settings/backends/gcs.mdx) and [`azurerm`](../language/settings/backends/azurerm.mdx)
+backends work the same way.
+
+## In your Git repository
+
+For a small project that wants no cloud setup, the [`git` backend](../language/settings/backends/git.mdx)
+keeps encrypted state on a separate branch of your repository.
+
+| | Object storage | Git |
+|---|---|---|
+| Setup | One bucket and an access policy | A passphrase or key |
+| Cost | Pennies a month | Free |
+| Concurrent runs | Works well | Works, but they retry and can wait on each other |
+| Deleting old state | Lifecycle rules | Rewriting Git history |
+| Best for | Most teams | Small projects and personal infrastructure |
+
+Choose object storage if you have several people making frequent changes, or large state.
+
+## Encrypt your state
+
+State can hold secrets. Whichever you choose, consider [state encryption](../language/state/encryption.mdx)
+so that the storage provider and anyone with read access can't read it.

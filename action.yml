@@ -1,0 +1,114 @@
+name: Bogform
+description: Plan and apply infrastructure with Bogform, and comment on pull requests.
+branding:
+  icon: layers
+  color: green
+
+inputs:
+  command:
+    description: The operation to run. One of plan, apply, or drift.
+    required: true
+  version:
+    description: The Bogform version to install, or latest.
+    default: latest
+  working-directory:
+    description: The directory containing your configuration.
+    default: .
+  workspace:
+    description: The workspace to use.
+    default: ""
+  args:
+    description: More options for the bogform ci command, separated by spaces.
+    default: ""
+  token:
+    description: The token used to comment on pull requests.
+    default: ${{ github.token }}
+  binary:
+    description: Use this bogform executable instead of installing a release.
+    default: ""
+
+outputs:
+  report:
+    description: The path of the run's report.json.
+    value: ${{ steps.run.outputs.report }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install Bogform
+      if: inputs.binary == ''
+      shell: bash
+      env:
+        BOGFORM_VERSION: ${{ inputs.version }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        repository=bogware/bogform
+        version="$BOGFORM_VERSION"
+        if [ "$version" = latest ]; then
+          version="$(gh release view --repo "$repository" --json tagName --jq .tagName)"
+        fi
+        version="${version#v}"
+
+        case "$RUNNER_OS" in
+          Linux) os=linux ;;
+          macOS) os=darwin ;;
+          Windows) os=windows ;;
+          *) echo "Unsupported runner OS: $RUNNER_OS" >&2; exit 1 ;;
+        esac
+        case "$RUNNER_ARCH" in
+          X64) arch=amd64 ;;
+          ARM64) arch=arm64 ;;
+          *) echo "Unsupported runner architecture: $RUNNER_ARCH" >&2; exit 1 ;;
+        esac
+
+        install_dir="$RUNNER_TEMP/bogform-$version"
+        mkdir -p "$install_dir"
+        cd "$install_dir"
+        archive="bogform_${version}_${os}_${arch}.tar.gz"
+        sums="bogform_${version}_SHA256SUMS"
+        base="https://github.com/$repository/releases/download/v$version"
+        curl -fsSLO --retry 3 "$base/$archive"
+        curl -fsSLO --retry 3 "$base/$sums"
+        grep " $archive\$" "$sums" | sha256sum -c -
+
+        # If cosign is available, also check that the checksums came from this repository's releases.
+        if command -v cosign >/dev/null; then
+          curl -fsSLO --retry 3 "$base/$sums.sig"
+          curl -fsSLO --retry 3 "$base/$sums.pem"
+          cosign verify-blob \
+            --certificate "$sums.pem" --signature "$sums.sig" \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity-regexp "^https://github\.com/$repository/\.github/workflows/release\.yml@" \
+            "$sums"
+        fi
+
+        tar -xzf "$archive"
+        echo "$install_dir" >> "$GITHUB_PATH"
+
+    - name: Run bogform ci
+      id: run
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        BOG_CI_TOKEN: ${{ inputs.token }}
+        BOGFORM_COMMAND: ${{ inputs.command }}
+        BOGFORM_WORKSPACE: ${{ inputs.workspace }}
+        BOGFORM_ARGS: ${{ inputs.args }}
+        BOGFORM_BINARY: ${{ inputs.binary }}
+      run: |
+        set -euo pipefail
+        case "$BOGFORM_COMMAND" in
+          plan|apply|drift) ;;
+          *) echo "The command input must be plan, apply, or drift." >&2; exit 1 ;;
+        esac
+        echo "report=$PWD/.bogform-ci/report.json" >> "$GITHUB_OUTPUT"
+
+        options=()
+        if [ -n "$BOGFORM_WORKSPACE" ]; then
+          options+=("-workspace=$BOGFORM_WORKSPACE")
+        fi
+        # Intentionally split on spaces.
+        # shellcheck disable=SC2206
+        options+=($BOGFORM_ARGS)
+        "${BOGFORM_BINARY:-bogform}" ci "$BOGFORM_COMMAND" "${options[@]}"

@@ -400,6 +400,7 @@ func RootCommander(help *bool, ver *bool, chdir *string) Command {
 			WorkspaceCommander(false),
 			UnlockCommander(),
 			StateCommander(),
+			CICommander(),
 		},
 		Groups: []Group{MainCommandGroup, OtherCommandGroup},
 

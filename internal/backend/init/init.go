@@ -19,6 +19,7 @@ import (
 	backendConsul "github.com/bogware/bogform/internal/backend/remote-state/consul"
 	backendCos "github.com/bogware/bogform/internal/backend/remote-state/cos"
 	backendGCS "github.com/bogware/bogform/internal/backend/remote-state/gcs"
+	backendGit "github.com/bogware/bogform/internal/backend/remote-state/git"
 	backendHTTP "github.com/bogware/bogform/internal/backend/remote-state/http"
 	backendInmem "github.com/bogware/bogform/internal/backend/remote-state/inmem"
 	backendKubernetes "github.com/bogware/bogform/internal/backend/remote-state/kubernetes"
@@ -86,6 +87,7 @@ func Init(services *disco.Disco) {
 		"consul":     func(enc encryption.StateEncryption) backend.Backend { return backendConsul.New(enc) },
 		"cos":        func(enc encryption.StateEncryption) backend.Backend { return backendCos.New(enc) },
 		"gcs":        func(enc encryption.StateEncryption) backend.Backend { return backendGCS.New(enc) },
+		"git":        func(enc encryption.StateEncryption) backend.Backend { return backendGit.New(enc) },
 		"http":       func(enc encryption.StateEncryption) backend.Backend { return backendHTTP.New(enc) },
 		"inmem":      func(enc encryption.StateEncryption) backend.Backend { return backendInmem.New(enc) },
 		"kubernetes": func(enc encryption.StateEncryption) backend.Backend { return backendKubernetes.New(enc) },

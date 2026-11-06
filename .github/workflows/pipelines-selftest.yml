@@ -1,0 +1,84 @@
+name: Pipelines self-test
+
+# Runs "bogform ci" through this repository's action on real GitHub Actions, using a configuration
+# that needs no cloud account or network access.
+
+on:
+  pull_request:
+    paths:
+      - 'action.yml'
+      - 'internal/ci/**'
+      - 'internal/command/ci.go'
+      - 'internal/backend/remote-state/git/**'
+      - '.github/workflows/pipelines-selftest.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'action.yml'
+      - 'internal/ci/**'
+      - 'internal/command/ci.go'
+      - 'internal/backend/remote-state/git/**'
+      - '.github/workflows/pipelines-selftest.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  selftest:
+    name: Plan, apply, and detect drift
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Fetch source code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Configure Go toolchain
+        uses: ./.github/actions/go-toolchain
+
+      - name: Build bogform
+        run: |
+          go build -o "$RUNNER_TEMP/bogform" ./cmd/bogform
+          mkdir -p "$RUNNER_TEMP/config"
+          cat > "$RUNNER_TEMP/config/main.tf" <<'EOF'
+          resource "terraform_data" "example" {
+            input = "pipelines self-test"
+          }
+          EOF
+          echo "BOGFORM_SELFTEST_DIR=$RUNNER_TEMP/config" >> "$GITHUB_ENV"
+          echo "BOGFORM_SELFTEST_BIN=$RUNNER_TEMP/bogform" >> "$GITHUB_ENV"
+
+      - name: Plan
+        id: plan
+        uses: ./
+        with:
+          command: plan
+          binary: ${{ env.BOGFORM_SELFTEST_BIN }}
+          working-directory: ${{ env.BOGFORM_SELFTEST_DIR }}
+
+      - name: Check the plan's report
+        run: jq -e '.status == "changes" and .counts.add == 1' "${{ steps.plan.outputs.report }}"
+
+      - name: Apply
+        id: apply
+        if: github.event_name != 'pull_request'
+        uses: ./
+        with:
+          command: apply
+          binary: ${{ env.BOGFORM_SELFTEST_BIN }}
+          working-directory: ${{ env.BOGFORM_SELFTEST_DIR }}
+
+      - name: Check the apply's report
+        if: github.event_name != 'pull_request'
+        run: jq -e '.status == "applied"' "${{ steps.apply.outputs.report }}"
+
+      - name: Check for drift
+        if: github.event_name != 'pull_request'
+        uses: ./
+        with:
+          command: drift
+          binary: ${{ env.BOGFORM_SELFTEST_BIN }}
+          working-directory: ${{ env.BOGFORM_SELFTEST_DIR }}

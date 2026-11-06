@@ -108,6 +108,7 @@ require (
 	google.golang.org/api v0.293.0
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
+	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.36.3
 	k8s.io/apimachinery v0.36.3
 	k8s.io/client-go v0.36.3
@@ -254,7 +255,6 @@ require (
 	gopkg.in/evanphx/json-patch.v4 v4.13.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	honnef.co/go/tools v0.4.2 // indirect
 	k8s.io/klog/v2 v2.140.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20260317180543-43fb72c5454a // indirect
@@ -267,13 +267,13 @@ require (
 replace github.com/hashicorp/hcl/v2 v2.25.0 => github.com/opentofu/hcl/v2 v2.20.2-0.20260930170621-c565166b0b3d
 
 tool (
-	github.com/mitchellh/gox
 	github.com/bogware/bogform/cmd/bogform
 	github.com/bogware/bogform/tools/find-dep-upgrades
 	github.com/bogware/bogform/tools/find-pkg-importer
 	github.com/bogware/bogform/tools/loggraphdiff
 	github.com/bogware/bogform/tools/protobuf-compile
 	github.com/bogware/bogform/tools/selected-go-version
+	github.com/mitchellh/gox
 	go.uber.org/mock/mockgen
 	golang.org/x/tools/cmd/stringer
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc

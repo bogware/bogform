@@ -1,0 +1,60 @@
+---
+sidebar_position: 1
+sidebar_label: GitHub Actions
+description: |-
+  Run Bogform from GitHub Actions.
+---
+
+# GitHub Actions
+
+```shell
+bogform ci init github
+```
+
+This creates `.github/workflows/bogform.yml`, which plans on pull requests and applies when you merge.
+
+## Sign in to your cloud provider
+
+Use OIDC, so there are no stored keys to leak. Add the sign-in step before the Bogform step. For example,
+on AWS:
+
+```yaml
+- uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: arn:aws:iam::123456789012:role/bogform-plan
+    aws-region: us-east-1
+```
+
+Use a read-only role for the plan job. Keep the role that can make changes for the apply job, and limit
+its trust policy to the `production` environment.
+
+## Require approval
+
+In the repository's settings, open **Environments**, create `production`, and add required reviewers.
+Each apply then waits for approval.
+
+## The action
+
+You can also use the action directly in your own workflows:
+
+```yaml
+- uses: bogware/bogform@main
+  with:
+    command: plan
+    working-directory: infra/prod
+```
+
+| Input | Purpose | Default |
+|---|---|---|
+| `command` | One of `plan`, `apply`, or `drift` | Required |
+| `version` | The Bogform version to install | `latest` |
+| `working-directory` | The directory containing your configuration | `.` |
+| `workspace` | The workspace to use | The default workspace |
+| `args` | More options for `bogform ci`, separated by spaces | None |
+| `token` | The token used to comment on pull requests | The job's token |
+
+The action checks each download against the release's checksums. If `cosign` is installed, it also
+verifies that the checksums were signed by this project's release workflow.
+
+The job needs the `pull-requests: write` permission to comment. For pull requests from forks, GitHub
+gives a read-only token, so Bogform shows a warning instead of a comment.
