@@ -6,10 +6,6 @@ on:
       tag:
         description: "Git tag (leave empty for dry run)"
         required: false
-      latest:
-        description: "Release as latest?"
-        required: true
-        type: boolean
       prerelease:
         description: "Release as prerelease?"
         required: true
@@ -18,8 +14,7 @@ on:
 jobs:
   release:
     name: Release
-    runs-on: larger-runners
-    environment: gpg
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
@@ -86,78 +81,20 @@ jobs:
         with:
           cosign-release: v2.4.3
 
-      - name: Setup snapcraft
-        run: |
-          sudo snap install snapcraft --classic --channel=7.x/stable
-
-          # See https://github.com/goreleaser/goreleaser/issues/1715
-          mkdir -p "$HOME/.cache/snapcraft/download"
-          mkdir -p "$HOME/.cache/snapcraft/stage-packages"
-        env:
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_TOKEN }}
-
-      - name: Import GPG key
-        if: startsWith(inputs.tag, 'v')
-        run: |
-          GPG_KEY_FILE=/tmp/signing-key.gpg
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode > "${GPG_KEY_FILE}"
-          
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
-          GPG_FINGERPRINT=$(gpg --list-secret-keys --keyid-format LONG | awk '/^sec/{sub(/.*\//, "", $2); print $2; exit}')
-          
-          echo "GPG_FINGERPRINT=${GPG_FINGERPRINT}" >>"${GITHUB_ENV}"
-          echo "GPG_KEY_FILE=${GPG_KEY_FILE}" >> "${GITHUB_ENV}"
-        env:
-          GPG_TTY: /dev/ttys000  # Set the GPG_TTY to avoid issues with pinentry
-
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811 # v5.1.0
         with:
           version: v1.21.2
-          distribution: goreleaser-pro
+          distribution: goreleaser
           args: release --clean --timeout=60m --snapshot=${{ !startsWith(inputs.tag, 'v') }}
         env:
-          # Note: the GPG_FINGERPRINT and GPG_KEY_FILE are defined in the task above. If they are not set,
-          # goreleaser won't sign the packages.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_TOKEN }}
-          RELEASE_FLAG_LATEST: ${{ inputs.latest }}
-          RELEASE_FLAG_PRERELEASE: ${{ inputs.prerelease }}
           # This causes version.IsOfficialBuild to return true when someone is
           # running one of our official release builds.
-          BUILD_OPENTOFU_OFFICIAL: '1'
-
-      - name: Remove GPG key
-        if: always()
-        run: |
-          rm -rf ~/.gnupg
-          if [ -n "${GPG_KEY_FILE}" ]; then
-            rm -rf "${GPG_KEY_FILE}"
-          fi
+          BUILD_BOGFORM_OFFICIAL: '1'
 
       - name: Upload artifacts
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: dist
           path: dist
-
-      - name: Upload Debian packages to PackageCloud
-        if: startsWith(inputs.tag, 'v') && ! inputs.prerelease
-        uses: computology/packagecloud-github-action@3a3116159414e57767827ed264a6de29a1f86d4c # v0.6
-        with:
-                PACKAGE-NAME: dist/*.deb
-                PACKAGECLOUD-USERNAME: opentofu
-                PACKAGECLOUD-REPONAME: tofu
-                PACKAGECLOUD-DISTRO: any/any
-                PACKAGECLOUD-TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-      - name: Upload RPM packages to PackageCloud
-        if: startsWith(inputs.tag, 'v') && ! inputs.prerelease
-        uses: computology/packagecloud-github-action@3a3116159414e57767827ed264a6de29a1f86d4c # v0.6
-        with:
-                PACKAGE-NAME: dist/*.rpm
-                PACKAGECLOUD-USERNAME: opentofu
-                PACKAGECLOUD-REPONAME: tofu
-                PACKAGECLOUD-DISTRO: rpm_any/rpm_any
-                PACKAGECLOUD-TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-

@@ -15,7 +15,7 @@ skip=$skip"|internal/planproto|internal/tfplugin5|internal/tfplugin6|internal/go
 
 packages=$(go list ./... | egrep -v ${skip})
 
-# We are skipping style-related checks, since tofu intentionally breaks
+# We are skipping style-related checks, since Bogform intentionally breaks
 # some of these. The goal here is to find issues that reduce code clarity, or
 # may result in bugs. We also disable function deprecation checks (SA1019)
 # because our policy is to update deprecated calls locally while making other

@@ -41,7 +41,7 @@ jobs:
       - name: "Configure Go toolchain"
         uses: ./.github/actions/go-toolchain
 
-      - name: "Build tofu executable"
+      - name: "Build bogform executable"
         run: |
           go build ./cmd/bogform
 

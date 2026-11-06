@@ -12,7 +12,7 @@ Usage: ./equivalence-test.sh <command> [<args>] [<options>]
 
 Description:
   This script will handle various commands related to the execution of the
-  tofu equivalence tests.
+  Bogform equivalence tests.
 
 Commands:
   download_equivalence_test_binary <version> <target> <os> <arch>

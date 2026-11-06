@@ -50,9 +50,9 @@ jobs:
             linux \
             amd64
 
-      - name: Build the OpenTofu binary
+      - name: Build the Bogform binary
         run: |
-          go build -o ./bin/tofu ./cmd/bogform
+          go build -o ./bin/bogform ./cmd/bogform
 
       - name: Run the equivalence tests
         run: |
@@ -60,7 +60,7 @@ jobs:
             --tests=testing/equivalence-tests/tests \
             --goldens=testing/equivalence-tests/outputs \
             --rewrites=testing/rewrites.jsonc \
-            --binary=./bin/tofu \
+            --binary=./bin/bogform \
 
       - name: Ensure there is no diff
         shell: bash

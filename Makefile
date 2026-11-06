@@ -15,14 +15,14 @@ test-with-coverage:
 	go test -coverprofile=coverage.out -covermode=atomic ./...
 	go tool cover -html=coverage.out -o coverage.html
 
-# run the unit tests across all packages in the tofu project
+# run the unit tests across all packages in the bogform project
 .PHONY: test
 test:
 	go test -v ./...
 
 EXT := $(shell go env GOEXE)
 
-# build tofu binary in the current directory with the version set to the git tag
+# build bogform binary in the current directory with the version set to the git tag
 # or commit hash if there is no tag.
 .PHONY: build
 build:
@@ -73,12 +73,6 @@ license-check:
 	licensei header --debug
 	rm -rf vendor/
 	git diff --exit-code
-
-# This runs the copyright checks against the files in this repository.
-# This is the same script that is used also in the .github/workflows/checks.yml. If this or that configuration is ever changed,
-# be sure that the changes are reflected in both places.
-copyright:
-	curl -fsSL https://raw.githubusercontent.com/opentofu/scripts/main/sh/copyright_check.sh | bash -s -- "" "*.go *.proto" "*/.git* */vendor/* */node_modules/* */.workdir* */website/* */tfplugin*.proto"
 
 # Install dependencies
 deps: bin/licensei
@@ -244,7 +238,7 @@ integration-tests-clean: test-pg-clean test-consul-clean test-kubernetes-clean #
 .PHONY: help
 help: ## Prints this help message.
 	@echo ""
-	@echo "Opentofu Makefile"
+	@echo "Bogform Makefile"
 	@echo ""
 	@echo "Usage: make [target]"
 	@echo ""

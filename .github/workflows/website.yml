@@ -46,7 +46,7 @@ jobs:
         working-directory: website
       # The segregation between the next 2 steps is because on non-main branches, there are
       # blog posts that point to the 'main' branch documentation that is fully missing from
-      # the branches that are used to maintain older versions of OpenTofu.
+      # the branches that are used to maintain older versions of Bogform.
       # Therefore, we run the full website check on main (and any branch in a PR that points
       # to the main branch) and we run a trimmed down website checks for any runs against
       # a non-main branch (or a PR that points to a non-main branch)

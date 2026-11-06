@@ -3,7 +3,7 @@
 # Copyright (c) 2023 HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-project_name: tofu
+project_name: bogform
 
 before:
   hooks:
@@ -24,12 +24,9 @@ builds:
     ldflags:
       - "-s -w"
       - "-X 'github.com/bogware/bogform/version.dev=no'"
-      # BUILD_OPENTOFU_OFFICIAL is set by the OpenTofu project's main release
-      # process. It should typically _not_ be set for builds produced by
-      # third-parties such as Linux distribution maintainers, because in that
-      # case the resulting executable might generate irrelevant warnings that
-      # are intended only for users of the official release builds.
-      - "-X 'github.com/bogware/bogform/version.officialBuild={{if index .Env \"BUILD_OPENTOFU_OFFICIAL\" }}{{ .Env.BUILD_OPENTOFU_OFFICIAL }}{{end}}'"
+      # BUILD_BOGFORM_OFFICIAL is set by the project's release workflow. Leave it unset
+      # for third-party builds, such as Linux distribution packages.
+      - "-X 'github.com/bogware/bogform/version.officialBuild={{if index .Env \"BUILD_BOGFORM_OFFICIAL\" }}{{ .Env.BUILD_BOGFORM_OFFICIAL }}{{end}}'"
 
     goos:
       - linux
@@ -67,17 +64,17 @@ dockers:
       - "--pull"
       - "--platform=linux/amd64"
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.vendor=OpenTofu"
-      - "--label=org.opencontainers.image.description=OpenTofu {{ .Version }}"
-      - "--label=org.opencontainers.image.url=https://github.com/opentofu/opentofu"
-      - "--label=org.opencontainers.image.documentation=https://github.com/opentofu/opentofu/blob/main/README.md"
-      - "--label=org.opencontainers.image.source=https://github.com/opentofu/opentofu"
+      - "--label=org.opencontainers.image.vendor=Bogware"
+      - "--label=org.opencontainers.image.description=Bogform {{ .Version }}"
+      - "--label=org.opencontainers.image.url=https://github.com/bogware/bogform"
+      - "--label=org.opencontainers.image.documentation=https://github.com/bogware/bogform/blob/main/README.md"
+      - "--label=org.opencontainers.image.source=https://github.com/bogware/bogform"
       - "--label=org.opencontainers.image.licenses=MPL-2.0"
       - "--label=org.opencontainers.image.version={{ .Version }}"
       - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
       - "--label=org.opencontainers.image.created={{ time \"2006-01-02T15:04:05Z07:00\" }}"
     image_templates:
-      - "ghcr.io/opentofu/opentofu:{{ .Version }}-amd64"
+      - "ghcr.io/bogware/bogform:{{ .Version }}-amd64"
 
   - use: buildx
     goarch: amd64
@@ -86,17 +83,17 @@ dockers:
       - "--pull"
       - "--platform=linux/amd64"
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.vendor=OpenTofu"
-      - "--label=org.opencontainers.image.description=OpenTofu {{ .Version }}"
-      - "--label=org.opencontainers.image.url=https://github.com/opentofu/opentofu"
-      - "--label=org.opencontainers.image.documentation=https://github.com/opentofu/opentofu/blob/main/README.md"
-      - "--label=org.opencontainers.image.source=https://github.com/opentofu/opentofu"
+      - "--label=org.opencontainers.image.vendor=Bogware"
+      - "--label=org.opencontainers.image.description=Bogform {{ .Version }}"
+      - "--label=org.opencontainers.image.url=https://github.com/bogware/bogform"
+      - "--label=org.opencontainers.image.documentation=https://github.com/bogware/bogform/blob/main/README.md"
+      - "--label=org.opencontainers.image.source=https://github.com/bogware/bogform"
       - "--label=org.opencontainers.image.licenses=MPL-2.0"
       - "--label=org.opencontainers.image.version={{ .Version }}"
       - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
       - "--label=org.opencontainers.image.created={{ time \"2006-01-02T15:04:05Z07:00\" }}"
     image_templates:
-      - "ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-amd64"
+      - "ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64"
 
   - use: buildx
     goarch: arm64
@@ -104,17 +101,17 @@ dockers:
       - "--pull"
       - "--platform=linux/arm64"
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.vendor=OpenTofu"
-      - "--label=org.opencontainers.image.description=OpenTofu {{ .Version }}"
-      - "--label=org.opencontainers.image.url=https://github.com/opentofu/opentofu"
-      - "--label=org.opencontainers.image.documentation=https://github.com/opentofu/opentofu/blob/main/README.md"
-      - "--label=org.opencontainers.image.source=https://github.com/opentofu/opentofu"
+      - "--label=org.opencontainers.image.vendor=Bogware"
+      - "--label=org.opencontainers.image.description=Bogform {{ .Version }}"
+      - "--label=org.opencontainers.image.url=https://github.com/bogware/bogform"
+      - "--label=org.opencontainers.image.documentation=https://github.com/bogware/bogform/blob/main/README.md"
+      - "--label=org.opencontainers.image.source=https://github.com/bogware/bogform"
       - "--label=org.opencontainers.image.licenses=MPL-2.0"
       - "--label=org.opencontainers.image.version={{ .Version }}"
       - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
       - "--label=org.opencontainers.image.created={{ time \"2006-01-02T15:04:05Z07:00\" }}"
     image_templates:
-      - "ghcr.io/opentofu/opentofu:{{ .Version }}-arm64"
+      - "ghcr.io/bogware/bogform:{{ .Version }}-arm64"
 
   - use: buildx
     goarch: arm64
@@ -123,81 +120,71 @@ dockers:
       - "--pull"
       - "--platform=linux/arm64"
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.vendor=OpenTofu"
-      - "--label=org.opencontainers.image.description=OpenTofu {{ .Version }}"
-      - "--label=org.opencontainers.image.url=https://github.com/opentofu/opentofu"
-      - "--label=org.opencontainers.image.documentation=https://github.com/opentofu/opentofu/blob/main/README.md"
-      - "--label=org.opencontainers.image.source=https://github.com/opentofu/opentofu"
+      - "--label=org.opencontainers.image.vendor=Bogware"
+      - "--label=org.opencontainers.image.description=Bogform {{ .Version }}"
+      - "--label=org.opencontainers.image.url=https://github.com/bogware/bogform"
+      - "--label=org.opencontainers.image.documentation=https://github.com/bogware/bogform/blob/main/README.md"
+      - "--label=org.opencontainers.image.source=https://github.com/bogware/bogform"
       - "--label=org.opencontainers.image.licenses=MPL-2.0"
       - "--label=org.opencontainers.image.version={{ .Version }}"
       - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
       - "--label=org.opencontainers.image.created={{ time \"2006-01-02T15:04:05Z07:00\" }}"
     image_templates:
-      - "ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-arm64"
+      - "ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64"
 
 docker_manifests:
-  - name_template: ghcr.io/opentofu/opentofu:{{ .Version }}
+  - name_template: ghcr.io/bogware/bogform:{{ .Version }}
     image_templates:
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-amd64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-arm64
+      - ghcr.io/bogware/bogform:{{ .Version }}-amd64
+      - ghcr.io/bogware/bogform:{{ .Version }}-arm64
 
-  - name_template: ghcr.io/opentofu/opentofu:{{ .Version }}-minimal
+  - name_template: ghcr.io/bogware/bogform:{{ .Version }}-minimal
     image_templates:
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-amd64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-arm64
+      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64
+      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64
 
-  - name_template: ghcr.io/opentofu/opentofu:{{ .Major }}.{{ .Minor }}
+  - name_template: ghcr.io/bogware/bogform:{{ .Major }}.{{ .Minor }}
     image_templates:
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-amd64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-arm64
+      - ghcr.io/bogware/bogform:{{ .Version }}-amd64
+      - ghcr.io/bogware/bogform:{{ .Version }}-arm64
     skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
 
-  - name_template: ghcr.io/opentofu/opentofu:{{ .Major }}.{{ .Minor }}-minimal
+  - name_template: ghcr.io/bogware/bogform:{{ .Major }}.{{ .Minor }}-minimal
     image_templates:
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-amd64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-arm64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-arm
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-386
+      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64
+      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64
     skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
 
-  - name_template: ghcr.io/opentofu/opentofu:{{ .Major }}
+  - name_template: ghcr.io/bogware/bogform:{{ .Major }}
     image_templates:
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-amd64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-arm64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-arm
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-386
+      - ghcr.io/bogware/bogform:{{ .Version }}-amd64
+      - ghcr.io/bogware/bogform:{{ .Version }}-arm64
     skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
 
-  - name_template: ghcr.io/opentofu/opentofu:{{ .Major }}-minimal
+  - name_template: ghcr.io/bogware/bogform:{{ .Major }}-minimal
     image_templates:
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-amd64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-arm64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-arm
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-386
+      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64
+      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64
     skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
 
-  - name_template: ghcr.io/opentofu/opentofu:latest
+  - name_template: ghcr.io/bogware/bogform:latest
     image_templates:
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-amd64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-arm64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-arm
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-386
+      - ghcr.io/bogware/bogform:{{ .Version }}-amd64
+      - ghcr.io/bogware/bogform:{{ .Version }}-arm64
     skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
 
-  - name_template: ghcr.io/opentofu/opentofu:minimal
+  - name_template: ghcr.io/bogware/bogform:minimal
     image_templates:
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-amd64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-arm64
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-arm
-      - ghcr.io/opentofu/opentofu:{{ .Version }}-minimal-386
+      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64
+      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64
     skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
 
 nfpms:
   - file_name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Arch }}'
-    maintainer: 'https://github.com/orgs/opentofu/teams/opentofu-core-team'
-    homepage: https://opentofu.org
+    maintainer: 'Bogform maintainers <https://github.com/bogware/bogform>'
+    homepage: https://github.com/bogware/bogform
     description: >-
-      OpenTofu lets you declaratively manage your cloud infrastructure.
+      Bogform lets you declaratively manage your cloud infrastructure.
     license: "MPL-2.0"
     formats:
       - deb
@@ -207,35 +194,9 @@ nfpms:
     section: default
     contents:
       - src: ./LICENSE
-        dst: /usr/share/doc/opentofu/copyright
+        dst: /usr/share/doc/bogform/copyright
         file_info:
           mode: 0444
-    rpm:
-      signature:
-        key_file: "{{ if index .Env \"GPG_KEY_FILE\"  }}{{.Env.GPG_KEY_FILE}}{{ end }}"
-    deb:
-      signature:
-        key_file: "{{ if index .Env \"GPG_KEY_FILE\"  }}{{.Env.GPG_KEY_FILE}}{{ end }}"
-
-snapcrafts:
-  - name: opentofu
-    publish: true
-    summary: OpenTofu lets you declaratively manage your cloud infrastructure.
-    description: |
-      OpenTofu is an OSS tool for building, changing, and versioning infrastructure
-      safely and efficiently. OpenTofu can manage existing and popular service
-      providers as well as custom in-house solutions.
-    disable: '{{ if eq .Env.RELEASE_FLAG_LATEST "false" }}true{{ else }}false{{ end }}'
-    channel_templates:
-      - '{{ if eq .Env.RELEASE_FLAG_PRERELEASE "true" }}latest/edge{{ else }}latest/stable{{ end }}'
-    grade: '{{ if eq .Env.RELEASE_FLAG_PRERELEASE "true" }}devel{{ else }}stable{{ end }}'
-    confinement: classic
-    license: MPL-2.0
-    base: core22
-    apps:
-      tofu:
-        command: tofu
-        aliases: [tofu]
 
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
@@ -246,11 +207,6 @@ signs:
     cmd: cosign
     certificate: "${artifact}.pem"
     args: [ "sign-blob", "--oidc-issuer=https://token.actions.githubusercontent.com", "--output-certificate=${certificate}", "--output-signature=${signature}", "${artifact}", "--yes" ]
-  - artifacts: all
-    signature: "${artifact}.gpgsig"
-    id: gpg
-    cmd: gpg
-    args: ["--batch", "-u", "{{ .Env.GPG_FINGERPRINT }}", "--output", "${signature}", "--detach-sign", "${artifact}" ]
 
 docker_signs:
   - artifacts: all
@@ -258,12 +214,6 @@ docker_signs:
 
 snapshot:
   name_template: "{{ .Version }}-next"
-
-# Docs are here: https://github.com/goreleaser/goreleaser/blob/v1.26.2/www/docs/customization/nightlies.md
-nightly:
-  # Version format: nightly-20250806-c5fd934
-  name_template: "nightly-{{ .Now.Format \"20060102\" }}-{{ .ShortCommit }}"
-  publish_release: false
 
 changelog:
   use: github-native
