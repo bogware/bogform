@@ -11,9 +11,9 @@ import (
 	"sort"
 	"testing"
 
+	"github.com/bogware/bogform/internal/legacy/hcl2shim"
+	"github.com/bogware/bogform/internal/legacy/tofu"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/opentofu/opentofu/internal/legacy/hcl2shim"
-	"github.com/opentofu/opentofu/internal/legacy/tofu"
 )
 
 // testSetFunc is a very simple function we use to test a foo/bar complex set.

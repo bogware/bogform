@@ -13,8 +13,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/configs/symlib"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/configs/symlib"
 
 	"github.com/hashicorp/hcl/v2"
 )

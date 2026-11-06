@@ -8,8 +8,8 @@ package tofu
 import (
 	"log"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/plans"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/plans"
 )
 
 // reducePlan takes a planned resource instance change as might be produced by

@@ -8,9 +8,9 @@ package plans
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/states"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/states"
 	"github.com/zclconf/go-cty/cty"
 	ctyjson "github.com/zclconf/go-cty/cty/json"
 )

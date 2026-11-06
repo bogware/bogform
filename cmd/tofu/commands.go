@@ -10,21 +10,21 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/bogware/bogform/internal/command/system"
+	"github.com/bogware/bogform/internal/command/workdir"
 	"github.com/hashicorp/go-plugin"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/opentofu/opentofu/internal/command/system"
-	"github.com/opentofu/opentofu/internal/command/workdir"
 	"github.com/opentofu/svchost"
 	"github.com/opentofu/svchost/disco"
 	"github.com/opentofu/svchost/svcauth"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/command"
-	"github.com/opentofu/opentofu/internal/command/cliconfig"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/getmodules"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	pluginDiscovery "github.com/opentofu/opentofu/internal/plugin/discovery"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/command"
+	"github.com/bogware/bogform/internal/command/cliconfig"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/getmodules"
+	"github.com/bogware/bogform/internal/getproviders"
+	pluginDiscovery "github.com/bogware/bogform/internal/plugin/discovery"
 )
 
 // runningInAutomationEnvName gives the name of an environment variable that

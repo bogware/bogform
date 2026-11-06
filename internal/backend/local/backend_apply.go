@@ -14,16 +14,16 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/logging"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/states/statefile"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tofu"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/logging"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/states/statefile"
+	"github.com/bogware/bogform/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tofu"
 )
 
 // test hook called between plan+apply during opApply

@@ -12,11 +12,11 @@ import (
 	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/instances"
-	"github.com/opentofu/opentofu/internal/lang"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/instances"
+	"github.com/bogware/bogform/internal/lang"
 )
 
 func TestBuildProviderConfig(t *testing.T) {

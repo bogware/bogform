@@ -9,8 +9,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/command/jsonformat/structured"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/structured/attribute_path"
+	"github.com/bogware/bogform/internal/command/jsonformat/structured"
+	"github.com/bogware/bogform/internal/command/jsonformat/structured/attribute_path"
 )
 
 type Output struct {

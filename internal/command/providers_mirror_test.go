@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/command/workdir"
+	"github.com/bogware/bogform/internal/command/workdir"
 )
 
 // More thorough tests for providers mirror can be found in the e2etest

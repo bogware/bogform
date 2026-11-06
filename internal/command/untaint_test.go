@@ -10,11 +10,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/workdir"
+	"github.com/bogware/bogform/internal/states"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/command/workdir"
-	"github.com/opentofu/opentofu/internal/states"
 )
 
 func TestUntaint(t *testing.T) {

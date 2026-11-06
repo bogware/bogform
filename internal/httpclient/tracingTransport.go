@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/opentofu/opentofu/internal/tracing"
+	"github.com/bogware/bogform/internal/tracing"
 	"go.opentelemetry.io/otel/attribute"
 )
 

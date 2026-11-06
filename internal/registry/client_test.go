@@ -25,10 +25,10 @@ import (
 	regaddr "github.com/opentofu/registry-address/v2"
 	"github.com/opentofu/svchost/disco"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/httpclient"
-	"github.com/opentofu/opentofu/internal/registry/response"
-	"github.com/opentofu/opentofu/internal/registry/test"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/httpclient"
+	"github.com/bogware/bogform/internal/registry/response"
+	"github.com/bogware/bogform/internal/registry/test"
 )
 
 func TestLookupModuleVersions(t *testing.T) {

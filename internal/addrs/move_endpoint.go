@@ -8,8 +8,8 @@ package addrs
 import (
 	"fmt"
 
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 // MoveEndpoint is to AbsMoveable and ConfigMoveable what Target is to

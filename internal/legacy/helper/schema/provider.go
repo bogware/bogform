@@ -12,9 +12,9 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/legacy/tofu"
 	multierror "github.com/hashicorp/go-multierror"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/legacy/tofu"
 )
 
 var ReservedProviderFields = []string{

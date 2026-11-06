@@ -14,13 +14,13 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/hcl2shim"
-	"github.com/opentofu/opentofu/internal/lang/eval/internal/configgraph"
-	"github.com/opentofu/opentofu/internal/lang/eval/internal/evalglue"
-	"github.com/opentofu/opentofu/internal/lang/exprs"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/hcl2shim"
+	"github.com/bogware/bogform/internal/lang/eval/internal/configgraph"
+	"github.com/bogware/bogform/internal/lang/eval/internal/evalglue"
+	"github.com/bogware/bogform/internal/lang/exprs"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // The symbols in this file deal with the weird special cases that the current

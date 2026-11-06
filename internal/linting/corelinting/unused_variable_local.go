@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"iter"
 
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/linting"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/linting"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // UnusedVariables generates a linting diagnostic for a not used variable.

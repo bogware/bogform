@@ -8,7 +8,7 @@ package states
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 // Resource represents the state of a resource.

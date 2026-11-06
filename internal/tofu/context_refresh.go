@@ -9,10 +9,10 @@ import (
 	"context"
 	"log"
 
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // Refresh is a vestigial operation that is equivalent to call to Plan and

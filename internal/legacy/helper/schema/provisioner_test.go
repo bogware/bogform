@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/legacy/tofu"
+	"github.com/bogware/bogform/internal/legacy/tofu"
 )
 
 func TestProvisioner_impl(t *testing.T) {

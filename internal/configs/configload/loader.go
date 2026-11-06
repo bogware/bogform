@@ -11,13 +11,13 @@ import (
 	"log"
 	"path/filepath"
 
+	"github.com/bogware/bogform/internal/configs/symlib"
+	"github.com/bogware/bogform/internal/modsdir"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/configs/symlib"
-	"github.com/opentofu/opentofu/internal/modsdir"
 	"github.com/spf13/afero"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
 )
 
 // Loader represents all the exposed logic that it's needed by the various places of the system.

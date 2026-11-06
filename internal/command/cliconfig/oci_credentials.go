@@ -19,8 +19,8 @@ import (
 	"github.com/hashicorp/hcl"
 	hclast "github.com/hashicorp/hcl/hcl/ast"
 
-	"github.com/opentofu/opentofu/internal/command/cliconfig/ociauthconfig"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/command/cliconfig/ociauthconfig"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // OCICredentialsPolicy returns an object that encapsulates the operator's configured

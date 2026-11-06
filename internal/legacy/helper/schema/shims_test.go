@@ -14,14 +14,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/legacy/hcl2shim"
+	"github.com/bogware/bogform/internal/legacy/helper/hashcode"
+	"github.com/bogware/bogform/internal/legacy/tofu"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/legacy/hcl2shim"
-	"github.com/opentofu/opentofu/internal/legacy/helper/hashcode"
-	"github.com/opentofu/opentofu/internal/legacy/tofu"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 )
 

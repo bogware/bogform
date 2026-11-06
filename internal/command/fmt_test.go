@@ -15,8 +15,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/command/workdir"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/command/workdir"
 )
 
 func TestFmt_TestFiles(t *testing.T) {

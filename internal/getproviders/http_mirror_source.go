@@ -23,9 +23,9 @@ import (
 	"github.com/opentofu/svchost/svcauth"
 	"golang.org/x/net/idna"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/httpclient"
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/httpclient"
+	"github.com/bogware/bogform/version"
 )
 
 // HTTPMirrorSource is a source that reads provider metadata from a provider
@@ -176,7 +176,7 @@ func (s *HTTPMirrorSource) PackageMeta(ctx context.Context, provider addrs.Provi
 	type ResponseArchiveMeta struct {
 		RelativeURL          string `json:"url"`
 		Hashes               []string
-		UseMirrorCredentials *bool  `json:"use_mirror_credentials"`
+		UseMirrorCredentials *bool `json:"use_mirror_credentials"`
 	}
 	type ResponseBody struct {
 		Archives map[string]*ResponseArchiveMeta `json:"archives"`

@@ -20,7 +20,7 @@ package tofu2024
 
 // the following imports are only for the links in the doc comment above
 import (
-	_ "github.com/opentofu/opentofu/internal/configs"
+	_ "github.com/bogware/bogform/internal/configs"
 )
 
 // === SOME HISTORICAL NOTES ===

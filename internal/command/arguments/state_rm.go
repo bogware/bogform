@@ -6,7 +6,7 @@
 package arguments
 
 import (
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // StateRm represents the command-line arguments for the 'state rm' command.

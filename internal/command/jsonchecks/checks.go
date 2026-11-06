@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/opentofu/opentofu/internal/states"
+	"github.com/bogware/bogform/internal/states"
 )
 
 // MarshalCheckStates is the main entry-point for this package, which takes

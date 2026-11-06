@@ -18,10 +18,10 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/command/cliconfig/ociauthconfig"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/command/cliconfig/ociauthconfig"
+	"github.com/bogware/bogform/internal/getproviders"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // ProviderInstallation is the structure of the "provider_installation"

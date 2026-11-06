@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/hcl/v2/hcltest"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/configs/configschema"
 )
 
 func TestMarshalExpressions(t *testing.T) {

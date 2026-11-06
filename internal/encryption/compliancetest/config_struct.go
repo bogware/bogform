@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
 )
 
 func ConfigStruct[TConfig any](t *testing.T, configStruct any) {

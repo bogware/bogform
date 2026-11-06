@@ -6,7 +6,7 @@
 package plans
 
 import (
-	"github.com/opentofu/opentofu/internal/states"
+	"github.com/bogware/bogform/internal/states"
 )
 
 // PlannedState merges the set of changes described by the receiver into the

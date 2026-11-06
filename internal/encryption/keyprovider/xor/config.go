@@ -8,8 +8,8 @@ package xor
 import (
 	"fmt"
 
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
 )
 
 // Config contains the configuration for this key provider supplied by the user. This struct must have hcl tags in order

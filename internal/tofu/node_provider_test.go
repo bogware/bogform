@@ -10,13 +10,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/lang/marks"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/lang/marks"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 )
 

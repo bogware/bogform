@@ -6,8 +6,8 @@
 package moduletest
 
 import (
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 type File struct {

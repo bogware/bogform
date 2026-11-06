@@ -16,9 +16,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bogware/bogform/internal/states/remote"
+	"github.com/bogware/bogform/internal/states/statemgr"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/opentofu/opentofu/internal/states/remote"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
 )
 
 func TestHTTPClient_impl(t *testing.T) {

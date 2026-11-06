@@ -8,9 +8,9 @@ package lockingencryptionregistry
 import (
 	"sync"
 
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
-	"github.com/opentofu/opentofu/internal/encryption/method"
-	"github.com/opentofu/opentofu/internal/encryption/registry"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/encryption/method"
+	"github.com/bogware/bogform/internal/encryption/registry"
 )
 
 // New returns a new encryption registry that locks for parallel access.

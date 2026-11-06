@@ -9,10 +9,10 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
 
-	"github.com/opentofu/opentofu/internal/encryption/method"
-	"github.com/opentofu/opentofu/internal/encryption/method/aesgcm"
+	"github.com/bogware/bogform/internal/encryption/method"
+	"github.com/bogware/bogform/internal/encryption/method/aesgcm"
 )
 
 var config = &aesgcm.Config{

@@ -9,8 +9,8 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/lang/exprs"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/lang/exprs"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 func MaybeHCLSourceRange(maybeRng *tfdiags.SourceRange) *hcl.Range {

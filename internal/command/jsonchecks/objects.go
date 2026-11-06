@@ -8,7 +8,7 @@ package jsonchecks
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 type staticObjectAddr map[string]interface{}

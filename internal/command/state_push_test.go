@@ -10,11 +10,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/backend/remote-state/inmem"
-	"github.com/opentofu/opentofu/internal/command/workdir"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/states"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/backend/remote-state/inmem"
+	"github.com/bogware/bogform/internal/command/workdir"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/states"
 )
 
 func TestStatePush_empty(t *testing.T) {

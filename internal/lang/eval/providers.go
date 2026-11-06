@@ -16,12 +16,12 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/function"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/lang/exprs"
-	"github.com/opentofu/opentofu/internal/lang/grapheval"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/shared"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/lang/exprs"
+	"github.com/bogware/bogform/internal/lang/grapheval"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/shared"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 type providerConfigSupplier func(ctx context.Context, addr addrs.AbsProviderInstanceCorrect) (cty.Value, tfdiags.Diagnostics)

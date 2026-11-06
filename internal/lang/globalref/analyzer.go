@@ -8,9 +8,9 @@ package globalref
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/providers"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/providers"
 )
 
 // Analyzer is the main component of this package, serving as a container for

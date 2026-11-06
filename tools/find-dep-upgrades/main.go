@@ -30,7 +30,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/dag"
+	"github.com/bogware/bogform/internal/dag"
 )
 
 func main() {

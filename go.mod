@@ -1,4 +1,4 @@
-module github.com/opentofu/opentofu
+module github.com/bogware/bogform
 
 go 1.27.3
 
@@ -268,12 +268,12 @@ replace github.com/hashicorp/hcl/v2 v2.25.0 => github.com/opentofu/hcl/v2 v2.20.
 
 tool (
 	github.com/mitchellh/gox
-	github.com/opentofu/opentofu/cmd/tofu
-	github.com/opentofu/opentofu/tools/find-dep-upgrades
-	github.com/opentofu/opentofu/tools/find-pkg-importer
-	github.com/opentofu/opentofu/tools/loggraphdiff
-	github.com/opentofu/opentofu/tools/protobuf-compile
-	github.com/opentofu/opentofu/tools/selected-go-version
+	github.com/bogware/bogform/cmd/tofu
+	github.com/bogware/bogform/tools/find-dep-upgrades
+	github.com/bogware/bogform/tools/find-pkg-importer
+	github.com/bogware/bogform/tools/loggraphdiff
+	github.com/bogware/bogform/tools/protobuf-compile
+	github.com/bogware/bogform/tools/selected-go-version
 	go.uber.org/mock/mockgen
 	golang.org/x/tools/cmd/stringer
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc

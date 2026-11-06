@@ -12,7 +12,7 @@ import (
 
 	"github.com/opentofu/svchost"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 // MultiSource is a Source that wraps a series of other sources and combines

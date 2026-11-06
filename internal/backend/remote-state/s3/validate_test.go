@@ -8,8 +8,8 @@ package s3
 import (
 	"testing"
 
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 )
 

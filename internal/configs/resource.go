@@ -14,10 +14,10 @@ import (
 	hcljson "github.com/hashicorp/hcl/v2/json"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs/hcl2shim"
-	"github.com/opentofu/opentofu/internal/lang"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs/hcl2shim"
+	"github.com/bogware/bogform/internal/lang"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // Resource represents a "resource" or "data" block in a module or file.

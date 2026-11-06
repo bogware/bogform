@@ -16,9 +16,9 @@ import (
 
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/communicator"
-	"github.com/opentofu/opentofu/internal/communicator/remote"
-	"github.com/opentofu/opentofu/internal/provisioners"
+	"github.com/bogware/bogform/internal/communicator"
+	"github.com/bogware/bogform/internal/communicator/remote"
+	"github.com/bogware/bogform/internal/provisioners"
 	"github.com/zclconf/go-cty/cty"
 )
 

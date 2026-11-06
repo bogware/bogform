@@ -11,9 +11,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/linting"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/linting"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // View represents the global command-line arguments which configure the view.

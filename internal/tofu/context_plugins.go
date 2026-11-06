@@ -8,10 +8,10 @@ package tofu
 import (
 	"context"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/plugins"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/plugins"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 type contextPlugins struct {

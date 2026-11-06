@@ -10,7 +10,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/version"
 )
 
 func TestUserAgentString_env(t *testing.T) {

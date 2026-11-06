@@ -16,12 +16,12 @@ import (
 
 	"github.com/apparentlymart/go-versions/versions"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	copydir "github.com/opentofu/opentofu/internal/copy"
-	"github.com/opentofu/opentofu/internal/depsfile"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	"github.com/opentofu/opentofu/internal/tracing"
-	"github.com/opentofu/opentofu/internal/tracing/traceattrs"
+	"github.com/bogware/bogform/internal/addrs"
+	copydir "github.com/bogware/bogform/internal/copy"
+	"github.com/bogware/bogform/internal/depsfile"
+	"github.com/bogware/bogform/internal/getproviders"
+	"github.com/bogware/bogform/internal/tracing"
+	"github.com/bogware/bogform/internal/tracing/traceattrs"
 )
 
 // Installer is the main type in this package, representing a provider installer

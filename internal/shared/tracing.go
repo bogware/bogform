@@ -8,8 +8,8 @@ package shared
 import (
 	"context"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // Tracer represents a set of tracing event handlers for events that are common

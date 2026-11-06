@@ -10,10 +10,10 @@ import (
 	"os"
 	"testing"
 
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/terminal"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/terminal"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 func TestInitViews(t *testing.T) {

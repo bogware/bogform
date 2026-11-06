@@ -16,13 +16,13 @@ import (
 	"testing"
 
 	"github.com/apparentlymart/go-versions/versions"
+	"github.com/bogware/bogform/internal/httpclient"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/opentofu/opentofu/internal/httpclient"
 	"github.com/opentofu/svchost"
 	"github.com/opentofu/svchost/svcauth"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 func TestHTTPMirrorSource(t *testing.T) {

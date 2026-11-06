@@ -9,10 +9,10 @@ import (
 	"context"
 	"sync"
 
-	"github.com/opentofu/opentofu/internal/lang/exprs"
-	"github.com/opentofu/opentofu/internal/lang/grapheval"
-	"github.com/opentofu/opentofu/internal/logging"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/lang/exprs"
+	"github.com/bogware/bogform/internal/lang/grapheval"
+	"github.com/bogware/bogform/internal/logging"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // CheckGroup has a similar purpose to [sync.WaitGroup], but specialized for

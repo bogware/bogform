@@ -15,9 +15,9 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/linting"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/linting"
 )
 
 // lintMessage represents a message describing a linting problem.

@@ -15,10 +15,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/states/statefile"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/states/statefile"
+	"github.com/bogware/bogform/internal/states/statemgr"
 )
 
 func TestLocal_impl(t *testing.T) {

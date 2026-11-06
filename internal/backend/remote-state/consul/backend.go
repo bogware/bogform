@@ -11,10 +11,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/legacy/helper/schema"
 	consulapi "github.com/hashicorp/consul/api"
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/legacy/helper/schema"
 )
 
 // New creates a new backend for Consul remote state.

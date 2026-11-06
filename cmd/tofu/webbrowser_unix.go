@@ -10,7 +10,7 @@ package main
 import (
 	"os"
 
-	"github.com/opentofu/opentofu/internal/command/webbrowser"
+	"github.com/bogware/bogform/internal/command/webbrowser"
 )
 
 func browserLauncherFromEnv() webbrowser.Launcher {

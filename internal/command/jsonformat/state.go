@@ -11,11 +11,11 @@ import (
 
 	ctyjson "github.com/zclconf/go-cty/cty/json"
 
-	"github.com/opentofu/opentofu/internal/command/jsonformat/computed"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/differ"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/structured"
-	"github.com/opentofu/opentofu/internal/command/jsonprovider"
-	"github.com/opentofu/opentofu/internal/command/jsonstate"
+	"github.com/bogware/bogform/internal/command/jsonformat/computed"
+	"github.com/bogware/bogform/internal/command/jsonformat/differ"
+	"github.com/bogware/bogform/internal/command/jsonformat/structured"
+	"github.com/bogware/bogform/internal/command/jsonprovider"
+	"github.com/bogware/bogform/internal/command/jsonstate"
 )
 
 type State struct {

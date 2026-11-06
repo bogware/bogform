@@ -16,13 +16,13 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/hcl/v2/hclwrite"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 var (

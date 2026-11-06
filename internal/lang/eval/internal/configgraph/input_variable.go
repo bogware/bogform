@@ -15,12 +15,12 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/checks"
-	"github.com/opentofu/opentofu/internal/lang/exprs"
-	"github.com/opentofu/opentofu/internal/lang/grapheval"
-	"github.com/opentofu/opentofu/internal/plans/objchange"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/checks"
+	"github.com/bogware/bogform/internal/lang/exprs"
+	"github.com/bogware/bogform/internal/lang/grapheval"
+	"github.com/bogware/bogform/internal/plans/objchange"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 type InputVariable struct {

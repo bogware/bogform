@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 func TestAddressedTypesAbs(t *testing.T) {

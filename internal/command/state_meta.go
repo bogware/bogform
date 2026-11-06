@@ -11,14 +11,14 @@ import (
 	"sort"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/tfdiags"
 
-	backendLocal "github.com/opentofu/opentofu/internal/backend/local"
+	backendLocal "github.com/bogware/bogform/internal/backend/local"
 )
 
 // StateMeta is the meta struct that should be embedded in state subcommands.

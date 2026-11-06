@@ -8,7 +8,7 @@ package jsonchecks
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/checks"
+	"github.com/bogware/bogform/internal/checks"
 )
 
 type checkStatus []byte

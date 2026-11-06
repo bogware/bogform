@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/linting"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/linting"
 )
 
 func TestParseTaint_basicValidation(t *testing.T) {

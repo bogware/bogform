@@ -11,8 +11,8 @@ import (
 	"log"
 
 	"cloud.google.com/go/kms/apiv1/kmspb"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
 	"github.com/googleapis/gax-go/v2"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
 )
 
 type keyMeta struct {

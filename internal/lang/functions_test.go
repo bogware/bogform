@@ -12,14 +12,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/opentofu/opentofu/internal/addrs"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/experiments"
-	"github.com/opentofu/opentofu/internal/lang/marks"
+	"github.com/bogware/bogform/internal/experiments"
+	"github.com/bogware/bogform/internal/lang/marks"
 )
 
 // TestFunctions tests that functions are callable through the functionality

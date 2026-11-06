@@ -11,8 +11,8 @@ import (
 	"io"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/command/flags"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/command/flags"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/urfave/cli/v3"
 )
 

@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/opentofu/opentofu/internal/addrs"
 )
 
 func TestValidateProviderConfigs_WithMetaArguments(t *testing.T) {

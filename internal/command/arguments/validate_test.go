@@ -9,12 +9,12 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/linting"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/linting"
 
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 func TestParseValidate_valid(t *testing.T) {

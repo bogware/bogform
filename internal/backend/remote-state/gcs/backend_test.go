@@ -19,11 +19,11 @@ import (
 	kms "cloud.google.com/go/kms/apiv1"
 	"cloud.google.com/go/kms/apiv1/kmspb"
 	"cloud.google.com/go/storage"
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/httpclient"
-	"github.com/opentofu/opentofu/internal/states/remote"
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/httpclient"
+	"github.com/bogware/bogform/internal/states/remote"
+	"github.com/bogware/bogform/version"
 	"google.golang.org/api/option"
 )
 

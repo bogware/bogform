@@ -11,10 +11,10 @@ import (
 	"iter"
 	"testing"
 
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/linting"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/linting"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 func TestUnusedVariables(t *testing.T) {

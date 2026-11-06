@@ -33,11 +33,11 @@ import (
 	"github.com/jmespath/go-jmespath"
 	"github.com/mitchellh/go-homedir"
 
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/httpclient"
-	"github.com/opentofu/opentofu/internal/legacy/helper/schema"
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/httpclient"
+	"github.com/bogware/bogform/internal/legacy/helper/schema"
+	"github.com/bogware/bogform/version"
 )
 
 // Deprecated in favor of flattening assume_role_* options

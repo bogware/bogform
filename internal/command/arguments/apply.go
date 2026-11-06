@@ -8,10 +8,10 @@ package arguments
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/linting"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/linting"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // Apply represents the command-line arguments for the apply command.

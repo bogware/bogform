@@ -11,16 +11,16 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/checks"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/instances"
-	"github.com/opentofu/opentofu/internal/lang"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/plugins"
-	"github.com/opentofu/opentofu/internal/refactoring"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/checks"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/instances"
+	"github.com/bogware/bogform/internal/lang"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/plugins"
+	"github.com/bogware/bogform/internal/refactoring"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // EvalContext is the interface that is given to eval nodes to execute.

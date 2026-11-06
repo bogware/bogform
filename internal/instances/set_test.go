@@ -8,7 +8,7 @@ package instances
 import (
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/zclconf/go-cty/cty"
 )
 

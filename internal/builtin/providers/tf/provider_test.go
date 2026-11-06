@@ -6,7 +6,7 @@
 package tf
 
 import (
-	backendInit "github.com/opentofu/opentofu/internal/backend/init"
+	backendInit "github.com/bogware/bogform/internal/backend/init"
 )
 
 func init() {

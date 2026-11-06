@@ -9,8 +9,8 @@ import (
 	"context"
 	"slices"
 
-	"github.com/opentofu/opentofu/internal/lang/grapheval"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/lang/grapheval"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // Validate checks whether the configuration instance is valid when called

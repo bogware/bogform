@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/e2e"
+	"github.com/bogware/bogform/internal/e2e"
 )
 
 // TestProviderNetworkMirrorRetries checks that the retries configuration for downloading the

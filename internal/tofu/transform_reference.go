@@ -13,15 +13,15 @@ import (
 	"maps"
 	"sort"
 
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/dag"
+	"github.com/bogware/bogform/internal/lang"
+	"github.com/bogware/bogform/internal/linting/corelinting"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/dag"
-	"github.com/opentofu/opentofu/internal/lang"
-	"github.com/opentofu/opentofu/internal/linting/corelinting"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 // GraphNodeReferenceable must be implemented by any node that represents

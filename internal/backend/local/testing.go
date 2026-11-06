@@ -13,15 +13,15 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/plugins"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
-	"github.com/opentofu/opentofu/internal/tofu"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/plugins"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/tofu"
 )
 
 // TestLocal returns a configured Local struct with temporary paths and

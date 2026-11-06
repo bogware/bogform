@@ -8,10 +8,10 @@ package views
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tofu"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tofu"
 )
 
 type Import interface {

@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 // Resource is an address for a resource block within configuration, which

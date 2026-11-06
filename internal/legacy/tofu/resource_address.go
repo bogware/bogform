@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
 )
 
 // ResourceAddress is a way of identifying an individual resource (or,

@@ -13,10 +13,10 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs/symlib"
-	"github.com/opentofu/opentofu/internal/encryption/config"
-	"github.com/opentofu/opentofu/internal/experiments"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs/symlib"
+	"github.com/bogware/bogform/internal/encryption/config"
+	"github.com/bogware/bogform/internal/experiments"
 )
 
 // Module is a container for a set of configuration constructs that are

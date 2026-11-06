@@ -11,14 +11,14 @@ import (
 	"io"
 	"os"
 
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/command/clistate"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/states/statefile"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/clistate"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/states/statefile"
+	"github.com/bogware/bogform/internal/states/statemgr"
 )
 
 func StatePushCommander() Command {

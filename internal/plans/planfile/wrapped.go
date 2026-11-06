@@ -6,7 +6,7 @@
 package planfile
 
 import (
-	"github.com/opentofu/opentofu/internal/encryption"
+	"github.com/bogware/bogform/internal/encryption"
 )
 
 // WrappedPlanFile represents a saved plan, loaded from a file path passed on the

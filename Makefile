@@ -184,7 +184,7 @@ define infoTestConsul
 
 endef
 
-GO_VER := `go tool github.com/opentofu/opentofu/tools/selected-go-version`
+GO_VER := `go tool github.com/bogware/bogform/tools/selected-go-version`
 
 test-consul: ## Runs tests using in docker container using Consul as the backend.
 	@ $(info $(infoTestConsul))

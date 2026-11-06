@@ -11,10 +11,10 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/bogware/bogform/internal/encryption/compliancetest"
+	"github.com/bogware/bogform/internal/encryption/config"
+	"github.com/bogware/bogform/internal/encryption/method"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/encryption/compliancetest"
-	"github.com/opentofu/opentofu/internal/encryption/config"
-	"github.com/opentofu/opentofu/internal/encryption/method"
 	"github.com/zclconf/go-cty/cty"
 )
 

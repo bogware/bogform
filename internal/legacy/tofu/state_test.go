@@ -15,9 +15,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/legacy/hcl2shim"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/legacy/hcl2shim"
 )
 
 func TestStateValidate(t *testing.T) {

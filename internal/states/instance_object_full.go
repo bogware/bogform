@@ -12,8 +12,8 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	ctyjson "github.com/zclconf/go-cty/cty/json"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/lang/marks"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/lang/marks"
 )
 
 // The definitions in this file are currently for use only by the new runtime

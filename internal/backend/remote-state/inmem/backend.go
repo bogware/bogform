@@ -13,12 +13,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/legacy/helper/schema"
-	statespkg "github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/states/remote"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/legacy/helper/schema"
+	statespkg "github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/states/remote"
+	"github.com/bogware/bogform/internal/states/statemgr"
 )
 
 // we keep the states and locks in package-level variables, so that they can be

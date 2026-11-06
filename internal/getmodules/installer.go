@@ -12,9 +12,9 @@ import (
 
 	getter "github.com/hashicorp/go-getter"
 
-	"github.com/opentofu/opentofu/internal/httpclient"
-	"github.com/opentofu/opentofu/internal/tracing"
-	"github.com/opentofu/opentofu/internal/tracing/traceattrs"
+	"github.com/bogware/bogform/internal/httpclient"
+	"github.com/bogware/bogform/internal/tracing"
+	"github.com/bogware/bogform/internal/tracing/traceattrs"
 )
 
 // PackageFetcher is a low-level utility for fetching remote module packages

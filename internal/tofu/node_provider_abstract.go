@@ -6,11 +6,11 @@
 package tofu
 
 import (
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/configschema"
 
-	"github.com/opentofu/opentofu/internal/dag"
+	"github.com/bogware/bogform/internal/dag"
 )
 
 // ConcreteProviderNodeFunc is a callback type used to convert an

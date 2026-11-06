@@ -8,8 +8,8 @@ package views
 import (
 	"fmt"
 
+	"github.com/bogware/bogform/internal/initwd"
 	"github.com/hashicorp/go-version"
-	"github.com/opentofu/opentofu/internal/initwd"
 )
 
 // moduleInstallationHookHuman is the implementation of [initwd.ModuleInstallHooks] that prints the modules

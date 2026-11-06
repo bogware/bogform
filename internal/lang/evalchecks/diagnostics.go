@@ -7,7 +7,7 @@ package evalchecks
 
 import (
 	"github.com/apparentlymart/go-shquot/shquot"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // This file contains some package-local helpers for working with diagnostics.

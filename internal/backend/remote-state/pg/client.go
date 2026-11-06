@@ -14,9 +14,9 @@ import (
 
 	"github.com/lib/pq"
 
+	"github.com/bogware/bogform/internal/states/remote"
+	"github.com/bogware/bogform/internal/states/statemgr"
 	uuid "github.com/hashicorp/go-uuid"
-	"github.com/opentofu/opentofu/internal/states/remote"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
 )
 
 // RemoteClient is a remote client that stores data in a Postgres database

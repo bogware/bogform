@@ -10,13 +10,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/command/workdir"
+	"github.com/bogware/bogform/internal/command/workdir"
 	"github.com/opentofu/svchost"
 	"github.com/opentofu/svchost/disco"
 	"github.com/opentofu/svchost/svcauth"
 
-	"github.com/opentofu/opentofu/internal/command/cliconfig"
-	"github.com/opentofu/opentofu/internal/command/cliconfig/svcauthconfig"
+	"github.com/bogware/bogform/internal/command/cliconfig"
+	"github.com/bogware/bogform/internal/command/cliconfig/svcauthconfig"
 )
 
 func TestLogout(t *testing.T) {

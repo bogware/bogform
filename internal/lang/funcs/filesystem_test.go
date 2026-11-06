@@ -19,7 +19,7 @@ import (
 	"github.com/zclconf/go-cty/cty/function"
 	"github.com/zclconf/go-cty/cty/function/stdlib"
 
-	"github.com/opentofu/opentofu/internal/lang/marks"
+	"github.com/bogware/bogform/internal/lang/marks"
 )
 
 func TestFile(t *testing.T) {

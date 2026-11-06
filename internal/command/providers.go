@@ -10,11 +10,11 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/getproviders"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 func ProvidersCommander() Command {

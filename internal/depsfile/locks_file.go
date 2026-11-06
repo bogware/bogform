@@ -17,13 +17,13 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	"github.com/opentofu/opentofu/internal/replacefile"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tracing"
-	"github.com/opentofu/opentofu/internal/tracing/traceattrs"
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/getproviders"
+	"github.com/bogware/bogform/internal/replacefile"
+	"github.com/bogware/bogform/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tracing"
+	"github.com/bogware/bogform/internal/tracing/traceattrs"
+	"github.com/bogware/bogform/version"
 )
 
 // LoadLocksFromFile reads locks from the given file, expecting it to be a

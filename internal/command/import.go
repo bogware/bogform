@@ -10,18 +10,18 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/bogware/bogform/internal/configs/configload"
+	"github.com/bogware/bogform/internal/tracing"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/opentofu/opentofu/internal/configs/configload"
-	"github.com/opentofu/opentofu/internal/tracing"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tofu"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tofu"
 )
 
 func ImportCommander() Command {

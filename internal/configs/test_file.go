@@ -18,10 +18,10 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	ctyconvert "github.com/zclconf/go-cty/cty/convert"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/getmodules"
-	"github.com/opentofu/opentofu/internal/instances"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/getmodules"
+	"github.com/bogware/bogform/internal/instances"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // TestCommand represents the OpenTofu a given run block will execute, plan

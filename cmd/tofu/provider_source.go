@@ -16,11 +16,11 @@ import (
 	"github.com/apparentlymart/go-userdirs/userdirs"
 	"github.com/opentofu/svchost/disco"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/command/cliconfig"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	"github.com/opentofu/opentofu/internal/oci"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/command/cliconfig"
+	"github.com/bogware/bogform/internal/getproviders"
+	"github.com/bogware/bogform/internal/oci"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // providerSource constructs a provider source based on a combination of the

@@ -6,7 +6,7 @@
 package instances
 
 import (
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 // Set is a set of instances, intended mainly for the return value of

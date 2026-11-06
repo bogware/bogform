@@ -14,15 +14,15 @@ import (
 	regaddr "github.com/opentofu/registry-address/v2"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/states/statefile"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tofu"
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/states/statefile"
+	"github.com/bogware/bogform/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tofu"
+	"github.com/bogware/bogform/version"
 )
 
 func TestStateViews(t *testing.T) {

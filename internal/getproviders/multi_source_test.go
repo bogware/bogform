@@ -9,8 +9,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/addrs"
 )
 
 func TestMultiSourceAvailableVersions(t *testing.T) {

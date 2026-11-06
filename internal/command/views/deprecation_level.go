@@ -6,9 +6,9 @@
 package views
 
 import (
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/lang/marks"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/lang/marks"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // Used to track duplicate diagnostic entries in DeprecationDiagnosticAllowed()

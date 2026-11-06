@@ -12,16 +12,16 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/command/workdir"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/command/workdir"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	testing_command "github.com/opentofu/opentofu/internal/command/testing"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/terminal"
+	"github.com/bogware/bogform/internal/addrs"
+	testing_command "github.com/bogware/bogform/internal/command/testing"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/terminal"
 )
 
 func TestTest(t *testing.T) {

@@ -9,8 +9,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/tfplugin6"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/tfplugin6"
 	"github.com/zclconf/go-cty/cty"
 )
 

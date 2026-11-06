@@ -6,10 +6,10 @@
 package main
 
 import (
-	simple "github.com/opentofu/opentofu/internal/command/e2etest/provider-simple"
-	"github.com/opentofu/opentofu/internal/grpcwrap"
-	"github.com/opentofu/opentofu/internal/plugin/plugintest"
-	"github.com/opentofu/opentofu/internal/tfplugin5"
+	simple "github.com/bogware/bogform/internal/command/e2etest/provider-simple"
+	"github.com/bogware/bogform/internal/grpcwrap"
+	"github.com/bogware/bogform/internal/plugin/plugintest"
+	"github.com/bogware/bogform/internal/tfplugin5"
 )
 
 func main() {

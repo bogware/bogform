@@ -8,8 +8,8 @@ package jsonprovider
 import (
 	"encoding/json"
 
-	"github.com/opentofu/opentofu/internal/plugins"
-	"github.com/opentofu/opentofu/internal/providers"
+	"github.com/bogware/bogform/internal/plugins"
+	"github.com/bogware/bogform/internal/providers"
 )
 
 // FormatVersion represents the version of the json format and will be

@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 func WorkspaceSelectCommander(legacyName bool) Command {

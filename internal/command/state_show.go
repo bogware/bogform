@@ -8,16 +8,16 @@ package command
 import (
 	"context"
 
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/configs/configload"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/configs/configload"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/states/statefile"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tofumigrate"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/states/statefile"
+	"github.com/bogware/bogform/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tofumigrate"
 )
 
 func StateShowCommander() Command {

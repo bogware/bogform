@@ -10,10 +10,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/command/format"
-	"github.com/opentofu/opentofu/internal/command/jsonentities"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/format"
+	"github.com/bogware/bogform/internal/command/jsonentities"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // The Validate is used for the validate command.

@@ -9,12 +9,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/legacy/hcl2shim"
-	"github.com/opentofu/opentofu/internal/legacy/tofu"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/legacy/hcl2shim"
+	"github.com/bogware/bogform/internal/legacy/tofu"
 	ctyconvert "github.com/zclconf/go-cty/cty/convert"
 )
 

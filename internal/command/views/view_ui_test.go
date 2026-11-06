@@ -8,9 +8,9 @@ package views
 import (
 	"testing"
 
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/terminal"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/terminal"
 )
 
 func TestViewUiHuman_OutputStreams(t *testing.T) {

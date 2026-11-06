@@ -21,10 +21,10 @@ import (
 	"github.com/opentofu/svchost"
 	"github.com/opentofu/svchost/svcauth"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/tracing"
-	"github.com/opentofu/opentofu/internal/tracing/traceattrs"
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/tracing"
+	"github.com/bogware/bogform/internal/tracing/traceattrs"
+	"github.com/bogware/bogform/version"
 )
 
 const (

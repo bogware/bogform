@@ -15,7 +15,7 @@ import (
 	hclast "github.com/hashicorp/hcl/hcl/ast"
 	hcltoken "github.com/hashicorp/hcl/hcl/token"
 
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // RegistryProtocolsConfig models the "registry_protocols" configuration block

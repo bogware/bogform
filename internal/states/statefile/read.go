@@ -14,9 +14,9 @@ import (
 
 	version "github.com/hashicorp/go-version"
 
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	tfversion "github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/tfdiags"
+	tfversion "github.com/bogware/bogform/version"
 )
 
 // ErrNoState is returned by ReadState when the state file is empty.

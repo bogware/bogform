@@ -17,9 +17,9 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/bogware/bogform/internal/states/remote"
+	"github.com/bogware/bogform/internal/states/statemgr"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/opentofu/opentofu/internal/states/remote"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
 )
 
 // httpClient is a remote client that stores data in Consul or HTTP REST.

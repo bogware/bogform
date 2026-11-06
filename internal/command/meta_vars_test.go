@@ -10,9 +10,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/command/workdir"
-	"github.com/opentofu/opentofu/internal/tofu"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/command/workdir"
+	"github.com/bogware/bogform/internal/tofu"
 )
 
 func TestMeta_addVarsFromFile(t *testing.T) {

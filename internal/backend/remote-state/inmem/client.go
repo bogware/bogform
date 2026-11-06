@@ -9,8 +9,8 @@ import (
 	"context"
 	"crypto/md5"
 
-	"github.com/opentofu/opentofu/internal/states/remote"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/states/remote"
+	"github.com/bogware/bogform/internal/states/statemgr"
 )
 
 // RemoteClient is a remote client that stores data in memory for testing.

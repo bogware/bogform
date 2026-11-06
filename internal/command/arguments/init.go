@@ -6,8 +6,8 @@
 package arguments
 
 import (
-	flagspkg "github.com/opentofu/opentofu/internal/command/flags"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	flagspkg "github.com/bogware/bogform/internal/command/flags"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // Init represents the command-line arguments for the init command.

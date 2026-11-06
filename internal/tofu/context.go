@@ -14,12 +14,12 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/lang/eval"
-	"github.com/opentofu/opentofu/internal/logging"
-	"github.com/opentofu/opentofu/internal/plugins"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/lang/eval"
+	"github.com/bogware/bogform/internal/logging"
+	"github.com/bogware/bogform/internal/plugins"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // InputMode defines what sort of input will be asked for when Input

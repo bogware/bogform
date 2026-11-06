@@ -6,8 +6,8 @@
 package convert
 
 import (
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	proto "github.com/opentofu/opentofu/internal/tfplugin5"
+	"github.com/bogware/bogform/internal/tfdiags"
+	proto "github.com/bogware/bogform/internal/tfplugin5"
 	"github.com/zclconf/go-cty/cty"
 )
 

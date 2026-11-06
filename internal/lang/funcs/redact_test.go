@@ -8,7 +8,7 @@ package funcs
 import (
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/lang/marks"
+	"github.com/bogware/bogform/internal/lang/marks"
 	"github.com/zclconf/go-cty/cty"
 )
 

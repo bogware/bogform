@@ -9,10 +9,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/dag"
-	"github.com/opentofu/opentofu/internal/logging"
-	"github.com/opentofu/opentofu/internal/states"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/dag"
+	"github.com/bogware/bogform/internal/logging"
+	"github.com/bogware/bogform/internal/states"
 )
 
 // ApplyMoves modifies in-place the given state object so that any existing

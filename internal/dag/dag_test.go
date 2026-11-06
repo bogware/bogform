@@ -15,9 +15,9 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 
-	_ "github.com/opentofu/opentofu/internal/logging"
+	_ "github.com/bogware/bogform/internal/logging"
 )
 
 func TestMain(m *testing.M) {

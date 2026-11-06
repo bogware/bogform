@@ -11,11 +11,11 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	regaddr "github.com/opentofu/registry-address/v2"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/getproviders"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // MigrateStateProviderAddresses can be used to update the in-memory view of the state to use registry.opentofu.org

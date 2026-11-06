@@ -10,9 +10,9 @@ import (
 	"log"
 	"sync"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/dag"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/dag"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // nodeExpandApplyableResource handles the first layer of resource

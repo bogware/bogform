@@ -11,8 +11,8 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/getproviders"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/getproviders"
 )
 
 // State is the top-level type of OpenTofu state.

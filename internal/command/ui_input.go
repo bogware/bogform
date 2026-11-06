@@ -20,9 +20,9 @@ import (
 	"unicode"
 
 	"github.com/bgentry/speakeasy"
+	"github.com/bogware/bogform/internal/tofu"
 	"github.com/mattn/go-isatty"
 	"github.com/mitchellh/colorstring"
-	"github.com/opentofu/opentofu/internal/tofu"
 )
 
 var defaultInputReader io.Reader

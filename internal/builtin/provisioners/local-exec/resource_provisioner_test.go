@@ -17,7 +17,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/opentofu/opentofu/internal/provisioners"
+	"github.com/bogware/bogform/internal/provisioners"
 )
 
 type mockUI struct {

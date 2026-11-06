@@ -9,10 +9,10 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/bogware/bogform/internal/configs/hcl2shim"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hcltest"
-	"github.com/opentofu/opentofu/internal/configs/hcl2shim"
 	"github.com/zclconf/go-cty/cty"
 )
 

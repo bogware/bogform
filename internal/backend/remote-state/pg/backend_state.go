@@ -11,10 +11,10 @@ import (
 
 	"github.com/lib/pq"
 
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/states/remote"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/states/remote"
+	"github.com/bogware/bogform/internal/states/statemgr"
 )
 
 func (b *Backend) Workspaces(context.Context) ([]string, error) {

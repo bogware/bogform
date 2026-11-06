@@ -8,8 +8,8 @@ package tofu
 import (
 	"context"
 
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/dag"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/dag"
 )
 
 const rootNodeName = "root"

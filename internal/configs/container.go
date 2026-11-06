@@ -5,7 +5,7 @@
 
 package configs
 
-import "github.com/opentofu/opentofu/internal/addrs"
+import "github.com/bogware/bogform/internal/addrs"
 
 // Container provides an interface for scoped resources.
 //

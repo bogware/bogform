@@ -11,9 +11,9 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/legacy/tofu"
 	"github.com/hashicorp/go-multierror"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/legacy/tofu"
 )
 
 // Provisioner represents a resource provisioner in OpenTofu and properly

@@ -18,8 +18,8 @@ import (
 	ociv1 "github.com/opencontainers/image-spec/specs-go/v1"
 	orasContent "oras.land/oras-go/v2/content"
 
-	"github.com/opentofu/opentofu/internal/tracing"
-	"github.com/opentofu/opentofu/internal/tracing/traceattrs"
+	"github.com/bogware/bogform/internal/tracing"
+	"github.com/bogware/bogform/internal/tracing/traceattrs"
 )
 
 // ociPackageMediaType is the specific media type we're expecting for the blob

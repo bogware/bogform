@@ -10,8 +10,8 @@ import (
 
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 // Target describes a targeted address with source location information.

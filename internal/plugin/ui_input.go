@@ -9,8 +9,8 @@ import (
 	"context"
 	"net/rpc"
 
+	"github.com/bogware/bogform/internal/tofu"
 	"github.com/hashicorp/go-plugin"
-	"github.com/opentofu/opentofu/internal/tofu"
 )
 
 // UIInput is an implementation of tofu.UIInput that communicates

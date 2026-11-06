@@ -11,10 +11,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/encryption/config"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/encryption/config"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 const encryptionConfigEnvName = "TF_ENCRYPTION"

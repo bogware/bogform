@@ -5,7 +5,7 @@
 
 package views
 
-import "github.com/opentofu/opentofu/internal/tfdiags"
+import "github.com/bogware/bogform/internal/tfdiags"
 
 // Basic represents the basic view that can perform basic printing actions
 // as showing diagnostics. This is implemented by most of the view implementations

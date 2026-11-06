@@ -8,7 +8,7 @@ package arguments
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/opentofu/svchost/uritemplates"
 )
 

@@ -14,13 +14,13 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/legacy/hcl2shim"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/aws-sdk-go-base/v2/mockdata"
 	"github.com/hashicorp/aws-sdk-go-base/v2/servicemocks"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/legacy/hcl2shim"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 const mockStsAssumeRolePolicy = `{

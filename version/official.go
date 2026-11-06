@@ -14,7 +14,7 @@ var officialBuild string
 // an argument like the following, which is set by the OpenTofu project's main
 // release process:
 //
-//	-X 'github.com/opentofu/opentofu/version.officialBuild=1'
+//	-X 'github.com/bogware/bogform/version.officialBuild=1'
 //
 // We use this ONLY to generate warnings where we're intending to stop producing
 // official builds for a certain configuration in a future release series and

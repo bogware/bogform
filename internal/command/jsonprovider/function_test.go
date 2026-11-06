@@ -9,8 +9,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/bogware/bogform/internal/providers"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/providers"
 	"github.com/zclconf/go-cty/cty"
 )
 

@@ -19,15 +19,15 @@ import (
 	version "github.com/hashicorp/go-version"
 	"github.com/opentofu/svchost"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/configload"
-	"github.com/opentofu/opentofu/internal/copy"
-	"github.com/opentofu/opentofu/internal/getmodules"
-	"github.com/opentofu/opentofu/internal/registry"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/configload"
+	"github.com/bogware/bogform/internal/copy"
+	"github.com/bogware/bogform/internal/getmodules"
+	"github.com/bogware/bogform/internal/registry"
+	"github.com/bogware/bogform/internal/tfdiags"
 
-	_ "github.com/opentofu/opentofu/internal/logging"
+	_ "github.com/bogware/bogform/internal/logging"
 )
 
 func TestMain(m *testing.M) {

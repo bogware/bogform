@@ -15,10 +15,10 @@ import (
 	"github.com/hashicorp/go-getter"
 	"github.com/hashicorp/go-retryablehttp"
 
-	"github.com/opentofu/opentofu/internal/httpclient"
-	"github.com/opentofu/opentofu/internal/logging"
-	"github.com/opentofu/opentofu/internal/tracing"
-	"github.com/opentofu/opentofu/internal/tracing/traceattrs"
+	"github.com/bogware/bogform/internal/httpclient"
+	"github.com/bogware/bogform/internal/logging"
+	"github.com/bogware/bogform/internal/tracing"
+	"github.com/bogware/bogform/internal/tracing/traceattrs"
 )
 
 // PackageHTTPURL is a provider package location accessible via HTTP.

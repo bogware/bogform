@@ -13,12 +13,12 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	"github.com/opentofu/opentofu/internal/modsdir"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/getproviders"
+	"github.com/bogware/bogform/internal/modsdir"
 )
 
 func VersionCommander(version string, versionPrerelease string, platform getproviders.Platform) Command {

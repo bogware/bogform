@@ -16,10 +16,10 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/depsfile"
-	"github.com/opentofu/opentofu/internal/e2e"
-	"github.com/opentofu/opentofu/internal/getproviders"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/depsfile"
+	"github.com/bogware/bogform/internal/e2e"
+	"github.com/bogware/bogform/internal/getproviders"
 )
 
 // providerTamperingFixtureNullProviderVersion must contain a string

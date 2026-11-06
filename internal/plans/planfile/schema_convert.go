@@ -13,9 +13,9 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/plans/internal/planproto"
-	"github.com/opentofu/opentofu/internal/providers"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/plans/internal/planproto"
+	"github.com/bogware/bogform/internal/providers"
 )
 
 func schemaToProto(s providers.Schema) *planproto.Schema {

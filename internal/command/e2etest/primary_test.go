@@ -16,12 +16,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/e2e"
+	"github.com/bogware/bogform/internal/getproviders"
+	"github.com/bogware/bogform/internal/plans"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/e2e"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	"github.com/opentofu/opentofu/internal/plans"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -871,7 +871,7 @@ func TestApplyPanic(t *testing.T) {
 		t.Skip("custom build required with additional LDFLAGS")
 	}
 
-	e2eTofuBin := e2e.GoBuild("github.com/opentofu/opentofu/cmd/tofu", "tofu_e2e", `-ldflags=-X 'main.e2eTestingFeatures=yes'`)
+	e2eTofuBin := e2e.GoBuild("github.com/bogware/bogform/cmd/tofu", "tofu_e2e", `-ldflags=-X 'main.e2eTestingFeatures=yes'`)
 	defer func() {
 		os.Remove(e2eTofuBin)
 	}()
@@ -952,7 +952,7 @@ func buildSimpleProvider(t *testing.T, version string, workdir string, buildOutN
 		providerBinFileName = buildOutName
 	}
 	providerBuildOutDir := filepath.Join(workdir, fmt.Sprintf("terraform-provider-%s", providerBinFileName))
-	providerTmpBinPath := e2e.GoBuild(fmt.Sprintf("github.com/opentofu/opentofu/internal/command/e2etest/%s/main", implPkgName), providerBuildOutDir)
+	providerTmpBinPath := e2e.GoBuild(fmt.Sprintf("github.com/bogware/bogform/internal/command/e2etest/%s/main", implPkgName), providerBuildOutDir)
 
 	extension := ""
 	if runtime.GOOS == "windows" {

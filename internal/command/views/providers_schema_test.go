@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/terminal"
+	"github.com/bogware/bogform/internal/terminal"
 )
 
 func TestNewProvidersSchema(t *testing.T) {

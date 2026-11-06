@@ -9,9 +9,9 @@ import (
 	"context"
 	"log"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/dag"
-	"github.com/opentofu/opentofu/internal/plans"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/dag"
+	"github.com/bogware/bogform/internal/plans"
 )
 
 // GraphNodeDestroyer must be implemented by nodes that destroy resources.

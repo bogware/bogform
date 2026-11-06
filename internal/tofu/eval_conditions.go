@@ -15,13 +15,13 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/checks"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/instances"
-	"github.com/opentofu/opentofu/internal/lang"
-	"github.com/opentofu/opentofu/internal/lang/marks"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/checks"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/instances"
+	"github.com/bogware/bogform/internal/lang"
+	"github.com/bogware/bogform/internal/lang/marks"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // evalCheckRules ensures that all of the given check rules pass against

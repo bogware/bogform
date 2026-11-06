@@ -10,8 +10,8 @@ import (
 	"runtime/metrics"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/logging"
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/logging"
+	"github.com/bogware/bogform/version"
 )
 
 var Version = version.Version

@@ -15,15 +15,15 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/initwd"
-	"github.com/opentofu/opentofu/internal/plugins"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/tofu"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/initwd"
+	"github.com/bogware/bogform/internal/plugins"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/tofu"
 
-	_ "github.com/opentofu/opentofu/internal/logging"
+	_ "github.com/bogware/bogform/internal/logging"
 )
 
 func TestMain(m *testing.M) {

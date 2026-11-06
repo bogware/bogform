@@ -16,9 +16,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/bogware/bogform/internal/flock"
+	"github.com/bogware/bogform/internal/states/statemgr"
 	multierror "github.com/hashicorp/go-multierror"
-	"github.com/opentofu/opentofu/internal/flock"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
 )
 
 // LocalState manages a state storage that is local to the filesystem.

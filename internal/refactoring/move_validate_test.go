@@ -15,14 +15,14 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty/gocty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/configload"
-	"github.com/opentofu/opentofu/internal/initwd"
-	"github.com/opentofu/opentofu/internal/instances"
-	"github.com/opentofu/opentofu/internal/refactoring"
-	"github.com/opentofu/opentofu/internal/registry"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/configload"
+	"github.com/bogware/bogform/internal/initwd"
+	"github.com/bogware/bogform/internal/instances"
+	"github.com/bogware/bogform/internal/refactoring"
+	"github.com/bogware/bogform/internal/registry"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 func TestValidateMoves(t *testing.T) {

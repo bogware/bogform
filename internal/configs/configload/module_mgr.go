@@ -11,7 +11,7 @@ import (
 
 	"github.com/spf13/afero"
 
-	"github.com/opentofu/opentofu/internal/modsdir"
+	"github.com/bogware/bogform/internal/modsdir"
 )
 
 type moduleMgr struct {

@@ -12,10 +12,10 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/backend/remote-state/azure/auth"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/legacy/helper/schema"
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/backend/remote-state/azure/auth"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/legacy/helper/schema"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob/blob"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob/container"

@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/e2e"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/e2e"
 )
 
 func TestOpenTofuProviderData(t *testing.T) {

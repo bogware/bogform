@@ -16,8 +16,8 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azkeys"
-	"github.com/opentofu/opentofu/internal/backend/remote-state/azure/auth"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/backend/remote-state/azure/auth"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
 )
 
 type keyManagementClientInit func(vaultURL string, credential azcore.TokenCredential) (keyManagementClient, error)

@@ -20,21 +20,21 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/configload"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/legacy/hcl2shim"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/plans/planfile"
-	"github.com/opentofu/opentofu/internal/plugins"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/provisioners"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/states/statefile"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tracing"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/configload"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/legacy/hcl2shim"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/plans/planfile"
+	"github.com/bogware/bogform/internal/plugins"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/provisioners"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/states/statefile"
+	"github.com/bogware/bogform/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tracing"
 )
 
 var (
@@ -177,15 +177,15 @@ func TestContext_contextValuesPropagation(t *testing.T) {
 	assertNoErrors(t, diags)
 
 	probe.ExpectReportsFrom(t,
-		"github.com/opentofu/opentofu/internal/tofu.(*MockProvider).GetProviderSchema",
-		"github.com/opentofu/opentofu/internal/tofu.(*MockProvider).ValidateProviderConfig",
-		"github.com/opentofu/opentofu/internal/tofu.(*MockProvider).ValidateDataResourceConfig",
-		"github.com/opentofu/opentofu/internal/tofu.(*MockProvider).ValidateResourceConfig",
-		"github.com/opentofu/opentofu/internal/tofu.(*MockProvider).ConfigureProvider",
-		"github.com/opentofu/opentofu/internal/tofu.(*MockProvider).ReadDataSource",
-		"github.com/opentofu/opentofu/internal/tofu.(*MockProvider).PlanResourceChange",
-		"github.com/opentofu/opentofu/internal/tofu.(*MockProvider).ApplyResourceChange",
-		"github.com/opentofu/opentofu/internal/tofu.(*MockProvider).Close",
+		"github.com/bogware/bogform/internal/tofu.(*MockProvider).GetProviderSchema",
+		"github.com/bogware/bogform/internal/tofu.(*MockProvider).ValidateProviderConfig",
+		"github.com/bogware/bogform/internal/tofu.(*MockProvider).ValidateDataResourceConfig",
+		"github.com/bogware/bogform/internal/tofu.(*MockProvider).ValidateResourceConfig",
+		"github.com/bogware/bogform/internal/tofu.(*MockProvider).ConfigureProvider",
+		"github.com/bogware/bogform/internal/tofu.(*MockProvider).ReadDataSource",
+		"github.com/bogware/bogform/internal/tofu.(*MockProvider).PlanResourceChange",
+		"github.com/bogware/bogform/internal/tofu.(*MockProvider).ApplyResourceChange",
+		"github.com/bogware/bogform/internal/tofu.(*MockProvider).Close",
 	)
 }
 

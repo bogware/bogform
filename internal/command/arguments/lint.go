@@ -9,8 +9,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/linting"
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/linting"
 )
 
 // ParseLintingRules is a utility function that coordinates the parsing of a raw string into structured linting rules.

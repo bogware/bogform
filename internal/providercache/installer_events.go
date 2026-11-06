@@ -9,8 +9,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/getproviders"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/getproviders"
 )
 
 // InstallerEvents is a collection of function references that can be

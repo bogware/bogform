@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider/compliancetest"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider/external/testprovider"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/encryption/keyprovider/compliancetest"
+	"github.com/bogware/bogform/internal/encryption/keyprovider/external/testprovider"
 )
 
 func TestComplianceBinary(t *testing.T) {

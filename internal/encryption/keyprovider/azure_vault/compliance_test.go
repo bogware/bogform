@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azkeys"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider/compliancetest"
+	"github.com/bogware/bogform/internal/encryption/keyprovider/compliancetest"
 )
 
 func getKeyAndURI(_ *testing.T) (string, string) {

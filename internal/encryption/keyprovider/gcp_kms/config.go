@@ -11,10 +11,10 @@ import (
 	"encoding/json"
 	"os"
 
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/httpclient"
+	"github.com/bogware/bogform/version"
 	"github.com/mitchellh/go-homedir"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
-	"github.com/opentofu/opentofu/internal/httpclient"
-	"github.com/opentofu/opentofu/version"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/impersonate"
 	"google.golang.org/api/option"

@@ -14,12 +14,12 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/command/e2etest/fakeocireg"
+	"github.com/bogware/bogform/internal/e2e"
+	"github.com/bogware/bogform/internal/getproviders"
+	"github.com/bogware/bogform/internal/providercache"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/command/e2etest/fakeocireg"
-	"github.com/opentofu/opentofu/internal/e2e"
-	"github.com/opentofu/opentofu/internal/getproviders"
-	"github.com/opentofu/opentofu/internal/providercache"
 )
 
 // This file contains a small amount of end-to-end testing that's primarily intended

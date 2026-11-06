@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bogware/bogform/internal/backend"
+	"github.com/bogware/bogform/internal/encryption"
 	"github.com/hashicorp/consul/sdk/testutil"
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/encryption"
 )
 
 func TestBackend_impl(t *testing.T) {

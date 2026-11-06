@@ -5,7 +5,7 @@
 
 package tofu
 
-import "github.com/opentofu/opentofu/internal/dag"
+import "github.com/bogware/bogform/internal/dag"
 
 // GraphDot returns the dot formatting of a visual representation of
 // the given OpenTofu graph.

@@ -10,9 +10,9 @@
 package configload
 
 import (
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/symlib"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/symlib"
 )
 
 // LoadConfigDir implements Loader

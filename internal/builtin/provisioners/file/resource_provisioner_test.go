@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/provisioners"
+	"github.com/bogware/bogform/internal/provisioners"
 	"github.com/zclconf/go-cty/cty"
 )
 

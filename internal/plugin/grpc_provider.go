@@ -18,12 +18,12 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/opentofu/opentofu/internal/logging"
-	"github.com/opentofu/opentofu/internal/plugin/convert"
-	"github.com/opentofu/opentofu/internal/plugin/validation"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	proto "github.com/opentofu/opentofu/internal/tfplugin5"
+	"github.com/bogware/bogform/internal/logging"
+	"github.com/bogware/bogform/internal/plugin/convert"
+	"github.com/bogware/bogform/internal/plugin/validation"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/tfdiags"
+	proto "github.com/bogware/bogform/internal/tfplugin5"
 )
 
 var logger = logging.HCLogger()

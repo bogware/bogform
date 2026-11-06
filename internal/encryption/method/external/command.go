@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
-	"github.com/opentofu/opentofu/internal/encryption/method"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/encryption/method"
 )
 
 type command struct {

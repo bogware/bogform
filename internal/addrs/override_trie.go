@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"sync/atomic"
 
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 // OverrideTrie provides a step-wise method to obtain values

@@ -10,8 +10,8 @@ import (
 
 	version "github.com/hashicorp/go-version"
 
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/tofu"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/tofu"
 )
 
 // Persistent is a union of the Refresher and Persistent interfaces, for types

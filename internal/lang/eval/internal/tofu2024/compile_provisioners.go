@@ -8,14 +8,14 @@ package tofu2024
 import (
 	"context"
 
+	"github.com/bogware/bogform/internal/addrs"
+	commShared "github.com/bogware/bogform/internal/communicator/shared"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/lang/eval/internal/configgraph"
+	"github.com/bogware/bogform/internal/lang/eval/internal/evalglue"
+	"github.com/bogware/bogform/internal/lang/exprs"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/addrs"
-	commShared "github.com/opentofu/opentofu/internal/communicator/shared"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/lang/eval/internal/configgraph"
-	"github.com/opentofu/opentofu/internal/lang/eval/internal/evalglue"
-	"github.com/opentofu/opentofu/internal/lang/exprs"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 )
 

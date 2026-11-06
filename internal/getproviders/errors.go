@@ -11,7 +11,7 @@ import (
 
 	"github.com/opentofu/svchost"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 // ErrHostNoProviders is an error type used to indicate that a hostname given

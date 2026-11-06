@@ -17,7 +17,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/collections"
+	"github.com/bogware/bogform/internal/collections"
 	"golang.org/x/mod/sumdb/dirhash"
 )
 

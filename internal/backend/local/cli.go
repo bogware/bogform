@@ -8,7 +8,7 @@ package local
 import (
 	"log"
 
-	"github.com/opentofu/opentofu/internal/backend"
+	"github.com/bogware/bogform/internal/backend"
 )
 
 // backend.CLI impl.

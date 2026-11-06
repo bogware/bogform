@@ -23,18 +23,18 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/checks"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/plugins"
-	"github.com/opentofu/opentofu/internal/shared"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/checks"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/plugins"
+	"github.com/bogware/bogform/internal/shared"
 
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/lang/marks"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/lang/marks"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/tfdiags"
 
 	regaddr "github.com/opentofu/registry-address/v2"
 )
@@ -9654,7 +9654,7 @@ variable "ephemeral_var" {
 // This is to ensure that the panic encountered during closing ephemeral resources does not occur again.
 // panic: send on closed channel
 //
-//	github.com/opentofu/opentofu/internal/shared.OpenEphemeralResourceInstance.func2()
+//	github.com/bogware/bogform/internal/shared.OpenEphemeralResourceInstance.func2()
 //
 // Even with the current test setup, the error can be caught only intermittently, so if you want to
 // check it, you have to run it several times.

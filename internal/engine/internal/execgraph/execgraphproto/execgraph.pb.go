@@ -842,7 +842,7 @@ const file_execgraph_proto_rawDesc = "" +
 	"\x06opcode\x18\x01 \x01(\x04R\x06opcode\x12\x1a\n" +
 	"\boperands\x18\x02 \x03(\x04R\boperands\"\"\n" +
 	"\x06Waiter\x12\x18\n" +
-	"\aresults\x18\x01 \x03(\x04R\aresultsBPZNgithub.com/opentofu/opentofu/internal/engine/internal/execgraph/execgraphprotob\beditionsp\xe9\a"
+	"\aresults\x18\x01 \x03(\x04R\aresultsBNZLgithub.com/bogware/bogform/internal/engine/internal/execgraph/execgraphprotob\beditionsp\xe9\a"
 
 var file_execgraph_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_execgraph_proto_goTypes = []any{

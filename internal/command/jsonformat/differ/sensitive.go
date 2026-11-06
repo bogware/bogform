@@ -8,11 +8,11 @@ package differ
 import (
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/command/jsonformat/computed"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/computed/renderers"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/structured"
-	"github.com/opentofu/opentofu/internal/command/jsonprovider"
-	"github.com/opentofu/opentofu/internal/plans"
+	"github.com/bogware/bogform/internal/command/jsonformat/computed"
+	"github.com/bogware/bogform/internal/command/jsonformat/computed/renderers"
+	"github.com/bogware/bogform/internal/command/jsonformat/structured"
+	"github.com/bogware/bogform/internal/command/jsonprovider"
+	"github.com/bogware/bogform/internal/plans"
 )
 
 type CreateSensitiveRenderer func(computed.Diff, bool, bool) computed.DiffRenderer

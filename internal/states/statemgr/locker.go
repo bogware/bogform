@@ -18,8 +18,8 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/bogware/bogform/version"
 	uuid "github.com/hashicorp/go-uuid"
-	"github.com/opentofu/opentofu/version"
 )
 
 var rngSource = rand.New(rand.NewSource(time.Now().UnixNano()))

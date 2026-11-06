@@ -9,8 +9,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/command/jsonformat/computed"
-	"github.com/opentofu/opentofu/internal/plans"
+	"github.com/bogware/bogform/internal/command/jsonformat/computed"
+	"github.com/bogware/bogform/internal/plans"
 )
 
 var _ computed.DiffRenderer = (*listRenderer)(nil)

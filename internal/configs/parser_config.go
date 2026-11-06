@@ -10,9 +10,9 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 
-	"github.com/opentofu/opentofu/internal/configs/symlib"
-	"github.com/opentofu/opentofu/internal/encryption/config"
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/configs/symlib"
+	"github.com/bogware/bogform/internal/encryption/config"
+	"github.com/bogware/bogform/version"
 )
 
 // LoadConfigFile reads the file at the given path and parses it as a config

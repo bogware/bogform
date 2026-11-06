@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/bogware/bogform/internal/logging"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/opentofu/opentofu/internal/logging"
 )
 
 // NewForRegistryRequests is a variant of [New] that deals with some additional

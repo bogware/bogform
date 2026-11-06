@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 // ProviderSchema is an overall container for all the schemas for all

@@ -6,10 +6,10 @@
 package blocktoattr
 
 import (
+	"github.com/bogware/bogform/internal/configs/configschema"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/ext/dynblock"
 	"github.com/hashicorp/hcl/v2/hcldec"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
 )
 
 // ExpandedFunctions finds all of the global functions referenced in the

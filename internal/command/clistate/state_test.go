@@ -9,9 +9,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
-	"github.com/opentofu/opentofu/internal/terminal"
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/terminal"
 )
 
 func TestUnlock(t *testing.T) {

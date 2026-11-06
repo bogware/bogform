@@ -20,9 +20,9 @@ import (
 	"testing"
 
 	"github.com/apparentlymart/go-versions/versions"
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/opentofu/opentofu/internal/addrs"
 	"github.com/opentofu/svchost"
 	disco "github.com/opentofu/svchost/disco"
 	"github.com/opentofu/svchost/svcauth"

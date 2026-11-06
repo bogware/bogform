@@ -8,9 +8,9 @@ package configs
 import (
 	"fmt"
 
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
-	"github.com/opentofu/opentofu/internal/addrs"
 )
 
 // Removed represents a removed block in the configuration.

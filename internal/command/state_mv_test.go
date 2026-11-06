@@ -12,13 +12,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/command/system"
+	"github.com/bogware/bogform/internal/command/workdir"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/command/system"
-	"github.com/opentofu/opentofu/internal/command/workdir"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/states"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/states"
 )
 
 func TestStateMv(t *testing.T) {

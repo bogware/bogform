@@ -5,7 +5,7 @@
 
 package corelinting
 
-import "github.com/opentofu/opentofu/internal/linting"
+import "github.com/bogware/bogform/internal/linting"
 
 // This block below is meant to hold all the "core" namespaced linting **rule IDs**.
 

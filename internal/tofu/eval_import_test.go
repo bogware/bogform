@@ -8,11 +8,11 @@ package tofu
 import (
 	"testing"
 
+	"github.com/bogware/bogform/internal/lang"
+	"github.com/bogware/bogform/internal/lang/marks"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hcltest"
-	"github.com/opentofu/opentofu/internal/lang"
-	"github.com/opentofu/opentofu/internal/lang/marks"
 	"github.com/zclconf/go-cty/cty"
 )
 

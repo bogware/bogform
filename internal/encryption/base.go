@@ -11,11 +11,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/encryption/config"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
-	"github.com/opentofu/opentofu/internal/encryption/method"
-	"github.com/opentofu/opentofu/internal/encryption/method/unencrypted"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/encryption/config"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/encryption/method"
+	"github.com/bogware/bogform/internal/encryption/method/unencrypted"
 
 	"github.com/hashicorp/hcl/v2"
 )

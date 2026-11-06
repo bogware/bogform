@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/e2e"
 	"github.com/google/uuid"
-	"github.com/opentofu/opentofu/internal/e2e"
 )
 
 type tofuResult struct {

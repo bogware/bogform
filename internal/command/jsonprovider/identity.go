@@ -8,7 +8,7 @@ package jsonprovider
 import (
 	"encoding/json"
 
-	"github.com/opentofu/opentofu/internal/providers"
+	"github.com/bogware/bogform/internal/providers"
 )
 
 type ResourceIdentitySchema struct {

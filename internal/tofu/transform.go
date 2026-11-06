@@ -9,7 +9,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/opentofu/opentofu/internal/logging"
+	"github.com/bogware/bogform/internal/logging"
 )
 
 // GraphTransformer is the interface that transformers implement. This

@@ -8,7 +8,7 @@ package remote
 import (
 	"context"
 
-	"github.com/opentofu/opentofu/internal/states/statemgr"
+	"github.com/bogware/bogform/internal/states/statemgr"
 )
 
 // Client is the interface that must be implemented for a remote state

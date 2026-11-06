@@ -12,11 +12,11 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/plans/internal/planproto"
-	"github.com/opentofu/opentofu/internal/providers"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/plans/internal/planproto"
+	"github.com/bogware/bogform/internal/providers"
 )
 
 const (

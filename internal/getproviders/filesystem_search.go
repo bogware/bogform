@@ -14,7 +14,7 @@ import (
 
 	"github.com/opentofu/svchost"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 // SearchLocalDirectory performs an immediate, one-off scan of the given base

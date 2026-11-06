@@ -13,17 +13,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/command/workdir"
-	"github.com/opentofu/opentofu/internal/terminal"
+	"github.com/bogware/bogform/internal/command/workdir"
+	"github.com/bogware/bogform/internal/terminal"
 	"github.com/opentofu/svchost"
 	"github.com/opentofu/svchost/disco"
 
-	"github.com/opentofu/opentofu/internal/command/cliconfig"
-	"github.com/opentofu/opentofu/internal/command/cliconfig/svcauthconfig"
-	oauthserver "github.com/opentofu/opentofu/internal/command/testdata/login-oauth-server"
-	tfeserver "github.com/opentofu/opentofu/internal/command/testdata/login-tfe-server"
-	"github.com/opentofu/opentofu/internal/command/webbrowser"
-	"github.com/opentofu/opentofu/internal/httpclient"
+	"github.com/bogware/bogform/internal/command/cliconfig"
+	"github.com/bogware/bogform/internal/command/cliconfig/svcauthconfig"
+	oauthserver "github.com/bogware/bogform/internal/command/testdata/login-oauth-server"
+	tfeserver "github.com/bogware/bogform/internal/command/testdata/login-tfe-server"
+	"github.com/bogware/bogform/internal/command/webbrowser"
+	"github.com/bogware/bogform/internal/httpclient"
 )
 
 func TestLogin(t *testing.T) {

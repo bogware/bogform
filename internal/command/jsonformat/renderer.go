@@ -12,15 +12,15 @@ import (
 	"github.com/mitchellh/colorstring"
 	ctyjson "github.com/zclconf/go-cty/cty/json"
 
-	"github.com/opentofu/opentofu/internal/command/format"
-	"github.com/opentofu/opentofu/internal/command/jsonentities"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/computed"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/differ"
-	"github.com/opentofu/opentofu/internal/command/jsonplan"
-	"github.com/opentofu/opentofu/internal/command/jsonprovider"
-	"github.com/opentofu/opentofu/internal/command/jsonstate"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/terminal"
+	"github.com/bogware/bogform/internal/command/format"
+	"github.com/bogware/bogform/internal/command/jsonentities"
+	"github.com/bogware/bogform/internal/command/jsonformat/computed"
+	"github.com/bogware/bogform/internal/command/jsonformat/differ"
+	"github.com/bogware/bogform/internal/command/jsonplan"
+	"github.com/bogware/bogform/internal/command/jsonprovider"
+	"github.com/bogware/bogform/internal/command/jsonstate"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/terminal"
 )
 
 type JSONLogType string

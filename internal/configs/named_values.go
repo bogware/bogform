@@ -17,12 +17,12 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs/symlib"
-	"github.com/opentofu/opentofu/internal/didyoumean"
-	"github.com/opentofu/opentofu/internal/lang"
-	"github.com/opentofu/opentofu/internal/lang/lint"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs/symlib"
+	"github.com/bogware/bogform/internal/didyoumean"
+	"github.com/bogware/bogform/internal/lang"
+	"github.com/bogware/bogform/internal/lang/lint"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // A consistent detail message for all "not a valid identifier" diagnostics.

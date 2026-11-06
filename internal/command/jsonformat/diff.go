@@ -6,12 +6,12 @@
 package jsonformat
 
 import (
-	"github.com/opentofu/opentofu/internal/command/jsonformat/computed"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/differ"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/structured"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/structured/attribute_path"
-	"github.com/opentofu/opentofu/internal/command/jsonplan"
-	"github.com/opentofu/opentofu/internal/plans"
+	"github.com/bogware/bogform/internal/command/jsonformat/computed"
+	"github.com/bogware/bogform/internal/command/jsonformat/differ"
+	"github.com/bogware/bogform/internal/command/jsonformat/structured"
+	"github.com/bogware/bogform/internal/command/jsonformat/structured/attribute_path"
+	"github.com/bogware/bogform/internal/command/jsonplan"
+	"github.com/bogware/bogform/internal/plans"
 )
 
 func precomputeDiffs(plan Plan, mode plans.Mode) diffs {

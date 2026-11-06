@@ -8,9 +8,9 @@ package configs
 import (
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/opentofu/opentofu/internal/addrs"
 )
 
 // The functions in this file are intended only for use in tests written in

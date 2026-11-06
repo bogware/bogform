@@ -10,9 +10,9 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/lang/eval/internal/configgraph"
-	"github.com/opentofu/opentofu/internal/lang/eval/internal/evalglue"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/lang/eval/internal/configgraph"
+	"github.com/bogware/bogform/internal/lang/eval/internal/evalglue"
 )
 
 // ConfiguredResourceInstanceObjectMeta represents the subset of metadata

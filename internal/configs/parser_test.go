@@ -14,9 +14,9 @@ import (
 	"testing"
 
 	"github.com/apparentlymart/go-versions/versions"
+	"github.com/bogware/bogform/internal/configs/symlib"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/opentofu/opentofu/internal/configs/symlib"
 	"github.com/zclconf/go-cty/cty"
 
 	version "github.com/hashicorp/go-version"

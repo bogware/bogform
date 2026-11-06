@@ -6,7 +6,7 @@
 package external
 
 import (
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
 )
 
 // TODO #2386 / 1.11: consider if the external method changes and unify protocol with the external key provider.

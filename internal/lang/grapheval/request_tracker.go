@@ -11,7 +11,7 @@ import (
 	"sync"
 
 	"github.com/apparentlymart/go-workgraph/workgraph"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // RequestTracker is implemented by types that know how to provide user-friendly

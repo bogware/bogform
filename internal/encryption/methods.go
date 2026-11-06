@@ -11,13 +11,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/encryption/config"
+	"github.com/bogware/bogform/internal/encryption/method"
+	"github.com/bogware/bogform/internal/encryption/registry"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/encryption/config"
-	"github.com/opentofu/opentofu/internal/encryption/method"
-	"github.com/opentofu/opentofu/internal/encryption/registry"
 	"github.com/zclconf/go-cty/cty"
 )
 

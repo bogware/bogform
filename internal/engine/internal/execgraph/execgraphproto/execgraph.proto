@@ -7,8 +7,8 @@ edition = "2024";
 package opentofu_execgraph;
 
 // For OpenTofu's own parsing, the proto stub types go into an internal Go
-// package. The public API is in github.com/opentofu/opentofu/plans/planfile .
-option go_package = "github.com/opentofu/opentofu/internal/engine/internal/execgraph/execgraphproto";
+// package. The public API is in github.com/bogware/bogform/plans/planfile .
+option go_package = "github.com/bogware/bogform/internal/engine/internal/execgraph/execgraphproto";
 
 // ExecutionGraph is the root message type for an execution graph file.
 //

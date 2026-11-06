@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/addrs"
 )
 
 func TestConfigTransformer_nilModule(t *testing.T) {

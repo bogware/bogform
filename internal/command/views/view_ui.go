@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/opentofu/opentofu/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/arguments"
 )
 
 var ErrorInputDisabled = fmt.Errorf("in this view cannot ask user input")

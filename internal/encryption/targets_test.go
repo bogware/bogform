@@ -13,16 +13,16 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/encryption/config"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider/static"
-	"github.com/opentofu/opentofu/internal/encryption/method"
-	"github.com/opentofu/opentofu/internal/encryption/method/aesgcm"
-	"github.com/opentofu/opentofu/internal/encryption/method/unencrypted"
-	"github.com/opentofu/opentofu/internal/encryption/registry"
-	"github.com/opentofu/opentofu/internal/encryption/registry/lockingencryptionregistry"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/encryption/config"
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
+	"github.com/bogware/bogform/internal/encryption/keyprovider/static"
+	"github.com/bogware/bogform/internal/encryption/method"
+	"github.com/bogware/bogform/internal/encryption/method/aesgcm"
+	"github.com/bogware/bogform/internal/encryption/method/unencrypted"
+	"github.com/bogware/bogform/internal/encryption/registry"
+	"github.com/bogware/bogform/internal/encryption/registry/lockingencryptionregistry"
 )
 
 func TestBaseEncryption_methodConfigsFromTargetAndSetup(t *testing.T) {

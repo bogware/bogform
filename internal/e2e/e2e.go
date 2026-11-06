@@ -15,11 +15,11 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/plans/planfile"
-	"github.com/opentofu/opentofu/internal/states"
-	"github.com/opentofu/opentofu/internal/states/statefile"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/plans/planfile"
+	"github.com/bogware/bogform/internal/states"
+	"github.com/bogware/bogform/internal/states/statefile"
 )
 
 // Type binary represents the combination of a compiled binary
@@ -259,7 +259,7 @@ func GoBuild(pkgPath, tmpPrefix string, buildArgs ...string) string {
 	if len(os.Getenv("GOCOVERDIR")) != 0 {
 		args = append(args,
 			"-cover",
-			"-coverpkg=github.com/opentofu/opentofu/...",
+			"-coverpkg=github.com/bogware/bogform/...",
 		)
 	}
 

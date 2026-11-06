@@ -6,8 +6,8 @@
 package configs
 
 import (
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/addrs"
 )
 
 type Moved struct {

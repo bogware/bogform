@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/e2e"
+	"github.com/bogware/bogform/internal/e2e"
 )
 
 // TestProviderDevOverrides is a test that tofu can execute a 3rd party

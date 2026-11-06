@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/dag"
+	"github.com/bogware/bogform/internal/dag"
 )
 
 func TestGraphDot(t *testing.T) {

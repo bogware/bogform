@@ -2229,7 +2229,7 @@ const file_planfile_proto_rawDesc = "" +
 	"\x14SCHEMA_NESTING_GROUP\x10\x02\x12\x17\n" +
 	"\x13SCHEMA_NESTING_LIST\x10\x03\x12\x16\n" +
 	"\x12SCHEMA_NESTING_SET\x10\x04\x12\x16\n" +
-	"\x12SCHEMA_NESTING_MAP\x10\x05B@Z>github.com/opentofu/opentofu/internal/plans/internal/planprotob\x06proto3"
+	"\x12SCHEMA_NESTING_MAP\x10\x05B>Z<github.com/bogware/bogform/internal/plans/internal/planprotob\x06proto3"
 
 var (
 	file_planfile_proto_rawDescOnce sync.Once

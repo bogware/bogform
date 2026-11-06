@@ -8,7 +8,7 @@ package registry
 import (
 	"net/url"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 	regaddr "github.com/opentofu/registry-address/v2"
 )
 

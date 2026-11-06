@@ -8,8 +8,8 @@ package keyprovider_test
 import (
 	"testing"
 
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
 	"github.com/zclconf/go-cty/cty"
 )
 

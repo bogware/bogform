@@ -10,8 +10,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/bogware/bogform/internal/tofu"
 	"github.com/hashicorp/go-plugin"
-	"github.com/opentofu/opentofu/internal/tofu"
 )
 
 func TestUIInput_impl(t *testing.T) {

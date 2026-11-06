@@ -8,9 +8,9 @@ package planning
 import (
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/resources"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/resources"
 )
 
 func TestFindEffectiveReplaceOrders(t *testing.T) {

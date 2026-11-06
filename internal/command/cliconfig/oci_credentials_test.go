@@ -14,10 +14,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/command/cliconfig/ociauthconfig"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/opentofu/opentofu/internal/command/cliconfig/ociauthconfig"
 )
 
 func TestLoadConfig_ociDefaultCredentials(t *testing.T) {

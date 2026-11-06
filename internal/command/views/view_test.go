@@ -11,13 +11,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/linting"
+	"github.com/bogware/bogform/internal/terminal"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/linting"
-	"github.com/opentofu/opentofu/internal/terminal"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 // TestNewView it's just a sanity check to be sure that we have it initialized as expected.

@@ -10,8 +10,8 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
 )
 
 // State is a container for state tracking of all of the checks declared in

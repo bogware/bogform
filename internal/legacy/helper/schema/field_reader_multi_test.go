@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/legacy/tofu"
+	"github.com/bogware/bogform/internal/legacy/tofu"
 )
 
 func TestMultiLevelFieldReaderReadFieldExact(t *testing.T) {

@@ -20,8 +20,8 @@ import (
 	orasContent "oras.land/oras-go/v2/content"
 	orasRegistry "oras.land/oras-go/v2/registry"
 
-	"github.com/opentofu/opentofu/internal/tracing"
-	"github.com/opentofu/opentofu/internal/tracing/traceattrs"
+	"github.com/bogware/bogform/internal/tracing"
+	"github.com/bogware/bogform/internal/tracing/traceattrs"
 )
 
 // ociImageManifestArtifactType is the artifact type we expect for the image

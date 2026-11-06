@@ -13,12 +13,12 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
+	"github.com/bogware/bogform/internal/lang"
+	"github.com/bogware/bogform/internal/lang/marks"
+	"github.com/bogware/bogform/internal/lang/types"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/opentofu/opentofu/internal/lang"
-	"github.com/opentofu/opentofu/internal/lang/marks"
-	"github.com/opentofu/opentofu/internal/lang/types"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 // Session represents the state for a single REPL session.

@@ -13,8 +13,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/providers"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/providers"
 )
 
 func TestMarshalProvider(t *testing.T) {
@@ -227,7 +227,7 @@ func testProvider() providers.ProviderSchema {
 		},
 		ResourceTypes: map[string]providers.Schema{
 			"test_instance": {
-				Version: 42,
+				Version:               42,
 				IdentitySchemaVersion: 1,
 				IdentitySchema: &configschema.Object{
 					Nesting: configschema.NestingSingle,

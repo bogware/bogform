@@ -14,9 +14,9 @@ import (
 	"strconv"
 
 	"cloud.google.com/go/storage"
+	"github.com/bogware/bogform/internal/states/remote"
+	"github.com/bogware/bogform/internal/states/statemgr"
 	multierror "github.com/hashicorp/go-multierror"
-	"github.com/opentofu/opentofu/internal/states/remote"
-	"github.com/opentofu/opentofu/internal/states/statemgr"
 )
 
 // remoteClient is used by "state/remote".State to read and write

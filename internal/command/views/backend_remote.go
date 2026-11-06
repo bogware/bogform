@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/command/jsonformat"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/command/jsonformat"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 type BackendRemote interface {

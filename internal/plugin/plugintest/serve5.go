@@ -8,9 +8,9 @@ package plugintest
 import (
 	"log"
 
+	"github.com/bogware/bogform/internal/plugin"
+	proto "github.com/bogware/bogform/internal/tfplugin5"
 	goPlugin "github.com/hashicorp/go-plugin"
-	"github.com/opentofu/opentofu/internal/plugin"
-	proto "github.com/opentofu/opentofu/internal/tfplugin5"
 )
 
 type GRPCProviderFunc5 func() proto.ProviderServer

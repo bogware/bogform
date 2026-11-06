@@ -8,9 +8,9 @@ package command
 import (
 	"fmt"
 
+	"github.com/bogware/bogform/internal/command/views"
+	"github.com/bogware/bogform/internal/initwd"
 	version "github.com/hashicorp/go-version"
-	"github.com/opentofu/opentofu/internal/command/views"
-	"github.com/opentofu/opentofu/internal/initwd"
 )
 
 type uiModuleInstallHooks struct {

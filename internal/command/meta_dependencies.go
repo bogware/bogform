@@ -14,9 +14,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/depsfile"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/depsfile"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // dependencyLockFilename is the filename of the dependency lock file.

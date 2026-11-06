@@ -8,8 +8,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 func TestMetadataFunctions_Diagnostics(t *testing.T) {

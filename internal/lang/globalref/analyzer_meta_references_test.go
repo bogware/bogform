@@ -9,8 +9,8 @@ import (
 	"sort"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/addrs"
 )
 
 func TestAnalyzerMetaReferences(t *testing.T) {

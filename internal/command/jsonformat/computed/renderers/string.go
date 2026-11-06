@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/opentofu/opentofu/internal/command/jsonformat/computed"
+	"github.com/bogware/bogform/internal/command/jsonformat/computed"
 )
 
 type evaluatedString struct {

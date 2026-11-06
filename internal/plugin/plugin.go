@@ -6,8 +6,8 @@
 package plugin
 
 import (
+	"github.com/bogware/bogform/internal/plugin6"
 	"github.com/hashicorp/go-plugin"
-	"github.com/opentofu/opentofu/internal/plugin6"
 )
 
 const (

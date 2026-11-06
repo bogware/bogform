@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/opentofu/opentofu/internal/getmodules"
+	"github.com/bogware/bogform/internal/getmodules"
 )
 
 func TestGet(t *testing.T) {

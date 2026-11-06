@@ -27,10 +27,10 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/bogware/bogform/internal/legacy/hcl2shim"
+	"github.com/bogware/bogform/internal/legacy/tofu"
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/mitchellh/copystructure"
-	"github.com/opentofu/opentofu/internal/legacy/hcl2shim"
-	"github.com/opentofu/opentofu/internal/legacy/tofu"
 )
 
 // Name of ENV variable which (if not empty) prefers panic over error

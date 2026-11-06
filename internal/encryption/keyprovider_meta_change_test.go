@@ -9,13 +9,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/encryption/config"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider/pbkdf2"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider/xor"
-	"github.com/opentofu/opentofu/internal/encryption/method/aesgcm"
-	"github.com/opentofu/opentofu/internal/encryption/method/unencrypted"
-	"github.com/opentofu/opentofu/internal/encryption/registry/lockingencryptionregistry"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/encryption/config"
+	"github.com/bogware/bogform/internal/encryption/keyprovider/pbkdf2"
+	"github.com/bogware/bogform/internal/encryption/keyprovider/xor"
+	"github.com/bogware/bogform/internal/encryption/method/aesgcm"
+	"github.com/bogware/bogform/internal/encryption/method/unencrypted"
+	"github.com/bogware/bogform/internal/encryption/registry/lockingencryptionregistry"
 )
 
 func TestChangingKeyProviderAddr(t *testing.T) {

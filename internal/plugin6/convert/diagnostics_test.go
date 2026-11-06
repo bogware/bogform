@@ -9,10 +9,10 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/bogware/bogform/internal/tfdiags"
+	proto "github.com/bogware/bogform/internal/tfplugin6"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	proto "github.com/opentofu/opentofu/internal/tfplugin6"
 	"github.com/zclconf/go-cty/cty"
 )
 

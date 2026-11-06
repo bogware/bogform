@@ -9,8 +9,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/opentofu/opentofu/internal/dag"
-	"github.com/opentofu/opentofu/internal/states"
+	"github.com/bogware/bogform/internal/dag"
+	"github.com/bogware/bogform/internal/states"
 )
 
 // GraphNodeAttachResourceState is an interface that can be implemented

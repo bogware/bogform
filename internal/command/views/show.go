@@ -10,17 +10,17 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/command/jsonconfig"
-	"github.com/opentofu/opentofu/internal/command/jsonformat"
-	"github.com/opentofu/opentofu/internal/command/jsonplan"
-	"github.com/opentofu/opentofu/internal/command/jsonprovider"
-	"github.com/opentofu/opentofu/internal/command/jsonstate"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/states/statefile"
-	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tofu"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/command/jsonconfig"
+	"github.com/bogware/bogform/internal/command/jsonformat"
+	"github.com/bogware/bogform/internal/command/jsonplan"
+	"github.com/bogware/bogform/internal/command/jsonprovider"
+	"github.com/bogware/bogform/internal/command/jsonstate"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/states/statefile"
+	"github.com/bogware/bogform/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tofu"
 )
 
 type Show interface {

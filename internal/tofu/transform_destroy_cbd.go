@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/opentofu/opentofu/internal/dag"
+	"github.com/bogware/bogform/internal/dag"
 )
 
 // GraphNodeDestroyerCBD must be implemented by nodes that might be

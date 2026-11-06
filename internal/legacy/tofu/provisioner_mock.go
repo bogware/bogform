@@ -9,7 +9,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/opentofu/opentofu/internal/provisioners"
+	"github.com/bogware/bogform/internal/provisioners"
 )
 
 var _ provisioners.Interface = (*MockProvisioner)(nil)

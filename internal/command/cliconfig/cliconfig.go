@@ -30,7 +30,7 @@ import (
 	"github.com/hashicorp/hcl"
 	"github.com/opentofu/svchost"
 
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 const pluginCacheDirEnvVar = "TF_PLUGIN_CACHE_DIR"

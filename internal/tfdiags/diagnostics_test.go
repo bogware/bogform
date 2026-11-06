@@ -12,11 +12,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/linting"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/linting"
 )
 
 func TestBuild(t *testing.T) {

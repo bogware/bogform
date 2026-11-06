@@ -8,7 +8,7 @@ package tofu
 import (
 	"context"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 )
 
 // ExternalReferenceTransformer will add a GraphNodeReferencer into the graph

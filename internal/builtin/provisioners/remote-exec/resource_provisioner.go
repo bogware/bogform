@@ -16,12 +16,12 @@ import (
 	"strings"
 
 	"github.com/apparentlymart/go-shquot/shquot"
+	"github.com/bogware/bogform/internal/communicator"
+	"github.com/bogware/bogform/internal/communicator/remote"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/provisioners"
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/mitchellh/go-linereader"
-	"github.com/opentofu/opentofu/internal/communicator"
-	"github.com/opentofu/opentofu/internal/communicator/remote"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/provisioners"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 )
 

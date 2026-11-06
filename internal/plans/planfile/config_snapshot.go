@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bogware/bogform/internal/configs/configload"
 	version "github.com/hashicorp/go-version"
-	"github.com/opentofu/opentofu/internal/configs/configload"
 )
 
 const configSnapshotPrefix = "tfconfig/"

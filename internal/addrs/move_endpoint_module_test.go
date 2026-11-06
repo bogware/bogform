@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 func TestModuleInstanceMoveDestination(t *testing.T) {

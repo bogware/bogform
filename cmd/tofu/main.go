@@ -18,18 +18,18 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bogware/bogform/internal/command/views"
 	"github.com/hashicorp/go-plugin"
 	"github.com/mattn/go-shellwords"
-	"github.com/opentofu/opentofu/internal/command/views"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/command/cliconfig"
-	"github.com/opentofu/opentofu/internal/logging"
-	"github.com/opentofu/opentofu/internal/terminal"
-	"github.com/opentofu/opentofu/internal/tracing"
-	"github.com/opentofu/opentofu/version"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/command/cliconfig"
+	"github.com/bogware/bogform/internal/logging"
+	"github.com/bogware/bogform/internal/terminal"
+	"github.com/bogware/bogform/internal/tracing"
+	"github.com/bogware/bogform/version"
 
-	backendInit "github.com/opentofu/opentofu/internal/backend/init"
+	backendInit "github.com/bogware/bogform/internal/backend/init"
 )
 
 const (

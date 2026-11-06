@@ -12,10 +12,10 @@ often use in diagnostic messages.
 ## Diagnostics in Code
 
 Diagnostics are modelled using the types from
-[the `tfdiags` package](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags).
+[the `tfdiags` package](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags).
 
 In particular:
-- [`tfdiags.Diagnostics`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#Diagnostics)
+- [`tfdiags.Diagnostics`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#Diagnostics)
   represents a set of zero or more diagnostics.
 
     A total lack of diagnostics is usually represented by a `nil` value of this
@@ -24,16 +24,16 @@ In particular:
     When constructing sets of diagnostics to return we typically don't worry
     about the order they are returned in, even though we return them using a
     slice type. The UI-layer code uses
-    [`tfdiags.Diagnostics.Sort`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#Diagnostics.Sort)
+    [`tfdiags.Diagnostics.Sort`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#Diagnostics.Sort)
     to place all of the collected diagnostics into a predictable order before
     rendering them, and so that function effectively turns the set of
     diagnostics into an ordered list of diagnostics _just in time_.
 
-- [`tfdiags.Diagnostic`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#Diagnostic)
+- [`tfdiags.Diagnostic`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#Diagnostic)
   is an interface type that all diagnostic values implement.
 
     In practice values of this type are often created automatically as an
-    implementation detail of [`Diagnostics.Append`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#Diagnostics.Append),
+    implementation detail of [`Diagnostics.Append`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#Diagnostics.Append),
     which accepts various types that _don't_ directly implement
     `Diagnostic` and then automatically wraps them in a type that does.
     In particular:
@@ -61,18 +61,18 @@ In particular:
     Package `tfdiags` also includes some functions for constructing other kinds
     of diagnostics, including:
 
-    - [`tfdiags.Sourceless`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#Sourceless)
+    - [`tfdiags.Sourceless`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#Sourceless)
       is good for diagnostics that don't relate to any part of the configuration,
       such as when reporting incorrect usage of a command line argument.
-    - [`tfdiags.AttributeValue`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#AttributeValue) and
-      [`tfdiags.WholeContainingBody`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#WholeContainingBody)
+    - [`tfdiags.AttributeValue`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#AttributeValue) and
+      [`tfdiags.WholeContainingBody`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#WholeContainingBody)
       produce special "contextual diagnostics" that must be transformed by
-      calling [`InConfigBody`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#Diagnostics.InConfigBody)
+      calling [`InConfigBody`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#Diagnostics.InConfigBody)
       on the resulting `Diagnostics` value. This is a special mechanism used
       when the subsystem generating the diagnostic does not have direct access
       to the configuration itself, such as when a provider returns a diagnostic
       via the provider wire protocol.
-- [`tfdiags.Severity`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#Severity)
+- [`tfdiags.Severity`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#Severity)
   (and its HCL equivalent [`hcl.DiagnosticSeverity`](https://pkg.go.dev/github.com/hashicorp/hcl/v2#DiagnosticSeverity)) 
   are how we distinguish between "error" and "warning" diagnostics.
 
@@ -438,12 +438,12 @@ mention that in the summary of values that were in scope.
 To allow for this, we set the "extra info" field of a diagnostic to contain
 an implementation of one of the following interfaces:
 
-- [`tfdiags.DiagnosticExtraBecauseUnknown`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#DiagnosticExtraBecauseUnknown)
+- [`tfdiags.DiagnosticExtraBecauseUnknown`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#DiagnosticExtraBecauseUnknown)
   for a problem that's caused by an unknown value.
   
   (Remember that the _text_ of the error message should refer to this as "known
   only after apply", or similar.)
-- [`tfdiags.DiagnosticExtraBecauseSensitive`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#DiagnosticExtraBecauseSensitive)
+- [`tfdiags.DiagnosticExtraBecauseSensitive`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#DiagnosticExtraBecauseSensitive)
   for situations where a sensitive value was used in a location that OpenTofu
   cannot permit it, such as in the instance key of a resource instance.
 
@@ -465,7 +465,7 @@ there are.
 ```
 
 The main implementation of this behavior is in
-[`tfdiags.Diagnostics.Consolidate`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#Diagnostics.Consolidate),
+[`tfdiags.Diagnostics.Consolidate`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#Diagnostics.Consolidate),
 but we allow end-users to customize (using command line options) whether this
 consolidation applies to errors or warnings separately. By default, we
 consolidate only warnings.
@@ -478,11 +478,11 @@ There are two extra mechanisms for customizing this behavior for specific
 diagnostic messages:
 
 - If the "extra info" of a diagnostic contains an implementation of
-  [`tfdiags.DiagnosticExtraDoNotConsolidate`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#DiagnosticExtraDoNotConsolidate)
+  [`tfdiags.DiagnosticExtraDoNotConsolidate`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#DiagnosticExtraDoNotConsolidate)
   then that diagnostic is not eligible for consolidation at all, regardless
   of how similar it might be to other diagnostics in the same set.
 - If the "extra info" of a diagnostic contains an implementation of
-  [`tfdiags.Keyable`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tfdiags#Keyable)
+  [`tfdiags.Keyable`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#Keyable)
   then the string returned by its `ExtraInfoKey` method is used _in addition to_
   the summary text for deciding what to consolidate.
 

@@ -5,7 +5,7 @@
 
 package marks
 
-import "github.com/opentofu/opentofu/internal/tfdiags"
+import "github.com/bogware/bogform/internal/tfdiags"
 
 // DiagnosticDeprecationCause checks whether the given diagnostic is
 // a deprecation warning, and if so returns the deprecation cause and

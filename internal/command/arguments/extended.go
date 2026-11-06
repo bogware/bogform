@@ -12,13 +12,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/bogware/bogform/internal/command/flags"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/opentofu/opentofu/internal/command/flags"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // DefaultParallelism is the limit OpenTofu places on total parallel

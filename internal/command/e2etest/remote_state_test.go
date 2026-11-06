@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/e2e"
+	"github.com/bogware/bogform/internal/e2e"
 )
 
 func TestOpenTofuProviderRead(t *testing.T) {

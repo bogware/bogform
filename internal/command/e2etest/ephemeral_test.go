@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/e2e"
+	"github.com/bogware/bogform/internal/e2e"
 )
 
 // TestEphemeralErrors_variables checks common errors when ephemeral variables

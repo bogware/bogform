@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/e2e"
-	"github.com/opentofu/opentofu/internal/plans"
+	"github.com/bogware/bogform/internal/e2e"
+	"github.com/bogware/bogform/internal/plans"
 )
 
 // TestPlanApplyInAutomation runs through the "main case" of init, plan, apply

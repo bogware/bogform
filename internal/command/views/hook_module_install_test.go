@@ -9,9 +9,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/bogware/bogform/internal/initwd"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/go-version"
-	"github.com/opentofu/opentofu/internal/initwd"
 )
 
 func TestModuleInstallationHooks(t *testing.T) {

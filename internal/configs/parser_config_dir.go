@@ -14,8 +14,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/bogware/bogform/internal/configs/symlib"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/configs/symlib"
 )
 
 const (

@@ -14,7 +14,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/opentofu/opentofu/internal/configs"
+	"github.com/bogware/bogform/internal/configs"
 )
 
 func TestLoadConfigWithSnapshot(t *testing.T) {

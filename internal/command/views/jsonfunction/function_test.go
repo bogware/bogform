@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/bogware/bogform/internal/lang"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/hcl/v2/ext/tryfunc"
-	"github.com/opentofu/opentofu/internal/lang"
 	"github.com/zclconf/go-cty-debug/ctydebug"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/function"

@@ -6,8 +6,8 @@
 package blocktoattr
 
 import (
+	"github.com/bogware/bogform/internal/configs/configschema"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
 	"github.com/zclconf/go-cty/cty"
 )
 

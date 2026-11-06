@@ -6,12 +6,12 @@
 package eval
 
 import (
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/configs/configschema"
-	"github.com/opentofu/opentofu/internal/lang/eval/internal/evalglue"
-	"github.com/opentofu/opentofu/internal/lang/eval/internal/tofu2024"
-	"github.com/opentofu/opentofu/internal/providers"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/lang/eval/internal/evalglue"
+	"github.com/bogware/bogform/internal/lang/eval/internal/tofu2024"
+	"github.com/bogware/bogform/internal/providers"
 )
 
 // The symbols aliased in this file are defined in [evalglue] really just to

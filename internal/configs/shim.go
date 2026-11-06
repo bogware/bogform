@@ -6,8 +6,8 @@
 package configs
 
 import (
+	"github.com/bogware/bogform/internal/configs/hcl2shim"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/configs/hcl2shim"
 	"github.com/zclconf/go-cty/cty"
 )
 

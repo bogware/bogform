@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/bogware/bogform/internal/legacy/tofu"
 	"github.com/go-viper/mapstructure/v2"
-	"github.com/opentofu/opentofu/internal/legacy/tofu"
 )
 
 // DiffFieldReader reads fields out of a diff structures.

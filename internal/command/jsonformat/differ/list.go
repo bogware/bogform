@@ -6,14 +6,14 @@
 package differ
 
 import (
-	"github.com/opentofu/opentofu/internal/command/jsonformat/collections"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/computed"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/computed/renderers"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/jsondiff"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/structured"
-	"github.com/opentofu/opentofu/internal/command/jsonformat/structured/attribute_path"
-	"github.com/opentofu/opentofu/internal/command/jsonprovider"
-	"github.com/opentofu/opentofu/internal/plans"
+	"github.com/bogware/bogform/internal/command/jsonformat/collections"
+	"github.com/bogware/bogform/internal/command/jsonformat/computed"
+	"github.com/bogware/bogform/internal/command/jsonformat/computed/renderers"
+	"github.com/bogware/bogform/internal/command/jsonformat/jsondiff"
+	"github.com/bogware/bogform/internal/command/jsonformat/structured"
+	"github.com/bogware/bogform/internal/command/jsonformat/structured/attribute_path"
+	"github.com/bogware/bogform/internal/command/jsonprovider"
+	"github.com/bogware/bogform/internal/plans"
 	"github.com/zclconf/go-cty/cty"
 )
 

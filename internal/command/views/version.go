@@ -12,8 +12,8 @@ import (
 	"slices"
 	"sort"
 
-	"github.com/opentofu/opentofu/internal/command/arguments"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/command/arguments"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 type Version interface {

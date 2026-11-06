@@ -9,8 +9,8 @@ import (
 	"maps"
 	"testing"
 
+	"github.com/bogware/bogform/internal/collections"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/collections"
 )
 
 func TestParseHash(t *testing.T) {

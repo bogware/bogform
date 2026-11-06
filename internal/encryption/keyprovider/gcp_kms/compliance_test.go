@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	"cloud.google.com/go/kms/apiv1/kmspb"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider/compliancetest"
+	"github.com/bogware/bogform/internal/encryption/keyprovider/compliancetest"
 )
 
 func getKey(t *testing.T) string {

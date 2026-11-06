@@ -8,7 +8,7 @@ package collections_test
 import (
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/collections"
+	"github.com/bogware/bogform/internal/collections"
 )
 
 type hasTestCase struct {

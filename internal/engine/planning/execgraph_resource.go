@@ -8,10 +8,10 @@ package planning
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/engine/internal/execgraph"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/resources"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/engine/internal/execgraph"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/resources"
 )
 
 ////////////////////////////////////////////////////////////////////////////////

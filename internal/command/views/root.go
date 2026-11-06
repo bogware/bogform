@@ -5,7 +5,7 @@
 
 package views
 
-import "github.com/opentofu/opentofu/internal/tfdiags"
+import "github.com/bogware/bogform/internal/tfdiags"
 
 // Root is the view that is meant to be used strictly during the initialisation of the process
 // and offers methods to print errors as raw as possible.

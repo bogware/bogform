@@ -10,11 +10,11 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/plans"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/shared"
-	"github.com/opentofu/opentofu/internal/tfdiags"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/plans"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/shared"
+	"github.com/bogware/bogform/internal/tfdiags"
 )
 
 // Tracer is a container for various callbacks used to report various

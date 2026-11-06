@@ -8,8 +8,8 @@ package eval_test
 import (
 	"testing"
 
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 func assertDiagnosticsMatch(t *testing.T, got, want tfdiags.Diagnostics) {

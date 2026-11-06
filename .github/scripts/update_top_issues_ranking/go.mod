@@ -1,4 +1,4 @@
-module github.com/opentofu/opentofu/.github/scripts/update_top_issues_ranking
+module github.com/bogware/bogform/.github/scripts/update_top_issues_ranking
 
 go 1.22.1
 

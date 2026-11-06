@@ -20,8 +20,8 @@ import (
 
 	"github.com/ProtonMail/go-crypto/openpgp"
 	openpgpErrors "github.com/ProtonMail/go-crypto/openpgp/errors"
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/collections"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/collections"
 )
 
 type packageAuthenticationResult int

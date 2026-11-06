@@ -6,8 +6,8 @@
 package addrs
 
 import (
+	"github.com/bogware/bogform/internal/tfdiags"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/tfdiags"
 )
 
 // RemoveEndpoint is to ConfigRemovable what Target is to Targetable:

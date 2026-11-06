@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/collections"
+	"github.com/bogware/bogform/internal/linting"
 	"github.com/google/go-cmp/cmp"
-	"github.com/opentofu/opentofu/internal/collections"
-	"github.com/opentofu/opentofu/internal/linting"
 )
 
 func TestParseMetadataFunctions_basicValidation(t *testing.T) {

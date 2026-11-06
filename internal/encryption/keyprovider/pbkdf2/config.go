@@ -10,8 +10,8 @@ import (
 	"hash"
 	"io"
 
+	"github.com/bogware/bogform/internal/encryption/keyprovider"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/encryption/keyprovider"
 )
 
 // HashFunction is a provider of a hash.Hash.

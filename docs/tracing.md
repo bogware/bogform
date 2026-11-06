@@ -68,8 +68,8 @@ Then configure OpenTofu as shown above and access the Jaeger UI at http://localh
 
 ```go
 import (
-    "github.com/opentofu/opentofu/internal/tracing"
-    "github.com/opentofu/opentofu/internal/tracing/traceattrs"
+    "github.com/bogware/bogform/internal/tracing"
+    "github.com/bogware/bogform/internal/tracing/traceattrs"
 )
 
 func SomeFunction(ctx context.Context) error {
@@ -122,8 +122,8 @@ Therefore we prefer to directly import `go.opentelemetry.io/otel/*` packages onl
 
 #### Attributes
 
-- Prefer standard [OpenTelemetry semantic conventions](https://opentelemetry.io/docs/specs/semconv/) where applicable, using helper functions from [`internal/tracing/traceattrs`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tracing/traceattrs).
-- Use `OpenTofu`-prefixed functions in [`internal/tracing/traceattrs`](https://pkg.go.dev/github.com/opentofu/opentofu/internal/tracing/traceattrs) for OpenTofu-specific cross-cutting concerns.
+- Prefer standard [OpenTelemetry semantic conventions](https://opentelemetry.io/docs/specs/semconv/) where applicable, using helper functions from [`internal/tracing/traceattrs`](https://pkg.go.dev/github.com/bogware/bogform/internal/tracing/traceattrs).
+- Use `OpenTofu`-prefixed functions in [`internal/tracing/traceattrs`](https://pkg.go.dev/github.com/bogware/bogform/internal/tracing/traceattrs) for OpenTofu-specific cross-cutting concerns.
 - It's okay to use one-off inline strings for attribute names specific to a single span, but make sure to still follow the [OpenTelemetry attribute naming conventions](https://opentelemetry.io/docs/specs/semconv/general/naming/) and use the `opentofu.` prefix for anything that is not a standardized semantic convention.
 - If a particular subsystem of OpenTofu has some repeated conventions for attribute names, consider creating unexported string constants or attribute construction helper functions in the same package to centralize those naming conventions.
 

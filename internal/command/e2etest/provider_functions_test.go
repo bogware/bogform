@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/e2e"
+	"github.com/bogware/bogform/internal/e2e"
 )
 
 func TestFunction_Simple(t *testing.T) {

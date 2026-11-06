@@ -9,8 +9,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/bogware/bogform/internal/addrs"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/opentofu/opentofu/internal/addrs"
 	"github.com/zclconf/go-cty/cty/gocty"
 )
 

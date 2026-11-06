@@ -6,7 +6,7 @@
 package main
 
 import (
-	"github.com/opentofu/opentofu/internal/command/webbrowser"
+	"github.com/bogware/bogform/internal/command/webbrowser"
 )
 
 // browserLauncher implements the policy for deciding how to launch a web

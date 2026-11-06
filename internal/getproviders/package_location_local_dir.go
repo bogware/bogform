@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/opentofu/opentofu/internal/copy"
+	"github.com/bogware/bogform/internal/copy"
 )
 
 // PackageLocalDir is the location of a directory containing an unpacked

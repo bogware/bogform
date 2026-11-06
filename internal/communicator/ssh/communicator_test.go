@@ -27,7 +27,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"golang.org/x/crypto/ssh"
 
-	"github.com/opentofu/opentofu/internal/communicator/remote"
+	"github.com/bogware/bogform/internal/communicator/remote"
 )
 
 // private key for mock server

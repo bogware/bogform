@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/bogware/bogform/internal/addrs"
 
-	"github.com/opentofu/opentofu/internal/dag"
+	"github.com/bogware/bogform/internal/dag"
 )
 
 func TestBasicGraphBuilder_impl(t *testing.T) {

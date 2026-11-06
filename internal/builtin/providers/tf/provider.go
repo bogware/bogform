@@ -13,8 +13,8 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/encryption"
-	"github.com/opentofu/opentofu/internal/providers"
+	"github.com/bogware/bogform/internal/encryption"
+	"github.com/bogware/bogform/internal/providers"
 )
 
 // Provider is an implementation of providers.Interface

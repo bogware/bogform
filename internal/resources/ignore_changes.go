@@ -6,7 +6,7 @@
 package resources
 
 import (
-	"github.com/opentofu/opentofu/internal/configs/configschema"
+	"github.com/bogware/bogform/internal/configs/configschema"
 	"github.com/zclconf/go-cty/cty"
 )
 

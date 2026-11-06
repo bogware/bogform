@@ -1,6 +1,6 @@
 version_info {
-  version_var =    "github.com/opentofu/opentofu/version.Version"
-  prerelease_var = "github.com/opentofu/opentofu/version.Prerelease"
+  version_var =    "github.com/bogware/bogform/version.Version"
+  prerelease_var = "github.com/bogware/bogform/version.Prerelease"
 }
 
 version_exec = false

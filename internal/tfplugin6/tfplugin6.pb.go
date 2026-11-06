@@ -8659,7 +8659,7 @@ const file_tfplugin6_proto_rawDesc = "" +
 	"PlanAction\x12\x1d.tfplugin6.PlanAction.Request\x1a\x1e.tfplugin6.PlanAction.Response\x12P\n" +
 	"\fInvokeAction\x12\x1f.tfplugin6.InvokeAction.Request\x1a\x1d.tfplugin6.InvokeAction.Event0\x01\x12i\n" +
 	"\x14ValidateActionConfig\x12'.tfplugin6.ValidateActionConfig.Request\x1a(.tfplugin6.ValidateActionConfig.Response\x12Q\n" +
-	"\fStopProvider\x12\x1f.tfplugin6.StopProvider.Request\x1a .tfplugin6.StopProvider.ResponseB1Z/github.com/opentofu/opentofu/internal/tfplugin6b\x06proto3"
+	"\fStopProvider\x12\x1f.tfplugin6.StopProvider.Request\x1a .tfplugin6.StopProvider.ResponseB/Z-github.com/bogware/bogform/internal/tfplugin6b\x06proto3"
 
 var (
 	file_tfplugin6_proto_rawDescOnce sync.Once

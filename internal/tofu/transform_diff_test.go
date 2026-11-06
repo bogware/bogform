@@ -10,16 +10,16 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bogware/bogform/internal/configs"
+	"github.com/bogware/bogform/internal/refactoring"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/opentofu/opentofu/internal/configs"
-	"github.com/opentofu/opentofu/internal/refactoring"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/plans"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/plans"
 )
 
 func TestDiffTransformer_nilDiff(t *testing.T) {

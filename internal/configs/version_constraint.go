@@ -9,9 +9,9 @@ import (
 	"fmt"
 
 	"github.com/apparentlymart/go-versions/versions"
+	"github.com/bogware/bogform/internal/lang/marks"
 	version "github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/opentofu/opentofu/internal/lang/marks"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 )

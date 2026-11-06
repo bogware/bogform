@@ -8,9 +8,9 @@ package tofu
 import (
 	"fmt"
 
-	"github.com/opentofu/opentofu/internal/addrs"
-	"github.com/opentofu/opentofu/internal/providers"
-	"github.com/opentofu/opentofu/internal/provisioners"
+	"github.com/bogware/bogform/internal/addrs"
+	"github.com/bogware/bogform/internal/providers"
+	"github.com/bogware/bogform/internal/provisioners"
 )
 
 // contextComponentFactory is the interface that Context uses

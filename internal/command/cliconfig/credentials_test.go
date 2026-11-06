@@ -17,7 +17,7 @@ import (
 	"github.com/opentofu/svchost/svcauth"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/opentofu/opentofu/internal/command/cliconfig/svcauthconfig"
+	"github.com/bogware/bogform/internal/command/cliconfig/svcauthconfig"
 )
 
 func TestCredentialsForHost(t *testing.T) {
