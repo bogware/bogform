@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.14.0-alpha1 (November 6, 2026)
 
 Bogform forked from OpenTofu at 1.14.0-dev. Entries below this section are inherited from OpenTofu and
 use its name.
