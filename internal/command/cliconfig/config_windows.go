@@ -26,6 +26,11 @@ func (cl *ConfigLoader) configFile() (string, error) {
 		return "", err
 	}
 
+	bogConfigFile := filepath.Join(dir, "bogform.rc")
+	if _, err := cl.Stat(bogConfigFile); err == nil {
+		return bogConfigFile, nil
+	}
+
 	newConfigFile := filepath.Join(dir, "tofu.rc")
 	legacyConfigFile := filepath.Join(dir, "terraform.rc")
 

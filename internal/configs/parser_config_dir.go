@@ -33,6 +33,11 @@ const (
 	tofuTestJSONExt = ".tofutest.json"
 	tfTestMockExt   = ".tfmock.hcl"
 	tofuTestMockExt = ".tofumock.hcl"
+	bogExt          = ".bog"
+	bogJSONExt      = ".bog.json"
+	bogTestExt      = ".bogtest.hcl"
+	bogTestJSONExt  = ".bogtest.json"
+	bogTestMockExt  = ".bogmock.hcl"
 )
 
 // LoadConfigDir reads the .tf and .tf.json files in the given directory
@@ -267,33 +272,34 @@ func (p *Parser) dirFiles(dir string, testsDir string) (primary, override, tests
 		}
 	}
 
-	return filterTfPathsWithTofuAlternatives(primary), filterTfPathsWithTofuAlternatives(override), filterTfPathsWithTofuAlternatives(tests), symbols, diags
+	return filterSupersededPaths(primary), filterSupersededPaths(override), filterSupersededPaths(tests), symbols, diags
 }
 
-// filterTfPathsWithTofuAlternatives filters out .tf files if they have an
-// alternative .tofu file with the same name.
-// For example, if there are both 'resources.tf.json' and
-// 'resources.tofu.json' files, the 'resources.tf.json' file will be ignored,
-// and only the 'resources.tofu.json' file will be returned as a relevant path.
-func filterTfPathsWithTofuAlternatives(paths []string) []string {
+// filterSupersededPaths filters out configuration files that have an alternative
+// with the same name and a higher-priority extension: .bog files replace .tofu
+// and .tf files, and .tofu files replace .tf files.
+// For example, if there are both 'resources.tf.json' and 'resources.bog.json'
+// files, only the 'resources.bog.json' file will be returned as a relevant path.
+func filterSupersededPaths(paths []string) []string {
 	var ignoredPaths []string
 	var relevantPaths []string
 
 	for _, p := range paths {
-		ext := tfFileExt(p)
-
-		if ext == "" {
-			relevantPaths = append(relevantPaths, p)
-			continue
+		var alternatives []string
+		if ext := tfFileExt(p); ext != "" {
+			withoutExt := strings.TrimSuffix(p, ext)
+			alternatives = []string{
+				withoutExt + strings.ReplaceAll(ext, ".tf", ".tofu"),
+				withoutExt + strings.ReplaceAll(ext, ".tf", ".bog"),
+			}
+		} else if ext := tofuFileExt(p); ext != "" {
+			alternatives = []string{strings.TrimSuffix(p, ext) + strings.ReplaceAll(ext, ".tofu", ".bog")}
 		}
 
-		parallelTofuExt := strings.ReplaceAll(ext, ".tf", ".tofu")
-		pathWithoutExt, _ := strings.CutSuffix(p, ext)
-		parallelTofuPath := pathWithoutExt + parallelTofuExt
-
-		// If the .tf file has a parallel .tofu file in the directory,
-		// we'll ignore the .tf file and only use the .tofu file
-		if slices.Contains(paths, parallelTofuPath) {
+		superseded := slices.ContainsFunc(alternatives, func(alternative string) bool {
+			return slices.Contains(paths, alternative)
+		})
+		if superseded {
 			ignoredPaths = append(ignoredPaths, p)
 		} else {
 			relevantPaths = append(relevantPaths, p)
@@ -301,7 +307,7 @@ func filterTfPathsWithTofuAlternatives(paths []string) []string {
 	}
 
 	if len(ignoredPaths) > 0 {
-		log.Printf("[INFO] filterTfPathsWithTofuAlternatives: Ignored the following .tf files because a .tofu file alternative exists: %q", ignoredPaths)
+		log.Printf("[INFO] filterSupersededPaths: Ignored the following files because a higher-priority alternative exists: %q", ignoredPaths)
 	}
 
 	return relevantPaths
@@ -341,6 +347,10 @@ func fileExt(path string) string {
 
 	if extension == "" {
 		extension = tofuFileExt(path)
+	}
+
+	if extension == "" {
+		extension = bogFileExt(path)
 	}
 
 	if extension == "" {
@@ -384,6 +394,23 @@ func tofuFileExt(path string) string {
 	return ""
 }
 
+// bogFileExt returns the Bogform .bog configuration extension of the given
+// path, or a blank string if it is not a recognized .bog extension.
+func bogFileExt(path string) string {
+	switch {
+	case strings.HasSuffix(path, bogExt):
+		return bogExt
+	case strings.HasSuffix(path, bogJSONExt):
+		return bogJSONExt
+	case strings.HasSuffix(path, bogTestExt):
+		return bogTestExt
+	case strings.HasSuffix(path, bogTestJSONExt):
+		return bogTestJSONExt
+	}
+
+	return ""
+}
+
 func symbolFileExt(path string) string {
 	symbolExt := ".sym.hcl"
 	if strings.HasSuffix(path, symbolExt) {
@@ -395,6 +422,8 @@ func symbolFileExt(path string) string {
 // mockFileExt returns the extension of the given mock file.
 func mockFileExt(path string) (string, bool) {
 	switch {
+	case strings.HasSuffix(path, bogTestMockExt):
+		return bogTestMockExt, true
 	case strings.HasSuffix(path, tofuTestMockExt):
 		return tofuTestMockExt, true
 	case strings.HasSuffix(path, tfTestMockExt):
@@ -405,7 +434,7 @@ func mockFileExt(path string) (string, bool) {
 }
 
 func isTestFileExt(ext string) bool {
-	return ext == tfTestExt || ext == tfTestJSONExt || ext == tofuTestExt || ext == tofuTestJSONExt
+	return ext == tfTestExt || ext == tfTestJSONExt || ext == tofuTestExt || ext == tofuTestJSONExt || ext == bogTestExt || ext == bogTestJSONExt
 }
 
 // IsIgnoredFile returns true if the given filename (which must not have a

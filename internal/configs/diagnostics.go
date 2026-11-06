@@ -115,7 +115,7 @@ func checkVersionRequirements(body hcl.Body, expectedVersion *hcVersion.Version)
 			// argument in a "terraform" block. We only pay attention to these
 			// in OpenTofu-specific files, because otherwise we assume they
 			// are intended to constrain our predecessor instead.
-			if ext := tofuFileExt(block.DefRange.Filename); ext == "" {
+			if tofuFileExt(block.DefRange.Filename) == "" && bogFileExt(block.DefRange.Filename) == "" {
 				continue // not an OpenTofu-specific file
 			}
 

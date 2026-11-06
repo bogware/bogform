@@ -27,8 +27,9 @@ func decodeCloudBlock(block *hcl.Block) (*CloudConfig, hcl.Diagnostics) {
 
 func (c *CloudConfig) ToBackendConfig() Backend {
 	return Backend{
-		Type:   "cloud",
-		Config: c.Config,
-		Eval:   c.eval,
+		Type:      "cloud",
+		TypeRange: c.DeclRange,
+		Config:    c.Config,
+		Eval:      c.eval,
 	}
 }

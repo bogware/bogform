@@ -1,4 +1,4 @@
-// Copyright (c) The OpenTofu Authors
+// Copyright (c) The Bogform Authors
 // SPDX-License-Identifier: MPL-2.0
 
 package command

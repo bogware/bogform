@@ -29,9 +29,11 @@ var (
 	fmtSupportedExts = []string{
 		".tf",
 		".tofu",
+		".bog",
 		".tfvars",
 		".tftest.hcl",
 		".tofutest.hcl",
+		".bogtest.hcl",
 	}
 )
 
@@ -164,7 +166,7 @@ func (c *FmtCommand) fmt(paths []string, stdin io.Reader, stdout io.Writer, args
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Invalid file extension",
-					"Only .tf, .tofu, .tfvars, .tftest.hcl, and .tofutest.hcl files can be processed with tofu fmt",
+					"Only .tf, .tofu, .bog, .tfvars, .tftest.hcl, .tofutest.hcl, and .bogtest.hcl files can be processed with tofu fmt",
 				))
 				continue
 			}

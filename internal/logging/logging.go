@@ -14,6 +14,9 @@ import (
 	"syscall"
 
 	"github.com/hashicorp/go-hclog"
+
+	// Applies BOG_* variables before this package's init functions read them.
+	_ "github.com/bogware/bogform/internal/bogenv"
 )
 
 // These are the environmental variables that determine if we log, and if

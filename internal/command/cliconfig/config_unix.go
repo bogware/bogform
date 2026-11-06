@@ -20,6 +20,15 @@ func (cl *ConfigLoader) configFile() (string, error) {
 		return "", err
 	}
 
+	if bogConfigFile := filepath.Join(dir, ".bogformrc"); cl.pathExists(bogConfigFile) {
+		return bogConfigFile, nil
+	}
+	if xdgDir := os.Getenv("XDG_CONFIG_HOME"); xdgDir != "" {
+		if bogConfigFile := filepath.Join(xdgDir, "bogform", "bogformrc"); cl.pathExists(bogConfigFile) {
+			return bogConfigFile, nil
+		}
+	}
+
 	newConfigFile := filepath.Join(dir, ".tofurc")
 	legacyConfigFile := filepath.Join(dir, ".terraformrc")
 
