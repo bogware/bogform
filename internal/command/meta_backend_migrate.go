@@ -16,8 +16,6 @@ import (
 	"strings"
 
 	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/backend/remote"
-	"github.com/opentofu/opentofu/internal/cloud"
 	"github.com/opentofu/opentofu/internal/command/clistate"
 	"github.com/opentofu/opentofu/internal/command/views"
 	"github.com/opentofu/opentofu/internal/encryption"
@@ -60,10 +58,7 @@ func (m *Meta) backendMigrateState(ctx context.Context, opts *backendMigrateOpts
 	log.Printf("[INFO] backendMigrateState: need to migrate from %q to %q backend config", opts.SourceType, opts.DestinationType)
 	// We need to check what the named state status is. If we're converting
 	// from multi-state to single-state for example, we need to handle that.
-	var sourceSingleState, destinationSingleState, sourceTFC, destinationTFC bool
-
-	_, sourceTFC = opts.Source.(*cloud.Cloud)
-	_, destinationTFC = opts.Destination.(*cloud.Cloud)
+	var sourceSingleState, destinationSingleState bool
 
 	sourceWorkspaces, sourceSingleState, err := retrieveWorkspaces(ctx, opts.Source, opts.SourceType)
 	if err != nil {
@@ -79,18 +74,17 @@ func (m *Meta) backendMigrateState(ctx context.Context, opts *backendMigrateOpts
 	opts.destinationWorkspace = backend.DefaultStateName
 	opts.force = m.backendArgs.ForceInitCopy
 
-	// Disregard remote OpenTofu version for the state source backend. If it's a
-	// Terraform Cloud remote backend, we don't care about the remote version,
-	// as we are migrating away and will not break a remote workspace.
+	// Disregard remote OpenTofu version for the state source backend, as we are
+	// migrating away and will not break a remote workspace.
 	m.ignoreRemoteVersionConflict(opts.Source)
 
 	// Disregard remote OpenTofu version if instructed to do so via CLI flag.
 	if m.backendArgs.IgnoreRemoteVersion {
 		m.ignoreRemoteVersionConflict(opts.Destination)
 	} else {
-		// Check the remote OpenTofu version for the state destination backend. If
-		// it's a Terraform Cloud remote backend, we want to ensure that we don't
-		// break the workspace by uploading an incompatible state file.
+		// Check the remote OpenTofu version for the state destination backend, to
+		// ensure that we don't break the workspace by uploading an incompatible
+		// state file.
 		for _, workspace := range destinationWorkspaces {
 			diags := m.remoteVersionCheck(opts.Destination, workspace)
 			if diags.HasErrors() {
@@ -99,9 +93,7 @@ func (m *Meta) backendMigrateState(ctx context.Context, opts *backendMigrateOpts
 		}
 		// If there are no specified destination workspaces, perform a remote
 		// backend version check with the default workspace.
-		// Ensure that we are not dealing with Terraform Cloud migrations, as it
-		// does not support the default name.
-		if len(destinationWorkspaces) == 0 && !destinationTFC {
+		if len(destinationWorkspaces) == 0 {
 			diags := m.remoteVersionCheck(opts.Destination, backend.DefaultStateName)
 			if diags.HasErrors() {
 				return diags.Err()
@@ -112,9 +104,6 @@ func (m *Meta) backendMigrateState(ctx context.Context, opts *backendMigrateOpts
 	// Determine migration behavior based on whether the source/destination
 	// supports multi-state.
 	switch {
-	case sourceTFC || destinationTFC:
-		return m.backendMigrateTFC(ctx, opts)
-
 	// Single-state to single-state. This is the easiest case: we just
 	// copy the default state directly.
 	case sourceSingleState && destinationSingleState:
@@ -399,18 +388,8 @@ func (m *Meta) backendMigrateState_s_s(ctx context.Context, opts *backendMigrate
 	// We have existing state moving into no state. Ask the user if
 	// they'd like to do this.
 	case !source.Empty() && destination.Empty():
-		if opts.SourceType == "cloud" || opts.DestinationType == "cloud" {
-			// HACK: backendMigrateTFC has its own earlier prompt for
-			// whether to migrate state in the cloud case, so we'll skip
-			// this later prompt for Cloud, even though we do still need it
-			// for state backends.
-			confirmFunc = func(statemgr.Full, statemgr.Full, *backendMigrateOpts) (bool, error) {
-				return true, nil // the answer is implied to be "yes" if we reached this point
-			}
-		} else {
-			log.Print("[TRACE] backendMigrateState: destination workspace has empty state, so might copy source workspace state")
-			confirmFunc = m.backendMigrateEmptyConfirm
-		}
+		log.Print("[TRACE] backendMigrateState: destination workspace has empty state, so might copy source workspace state")
+		confirmFunc = m.backendMigrateEmptyConfirm
 
 	// Both states are non-empty, meaning we need to determine which
 	// state should be used and update accordingly.
@@ -464,21 +443,12 @@ func (m *Meta) backendMigrateState_s_s(ctx context.Context, opts *backendMigrate
 }
 
 func (m *Meta) backendMigrateEmptyConfirm(source, destination statemgr.Full, opts *backendMigrateOpts) (bool, error) {
-	var inputOpts *tofu.InputOpts
-	if opts.DestinationType == "cloud" {
-		inputOpts = &tofu.InputOpts{
-			Id:          "backend-migrate-copy-to-empty-cloud",
-			Query:       "Do you want to copy existing state to cloud backend?",
-			Description: fmt.Sprintf(strings.TrimSpace(inputBackendMigrateEmptyCloud), opts.SourceType),
-		}
-	} else {
-		inputOpts = &tofu.InputOpts{
-			Id:    "backend-migrate-copy-to-empty",
-			Query: "Do you want to copy existing state to the new backend?",
-			Description: fmt.Sprintf(
-				strings.TrimSpace(inputBackendMigrateEmpty),
-				opts.SourceType, opts.DestinationType),
-		}
+	inputOpts := &tofu.InputOpts{
+		Id:    "backend-migrate-copy-to-empty",
+		Query: "Do you want to copy existing state to the new backend?",
+		Description: fmt.Sprintf(
+			strings.TrimSpace(inputBackendMigrateEmpty),
+			opts.SourceType, opts.DestinationType),
 	}
 
 	return m.confirm(inputOpts)
@@ -513,23 +483,12 @@ func (m *Meta) backendMigrateNonEmptyConfirm(
 	}
 
 	// Ask for confirmation
-	var inputOpts *tofu.InputOpts
-	if opts.DestinationType == "cloud" {
-		inputOpts = &tofu.InputOpts{
-			Id:    "backend-migrate-to-tfc",
-			Query: "Do you want to copy existing state to cloud backend?",
-			Description: fmt.Sprintf(
-				strings.TrimSpace(inputBackendMigrateNonEmptyCloud),
-				opts.SourceType, sourcePath, destinationPath),
-		}
-	} else {
-		inputOpts = &tofu.InputOpts{
-			Id:    "backend-migrate-to-backend",
-			Query: "Do you want to copy existing state to the new backend?",
-			Description: fmt.Sprintf(
-				strings.TrimSpace(inputBackendMigrateNonEmpty),
-				opts.SourceType, opts.DestinationType, sourcePath, destinationPath),
-		}
+	inputOpts := &tofu.InputOpts{
+		Id:    "backend-migrate-to-backend",
+		Query: "Do you want to copy existing state to the new backend?",
+		Description: fmt.Sprintf(
+			strings.TrimSpace(inputBackendMigrateNonEmpty),
+			opts.SourceType, opts.DestinationType, sourcePath, destinationPath),
 	}
 
 	// Confirm with the user that the copy should occur
@@ -552,321 +511,6 @@ func retrieveWorkspaces(ctx context.Context, back backend.Backend, sourceType st
 	return workspaces, singleState, err
 }
 
-func (m *Meta) backendMigrateTFC(ctx context.Context, opts *backendMigrateOpts) error {
-	_, sourceTFC := opts.Source.(*cloud.Cloud)
-	cloudBackendDestination, destinationTFC := opts.Destination.(*cloud.Cloud)
-
-	sourceWorkspaces, sourceSingleState, err := retrieveWorkspaces(ctx, opts.Source, opts.SourceType)
-	if err != nil {
-		return err
-	}
-	// to be used below, not yet implemented
-	// destinationWorkspaces, destinationSingleState
-	_, _, err = retrieveWorkspaces(ctx, opts.Destination, opts.SourceType)
-	if err != nil {
-		return err
-	}
-
-	// from TFC to non-TFC backend
-	if sourceTFC && !destinationTFC {
-		// From Terraform Cloud to another backend. This is not yet implemented, and
-		// we recommend people to use the TFC API.
-		return fmt.Errorf("%s", strings.TrimSpace(errTFCMigrateNotYetImplemented))
-	}
-
-	// Everything below, by the above two conditionals, now assumes that the
-	// destination is always Terraform Cloud (TFC).
-
-	sourceSingle := sourceSingleState || (len(sourceWorkspaces) == 1)
-	if sourceSingle {
-		if cloudBackendDestination.WorkspaceMapping.Strategy() == cloud.WorkspaceNameStrategy {
-			// If we know the name via WorkspaceNameStrategy, then set the
-			// destinationWorkspace to the new Name and skip the user prompt. Here the
-			// destinationWorkspace is not set to `default` thereby we will create it
-			// in TFC if it does not exist.
-			opts.destinationWorkspace = cloudBackendDestination.WorkspaceMapping.Name
-		}
-
-		currentWorkspace, err := m.Workspace(ctx)
-		if err != nil {
-			return err
-		}
-		opts.sourceWorkspace = currentWorkspace
-
-		log.Printf("[INFO] backendMigrateTFC: single-to-single migration from source %s to destination %q", opts.sourceWorkspace, opts.destinationWorkspace)
-
-		// If the current workspace is has no state we do not need to ask
-		// if they want to migrate the state.
-		sourceState, err := opts.Source.StateMgr(ctx, currentWorkspace)
-		if err != nil {
-			return err
-		}
-		if err := sourceState.RefreshState(context.TODO()); err != nil {
-			return err
-		}
-		if sourceState.State().Empty() {
-			log.Printf("[INFO] backendMigrateTFC: skipping migration because source %s is empty", opts.sourceWorkspace)
-			return nil
-		}
-
-		// Run normal single-to-single state migration.
-		// This will handle both situations where the new cloud backend
-		// configuration is using a workspace.name strategy or workspace.tags
-		// strategy.
-		//
-		// We do prompt first though, because state migration is mandatory
-		// for moving to Cloud and the user should get an opportunity to
-		// confirm that first.
-		if migrate, err := m.promptSingleToCloudSingleStateMigration(opts); err != nil {
-			return err
-		} else if !migrate {
-			return nil // skip migrating but return successfully
-		}
-
-		return m.backendMigrateState_s_s(ctx, opts)
-	}
-
-	destinationTagsStrategy := cloudBackendDestination.WorkspaceMapping.Strategy() == cloud.WorkspaceTagsStrategy
-	destinationNameStrategy := cloudBackendDestination.WorkspaceMapping.Strategy() == cloud.WorkspaceNameStrategy
-
-	multiSource := !sourceSingleState && len(sourceWorkspaces) > 1
-	if multiSource && destinationNameStrategy {
-		currentWorkspace, err := m.Workspace(ctx)
-		if err != nil {
-			return err
-		}
-
-		opts.sourceWorkspace = currentWorkspace
-		opts.destinationWorkspace = cloudBackendDestination.WorkspaceMapping.Name
-		if err := m.promptMultiToSingleCloudMigration(opts); err != nil {
-			return err
-		}
-
-		log.Printf("[INFO] backendMigrateTFC: multi-to-single migration from source %s to destination %q", opts.sourceWorkspace, opts.destinationWorkspace)
-
-		return m.backendMigrateState_s_s(ctx, opts)
-	}
-
-	// Multiple sources, and using tags strategy. So migrate every source
-	// workspace over to new one, prompt for workspace name pattern (*),
-	// and start migrating, and create tags for each workspace.
-	if multiSource && destinationTagsStrategy {
-		log.Printf("[INFO] backendMigrateTFC: multi-to-multi migration from source workspaces %q", sourceWorkspaces)
-		return m.backendMigrateState_S_TFC(ctx, opts, sourceWorkspaces)
-	}
-
-	// TODO(omar): after the check for sourceSingle is done, everything following
-	// it has to be multi. So rework the code to not need to check for multi, and
-	// return m.backendMigrateState_S_TFC here.
-	return nil
-}
-
-// migrates a multi-state backend to Terraform Cloud
-func (m *Meta) backendMigrateState_S_TFC(ctx context.Context, opts *backendMigrateOpts, sourceWorkspaces []string) error {
-	log.Print("[TRACE] backendMigrateState: migrating all named workspaces")
-
-	currentWorkspace, err := m.Workspace(ctx)
-	if err != nil {
-		return err
-	}
-	newCurrentWorkspace := ""
-
-	// This map is used later when doing the migration per source/destination.
-	// If a source has 'default' and has state, then we ask what the new name should be.
-	// And further down when we actually run state migration for each
-	// source/destination workspace, we use this new name (where source is 'default')
-	// and set as destinationWorkspace. If the default workspace does not have
-	// state we will not prompt the user for a new name because empty workspaces
-	// do not get migrated.
-	defaultNewName := map[string]string{}
-	for i := range sourceWorkspaces {
-		if sourceWorkspaces[i] == backend.DefaultStateName {
-			// For the default workspace we want to look to see if there is any state
-			// before we ask for a workspace name to migrate the default workspace into.
-			sourceState, err := opts.Source.StateMgr(ctx, backend.DefaultStateName)
-			if err != nil {
-				return fmt.Errorf(strings.TrimSpace(
-					errMigrateSingleLoadDefault), opts.SourceType, err)
-			}
-			// RefreshState is what actually pulls the state to be evaluated.
-			if err := sourceState.RefreshState(context.TODO()); err != nil {
-				return fmt.Errorf(strings.TrimSpace(
-					errMigrateSingleLoadDefault), opts.SourceType, err)
-			}
-			if !sourceState.State().Empty() {
-				newName, err := m.promptNewWorkspaceName(opts.DestinationType)
-				if err != nil {
-					return err
-				}
-				defaultNewName[sourceWorkspaces[i]] = newName
-			}
-		}
-	}
-
-	// Fetch the pattern that will be used to rename the workspaces for Terraform Cloud.
-	//
-	// * For the general case, this will be a pattern provided by the user.
-	//
-	// * Specifically for a migration from the "remote" backend using 'prefix', we will
-	//   instead 'migrate' the workspaces using a pattern based on the old prefix+name,
-	//   not allowing a user to accidentally input the wrong pattern to line up with
-	//   what the remote backend was already using before (which presumably already
-	//   meets the naming considerations for Terraform Cloud).
-	//   In other words, this is a fast-track migration path from the remote backend, retaining
-	//   how things already are in Terraform Cloud with no user intervention needed.
-	pattern := ""
-	if remoteBackend, ok := opts.Source.(*remote.Remote); ok {
-		if err := m.promptRemotePrefixToCloudTagsMigration(opts); err != nil {
-			return err
-		}
-		pattern = remoteBackend.WorkspaceNamePattern()
-		log.Printf("[TRACE] backendMigrateTFC: Remote backend reports workspace name pattern as: %q", pattern)
-	}
-
-	if pattern == "" {
-		pattern, err = m.promptMultiStateMigrationPattern(opts.SourceType)
-		if err != nil {
-			return err
-		}
-	}
-
-	// Go through each and migrate
-	for _, name := range sourceWorkspaces {
-
-		// Copy the same names
-		opts.sourceWorkspace = name
-		if newName, ok := defaultNewName[name]; ok {
-			// this has to be done before setting destinationWorkspace
-			name = newName
-		}
-		opts.destinationWorkspace = strings.ReplaceAll(pattern, "*", name)
-
-		// Force it, we confirmed above
-		opts.force = true
-
-		// Perform the migration
-		log.Printf("[INFO] backendMigrateTFC: multi-to-multi migration, source workspace %q to destination workspace %q", opts.sourceWorkspace, opts.destinationWorkspace)
-		if err := m.backendMigrateState_s_s(ctx, opts); err != nil {
-			return fmt.Errorf(strings.TrimSpace(
-				errMigrateMulti), name, opts.SourceType, opts.DestinationType, err)
-		}
-
-		if currentWorkspace == opts.sourceWorkspace {
-			newCurrentWorkspace = opts.destinationWorkspace
-		}
-	}
-
-	// After migrating multiple workspaces, we need to reselect the current workspace as it may
-	// have been renamed. Query the backend first to be sure it now exists.
-	workspaces, err := opts.Destination.Workspaces(ctx)
-	if err != nil {
-		return err
-	}
-
-	var workspacePresent bool
-	for _, name := range workspaces {
-		if name == newCurrentWorkspace {
-			workspacePresent = true
-		}
-	}
-
-	// If we couldn't select the workspace automatically from the backend (maybe it was empty
-	// and wasn't migrated, for instance), ask the user to select one instead and be done.
-	if !workspacePresent {
-		if err = m.selectWorkspace(ctx, opts.Destination); err != nil {
-			return err
-		}
-		return nil
-	}
-
-	// The newly renamed current workspace is present, so we'll automatically select it for the
-	// user, as well as display the equivalent of 'workspace list' to show how the workspaces
-	// were changed (as well as the newly selected current workspace).
-	if err = m.SetWorkspace(newCurrentWorkspace); err != nil {
-		return err
-	}
-
-	view := opts.backendView(m.View)
-	view.MigrationCompleted(workspaces, newCurrentWorkspace)
-
-	return nil
-}
-
-func (m *Meta) promptSingleToCloudSingleStateMigration(opts *backendMigrateOpts) (bool, error) {
-	if !m.input {
-		log.Print("[TRACE] backendMigrateState: can't prompt for input, so aborting migration")
-		return false, errors.New(strings.TrimSpace(errInteractiveInputDisabled))
-	}
-	migrate := opts.force
-	if !migrate {
-		var err error
-		migrate, err = m.confirm(&tofu.InputOpts{
-			Id:          "backend-migrate-state-single-to-cloud-single",
-			Query:       "Do you wish to proceed?",
-			Description: strings.TrimSpace(tfcInputBackendMigrateStateSingleToCloudSingle),
-		})
-		if err != nil {
-			return false, fmt.Errorf("Error asking for state migration action: %w", err)
-		}
-	}
-
-	return migrate, nil
-}
-
-func (m *Meta) promptRemotePrefixToCloudTagsMigration(opts *backendMigrateOpts) error {
-	if !m.input {
-		log.Print("[TRACE] backendMigrateState: can't prompt for input, so aborting migration")
-		return errors.New(strings.TrimSpace(errInteractiveInputDisabled))
-	}
-	migrate := opts.force
-	if !migrate {
-		var err error
-		migrate, err = m.confirm(&tofu.InputOpts{
-			Id:          "backend-migrate-remote-multistate-to-cloud",
-			Query:       "Do you wish to proceed?",
-			Description: strings.TrimSpace(tfcInputBackendMigrateRemoteMultiToCloud),
-		})
-		if err != nil {
-			return fmt.Errorf("Error asking for state migration action: %w", err)
-		}
-	}
-
-	if !migrate {
-		return fmt.Errorf("Migration aborted by user.")
-	}
-
-	return nil
-}
-
-// Multi-state to single state.
-func (m *Meta) promptMultiToSingleCloudMigration(opts *backendMigrateOpts) error {
-	if !m.input {
-		log.Print("[TRACE] backendMigrateState: can't prompt for input, so aborting migration")
-		return errors.New(strings.TrimSpace(errInteractiveInputDisabled))
-	}
-	migrate := opts.force
-	if !migrate {
-		var err error
-		// Ask the user if they want to migrate their existing remote state
-		migrate, err = m.confirm(&tofu.InputOpts{
-			Id:    "backend-migrate-multistate-to-single",
-			Query: "Do you want to copy only your current workspace?",
-			Description: fmt.Sprintf(
-				strings.TrimSpace(tfcInputBackendMigrateMultiToSingle),
-				opts.SourceType, opts.destinationWorkspace),
-		})
-		if err != nil {
-			return fmt.Errorf("Error asking for state migration action: %w", err)
-		}
-	}
-
-	if !migrate {
-		return fmt.Errorf("Migration aborted by user.")
-	}
-
-	return nil
-}
-
 func (m *Meta) promptNewWorkspaceName(destinationType string) (string, error) {
 	message := fmt.Sprintf("[reset][bold][yellow]The %q backend configuration only allows "+
 		"named workspaces![reset]", destinationType)
@@ -887,46 +531,6 @@ func (m *Meta) promptNewWorkspaceName(destinationType string) (string, error) {
 	}
 
 	return name, nil
-}
-
-func (m *Meta) promptMultiStateMigrationPattern(sourceType string) (string, error) {
-	// This is not the first prompt a user would be presented with in the migration to TFC, so no
-	// guard on m.input is needed here.
-	renameWorkspaces, err := m.UIInput().Input(context.Background(), &tofu.InputOpts{
-		Id:          "backend-migrate-multistate-to-tfc",
-		Query:       fmt.Sprintf("[reset][bold][yellow]%s[reset]", "Would you like to rename your workspaces?"),
-		Description: fmt.Sprintf(strings.TrimSpace(tfcInputBackendMigrateMultiToMulti), sourceType),
-	})
-	if err != nil {
-		return "", fmt.Errorf("Error asking for state migration action: %w", err)
-	}
-	if renameWorkspaces != "2" && renameWorkspaces != "1" {
-		return "", fmt.Errorf("Please select 1 or 2 as part of this option.")
-	}
-	if renameWorkspaces == "2" {
-		// this means they did not want to rename their workspaces, and we are
-		// returning a generic '*' that means use the same workspace name during
-		// migration.
-		return "*", nil
-	}
-
-	pattern, err := m.UIInput().Input(context.Background(), &tofu.InputOpts{
-		Id:          "backend-migrate-multistate-to-tfc-pattern",
-		Query:       fmt.Sprintf("[reset][bold][yellow]%s[reset]", "How would you like to rename your workspaces?"),
-		Description: strings.TrimSpace(tfcInputBackendMigrateMultiToMultiPattern),
-	})
-	if err != nil {
-		return "", fmt.Errorf("Error asking for state migration action: %w", err)
-	}
-	if !strings.Contains(pattern, "*") {
-		return "", fmt.Errorf("The pattern must have an '*'")
-	}
-
-	if count := strings.Count(pattern, "*"); count > 1 {
-		return "", fmt.Errorf("The pattern '*' cannot be used more than once.")
-	}
-
-	return pattern, nil
 }
 
 const errMigrateLoadStates = `
@@ -972,10 +576,6 @@ The state in the previous backend remains intact and unmodified. Please resolve
 the error above and try again.
 `
 
-const errTFCMigrateNotYetImplemented = `
-Migrating state from cloud backend to another backend is not yet implemented.
-`
-
 const errInteractiveInputDisabled = `
 Can't ask approval for state migration when interactive input is disabled.
 
@@ -983,74 +583,11 @@ If non-interactive operation is desired, consider adding the "-force-copy"
 option. Otherwise, please remove the "-input=false" option and try again.
 `
 
-const tfcInputBackendMigrateMultiToMultiPattern = `
-Enter a pattern with an asterisk (*) to rename all workspaces based on their
-previous names. The asterisk represents the current workspace name.
-
-For example, if a workspace is currently named 'prod', the pattern 'app-*' would yield
-'app-prod' for a new workspace name; 'app-*-region1' would  yield 'app-prod-region1'.
-`
-
-const tfcInputBackendMigrateMultiToMulti = `
-Unlike typical OpenTofu workspaces representing an environment associated with a particular
-configuration (e.g. production, staging, development), cloud backend workspaces are named uniquely
-across all configurations used within an organization. A typical strategy to start with is
-<COMPONENT>-<ENVIRONMENT>-<REGION> (e.g. networking-prod-us-east, networking-staging-us-east).
-
-When migrating existing workspaces from the backend %[1]q to cloud backend, would you like to
-rename your workspaces? Enter 1 or 2.
-
-1. Yes, I'd like to rename all workspaces according to a pattern I will provide.
-2. No, I would not like to rename my workspaces. Migrate them as currently named.
-`
-
-const tfcInputBackendMigrateMultiToSingle = `
-The previous backend %[1]q has multiple workspaces, but cloud backend has
-been configured to use a single workspace (%[2]q). By continuing, you will
-only migrate your current workspace. If you wish to migrate all workspaces
-from the previous backend, you may cancel this operation and use the 'tags'
-strategy in your workspace configuration block instead.
-
-Enter "yes" to proceed or "no" to cancel.
-`
-
-const tfcInputBackendMigrateStateSingleToCloudSingle = `
-As part of migrating to cloud backend, OpenTofu can optionally copy your
-current workspace state to the configured cloud backend workspace.
-
-Answer "yes" to copy the latest state snapshot to the configured
-cloud backend workspace.
-
-Answer "no" to ignore the existing state and just activate the configured
-cloud backend workspace with its existing state, if any.
-
-Should OpenTofu migrate your existing state?
-`
-
-const tfcInputBackendMigrateRemoteMultiToCloud = `
-When migrating from the 'remote' backend to OpenTofu's native integration
-with cloud backend, OpenTofu will automatically create or use existing
-workspaces based on the previous backend configuration's 'prefix' value.
-
-When the migration is complete, workspace names in OpenTofu will match the
-fully qualified cloud backend workspace name. If necessary, the workspace
-tags configured in the 'cloud' option block will be added to the associated
-cloud backend workspaces.
-
-Enter "yes" to proceed or "no" to cancel.
-`
-
 const inputBackendMigrateEmpty = `
 Pre-existing state was found while migrating the previous %q backend to the
 newly configured %q backend. No existing state was found in the newly
 configured %[2]q backend. Do you want to copy this state to the new %[2]q
 backend? Enter "yes" to copy and "no" to start with an empty state.
-`
-
-const inputBackendMigrateEmptyCloud = `
-Pre-existing state was found while migrating the previous %q backend to cloud backend.
-No existing state was found in cloud backend. Do you want to copy this state to cloud backend?
-Enter "yes" to copy and "no" to start with an empty state.
 `
 
 const inputBackendMigrateNonEmpty = `
@@ -1065,19 +602,6 @@ New      (type %[2]q): %[4]s
 Do you want to overwrite the state in the new backend with the previous state?
 Enter "yes" to copy and "no" to start with the existing state in the newly
 configured %[2]q backend.
-`
-
-const inputBackendMigrateNonEmptyCloud = `
-Pre-existing state was found while migrating the previous %q backend to
-cloud backend. An existing non-empty state already exists in cloud backend.
-The two states have been saved to temporary files that will be removed after
-responding to this query.
-
-Previous (type %[1]q): %[2]s
-New      (cloud backend): %[3]s
-
-Do you want to overwrite the state in cloud backend with the previous state?
-Enter "yes" to copy and "no" to start with the existing state in cloud backend.
 `
 
 const inputBackendMigrateMultiToSingle = `

@@ -171,19 +171,11 @@ func (c StateReplaceProviderCommand) Execute(args *arguments.StateReplaceProvide
 		resource.ProviderConfig.Provider = to
 	}
 
-	b, backendDiags := c.Backend(ctx, nil, enc.State())
+	_, backendDiags := c.Backend(ctx, nil, enc.State())
 	diags = diags.Append(backendDiags)
 	if backendDiags.HasErrors() {
 		view.Diagnostics(diags)
 		return 1
-	}
-
-	// Get schemas, if possible, before writing state
-	var schemas *tofu.Schemas
-	if isCloudMode(b) {
-		var schemaDiags tfdiags.Diagnostics
-		schemas, schemaDiags = c.MaybeGetSchemas(ctx, state, nil)
-		diags = diags.Append(schemaDiags)
 	}
 
 	// Write the updated state
@@ -191,7 +183,7 @@ func (c StateReplaceProviderCommand) Execute(args *arguments.StateReplaceProvide
 		view.StateSavingError(err.Error())
 		return 1
 	}
-	if err := stateMgr.PersistState(context.TODO(), schemas); err != nil {
+	if err := stateMgr.PersistState(context.TODO(), nil); err != nil {
 		view.StateSavingError(err.Error())
 		return 1
 	}

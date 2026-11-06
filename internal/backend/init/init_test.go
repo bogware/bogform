@@ -22,7 +22,6 @@ func TestInit_backend(t *testing.T) {
 		CanonicalName string
 	}{
 		{"local", "*local.Local", "local"},
-		{"remote", "*remote.Remote", "remote"},
 		{"azurerm", "*azure.Backend", "azurerm"},
 		{"consul", "*consul.Backend", "consul"},
 		{"cos", "*cos.Backend", "cos"},

@@ -205,12 +205,9 @@ func TestShow_argsPlanFileDoesNotExist(t *testing.T) {
 				t.Fatalf("unexpected exit status %d; want 1\ngot: %s", code, output.Stdout())
 			}
 
-			got := output.Stderr()
-			want1 := `couldn't load the provided path`
+			// Normalize whitespace because long diagnostic lines are wrapped.
+			got := strings.Join(strings.Fields(output.Stderr()), " ")
 			want2 := `open doesNotExist.tfplan: ` + syscall.ENOENT.Error()
-			if !strings.Contains(got, want1) {
-				t.Errorf("unexpected output\ngot: %s\nwant:\n%s", got, want1)
-			}
 			if !strings.Contains(got, want2) {
 				t.Errorf("unexpected output\ngot: %s\nwant:\n%s", got, want2)
 			}
@@ -267,14 +264,9 @@ func TestShow_json_argsPlanFileDoesNotExist(t *testing.T) {
 				t.Fatalf("unexpected exit status %d; want 1\ngot: %s", code, output.Stdout())
 			}
 
-			got := output.Stderr()
-			want1 := `couldn't load the provided path`
-
+			// Normalize whitespace because long diagnostic lines are wrapped.
+			got := strings.Join(strings.Fields(output.Stderr()), " ")
 			want2 := `open doesNotExist.tfplan: ` + syscall.ENOENT.Error()
-
-			if !strings.Contains(got, want1) {
-				t.Errorf("unexpected output\ngot: %s\nwant:\n%s", got, want1)
-			}
 			if !strings.Contains(got, want2) {
 				t.Errorf("unexpected output\ngot: %s\nwant:\n%s", got, want2)
 			}

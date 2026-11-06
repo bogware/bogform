@@ -164,41 +164,6 @@ func TestLocalRun_error(t *testing.T) {
 	assertBackendStateUnlocked(t, b)
 }
 
-func TestLocalRun_cloudPlan(t *testing.T) {
-	configDir := "./testdata/apply"
-	b := TestLocal(t)
-
-	_, configLoader := initwd.MustLoadConfigForTests(t, configDir, "tests")
-
-	planPath := "./testdata/plan-bookmark/bookmark.json"
-
-	planFile, err := planfile.OpenWrapped(planPath, encryption.PlanEncryptionDisabled())
-	if err != nil {
-		t.Fatalf("unexpected error reading planfile: %s", err)
-	}
-
-	streams, _ := terminal.StreamsForTesting(t)
-	view := views.NewView(streams)
-	backendView := views.NewBackendHuman(view)
-	stateLocker := clistate.NewLocker(0, backendView.StateLocker())
-
-	op := &backend.Operation{
-		ConfigDir:    configDir,
-		ConfigLoader: configLoader,
-		PlanFile:     planFile,
-		Workspace:    backend.DefaultStateName,
-		StateLocker:  stateLocker,
-	}
-
-	_, _, diags := b.LocalRun(context.Background(), t.Context(), op)
-	if !diags.HasErrors() {
-		t.Fatal("unexpected success")
-	}
-
-	// LocalRun() unlocks the state on failure
-	assertBackendStateUnlocked(t, b)
-}
-
 func TestLocalRun_stalePlan(t *testing.T) {
 	configDir := "./testdata/apply"
 	b := TestLocal(t)

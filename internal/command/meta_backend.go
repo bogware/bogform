@@ -24,7 +24,6 @@ import (
 	ctyjson "github.com/zclconf/go-cty/cty/json"
 
 	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/cloud"
 	"github.com/opentofu/opentofu/internal/command/arguments"
 	"github.com/opentofu/opentofu/internal/command/clistate"
 	"github.com/opentofu/opentofu/internal/command/views"
@@ -239,27 +238,7 @@ func (m *Meta) selectWorkspace(ctx context.Context, b backend.Backend) error {
 		return fmt.Errorf("Failed to get existing workspaces: %w", err)
 	}
 	if len(workspaces) == 0 {
-		if c, ok := b.(*cloud.Cloud); ok && m.input {
-			// len is always 1 if using Name; 0 means we're using Tags and there
-			// aren't any matching workspaces. Which might be normal and fine, so
-			// let's just ask:
-			name, err := m.UIInput().Input(context.Background(), &tofu.InputOpts{
-				Id:          "create-workspace",
-				Query:       "\n[reset][bold][yellow]No workspaces found.[reset]",
-				Description: fmt.Sprintf(inputCloudInitCreateWorkspace, strings.Join(c.WorkspaceMapping.Tags, ", ")),
-			})
-			if err != nil {
-				return fmt.Errorf("Couldn't create initial workspace: %w", err)
-			}
-			name = strings.TrimSpace(name)
-			if name == "" {
-				return fmt.Errorf("Couldn't create initial workspace: no name provided")
-			}
-			log.Printf("[TRACE] Meta.selectWorkspace: selecting the new TFC workspace requested by the user (%s)", name)
-			return m.SetWorkspace(name)
-		} else {
-			return fmt.Errorf("%s", strings.TrimSpace(errBackendNoExistingWorkspaces))
-		}
+		return fmt.Errorf("%s", strings.TrimSpace(errBackendNoExistingWorkspaces))
 	}
 
 	// Get the currently selected workspace.
@@ -323,7 +302,7 @@ func (m *Meta) BackendForLocalPlan(ctx context.Context, settings plans.Backend, 
 
 	f, canonType := backendInit.Backend(settings.Type)
 	if f == nil {
-		diags = diags.Append(fmt.Errorf(strings.TrimSpace(errBackendSavedUnknown), settings.Type))
+		diags = diags.Append(savedBackendUnknownError(settings.Type))
 		return nil, diags
 	}
 	if canonType != settings.Type {
@@ -641,21 +620,12 @@ func (m *Meta) backendFromConfig(ctx context.Context, opts *BackendOpts, enc enc
 	case c != nil && s.Backend.Empty():
 		log.Printf("[TRACE] Meta.Backend: moving from default local state only to %q backend", c.Type)
 		if !opts.Init {
-			if c.Type == "cloud" {
-				initReason := "Initial configuration of cloud backend"
-				diags = diags.Append(tfdiags.Sourceless(
-					tfdiags.Error,
-					"Cloud backend initialization required: please run \"tofu init\"",
-					fmt.Sprintf(strings.TrimSpace(errBackendInitCloud), initReason),
-				))
-			} else {
-				initReason := fmt.Sprintf("Initial configuration of the requested backend %q", c.Type)
-				diags = diags.Append(tfdiags.Sourceless(
-					tfdiags.Error,
-					"Backend initialization required, please run \"tofu init\"",
-					fmt.Sprintf(strings.TrimSpace(errBackendInit), initReason),
-				))
-			}
+			initReason := fmt.Sprintf("Initial configuration of the requested backend %q", c.Type)
+			diags = diags.Append(tfdiags.Sourceless(
+				tfdiags.Error,
+				"Backend initialization required, please run \"tofu init\"",
+				fmt.Sprintf(strings.TrimSpace(errBackendInit), initReason),
+			))
 			return nil, diags
 		}
 		return m.backend_C_r_s(ctx, c, cHash, sMgr, opts, enc)
@@ -710,16 +680,14 @@ func (m *Meta) backendFromConfig(ctx context.Context, opts *BackendOpts, enc enc
 		}
 		log.Printf("[TRACE] Meta.Backend: backend configuration has changed (from type %q to type %q)", s.Backend.Type, c.Type)
 
-		cloudMode := cloud.DetectConfigChangeType(s.Backend, c, false)
-
 		if !opts.Init {
 			// user ran another cmd that is not init but they are required to initialize because of a potential relevant change to their backend configuration
-			initDiag := m.determineInitReason(s.Backend.Type, c.Type, cloudMode)
+			initDiag := m.determineInitReason(s.Backend.Type, c.Type)
 			diags = diags.Append(initDiag)
 			return nil, diags
 		}
 
-		if !cloudMode.InvolvesCloud() && !m.backendArgs.MigrateState {
+		if !m.backendArgs.MigrateState {
 			diags = diags.Append(migrateOrReconfigDiag)
 			return nil, diags
 		}
@@ -739,47 +707,28 @@ func (m *Meta) backendFromConfig(ctx context.Context, opts *BackendOpts, enc enc
 	}
 }
 
-func (m *Meta) determineInitReason(previousBackendType string, currentBackendType string, cloudMode cloud.ConfigChangeMode) tfdiags.Diagnostics {
-	initReason := ""
-	switch cloudMode {
-	case cloud.ConfigMigrationIn:
-		initReason = fmt.Sprintf("Changed from backend %q to cloud backend", previousBackendType)
-	case cloud.ConfigMigrationOut:
-		initReason = fmt.Sprintf("Changed from cloud backend to backend %q", previousBackendType)
-	case cloud.ConfigChangeInPlace:
-		initReason = "Cloud backend configuration block has changed"
-	default:
-		switch {
-		case previousBackendType != currentBackendType:
-			initReason = fmt.Sprintf("Backend type changed from %q to %q", previousBackendType, currentBackendType)
-		default:
-			initReason = "Backend configuration block has changed"
-		}
+func (m *Meta) determineInitReason(previousBackendType string, currentBackendType string) tfdiags.Diagnostics {
+	initReason := "Backend configuration block has changed"
+	if previousBackendType != currentBackendType {
+		initReason = fmt.Sprintf("Backend type changed from %q to %q", previousBackendType, currentBackendType)
 	}
 
 	var diags tfdiags.Diagnostics
-	switch cloudMode {
-	case cloud.ConfigChangeInPlace:
-		diags = diags.Append(tfdiags.Sourceless(
-			tfdiags.Error,
-			"Cloud backend initialization required: please run \"tofu init\"",
-			fmt.Sprintf(strings.TrimSpace(errBackendInitCloud), initReason),
-		))
-	case cloud.ConfigMigrationIn:
-		diags = diags.Append(tfdiags.Sourceless(
-			tfdiags.Error,
-			"Cloud backend initialization required: please run \"tofu init\"",
-			fmt.Sprintf(strings.TrimSpace(errBackendInitCloud), initReason),
-		))
-	default:
-		diags = diags.Append(tfdiags.Sourceless(
-			tfdiags.Error,
-			"Backend initialization required: please run \"tofu init\"",
-			fmt.Sprintf(strings.TrimSpace(errBackendInit), initReason),
-		))
-	}
-
+	diags = diags.Append(tfdiags.Sourceless(
+		tfdiags.Error,
+		"Backend initialization required: please run \"tofu init\"",
+		fmt.Sprintf(strings.TrimSpace(errBackendInit), initReason),
+	))
 	return diags
+}
+
+// savedBackendUnknownError describes a working directory whose saved backend
+// type isn't available, explaining how to migrate if the type was removed.
+func savedBackendUnknownError(backendType string) error {
+	if msg, removed := backendInit.RemovedBackends[backendType]; removed {
+		return fmt.Errorf("This working directory is initialized for the %q backend, which is no longer available.\n\n%s", backendType, msg)
+	}
+	return fmt.Errorf(strings.TrimSpace(errBackendSavedUnknown), backendType)
 }
 
 // backendFromState returns the initialized (not configured) backend directly
@@ -816,7 +765,7 @@ func (m *Meta) backendFromState(ctx context.Context, enc encryption.StateEncrypt
 	}
 	f, canonType := backendInit.Backend(s.Backend.Type)
 	if f == nil {
-		diags = diags.Append(fmt.Errorf(strings.TrimSpace(errBackendSavedUnknown), s.Backend.Type))
+		diags = diags.Append(savedBackendUnknownError(s.Backend.Type))
 		return nil, diags
 	}
 	if canonType != s.Backend.Type {
@@ -897,20 +846,10 @@ func (m *Meta) backend_c_r_S(
 
 	s := sMgr.State()
 
-	cloudMode := cloud.DetectConfigChangeType(s.Backend, c, false)
-	diags = diags.Append(m.assertSupportedCloudInitOptions(cloudMode))
-	if diags.HasErrors() {
-		return nil, diags
-	}
-
 	// Get the backend type for output
 	backendType := s.Backend.Type
 
-	if cloudMode == cloud.ConfigMigrationOut {
-		view.MigratingFromCloudToLocal()
-	} else {
-		view.UnconfiguringBackendType(s.Backend.Type)
-	}
+	view.UnconfiguringBackendType(s.Backend.Type)
 
 	// Grab a purely local backend to get the local state if it exists
 	localB, moreDiags := m.Backend(ctx, &BackendOpts{ForceLocal: true, Init: true, View: view}, enc)
@@ -995,12 +934,6 @@ func (m *Meta) backend_C_r_s(ctx context.Context, c *configs.Backend, cHash int,
 		} else {
 			log.Printf("[TRACE] Meta.Backend: ignoring local %q workspace because its state is empty", workspace)
 		}
-	}
-
-	cloudMode := cloud.DetectConfigChangeType(nil, c, len(localStates) > 0)
-	diags = diags.Append(m.assertSupportedCloudInitOptions(cloudMode))
-	if diags.HasErrors() {
-		return nil, diags
 	}
 
 	// Get the backend
@@ -1110,11 +1043,8 @@ func (m *Meta) backend_C_r_s(ctx context.Context, c *configs.Backend, cHash int,
 		return nil, diags
 	}
 
-	// By now the backend is successfully configured.  If using Terraform Cloud, the success
-	// message is handled as part of the final init message
-	if _, ok := b.(*cloud.Cloud); !ok {
-		view.BackendTypeSet(s.Backend.Type)
-	}
+	// By now the backend is successfully configured.
+	view.BackendTypeSet(s.Backend.Type)
 
 	return b, diags
 }
@@ -1128,27 +1058,12 @@ func (m *Meta) backend_C_r_S_changed(ctx context.Context, c *configs.Backend, cH
 	// Get the old state
 	s := sMgr.State()
 
-	cloudMode := cloud.DetectConfigChangeType(s.Backend, c, false)
-	diags = diags.Append(m.assertSupportedCloudInitOptions(cloudMode))
-	if diags.HasErrors() {
-		return nil, diags
-	}
-
 	if output {
 		// Notify the user
-		switch cloudMode {
-		case cloud.ConfigChangeInPlace:
-			view.CloudBackendUpdated()
-		case cloud.ConfigMigrationIn:
-			view.MigratingLocalTypeToCloud(s.Backend.Type)
-		case cloud.ConfigMigrationOut:
-			view.MigratingCloudToLocalType(c.Type)
-		default:
-			if s.Backend.Type != c.Type {
-				view.BackendTypeChanged(s.Backend.Type, c.Type)
-			} else {
-				view.BackendReconfigured()
-			}
+		if s.Backend.Type != c.Type {
+			view.BackendTypeChanged(s.Backend.Type, c.Type)
+		} else {
+			view.BackendReconfigured()
 		}
 	}
 
@@ -1159,41 +1074,33 @@ func (m *Meta) backend_C_r_S_changed(ctx context.Context, c *configs.Backend, cH
 		return nil, diags
 	}
 
-	// If this is a migration into, out of, or irrelevant to Terraform Cloud
-	// mode then we will do state migration here. Otherwise, we just update
-	// the working directory initialization directly, because Terraform Cloud
-	// doesn't have configurable state storage anyway -- we're only changing
-	// which workspaces are relevant to this configuration, not where their
-	// state lives.
-	if cloudMode != cloud.ConfigChangeInPlace {
-		// Grab the existing backend
-		oldB, oldBDiags := m.savedBackend(ctx, sMgr, enc)
-		diags = diags.Append(oldBDiags)
-		if oldBDiags.HasErrors() {
+	// Grab the existing backend
+	oldB, oldBDiags := m.savedBackend(ctx, sMgr, enc)
+	diags = diags.Append(oldBDiags)
+	if oldBDiags.HasErrors() {
+		return nil, diags
+	}
+
+	// Perform the migration
+	err := m.backendMigrateState(ctx, &backendMigrateOpts{
+		SourceType:      s.Backend.Type,
+		DestinationType: c.Type,
+		Source:          oldB,
+		Destination:     b,
+		View:            view,
+	})
+	if err != nil {
+		diags = diags.Append(err)
+		return nil, diags
+	}
+
+	if m.stateArgs.Lock {
+		stateLocker := clistate.NewLocker(m.stateArgs.LockTimeout, view.StateLocker())
+		if d := stateLocker.Lock(sMgr, "backend from plan"); d != nil {
+			diags = diags.Append(fmt.Errorf("Error locking state: %s", d))
 			return nil, diags
 		}
-
-		// Perform the migration
-		err := m.backendMigrateState(ctx, &backendMigrateOpts{
-			SourceType:      s.Backend.Type,
-			DestinationType: c.Type,
-			Source:          oldB,
-			Destination:     b,
-			View:            view,
-		})
-		if err != nil {
-			diags = diags.Append(err)
-			return nil, diags
-		}
-
-		if m.stateArgs.Lock {
-			stateLocker := clistate.NewLocker(m.stateArgs.LockTimeout, view.StateLocker())
-			if d := stateLocker.Lock(sMgr, "backend from plan"); d != nil {
-				diags = diags.Append(fmt.Errorf("Error locking state: %s", d))
-				return nil, diags
-			}
-			defer stateLocker.Unlock()
-		}
+		defer stateLocker.Unlock()
 	}
 
 	configJSON, err := ctyjson.Marshal(configVal, b.ConfigSchema().ImpliedType())
@@ -1231,11 +1138,8 @@ func (m *Meta) backend_C_r_S_changed(ctx context.Context, c *configs.Backend, cH
 	}
 
 	if output {
-		// By now the backend is successfully configured.  If using Terraform Cloud, the success
-		// message is handled as part of the final init message
-		if _, ok := b.(*cloud.Cloud); !ok {
-			view.BackendTypeSet(s.Backend.Type)
-		}
+		// By now the backend is successfully configured.
+		view.BackendTypeSet(s.Backend.Type)
 	}
 
 	return b, diags
@@ -1254,7 +1158,7 @@ func (m *Meta) savedBackend(ctx context.Context, sMgr *clistate.LocalState, enc 
 	// Get the backend
 	f, canonName := backendInit.Backend(s.Backend.Type)
 	if f == nil {
-		diags = diags.Append(fmt.Errorf(strings.TrimSpace(errBackendSavedUnknown), s.Backend.Type))
+		diags = diags.Append(savedBackendUnknownError(s.Backend.Type))
 		return nil, diags
 	}
 	if s.Backend.Type != canonName {
@@ -1506,55 +1410,6 @@ func (m *Meta) remoteVersionCheck(b backend.Backend, workspace string) tfdiags.D
 	return diags
 }
 
-// assertSupportedCloudInitOptions returns diagnostics with errors if the
-// init-related command line options (implied inside the Meta receiver)
-// are incompatible with the given cloud configuration change mode.
-func (m *Meta) assertSupportedCloudInitOptions(mode cloud.ConfigChangeMode) tfdiags.Diagnostics {
-	var diags tfdiags.Diagnostics
-	if mode.InvolvesCloud() {
-		log.Printf("[TRACE] Meta.Backend: Cloud backend mode initialization type: %s", mode)
-		if m.backendArgs.Reconfigure {
-			if mode.IsCloudMigration() {
-				diags = diags.Append(tfdiags.Sourceless(
-					tfdiags.Error,
-					"Invalid command-line option",
-					"The -reconfigure option is unsupported when migrating to cloud backend, because activating cloud backend involves some additional steps.",
-				))
-			} else {
-				diags = diags.Append(tfdiags.Sourceless(
-					tfdiags.Error,
-					"Invalid command-line option",
-					"The -reconfigure option is for in-place reconfiguration of state backends only, and is not needed when changing cloud backend settings.\n\nWhen using cloud backend, initialization automatically activates any new Cloud configuration settings.",
-				))
-			}
-		}
-		if m.backendArgs.MigrateState {
-			name := "-migrate-state"
-			if m.backendArgs.ForceInitCopy {
-				// -force copy implies -migrate-state in "tofu init",
-				// so m.backendArgs.migrateState is forced to true in this case even if
-				// the user didn't actually specify it. We'll use the other
-				// name here to avoid being confusing, then.
-				name = "-force-copy"
-			}
-			if mode.IsCloudMigration() {
-				diags = diags.Append(tfdiags.Sourceless(
-					tfdiags.Error,
-					"Invalid command-line option",
-					fmt.Sprintf("The %s option is for migration between state backends only, and is not applicable when using cloud backend.\n\nCloud backend migration has additional steps, configured by interactive prompts.", name),
-				))
-			} else {
-				diags = diags.Append(tfdiags.Sourceless(
-					tfdiags.Error,
-					"Invalid command-line option",
-					fmt.Sprintf("The %s option is for migration between state backends only, and is not applicable when using cloud backend.\n\nState storage is handled automatically by cloud backend and so the state storage location is not configurable.", name),
-				))
-			}
-		}
-	}
-	return diags
-}
-
 // -------------------------------------------------------------------
 // Output constants and initialization code
 // -------------------------------------------------------------------
@@ -1638,17 +1493,6 @@ hasn't changed and try again. At this point, no changes to your existing
 configuration or state have been made.
 `
 
-const errBackendInitCloud = `
-Reason: %s.
-
-Changes to the cloud backend configuration block require reinitialization, to discover any changes to the available workspaces.
-
-To re-initialize, run:
-  tofu init
-
-OpenTofu has not yet made changes to your existing configuration or state.
-`
-
 const errBackendWriteSaved = `
 Error saving the backend configuration: %w
 
@@ -1656,15 +1500,6 @@ OpenTofu saves the complete backend configuration in a local file for
 configuring the backend on future operations. This cannot be disabled. Errors
 are usually due to simple file permission errors. Please look at the error
 above, resolve it, and try again.
-`
-
-const inputCloudInitCreateWorkspace = `
-There are no workspaces with the configured tags (%s)
-in your cloud backend organization. To finish initializing, OpenTofu needs at
-least one workspace available.
-
-OpenTofu can create a properly tagged workspace for you now. Please enter a
-name to create a new cloud backend workspace.
 `
 
 var migrateOrReconfigDiag = tfdiags.Sourceless(

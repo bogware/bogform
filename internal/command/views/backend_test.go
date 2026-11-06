@@ -19,21 +19,6 @@ func TestBackendViews(t *testing.T) {
 		wantStdout string
 		wantStderr string
 	}{
-		"initializingCloudBackend": {
-			viewCall: func(view Backend) {
-				view.InitializingCloudBackend()
-			},
-			wantJson: []map[string]any{
-				{
-					"@level":   "info",
-					"@message": "Initializing cloud backend...",
-					"@module":  "tofu.ui",
-				},
-			},
-			wantStdout: `
-Initializing cloud backend...
-`,
-		},
 		"initializingBackend": {
 			viewCall: func(view Backend) {
 				view.InitializingBackend()
@@ -61,20 +46,6 @@ Initializing the backend...
 				},
 			},
 			wantStdout: `- "s3" is an alias for backend type "aws_s3"
-`,
-		},
-		"migratingFromCloudToLocal": {
-			viewCall: func(view Backend) {
-				view.MigratingFromCloudToLocal()
-			},
-			wantJson: []map[string]any{
-				{
-					"@level":   "info",
-					"@message": "Migrating from cloud backend to local state.",
-					"@module":  "tofu.ui",
-				},
-			},
-			wantStdout: `Migrating from cloud backend to local state.
 `,
 		},
 		"unconfiguringBackendType": {
@@ -121,48 +92,6 @@ Successfully unset the backend "s3". OpenTofu will now operate locally.
 			wantStdout: `
 Successfully configured the backend "s3"! OpenTofu will automatically
 use this backend unless the backend configuration changes.
-`,
-		},
-		"cloudBackendUpdated": {
-			viewCall: func(view Backend) {
-				view.CloudBackendUpdated()
-			},
-			wantJson: []map[string]any{
-				{
-					"@level":   "info",
-					"@message": "Cloud backend configuration has changed",
-					"@module":  "tofu.ui",
-				},
-			},
-			wantStdout: `Cloud backend configuration has changed.
-`,
-		},
-		"migratingLocalTypeToCloud": {
-			viewCall: func(view Backend) {
-				view.MigratingLocalTypeToCloud("s3")
-			},
-			wantJson: []map[string]any{
-				{
-					"@level":   "info",
-					"@message": "Migrating from backend \"s3\" to cloud backend",
-					"@module":  "tofu.ui",
-				},
-			},
-			wantStdout: `Migrating from backend "s3" to cloud backend.
-`,
-		},
-		"migratingCloudToLocalType": {
-			viewCall: func(view Backend) {
-				view.MigratingCloudToLocalType("s3")
-			},
-			wantJson: []map[string]any{
-				{
-					"@level":   "info",
-					"@message": "Migrating from cloud backend to backend \"s3\"",
-					"@module":  "tofu.ui",
-				},
-			},
-			wantStdout: `Migrating from cloud backend to backend "s3".
 `,
 		},
 		"backendTypeChanged": {
@@ -220,16 +149,16 @@ has changed. OpenTofu will now check for existing state in the backends.
 		// and both write to the same output [os.File].
 		"same output used for multiple views": {
 			viewCall: func(view Backend) {
-				view.InitializingCloudBackend()
+				view.InitializingBackend()
 				slv := view.StateLocker()
 				slv.Locking()
 				slv.Unlocking()
-				view.InitializingCloudBackend()
+				view.InitializingBackend()
 			},
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Initializing cloud backend...",
+					"@message": "Initializing the backend...",
 					"@module":  "tofu.ui",
 				},
 				{
@@ -246,16 +175,16 @@ has changed. OpenTofu will now check for existing state in the backends.
 				},
 				{
 					"@level":   "info",
-					"@message": "Initializing cloud backend...",
+					"@message": "Initializing the backend...",
 					"@module":  "tofu.ui",
 				},
 			},
 			wantStdout: `
-Initializing cloud backend...
+Initializing the backend...
 Acquiring state lock. This may take a few moments...
 Releasing state lock. This may take a few moments...
 
-Initializing cloud backend...
+Initializing the backend...
 `,
 		},
 	}

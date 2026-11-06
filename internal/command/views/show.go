@@ -6,13 +6,10 @@
 package views
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
 
-	"github.com/opentofu/opentofu/internal/cloud/cloudplan"
 	"github.com/opentofu/opentofu/internal/command/arguments"
 	"github.com/opentofu/opentofu/internal/command/jsonconfig"
 	"github.com/opentofu/opentofu/internal/command/jsonformat"
@@ -31,14 +28,7 @@ type Show interface {
 	DisplayState(ctx context.Context, stateFile *statefile.File, schemas *tofu.Schemas) int
 
 	// DisplayPlan renders the given plan, returning a status code for "tofu show" to return.
-	//
-	// Unfortunately there are two possible ways to represent a plan:
-	// - Locally-generated plans are loaded as *plans.Plan.
-	// - Remotely-generated plans (using remote operations) are loaded as *cloudplan.RemotePlanJSON.
-	//
-	// Therefore the implementation of this method must handle both cases,
-	// preferring planJSON if it is not nil and using plan otherwise.
-	DisplayPlan(ctx context.Context, plan *plans.Plan, planJSON *cloudplan.RemotePlanJSON, config *configs.Config, priorStateFile *statefile.File, schemas *tofu.Schemas) int
+	DisplayPlan(ctx context.Context, plan *plans.Plan, config *configs.Config, priorStateFile *statefile.File, schemas *tofu.Schemas) int
 
 	// DisplayConfig renders the given configuration, returning a status code for "tofu show" to return.
 	DisplayConfig(config *configs.Config, schemas *tofu.Schemas) int
@@ -82,10 +72,10 @@ func (m ShowMulti) DisplayState(ctx context.Context, stateFile *statefile.File, 
 	return code
 }
 
-func (m ShowMulti) DisplayPlan(ctx context.Context, plan *plans.Plan, planJSON *cloudplan.RemotePlanJSON, config *configs.Config, priorStateFile *statefile.File, schemas *tofu.Schemas) int {
+func (m ShowMulti) DisplayPlan(ctx context.Context, plan *plans.Plan, config *configs.Config, priorStateFile *statefile.File, schemas *tofu.Schemas) int {
 	code := 0
 	for _, s := range m {
-		code = max(code, s.DisplayPlan(ctx, plan, planJSON, config, priorStateFile, schemas))
+		code = max(code, s.DisplayPlan(ctx, plan, config, priorStateFile, schemas))
 	}
 	return code
 }
@@ -149,7 +139,7 @@ func (v *ShowHuman) DisplayState(_ context.Context, stateFile *statefile.File, s
 	return 0
 }
 
-func (v *ShowHuman) DisplayPlan(_ context.Context, plan *plans.Plan, planJSON *cloudplan.RemotePlanJSON, config *configs.Config, priorStateFile *statefile.File, schemas *tofu.Schemas) int {
+func (v *ShowHuman) DisplayPlan(_ context.Context, plan *plans.Plan, config *configs.Config, priorStateFile *statefile.File, schemas *tofu.Schemas) int {
 	renderer := jsonformat.Renderer{
 		Colorize:            v.view.colorize,
 		Streams:             v.view.streams,
@@ -157,24 +147,7 @@ func (v *ShowHuman) DisplayPlan(_ context.Context, plan *plans.Plan, planJSON *c
 		ShowSensitive:       v.view.showSensitive,
 	}
 
-	// Prefer to display a pre-built JSON plan, if we got one; then, fall back
-	// to building one ourselves.
-	if planJSON != nil {
-		if !planJSON.Redacted {
-			v.view.streams.Eprintf("Didn't get renderable JSON plan format for human display")
-			return 1
-		}
-		// The redacted json plan format can be decoded into a jsonformat.Plan
-		p := jsonformat.Plan{}
-		r := bytes.NewReader(planJSON.JSONBytes)
-		if err := json.NewDecoder(r).Decode(&p); err != nil {
-			v.view.streams.Eprintf("Couldn't decode renderable JSON plan format: %s", err)
-		}
-
-		v.view.streams.Print(v.view.colorize.Color(planJSON.RunHeader + "\n"))
-		renderer.RenderHumanPlan(p, planJSON.Mode, planJSON.Qualities...)
-		v.view.streams.Print(v.view.colorize.Color("\n" + planJSON.RunFooter + "\n"))
-	} else if plan != nil {
+	if plan != nil {
 		outputs, changed, drift, attrs, err := jsonplan.MarshalForRenderer(plan, schemas)
 		if err != nil {
 			v.view.streams.Eprintf("Failed to marshal plan to json: %s", err)
@@ -241,16 +214,8 @@ func (v *ShowJSON) DisplayState(_ context.Context, stateFile *statefile.File, sc
 	return 0
 }
 
-func (v *ShowJSON) DisplayPlan(_ context.Context, plan *plans.Plan, planJSON *cloudplan.RemotePlanJSON, config *configs.Config, priorStateFile *statefile.File, schemas *tofu.Schemas) int {
-	// Prefer to display a pre-built JSON plan, if we got one; then, fall back
-	// to building one ourselves.
-	if planJSON != nil {
-		if planJSON.Redacted {
-			v.view.streams.Eprintf("Didn't get external JSON plan format")
-			return 1
-		}
-		fmt.Fprintln(v.output, string(planJSON.JSONBytes))
-	} else if plan != nil {
+func (v *ShowJSON) DisplayPlan(_ context.Context, plan *plans.Plan, config *configs.Config, priorStateFile *statefile.File, schemas *tofu.Schemas) int {
+	if plan != nil {
 		planJSON, err := jsonplan.Marshal(config, plan, priorStateFile, schemas)
 
 		if err != nil {

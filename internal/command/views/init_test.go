@@ -57,22 +57,9 @@ func TestInitViews(t *testing.T) {
 			wantStderr: "",
 			wantJson:   []map[string]any{{}},
 		},
-		"initSuccess_cloud": {
+		"initSuccess": {
 			viewCall: func(init Init) {
-				init.InitSuccess(true)
-			},
-			wantJson: []map[string]any{
-				{
-					"@level":   "info",
-					"@message": "Cloud backend has been successfully initialized!",
-					"@module":  "tofu.ui",
-				},
-			},
-			wantStdout: withNewline("Cloud backend has been successfully initialized!"),
-		},
-		"initSuccess_non-cloud": {
-			viewCall: func(init Init) {
-				init.InitSuccess(false)
+				init.InitSuccess()
 			},
 			wantJson: []map[string]any{
 				{
@@ -83,22 +70,9 @@ func TestInitViews(t *testing.T) {
 			},
 			wantStdout: withNewline("OpenTofu has been successfully initialized!"),
 		},
-		"initSuccessCLI_cloud": {
+		"initSuccessCLI": {
 			viewCall: func(init Init) {
-				init.InitSuccessCLI(true)
-			},
-			wantJson: []map[string]any{
-				{
-					"@level":   "info",
-					"@message": "You may now begin working with cloud backend. Try running \"tofu plan\" to see any changes that are required for your infrastructure. If you ever set or change modules or OpenTofu Settings, run \"tofu init\" again to reinitialize your working directory.",
-					"@module":  "tofu.ui",
-				},
-			},
-			wantStdout: withNewline("\nYou may now begin working with cloud backend. Try running \"tofu plan\" to\nsee any changes that are required for your infrastructure.\n\nIf you ever set or change modules or OpenTofu Settings, run \"tofu init\"\nagain to reinitialize your working directory."),
-		},
-		"initSuccessCLI_non-cloud": {
-			viewCall: func(init Init) {
-				init.InitSuccessCLI(false)
+				init.InitSuccessCLI()
 			},
 			wantJson: []map[string]any{
 				{

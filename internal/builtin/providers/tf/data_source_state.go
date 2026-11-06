@@ -12,7 +12,6 @@ import (
 
 	"github.com/opentofu/opentofu/internal/addrs"
 	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/backend/remote"
 	"github.com/opentofu/opentofu/internal/configs/configschema"
 	"github.com/opentofu/opentofu/internal/encryption"
 	"github.com/opentofu/opentofu/internal/lang/marks"
@@ -252,12 +251,6 @@ func getBackend(cfg cty.Value, enc encryption.StateEncryption) (backend.Backend,
 	diags = diags.Append(validateDiags)
 	if validateDiags.HasErrors() {
 		return nil, cty.NilVal, diags
-	}
-
-	// If this is the enhanced remote backend, we want to disable the version
-	// check, because this is a read-only operation
-	if rb, ok := b.(*remote.Remote); ok {
-		rb.IgnoreVersionConflict()
 	}
 
 	return b, newVal, diags

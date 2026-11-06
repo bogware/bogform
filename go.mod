@@ -19,7 +19,6 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/storage/armstorage v1.8.1
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azkeys v1.5.0
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.8.0
-	github.com/Netflix/go-expect v0.0.0-20220104043353-73e0943537d2
 	github.com/ProtonMail/go-crypto v1.4.1
 	github.com/agext/levenshtein v1.2.3
 	github.com/aliyun/alibaba-cloud-sdk-go v1.63.107
@@ -62,7 +61,6 @@ require (
 	github.com/hashicorp/go-version v1.9.0
 	github.com/hashicorp/hcl v1.0.1-vault-7
 	github.com/hashicorp/hcl/v2 v2.25.0
-	github.com/hashicorp/jsonapi v1.5.0
 	github.com/jmespath/go-jmespath v0.4.0
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0
 	github.com/lib/pq v1.12.3
@@ -162,7 +160,6 @@ require (
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/cloudflare/circl v1.6.3 // indirect
 	github.com/cncf/xds/go v0.0.0-20260202195803-dba9d589def2 // indirect
-	github.com/creack/pty v1.1.18 // indirect
 	github.com/emicklei/go-restful/v3 v3.13.0 // indirect
 	github.com/envoyproxy/go-control-plane/envoy v1.37.0 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.3.3 // indirect
@@ -189,6 +186,7 @@ require (
 	github.com/hashicorp/go-slug v0.16.8 // indirect
 	github.com/hashicorp/go-sockaddr v1.0.7 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
+	github.com/hashicorp/jsonapi v1.5.0 // indirect
 	github.com/hashicorp/serf v0.10.4 // indirect
 	github.com/hashicorp/terraform-plugin-log v0.10.1-0.20260721164921-2f73dc013b2c // indirect
 	github.com/hashicorp/yamux v0.1.2 // indirect

@@ -22,8 +22,8 @@ type Init interface {
 
 	ConfigError()
 	OutputNewline()
-	InitSuccess(cloud bool)
-	InitSuccessCLI(cloud bool)
+	InitSuccess()
+	InitSuccessCLI()
 
 	InitializingModules(upgrade bool)
 
@@ -102,15 +102,15 @@ func (m InitMulti) OutputNewline() {
 	}
 }
 
-func (m InitMulti) InitSuccess(cloud bool) {
+func (m InitMulti) InitSuccess() {
 	for _, o := range m {
-		o.InitSuccess(cloud)
+		o.InitSuccess()
 	}
 }
 
-func (m InitMulti) InitSuccessCLI(cloud bool) {
+func (m InitMulti) InitSuccessCLI() {
 	for _, o := range m {
-		o.InitSuccessCLI(cloud)
+		o.InitSuccessCLI()
 	}
 }
 
@@ -271,27 +271,13 @@ func (v *InitHuman) OutputNewline() {
 	_, _ = v.view.streams.Println("")
 }
 
-func (v *InitHuman) InitSuccess(cloud bool) {
-	if cloud {
-		const outputInitSuccessCloud = `[reset][bold][green]Cloud backend has been successfully initialized![reset][green]`
-		_, _ = v.view.streams.Println(v.view.colorize.Color(outputInitSuccessCloud))
-	} else {
-		const outputInitSuccess = `[reset][bold][green]OpenTofu has been successfully initialized![reset][green]`
-		_, _ = v.view.streams.Println(v.view.colorize.Color(outputInitSuccess))
-	}
+func (v *InitHuman) InitSuccess() {
+	const outputInitSuccess = `[reset][bold][green]OpenTofu has been successfully initialized![reset][green]`
+	_, _ = v.view.streams.Println(v.view.colorize.Color(outputInitSuccess))
 }
 
-func (v *InitHuman) InitSuccessCLI(cloud bool) {
-	if cloud {
-		const outputInitSuccessCLICloud = `[reset][green]
-You may now begin working with cloud backend. Try running "tofu plan" to
-see any changes that are required for your infrastructure.
-
-If you ever set or change modules or OpenTofu Settings, run "tofu init"
-again to reinitialize your working directory.`
-		_, _ = v.view.streams.Println(v.view.colorize.Color(outputInitSuccessCLICloud))
-	} else {
-		const outputInitSuccessCLI = `[reset][green]
+func (v *InitHuman) InitSuccessCLI() {
+	const outputInitSuccessCLI = `[reset][green]
 You may now begin working with OpenTofu. Try running "tofu plan" to see
 any changes that are required for your infrastructure. All OpenTofu commands
 should now work.
@@ -299,8 +285,7 @@ should now work.
 If you ever set or change modules or backend configuration for OpenTofu,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.`
-		_, _ = v.view.streams.Println(v.view.colorize.Color(outputInitSuccessCLI))
-	}
+	_, _ = v.view.streams.Println(v.view.colorize.Color(outputInitSuccessCLI))
 }
 
 func (v *InitHuman) InitializingModules(upgrade bool) {
@@ -435,22 +420,13 @@ func (v *InitJSON) ConfigError() {
 func (v *InitJSON) OutputNewline() {
 }
 
-func (v *InitJSON) InitSuccess(cloud bool) {
-	if cloud {
-		v.view.Info(`Cloud backend has been successfully initialized!`)
-	} else {
-		v.view.Info(`OpenTofu has been successfully initialized!`)
-	}
+func (v *InitJSON) InitSuccess() {
+	v.view.Info(`OpenTofu has been successfully initialized!`)
 }
 
-func (v *InitJSON) InitSuccessCLI(cloud bool) {
-	if cloud {
-		const outputInitSuccessCLICloud = `You may now begin working with cloud backend. Try running "tofu plan" to see any changes that are required for your infrastructure. If you ever set or change modules or OpenTofu Settings, run "tofu init" again to reinitialize your working directory.`
-		v.view.Info(outputInitSuccessCLICloud)
-	} else {
-		const outputInitSuccessCLI = `You may now begin working with OpenTofu. Try running "tofu plan" to see any changes that are required for your infrastructure. All OpenTofu commands should now work. If you ever set or change modules or backend configuration for OpenTofu, rerun this command to reinitialize your working directory. If you forget, other commands will detect it and remind you to do so if necessary.`
-		v.view.Info(outputInitSuccessCLI)
-	}
+func (v *InitJSON) InitSuccessCLI() {
+	const outputInitSuccessCLI = `You may now begin working with OpenTofu. Try running "tofu plan" to see any changes that are required for your infrastructure. All OpenTofu commands should now work. If you ever set or change modules or backend configuration for OpenTofu, rerun this command to reinitialize your working directory. If you forget, other commands will detect it and remind you to do so if necessary.`
+	v.view.Info(outputInitSuccessCLI)
 }
 
 func (v *InitJSON) InitializingModules(upgrade bool) {

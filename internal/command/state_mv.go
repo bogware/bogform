@@ -17,7 +17,6 @@ import (
 	"github.com/opentofu/opentofu/internal/command/views"
 	"github.com/opentofu/opentofu/internal/states"
 	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tofu"
 )
 
 func StateMvCommander() Command {
@@ -412,19 +411,11 @@ func (c StateMvCommand) Execute(args *arguments.StateMv, view views.State) int {
 		return 0 // This is as far as we go in dry-run mode
 	}
 
-	b, backendDiags := c.Backend(ctx, nil, enc.State())
+	_, backendDiags := c.Backend(ctx, nil, enc.State())
 	diags = diags.Append(backendDiags)
 	if backendDiags.HasErrors() {
 		view.Diagnostics(diags)
 		return 1
-	}
-
-	// Get schemas, if possible, before writing state
-	var schemas *tofu.Schemas
-	if isCloudMode(b) {
-		var schemaDiags tfdiags.Diagnostics
-		schemas, schemaDiags = c.MaybeGetSchemas(ctx, stateTo, nil)
-		diags = diags.Append(schemaDiags)
 	}
 
 	// Write the new state
@@ -432,7 +423,7 @@ func (c StateMvCommand) Execute(args *arguments.StateMv, view views.State) int {
 		view.StateSavingError(err.Error())
 		return 1
 	}
-	if err := stateToMgr.PersistState(context.TODO(), schemas); err != nil {
+	if err := stateToMgr.PersistState(context.TODO(), nil); err != nil {
 		view.StateSavingError(err.Error())
 		return 1
 	}
@@ -443,7 +434,7 @@ func (c StateMvCommand) Execute(args *arguments.StateMv, view views.State) int {
 			view.StateSavingError(err.Error())
 			return 1
 		}
-		if err := stateFromMgr.PersistState(context.TODO(), schemas); err != nil {
+		if err := stateFromMgr.PersistState(context.TODO(), nil); err != nil {
 			view.StateSavingError(err.Error())
 			return 1
 		}

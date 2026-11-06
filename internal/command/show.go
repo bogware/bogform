@@ -13,8 +13,6 @@ import (
 	"os"
 
 	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/cloud"
-	"github.com/opentofu/opentofu/internal/cloud/cloudplan"
 	"github.com/opentofu/opentofu/internal/command/arguments"
 	"github.com/opentofu/opentofu/internal/command/views"
 	"github.com/opentofu/opentofu/internal/configs"
@@ -192,7 +190,7 @@ func (c *ShowCommand) showFromSavedPlanFile(ctx context.Context, filename string
 		return nil, diags
 	}
 
-	plan, jsonPlan, stateFile, config, planfileSchemas, err := c.getPlanFromPath(ctx, filename, enc, rootCall)
+	plan, stateFile, config, planfileSchemas, err := c.getPlanFromPath(ctx, filename, enc, rootCall)
 	if err != nil {
 		diags = diags.Append(err)
 		return nil, diags
@@ -205,7 +203,7 @@ func (c *ShowCommand) showFromSavedPlanFile(ctx context.Context, filename string
 	}
 
 	return func(view views.Show) int {
-		return view.DisplayPlan(ctx, plan, jsonPlan, config, stateFile, schemas)
+		return view.DisplayPlan(ctx, plan, config, stateFile, schemas)
 	}, diags
 }
 
@@ -213,7 +211,6 @@ func (c *ShowCommand) legacyShowFromPath(ctx context.Context, path string, enc e
 	var diags tfdiags.Diagnostics
 	var planErr, stateErr error
 	var plan *plans.Plan
-	var jsonPlan *cloudplan.RemotePlanJSON
 	var stateFile *statefile.File
 	var config *configs.Config
 	var planfileSchemas *tofu.Schemas
@@ -227,11 +224,10 @@ func (c *ShowCommand) legacyShowFromPath(ctx context.Context, path string, enc e
 		return nil, diags
 	}
 
-	// Path might be a local plan file, a bookmark to a saved cloud plan, or a
-	// state file. First, try to get a plan and associated data from a local
-	// plan file. If that fails, try to get a json plan from the path argument.
-	// If that fails, try to get the statefile from the path argument.
-	plan, jsonPlan, stateFile, config, planfileSchemas, planErr = c.getPlanFromPath(ctx, path, enc, rootCall)
+	// Path might be a local plan file or a state file. First, try to get a plan
+	// and associated data from a local plan file. If that fails, try to get the
+	// statefile from the path argument.
+	plan, stateFile, config, planfileSchemas, planErr = c.getPlanFromPath(ctx, path, enc, rootCall)
 	if planErr != nil {
 		stateFile, stateErr = getStateFromPath(path, enc)
 		if stateErr != nil {
@@ -298,9 +294,9 @@ func (c *ShowCommand) legacyShowFromPath(ctx context.Context, path string, enc e
 	// If we successfully loaded some things then the show mode we
 	// choose depends on what we loaded.
 	switch {
-	case plan != nil || jsonPlan != nil:
+	case plan != nil:
 		return func(view views.Show) int {
-			return view.DisplayPlan(ctx, plan, jsonPlan, config, stateFile, schemas)
+			return view.DisplayPlan(ctx, plan, config, stateFile, schemas)
 		}, diags
 	default:
 		// We treat all other cases as a state, and DisplayState
@@ -319,46 +315,23 @@ func (c *ShowCommand) legacyShowFromPath(ctx context.Context, path string, enc e
 // schemas, and even a local plan file may not have embedded schemas (e.g.
 // plan files written by older versions of OpenTofu). An error generally
 // suggests that the given path is either a directory or a statefile.
-func (c *ShowCommand) getPlanFromPath(ctx context.Context, path string, enc encryption.Encryption, rootCall configs.StaticModuleCall) (*plans.Plan, *cloudplan.RemotePlanJSON, *statefile.File, *configs.Config, *tofu.Schemas, error) {
+func (c *ShowCommand) getPlanFromPath(ctx context.Context, path string, enc encryption.Encryption, rootCall configs.StaticModuleCall) (*plans.Plan, *statefile.File, *configs.Config, *tofu.Schemas, error) {
 	var err error
 	var plan *plans.Plan
-	var jsonPlan *cloudplan.RemotePlanJSON
 	var stateFile *statefile.File
 	var config *configs.Config
 	var planfileSchemas *tofu.Schemas
 
 	pf, err := planfile.OpenWrapped(path, enc.Plan())
 	if err != nil {
-		return nil, nil, nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 
 	if lp, ok := pf.Local(); ok {
 		plan, stateFile, config, planfileSchemas, err = getDataFromPlanfileReader(ctx, lp, rootCall)
-	} else if cp, ok := pf.Cloud(); ok {
-		redacted := c.viewType != arguments.ViewJSON
-		jsonPlan, err = c.getDataFromCloudPlan(ctx, cp, redacted, enc)
 	}
 
-	return plan, jsonPlan, stateFile, config, planfileSchemas, err
-}
-
-func (c *ShowCommand) getDataFromCloudPlan(ctx context.Context, plan *cloudplan.SavedPlanBookmark, redacted bool, enc encryption.Encryption) (*cloudplan.RemotePlanJSON, error) {
-	// Set up the backend
-	b, backendDiags := c.Backend(ctx, nil, enc.State())
-	if backendDiags.HasErrors() {
-		return nil, errUnusable(backendDiags.Err(), "cloud plan")
-	}
-	// Cloud plans only work if we're cloud.
-	cl, ok := b.(*cloud.Cloud)
-	if !ok {
-		return nil, errUnusable(fmt.Errorf("can't show a saved cloud plan unless the current root module is connected to Terraform Cloud"), "cloud plan")
-	}
-
-	result, err := cl.ShowPlanForRun(context.Background(), plan.RunID, plan.Hostname, redacted)
-	if err != nil {
-		err = errUnusable(err, "cloud plan")
-	}
-	return result, err
+	return plan, stateFile, config, planfileSchemas, err
 }
 
 // maybeGetSchemas is a thin wrapper around [Meta.MaybeGetSchemas] that

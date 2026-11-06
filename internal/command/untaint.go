@@ -15,7 +15,6 @@ import (
 	"github.com/opentofu/opentofu/internal/command/views"
 	"github.com/opentofu/opentofu/internal/states"
 	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tofu"
 )
 
 func UntaintCommander() Command {
@@ -187,14 +186,6 @@ func (c UntaintCommand) Execute(args *arguments.Taint, view views.Taint) int {
 		return 1
 	}
 
-	// Get schemas, if possible, before writing state
-	var schemas *tofu.Schemas
-	if isCloudMode(b) {
-		var schemaDiags tfdiags.Diagnostics
-		schemas, schemaDiags = c.MaybeGetSchemas(ctx, state, nil)
-		diags = diags.Append(schemaDiags)
-	}
-
 	obj.Status = states.ObjectReady
 	ss.SetResourceInstanceCurrent(addr, obj, rs.ProviderConfig, is.ProviderKey)
 
@@ -206,7 +197,7 @@ func (c UntaintCommand) Execute(args *arguments.Taint, view views.Taint) int {
 		)))
 		return 1
 	}
-	if err := stateMgr.PersistState(context.TODO(), schemas); err != nil {
+	if err := stateMgr.PersistState(context.TODO(), nil); err != nil {
 		view.Diagnostics(diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Error writing state file",

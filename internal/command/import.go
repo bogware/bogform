@@ -284,14 +284,6 @@ func (c ImportCommand) Execute(args *arguments.Import, view views.Import) int {
 		return 1
 	}
 
-	// Get schemas, if possible, before writing state
-	var schemas *tofu.Schemas
-	if isCloudMode(b) {
-		var schemaDiags tfdiags.Diagnostics
-		schemas, schemaDiags = c.MaybeGetSchemas(ctx, newState, nil)
-		diags = diags.Append(schemaDiags)
-	}
-
 	// Persist the final state
 	log.Printf("[INFO] Writing state output to: %s", c.Meta.StateOutPath())
 	if err := state.WriteState(newState); err != nil {
@@ -302,7 +294,7 @@ func (c ImportCommand) Execute(args *arguments.Import, view views.Import) int {
 		)))
 		return 1
 	}
-	if err := state.PersistState(context.TODO(), schemas); err != nil {
+	if err := state.PersistState(context.TODO(), nil); err != nil {
 		view.Diagnostics(tfdiags.Diagnostics{}.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Error persisting the state file",

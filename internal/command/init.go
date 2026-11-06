@@ -20,7 +20,6 @@ import (
 	"github.com/opentofu/opentofu/internal/addrs"
 	"github.com/opentofu/opentofu/internal/backend"
 	backendInit "github.com/opentofu/opentofu/internal/backend/init"
-	"github.com/opentofu/opentofu/internal/cloud"
 	"github.com/opentofu/opentofu/internal/command/arguments"
 	"github.com/opentofu/opentofu/internal/command/flags"
 	"github.com/opentofu/opentofu/internal/command/views"
@@ -237,7 +236,13 @@ To initialize the configuration already in this working directory, omit the
 		// encryption key is intentionally unavailable.
 		back = nil
 	case args.FlagCloud && rootModEarly.CloudConfig != nil:
-		back, backendOutput, backDiags = c.initCloud(ctx, rootModEarly, args.FlagConfigExtra, enc, view.Backend())
+		// The "cloud" block is still parsed so that we can explain how to migrate.
+		backDiags = backDiags.Append(&hcl.Diagnostic{
+			Severity: hcl.DiagError,
+			Summary:  "Unsupported block type",
+			Detail:   backendInit.RemovedBackends["cloud"],
+			Subject:  &rootModEarly.CloudConfig.DeclRange,
+		})
 	case args.FlagBackend:
 		back, backendOutput, backDiags = c.initBackend(ctx, rootModEarly, args.FlagConfigExtra, enc, view.Backend())
 	default:
@@ -332,16 +337,6 @@ To initialize the configuration already in this working directory, omit the
 		return 1
 	}
 
-	if cb, ok := back.(*cloud.Cloud); ok {
-		if c.SystemCfg.RunningInAutomation {
-			if err := cb.AssertImportCompatible(config); err != nil {
-				diags = diags.Append(tfdiags.Sourceless(tfdiags.Error, "Compatibility error", err.Error()))
-				view.Diagnostics(diags)
-				return 1
-			}
-		}
-	}
-
 	if state != nil {
 		// Since we now have the full configuration loaded, we can use it to migrate the in-memory state view
 		// prior to fetching providers.
@@ -375,13 +370,12 @@ To initialize the configuration already in this working directory, omit the
 	// by errors then we'll output them here so that the success message is
 	// still the final thing shown.
 	view.Diagnostics(diags)
-	_, isCloud := back.(*cloud.Cloud)
-	view.InitSuccess(isCloud)
+	view.InitSuccess()
 	if !c.SystemCfg.RunningInAutomation {
 		// If we're not running in an automation wrapper, give the user
 		// some more detailed next steps that are appropriate for interactive
 		// shell usage.
-		view.InitSuccessCLI(isCloud)
+		view.InitSuccessCLI()
 	}
 	return 0
 }
@@ -434,34 +428,6 @@ func (c *InitCommand) getModules(ctx context.Context, path, testsDir string, ear
 	return true, installAbort, diags
 }
 
-func (c *InitCommand) initCloud(ctx context.Context, root *configs.Module, extraConfig flags.RawFlags, enc encryption.Encryption, view views.Backend) (be backend.Backend, output bool, diags tfdiags.Diagnostics) {
-	ctx, span := tracing.Tracer().Start(ctx, "Cloud backend init")
-	_ = ctx // prevent staticcheck from complaining to avoid a maintenance hazard of having the wrong ctx in scope here
-	defer span.End()
-	view.InitializingCloudBackend()
-
-	if len(extraConfig.AllItems()) != 0 {
-		diags = diags.Append(tfdiags.Sourceless(
-			tfdiags.Error,
-			"Invalid command-line option",
-			"The -backend-config=... command line option is only for state backends, and is not applicable to cloud backend-based configurations.\n\nTo change the set of workspaces associated with this configuration, edit the Cloud configuration block in the root module.",
-		))
-		return nil, true, diags
-	}
-
-	backendConfig := root.CloudConfig.ToBackendConfig()
-
-	opts := &BackendOpts{
-		Config: &backendConfig,
-		Init:   true,
-		View:   view,
-	}
-
-	back, backDiags := c.Backend(ctx, opts, enc.State())
-	diags = diags.Append(backDiags)
-	return back, true, diags
-}
-
 func (c *InitCommand) initBackend(ctx context.Context, root *configs.Module, extraConfig flags.RawFlags, enc encryption.Encryption, view views.Backend) (be backend.Backend, output bool, diags tfdiags.Diagnostics) {
 	ctx, span := tracing.Tracer().Start(ctx, "Backend init")
 	_ = ctx // prevent staticcheck from complaining to avoid a maintenance hazard of having the wrong ctx in scope here
@@ -472,16 +438,6 @@ func (c *InitCommand) initBackend(ctx context.Context, root *configs.Module, ext
 	var backendConfigOverride hcl.Body
 	if root.Backend != nil {
 		backendType := root.Backend.Type
-		if backendType == "cloud" {
-			diags = diags.Append(&hcl.Diagnostic{
-				Severity: hcl.DiagError,
-				Summary:  "Unsupported backend type",
-				Detail:   fmt.Sprintf("There is no explicit backend type named %q. To configure cloud backend, declare a 'cloud' block instead.", backendType),
-				Subject:  &root.Backend.TypeRange,
-			})
-			return nil, true, diags
-		}
-
 		bf, canonType := backendInit.Backend(backendType)
 		if bf == nil {
 			detail := fmt.Sprintf("There is no backend type named %q.", backendType)

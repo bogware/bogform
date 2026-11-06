@@ -87,11 +87,6 @@ func (b *Local) localRun(ctx context.Context, stopCtx context.Context, op *backe
 
 	var ctxDiags tfdiags.Diagnostics
 	var configSnap *configload.Snapshot
-	if op.PlanFile.IsCloud() {
-		diags = diags.Append(fmt.Errorf("error: using a saved cloud plan when executing OpenTofu locally is not supported"))
-		return nil, nil, nil, diags
-	}
-
 	if lp, ok := op.PlanFile.Local(); ok {
 		var stateMeta *statemgr.SnapshotMeta
 		// If the statemgr implements our optional PersistentMeta interface then we'll

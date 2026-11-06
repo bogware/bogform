@@ -15,7 +15,6 @@ import (
 
 	"github.com/opentofu/opentofu/internal/backend"
 	backendLocal "github.com/opentofu/opentofu/internal/backend/local"
-	backendRemote "github.com/opentofu/opentofu/internal/backend/remote"
 	backendAzure "github.com/opentofu/opentofu/internal/backend/remote-state/azure"
 	backendConsul "github.com/opentofu/opentofu/internal/backend/remote-state/consul"
 	backendCos "github.com/opentofu/opentofu/internal/backend/remote-state/cos"
@@ -26,7 +25,6 @@ import (
 	backendOSS "github.com/opentofu/opentofu/internal/backend/remote-state/oss"
 	backendPg "github.com/opentofu/opentofu/internal/backend/remote-state/pg"
 	backendS3 "github.com/opentofu/opentofu/internal/backend/remote-state/s3"
-	backendCloud "github.com/opentofu/opentofu/internal/cloud"
 	"github.com/opentofu/opentofu/internal/encryption"
 	"github.com/opentofu/opentofu/internal/tfdiags"
 )
@@ -62,6 +60,15 @@ var backendsLock sync.Mutex
 // since been deprecated and removed.
 var RemovedBackends map[string]string
 
+// removedSaaSBackendMessage explains how to move away from HCP Terraform or
+// Terraform Enterprise, whose "cloud" block and "remote" backend aren't supported.
+const removedSaaSBackendMessage = `Bogform doesn't support the "cloud" block or the "remote" backend, which connect to HCP Terraform and Terraform Enterprise.
+
+To keep your existing state, move it to a supported backend such as "s3", "gcs", "azurerm", or "pg":
+  1. Using your current tool, run "state pull > terraform.tfstate" in each workspace.
+  2. Replace the "cloud" block or "remote" backend with the new backend's configuration.
+  3. Run "bogform init", then "bogform state push terraform.tfstate".`
+
 // Init initializes the backends map with all our hardcoded backends.
 func Init(services *disco.Disco) {
 	backendsLock.Lock()
@@ -72,8 +79,7 @@ func Init(services *disco.Disco) {
 	// to the following table.
 
 	backends = map[string]backend.InitFn{
-		"local":  func(enc encryption.StateEncryption) backend.Backend { return backendLocal.New(enc) },
-		"remote": func(enc encryption.StateEncryption) backend.Backend { return backendRemote.New(services, enc) },
+		"local": func(enc encryption.StateEncryption) backend.Backend { return backendLocal.New(enc) },
 
 		// Remote State backends.
 		"azurerm":    func(enc encryption.StateEncryption) backend.Backend { return backendAzure.New(enc) },
@@ -86,16 +92,14 @@ func Init(services *disco.Disco) {
 		"oss":        func(enc encryption.StateEncryption) backend.Backend { return backendOSS.New(enc) },
 		"pg":         func(enc encryption.StateEncryption) backend.Backend { return backendPg.New(enc) },
 		"s3":         func(enc encryption.StateEncryption) backend.Backend { return backendS3.New(enc) },
-
-		// Terraform Cloud 'backend'
-		// This is an implementation detail only, used for the cloud package
-		"cloud": func(enc encryption.StateEncryption) backend.Backend { return backendCloud.New(services, enc) },
 	}
 	backendAliases = map[string]string{
 		// There are currently no backend aliases
 	}
 
 	RemovedBackends = map[string]string{
+		"cloud":       removedSaaSBackendMessage,
+		"remote":      removedSaaSBackendMessage,
 		"artifactory": `The "artifactory" backend is not supported in OpenTofu v1.3 or later.`,
 		"azure":       `The "azure" backend name has been removed, please use "azurerm".`,
 		"etcd":        `The "etcd" backend is not supported in OpenTofu v1.3 or later.`,

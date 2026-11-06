@@ -129,9 +129,6 @@ func TestRoundtrip(t *testing.T) {
 	if !ok {
 		t.Fatalf("failed to open plan file as a local plan file")
 	}
-	if wpf.IsCloud() {
-		t.Fatalf("wrapped plan claims to be both kinds of plan at once")
-	}
 
 	t.Run("ReadPlan", func(t *testing.T) {
 		planOut, err := pr.ReadPlan()
@@ -209,19 +206,5 @@ func TestWrappedError(t *testing.T) {
 	_, err = OpenWrapped(filepath.Join("testdata", "absent.tfplan"), encryption.PlanEncryptionDisabled())
 	if !strings.Contains(err.Error(), missingFileError) {
 		t.Fatalf("expected  %q, got %q", missingFileError, err)
-	}
-}
-
-func TestWrappedCloud(t *testing.T) {
-	// Loading valid cloud plan results in a wrapped cloud plan
-	wpf, err := OpenWrapped(filepath.Join("testdata", "cloudplan.json"), encryption.PlanEncryptionDisabled())
-	if err != nil {
-		t.Fatalf("failed to open valid cloud plan: %s", err)
-	}
-	if !wpf.IsCloud() {
-		t.Fatalf("failed to open cloud file as a cloud plan")
-	}
-	if wpf.IsLocal() {
-		t.Fatalf("wrapped plan claims to be both kinds of plan at once")
 	}
 }

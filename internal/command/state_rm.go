@@ -13,7 +13,6 @@ import (
 	"github.com/opentofu/opentofu/internal/command/clistate"
 	"github.com/opentofu/opentofu/internal/command/views"
 	"github.com/opentofu/opentofu/internal/tfdiags"
-	"github.com/opentofu/opentofu/internal/tofu"
 )
 
 func StateRmCommander() Command {
@@ -126,26 +125,18 @@ func (c StateRmCommand) Execute(args *arguments.StateRm, view views.State) int {
 		return 0 // This is as far as we go in dry-run mode
 	}
 
-	b, backendDiags := c.Backend(ctx, nil, enc.State())
+	_, backendDiags := c.Backend(ctx, nil, enc.State())
 	diags = diags.Append(backendDiags)
 	if backendDiags.HasErrors() {
 		view.Diagnostics(diags)
 		return 1
 	}
 
-	// Get schemas, if possible, before writing state
-	var schemas *tofu.Schemas
-	if isCloudMode(b) {
-		var schemaDiags tfdiags.Diagnostics
-		schemas, schemaDiags = c.MaybeGetSchemas(ctx, state, nil)
-		diags = diags.Append(schemaDiags)
-	}
-
 	if err := stateMgr.WriteState(state); err != nil {
 		view.StateSavingError(err.Error())
 		return 1
 	}
-	if err := stateMgr.PersistState(context.TODO(), schemas); err != nil {
+	if err := stateMgr.PersistState(context.TODO(), nil); err != nil {
 		view.StateSavingError(err.Error())
 		return 1
 	}

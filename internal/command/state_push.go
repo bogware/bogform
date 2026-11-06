@@ -19,7 +19,6 @@ import (
 	"github.com/opentofu/opentofu/internal/encryption"
 	"github.com/opentofu/opentofu/internal/states/statefile"
 	"github.com/opentofu/opentofu/internal/states/statemgr"
-	"github.com/opentofu/opentofu/internal/tofu"
 )
 
 func StatePushCommander() Command {
@@ -174,12 +173,6 @@ func (c StatePushCommand) Execute(args *arguments.StatePush, view views.State) i
 		return 1
 	}
 
-	// Get schemas, if possible, before writing state
-	var schemas *tofu.Schemas
-	if isCloudMode(b) {
-		schemas, diags = c.MaybeGetSchemas(ctx, srcStateFile.State, nil)
-	}
-
 	if err := stateMgr.WriteState(srcStateFile.State); err != nil {
 		view.Diagnostics(diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
@@ -188,7 +181,7 @@ func (c StatePushCommand) Execute(args *arguments.StatePush, view views.State) i
 		)))
 		return 1
 	}
-	if err := stateMgr.PersistState(context.TODO(), schemas); err != nil {
+	if err := stateMgr.PersistState(context.TODO(), nil); err != nil {
 		view.Diagnostics(diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Failed to persist state",

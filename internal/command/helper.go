@@ -5,11 +5,6 @@
 
 package command
 
-import (
-	"github.com/opentofu/opentofu/internal/backend"
-	"github.com/opentofu/opentofu/internal/cloud"
-)
-
 const failedToLoadSchemasMessage = `
 Warning: Failed to update data for external integrations
 
@@ -25,9 +20,3 @@ apply will correct the problem by re-generating the JSON description
 of the state:
     tofu apply
 `
-
-func isCloudMode(b backend.Enhanced) bool {
-	_, ok := b.(*cloud.Cloud)
-
-	return ok
-}
