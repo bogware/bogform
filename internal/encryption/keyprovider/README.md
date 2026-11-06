@@ -1,16 +1,16 @@
-# OpenTofu key providers
+# Bogform key providers
 
 > [!WARNING]
-> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the OpenTofu website unless you want to work on the encryption code.
+> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the Bogform website unless you want to work on the encryption code.
 
-This folder contains the interface that key providers must implement in order to work with OpenTofu. Please read this document carefully if you intend to work on a key provider.
+This folder contains the interface that key providers must implement in order to work with Bogform. Please read this document carefully if you intend to work on a key provider.
 
 ## What are key providers?
 
-Key providers in OpenTofu are responsible for integrating various key-management systems or key derivation (passphrase) functions. They consist of 3 components:
+Key providers in Bogform are responsible for integrating various key-management systems or key derivation (passphrase) functions. They consist of 3 components:
 
 1. The **descriptor** provides a unique ID and a struct with HCL tags to read the configuration into.
-2. The **configuration** is a struct OpenTofu parses the user-supplied configuration into. The `Build` function on this struct creates the key provider itself.
+2. The **configuration** is a struct Bogform parses the user-supplied configuration into. The `Build` function on this struct creates the key provider itself.
 3. The **key provider** is responsible for creating one encryption key and one decryption key. It receives stored metadata and must return similar metadata in the result.
 
 ## What is metadata?
@@ -18,7 +18,7 @@ Key providers in OpenTofu are responsible for integrating various key-management
 Some key providers need to store data alongside the encrypted data, such as the salt, the hashing function name, the key length, etc. The key provider can use this metadata to recreate the exact same key for decryption as it used for encryption. However, the key provider could also provide a different key for each encryption and decryption, allowing for a quick rotation of encryption parameters. 
 
 > [!WARNING]
-> The metadata is **bound to the key provider name**. In order words, if you change the key provider name, OpenTofu will be unable to decrypt old data.
+> The metadata is **bound to the key provider name**. In order words, if you change the key provider name, Bogform will be unable to decrypt old data.
 
 ## Implementing a key provider
 

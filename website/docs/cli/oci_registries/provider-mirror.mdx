@@ -1,17 +1,17 @@
 ---
 description: >-
-  Use OCI registries as an alternative installation source for OpenTofu providers
+  Use OCI registries as an alternative installation source for Bogform providers
 ---
 
 # Provider Mirrors in OCI Registries
 
 A "provider mirror" is a secondary location hosting a copy of a provider to be used instead
-of accessing the provider's primary OpenTofu Provider Registry. Creating a local mirror of some
+of accessing the provider's primary Bogform Provider Registry. Creating a local mirror of some
 or all of the providers you use can reduce data transfer costs and can help with running
-OpenTofu in "air-gapped" environments that cannot access any services over the public internet.
+Bogform in "air-gapped" environments that cannot access any services over the public internet.
 
 Alternative provider installation methods are configured as part of
-[the OpenTofu CLI Configuration](../config/config-file.mdx). You can configure installation
+[the Bogform CLI Configuration](../config/config-file.mdx). You can configure installation
 from OCI Registries using an `oci_mirror` block as part of your
 [Explicit Installation Method Configuration](../config/config-file.mdx#explicit-installation-method-configuration).
 
@@ -62,37 +62,37 @@ repository named `opentofu-providers/hashicorp/tls` in the OCI registry running 
 ## Required OCI Repository Content
 
 The OCI repository selected by `repository_template` must contain content following a
-specific structure that allows OpenTofu to recognize the metadata for all of the
+specific structure that allows Bogform to recognize the metadata for all of the
 available provider versions and their associated distribution packages.
 
 ### Tag Names
 
-OpenTofu begins by listing all of the tags in the repository. A valid tag name must
+Bogform begins by listing all of the tags in the repository. A valid tag name must
 be a version number formatted using the syntax of
 [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html), except that
 the tag name must use the underscore character (`_`) instead of the plus
 character (`+`) to delimit the optional "build metadata" portion.
 
-OpenTofu ignores all tags that cannot be parsed as version numbers, and then selects
+Bogform ignores all tags that cannot be parsed as version numbers, and then selects
 the greatest available version that matches all of the version constraints for this
-provider specified across all modules in the current OpenTofu configuration.
+provider specified across all modules in the current Bogform configuration.
 
 ### Manifest Structure
 
-OpenTofu providers use separate distribution packages for each supported operating
+Bogform providers use separate distribution packages for each supported operating
 system and CPU architecture, and so each tag in an OCI repository used as an
-OpenTofu provider mirror must refer to an [Image Index](https://github.com/opencontainers/image-spec/blob/v1.1.1/image-index.md)
+Bogform provider mirror must refer to an [Image Index](https://github.com/opencontainers/image-spec/blob/v1.1.1/image-index.md)
 manifest that lists a separate manifest for each platform the provider has been
 compiled for.
 
 The index manifest **must** have its `artifactType` property set to
-`application/vnd.opentofu.provider` so that OpenTofu can recognize is as a
+`application/vnd.opentofu.provider` so that Bogform can recognize is as a
 representing a provider release.
 
-OpenTofu then searches the `manifests` array for a manifest descriptor
+Bogform then searches the `manifests` array for a manifest descriptor
 whose `artifactType` is `application/vnd.opentofu.provider-target`
 and whose `platform` property matches the operating system and architecture
-that OpenTofu itself was compiled for.
+that Bogform itself was compiled for.
 
 The selected descriptor is then used to retrieve an [Image Manifest](https://github.com/opencontainers/image-spec/blob/v1.1.1/manifest.md)
 representing the files and metadata needed to install the selected provider
@@ -106,9 +106,9 @@ the same `.zip` package that would be returned for the same version of
 the provider on the same platform if installed from the provider's origin
 registry.
 
-OpenTofu than finally retrieves the indicated blob and extracts the `.zip`
+Bogform than finally retrieves the indicated blob and extracts the `.zip`
 archive into the provider cache directory so that it's available for use
-by subsequent workflow commands like [`tofu apply`](../commands/apply.mdx).
+by subsequent workflow commands like [`bogform apply`](../commands/apply.mdx).
 
 ## Assembling and Pushing Provider Manifests
 
@@ -125,7 +125,7 @@ obtain credentials for that repository using [`oras login`](https://oras.land/do
 
 ### Local OCI Image Layout
 
-The process of assembling OpenTofu provider manifests with ORAS requires
+The process of assembling Bogform provider manifests with ORAS requires
 multiple steps, and so we recommend pushing the various artifacts first
 to a local filesystem directory -- known as an
 [OCI Image Layout](https://github.com/opencontainers/image-spec/blob/v1.1.1/image-layout.md) --

@@ -3,7 +3,7 @@
 This key provider combines two keys to create a dual-custody encryption key using XOR. This provider is meant for testing purposes only.
 
 > [!WARNING]
-> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the OpenTofu website unless you want to work on the encryption code.
+> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the Bogform website unless you want to work on the encryption code.
 
 ## Configuration
 

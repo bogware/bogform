@@ -1,13 +1,13 @@
 ---
 description: |-
   The module registry protocol is implemented by a host intending to be the
-  host of one or more OpenTofu modules, specifying which modules are available
+  host of one or more Bogform modules, specifying which modules are available
   and where to find their distribution packages.
 ---
 
 # Module Registry Protocol
 
-The module registry protocol is what OpenTofu CLI uses to discover metadata
+The module registry protocol is what Bogform CLI uses to discover metadata
 about modules available for installation and to locate the distribution
 package for a selected module.
 
@@ -19,7 +19,7 @@ publishing them on the public OpenTofu Registry.
 
 ## Module Addresses
 
-Each OpenTofu module has an associated address. A module address has the
+Each Bogform module has an associated address. A module address has the
 syntax `hostname/namespace/name/system`, where:
 
 - `hostname` is the hostname of the module registry that serves this module.
@@ -51,7 +51,7 @@ For example:
 - `example.com/awesomecorp/consul/happycloud` is a hypothetical module published
   on a third-party registry.
 
-If you intend to share a module you've developed for use by all OpenTofu
+If you intend to share a module you've developed for use by all Bogform
 users, please consider publishing it into the public
 [OpenTofu Registry](https://registry.opentofu.org/) to make your module more
 discoverable. You only need to implement this module registry protocol if you
@@ -61,7 +61,7 @@ under your control.
 ## Module Versions
 
 Each distinct module address has associated with it a set of versions, each
-of which has an associated version number. OpenTofu assumes version numbers
+of which has an associated version number. Bogform assumes version numbers
 follow the [Semantic Versioning 2.0](https://semver.org/) conventions, with
 the user-facing behavior of the module serving as the "public API".
 
@@ -70,8 +70,8 @@ blocks have the same source address.
 
 ## Service Discovery
 
-The module registry protocol begins with OpenTofu CLI using
-[OpenTofu's remote service discovery protocol](remote-service-discovery.mdx),
+The module registry protocol begins with Bogform CLI using
+[Bogform's remote service discovery protocol](remote-service-discovery.mdx),
 with the hostname in the module address acting as the "User-facing Hostname".
 
 The service identifier for the module registry protocol is `modules.v1`.
@@ -87,14 +87,14 @@ the module registry protocol might contain the following:
 }
 ```
 
-If the given URL is a relative URL then OpenTofu will interpret it as relative
+If the given URL is a relative URL then Bogform will interpret it as relative
 to the discovery document itself. The specific module registry protocol
 endpoints are defined as URLs relative to the given base URL, and so the
 specified base URL should generally end with a slash to ensure that those
 relative paths will be resolved as expected.
 
 The following sections describe the various operations that a module
-registry must implement to be compatible with OpenTofu CLI's module
+registry must implement to be compatible with Bogform CLI's module
 installer. The indicated URLs are all relative to the URL resulting from
 service discovery, as described above. We use a hypothetical URL for a provider
 registry, assuming that the caller already performed service discovery on a hypothetical
@@ -137,9 +137,9 @@ $ curl 'https://registry.opentofu.org/v1/modules/hashicorp/consul/aws/versions'
 The `modules` array in the response always includes the requested module as the
 first element.
 
-OpenTofu does not use the other elements of this list. However, third-party implementations should always use a single-element list for forward compatibility.
+Bogform does not use the other elements of this list. However, third-party implementations should always use a single-element list for forward compatibility.
 
-Each returned module has an array of available versions, which OpenTofu
+Each returned module has an array of available versions, which Bogform
 matches against any version constraints given in configuration.
 
 ```json
@@ -200,7 +200,7 @@ Content-Length: 81
 {"location": "git::https://github.com/foo/terraform-baz-bar?ref=v0.0.1"}
 ```
 
-In the absence of a response body, OpenTofu will use the `X-Terraform-Get` header as the module location:
+In the absence of a response body, Bogform will use the `X-Terraform-Get` header as the module location:
 
 ```text
 HTTP/2 204 No Content
@@ -209,11 +209,11 @@ X-Terraform-Get: git::https://github.com/foo/terraform-baz-bar?ref=v0.0.1
 ```
 
 :::warning
-OpenTofu will prioritize reading the response body content if both, the body and the `X-Terraform-Get` header, are received from the registry server.
+Bogform will prioritize reading the response body content if both, the body and the `X-Terraform-Get` header, are received from the registry server.
 :::
 
 The module location value accepts the same values as the `source` argument in a
-`module` block in OpenTofu configuration, as described in [Module Sources](../language/modules/sources.mdx),
+`module` block in Bogform configuration, as described in [Module Sources](../language/modules/sources.mdx),
 except that it may not recursively refer to another module registry address.
 The value of the module location may instead be a relative URL, indicated by beginning with `/`, `./` or `../`,
 in which case it is resolved relative to the full URL of the download endpoint to
@@ -237,6 +237,6 @@ Content-Length: 81
 When `use_registry_credentials` is present, `"location"` **must** be a HTTP
 or HTTPS URL referring to a zip archive or to a tar archive compressed using
 gzip, xz, or bzip2 compression. Setting `use_registry_credentials` to true
-tells OpenTofu to use the same credentials it had used to fetch this metadata
+tells Bogform to use the same credentials it had used to fetch this metadata
 when retrieving the indicated package. No other module source type is permitted
 in this direct-hosted package mode.

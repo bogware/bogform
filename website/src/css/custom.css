@@ -1,0 +1,22 @@
+/* Copyright (c) The Bogform Authors
+   SPDX-License-Identifier: MPL-2.0 */
+
+:root {
+  --ifm-color-primary: #2f6f4e;
+  --ifm-color-primary-dark: #2a6446;
+  --ifm-color-primary-darker: #285e42;
+  --ifm-color-primary-darkest: #214e37;
+  --ifm-color-primary-light: #347a56;
+  --ifm-color-primary-lighter: #36805a;
+  --ifm-color-primary-lightest: #3d9065;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #6fc597;
+  --ifm-color-primary-dark: #57bb86;
+  --ifm-color-primary-darker: #4bb67d;
+  --ifm-color-primary-darkest: #3a9a67;
+  --ifm-color-primary-light: #87cfa8;
+  --ifm-color-primary-lighter: #93d4b1;
+  --ifm-color-primary-lightest: #b7e3cb;
+}

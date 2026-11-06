@@ -115,7 +115,7 @@ some unusual situations, even though this is just an implementation detail
 in typical use.
 
 Most importantly, there must be a suitable location in the remote filesystem
-where the provisioner can create the script file. By default, OpenTofu
+where the provisioner can create the script file. By default, Bogform
 chooses a path containing a random number using the following patterns
 depending on how `target_platform` is set:
 
@@ -127,7 +127,7 @@ some randomly-chosen decimal digits.
 
 Provisioners cannot react directly to remote environment variables such as
 `TMPDIR` or use functions like `mktemp` because they run on the system where
-OpenTofu is running, not on the remote system. Therefore if your remote
+Bogform is running, not on the remote system. Therefore if your remote
 system doesn't use the filesystem layout expected by these default paths
 then you can override it using the `script_path` option in your `connection`
 block:
@@ -145,7 +145,7 @@ between multiple provisioners running concurrently.
 
 If your target system is running Windows, we recommend using forward slashes
 instead of backslashes, despite the typical convention on Windows, because
-the OpenTofu language uses backslash as the quoted string escape character.
+the Bogform language uses backslash as the quoted string escape character.
 
 Provisioners upload their script files using the Secure Copy Protocol (SCP),
 which requires that the remote system have the `scp` service program installed

@@ -1,6 +1,6 @@
 ---
 description: >-
-    The tofu test command performs integration tests of OpenTofu modules.
+    The bogform test command performs integration tests of Bogform modules.
 ---
 
 import CodeBlock from '@theme/CodeBlock';
@@ -45,12 +45,12 @@ import MockResourceTest from '!!raw-loader!./examples/mock_resource/main.tftest.
 
 # Command: test
 
-The `tofu test` command lets you test your OpenTofu configuration by creating real infrastructure and checking that
-the required conditions (assertions) are met. Once the test is complete, OpenTofu destroys the resources it created.
+The `bogform test` command lets you test your Bogform configuration by creating real infrastructure and checking that
+the required conditions (assertions) are met. Once the test is complete, Bogform destroys the resources it created.
 
 ## Usage
 
-Usage: `tofu test [options]`.
+Usage: `bogform test [options]`.
 
 This command will execute all `*.tftest.hcl`, `*.tftest.json`, `*.tofutest.hcl`, and `*.tofutest.json` files in the
 current directory or in a directory called `tests`. You can customize this behavior using the [options](#options) below.
@@ -69,7 +69,7 @@ has successfully performed its job from `main.tftest.hcl`.
     </TabItem>
 </Tabs>
 
-You can run `tofu init` followed by `tofu test` to execute the test which will apply the `main.tf` file and test it
+You can run `bogform init` followed by `bogform test` to execute the test which will apply the `main.tf` file and test it
 against the assertion in `main.tftest.hcl`. This is just a simple illustration. You can find more comprehensive examples
 below.
 
@@ -77,24 +77,24 @@ below.
 
 ## Extension Precedence
 When both `.tftest.hcl` and `.tofutest.hcl` files with the same base name are present in a
-directory, OpenTofu will prioritize the `.tofutest.hcl` file and ignore the `.tftest.hcl` file.
+directory, Bogform will prioritize the `.tofutest.hcl` file and ignore the `.tftest.hcl` file.
 For example:
 
-- If both `main.tftest.hcl` and `main.tofutest.hcl` exist in the same directory, OpenTofu will
+- If both `main.tftest.hcl` and `main.tofutest.hcl` exist in the same directory, Bogform will
 only load `main.tofutest.hcl` and ignore `main.tftest.hcl`.
 
 This ensures that `.tofu` files always take precedence over `.tf` files when
 both are available. This scenario can be useful for module authors who want
-their modules to support both OpenTofu and Terraform and want to create different tests for each.
+their modules to support both Bogform and Terraform and want to create different tests for each.
 
 The same rule applies to JSON-based test files:
-- if both `main.tftest.json` and `main.tofutest.json` exist in the same directory, OpenTofu will
+- if both `main.tftest.json` and `main.tofutest.json` exist in the same directory, Bogform will
 only load `main.tofutest.json` and ignore `main.tftest.json`.
 
 ## Options
 
-* `-test-directory=path` Set the test directory (default: "tests"). OpenTofu will search for test files in the specified
-  directory and also the current directory when you run `tofu test`. The path should be relative to the current
+* `-test-directory=path` Set the test directory (default: "tests"). Bogform will search for test files in the specified
+  directory and also the current directory when you run `bogform test`. The path should be relative to the current
   working directory.
 * `-filter=testfile` Specify an individual test file to run. Use this option multiple times to specify more than one
   file. The path should be relative to the current working directory.
@@ -103,12 +103,12 @@ only load `main.tofutest.json` and ignore `main.tftest.json`.
 If `-filter` is used alongside `-test-directory=path`, any filters for test files in the \<test-directory\> must be prepended by the \<test-directory\>, as in:
 
 ```
-tofu test -test-directory=extra-tests -filter=extra-tests/a.tftest.hcl
+bogform test -test-directory=extra-tests -filter=extra-tests/a.tftest.hcl
 ```
 :::
 * `-var 'foo=bar'` Set an input variable of the root module. Specify this option multiple times to add more
   than one variable.
-* `-var-file=filename` Set multiple variables from the specified file. In addition to this file, OpenTofu automatically
+* `-var-file=filename` Set multiple variables from the specified file. In addition to this file, Bogform automatically
   loads `terraform.tfvars` and `*.auto.tfvars`. Use this option multiple times to specify more than one file.
 * `-json` Change the output format to JSON.
 * `-json-into=out.json` - Produces the same output as -json, but redirected to a file. This allows
@@ -121,12 +121,12 @@ Use of variables in [module sources](../../../language/modules/sources.mdx#suppo
 [backend configuration](../../../language/settings/backends/configuration.mdx#variables-and-locals),
 or [encryption block](../../../language/state/encryption.mdx#configuration)
 requires [assigning values to root module variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu test`.
+when running `bogform test`.
 :::
 
 ## Directory structure
 
-The `tofu test` command supports two directory layouts, flat or nested:
+The `bogform test` command supports two directory layouts, flat or nested:
 
 <Tabs>
     <TabItem value="flat" label="Flat layout" default>
@@ -149,12 +149,12 @@ When testing modules, you can use one of the above directory structures for each
 
 <Tabs>
     <TabItem value="flat" label="Flat layout" default>
-        With this layout, run <code>tofu test -test-directory=./path/to/module</code> to test the module in question.
+        With this layout, run <code>bogform test -test-directory=./path/to/module</code> to test the module in question.
         <CodeBlock>{FlatLayoutModule}</CodeBlock>
     </TabItem>
     <TabItem value="nested" label="Nested layout">
         With this layout, <strong>change your working directory to your module path</strong> and
-        run <code>tofu test</code> to test the module in question.
+        run <code>bogform test</code> to test the module in question.
         <CodeBlock>{NestedLayoutModule}</CodeBlock>
     </TabItem>
 </Tabs>
@@ -168,7 +168,7 @@ times to run more than one test file.
 
 ## The `*.tftest.hcl` / `*.tofutest.hcl` file structure
 
-The testing language of OpenTofu is similar to the main OpenTofu language and uses the same block structure.
+The testing language of Bogform is similar to the main Bogform language and uses the same block structure.
 
 A test file consists of:
 
@@ -184,18 +184,18 @@ A test file consists of:
 
 ### The `run` block
 
-A `run` block contains a single test case which runs either `tofu apply` or `tofu plan` and then evaluates all
-`assert` blocks. Once the test is complete, it uses `tofu destroy` to remove the temporarily created resources.
+A `run` block contains a single test case which runs either `bogform apply` or `bogform plan` and then evaluates all
+`assert` blocks. Once the test is complete, it uses `bogform destroy` to remove the temporarily created resources.
 
 A `run` block consists of the following elements:
 
 | Name                                                                    | Type              | Description                                                                                                                                                                                                    |
 |:------------------------------------------------------------------------|:------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`assert`](#the-runassert-block)                                        | block             | Defines assertions that check if your code (e.g. `main.tf`) created the infrastructure correctly. If you do not specify any `assert` blocks, OpenTofu simply applies the configuration without any assertions. |
+| [`assert`](#the-runassert-block)                                        | block             | Defines assertions that check if your code (e.g. `main.tf`) created the infrastructure correctly. If you do not specify any `assert` blocks, Bogform simply applies the configuration without any assertions. |
 | [`module`](#the-runmodule-block)                                        | block             | Overrides the module being tested. You can use this to load a helper module for more elaborate tests.                                                                                                          |
 | [`expect_failures`](#the-runexpect_failures-list)                       | list              | A list of resources that should fail to provision in the current run.                                                                                                                                          |
 | [`variables`](#the-variables-and-runvariables-blocks)                   | block             | Defines variables for the current test case. See the [variables section](#variables).                                                                                                                          |
-| [`command`](#the-runcommand-setting-and-the-runplan_options-block)      | `plan` or `apply` | Defines the command which OpenTofu will execute, `plan` or `apply`. Defaults to `apply`.                                                                                                                       |
+| [`command`](#the-runcommand-setting-and-the-runplan_options-block)      | `plan` or `apply` | Defines the command which Bogform will execute, `plan` or `apply`. Defaults to `apply`.                                                                                                                       |
 | [`plan_options`](#the-runcommand-setting-and-the-runplan_options-block) | block             | Options for the `plan` or `apply` operation.                                                                                                                                                                   |
 | [`providers`](#the-providers-block)                                     | object            | Aliases for providers.                                                                                                                                                                                         |
 | [`override_resource`](#the-override_resource-and-override_data-blocks)  | block             | Defines a resource to be overridden for the run.                                                                                                                                                               |
@@ -209,9 +209,9 @@ You can specify `assert` blocks inside your `run` block to test the state of you
 
 Each block requires the following two attributes:
 
-1. The `condition` is an [OpenTofu condition](../../../language/expressions/custom-conditions.mdx#condition-expressions) which
+1. The `condition` is an [Bogform condition](../../../language/expressions/custom-conditions.mdx#condition-expressions) which
    should return `true` for the test to pass, `false` for the test to fail. The condition **must** reference a
-   resource, data source, variable, output or module from the main code, otherwise OpenTofu will refuse to run the test.
+   resource, data source, variable, output or module from the main code, otherwise Bogform will refuse to run the test.
 2. The `error_message` is a string explaining what happened when the test fails.
 
 :::tip Example
@@ -229,7 +229,7 @@ As a simple example, you can write an `assert` block as follows:
 
 :::
 
-Please note that conditions only let you perform basic checks on the current OpenTofu state and use OpenTofu functions.
+Please note that conditions only let you perform basic checks on the current Bogform state and use Bogform functions.
 **You cannot define additional data sources directly in your test code.** To work around this limitation, you can use
 [the `module` block](#the-runmodule-block) in order to load a helper module.
 
@@ -239,10 +239,10 @@ In some cases you may find that the tools provided in the
 [condition expression](../../../language/expressions/custom-conditions.mdx#condition-expressions) are not enough to test
 if your code created the infrastructure correctly.
 
-You can use the `module` block to override the main module `tofu test` loads. This gives you the opportunity to create
+You can use the `module` block to override the main module `bogform test` loads. This gives you the opportunity to create
 additional resources or data sources that you can use in your `assert` conditions.
 
-Its syntax is similar to loading modules in normal OpenTofu code:
+Its syntax is similar to loading modules in normal Bogform code:
 
 ```hcl
 run "test" {
@@ -260,7 +260,7 @@ The `module` block has the following two attributes:
 
 :::warning Note
 
-You cannot pass parameters directly in the `module` block as you may be used to from the normal OpenTofu code. Instead,
+You cannot pass parameters directly in the `module` block as you may be used to from the normal Bogform code. Instead,
 you should use the [`variables` block](#the-variables-and-runvariables-blocks) to pass parameters to your module.
 
 :::
@@ -307,7 +307,7 @@ can provide variables to your test run using any of the following methods:
 |   5    | The variables from the `variables` block in a test file.                                                                       |
 |   6    | The variables from the `variables` block in `run` block.                                                                       |
 
-OpenTofu evaluates the variables in the order listed above, so you can use it to override the previously set variable.
+Bogform evaluates the variables in the order listed above, so you can use it to override the previously set variable.
 For example:
 
 <Tabs>
@@ -377,8 +377,8 @@ inside providers.
 
 ### The `run.command` setting and the `run.plan_options` block
 
-By default, `tofu test` uses `tofu apply` to create real infrastructure. In some cases, for example if the real
-infrastructure is very expensive or impossible to run for testing purposes, it can be useful to only run `tofu plan`
+By default, `bogform test` uses `bogform apply` to create real infrastructure. In some cases, for example if the real
+infrastructure is very expensive or impossible to run for testing purposes, it can be useful to only run `bogform plan`
 instead. You can use the `command = plan` setting to perform a plan instead of an apply. The following example tests if
 the variable is correctly passed to the `docker_image` resource without actually applying the plan:
 
@@ -397,9 +397,9 @@ for both modes:
 | Name    | Description                                                                                                                                               |
 |:--------|:----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | mode    | Change this option from `normal` (default) to `refresh-only` in order to only refresh the local state from the remote infrastructure.                     |
-| refresh | Set this option to `false` to disable checking for external changes in relation to the state file. Similar to `tofu plan -refresh=false`.                 |
-| replace | Force replacing the specified list of resources, such as `[docker_image.build]` in the above example. Similar to `tofu plan -replace=docker_image.build`. |
-| target  | Limit planning to the specified list of modules or resources. Similar to `tofu plan -target=docker_image.build`.                                          |
+| refresh | Set this option to `false` to disable checking for external changes in relation to the state file. Similar to `bogform plan -refresh=false`.                 |
+| replace | Force replacing the specified list of resources, such as `[docker_image.build]` in the above example. Similar to `bogform plan -replace=docker_image.build`. |
+| target  | Limit planning to the specified list of modules or resources. Similar to `bogform plan -target=docker_image.build`.                                          |
 
 :::tip Tip
 
@@ -479,12 +479,12 @@ run "setup" {
 ### The `mock_provider` blocks
 
 A `mock_provider` block allows you to replace provider configuration by a mocked one. In such scenario,
-creation and retrieval of provider resources and data sources will be skipped. Instead, OpenTofu
+creation and retrieval of provider resources and data sources will be skipped. Instead, Bogform
 will automatically generate all computed attributes and blocks to be used in tests.
 
 :::tip Note
 
-Learn more on how OpenTofu produces [automatically generated values](#automatically-generated-values).
+Learn more on how Bogform produces [automatically generated values](#automatically-generated-values).
 
 :::
 
@@ -515,7 +515,7 @@ without actually creating it:
 
 These blocks are used inside a `mock_provider` block to customize mocked values for a specific resource or data source type.
 
-When using `mock_provider`, OpenTofu skips real provider calls and generates placeholder values for computed attributes.
+When using `mock_provider`, Bogform skips real provider calls and generates placeholder values for computed attributes.
 Use `mock_resource` and `mock_data` to set default values for computed attributes/blocks for a given resource or data source type, instead of relying on auto generated placeholders.
 
 A `mock_resource` / `mock_data` block affects **all instances** of the given type that are handled by the surrounding `mock_provider`.
@@ -530,7 +530,7 @@ These blocks consist of the following elements:
 
 | Name     | Type         | Description                                                                                                                                                         |
 |:--------:|:------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| defaults | map          | Optional. Default values for computed attributes and blocks for this type. If omitted, OpenTofu auto generates values.  |
+| defaults | map          | Optional. Default values for computed attributes and blocks for this type. If omitted, Bogform auto generates values.  |
 
 :::note
 
@@ -553,11 +553,11 @@ In the example below, we use mock_resource and mock_data to provide stable defau
 
 In some cases you may want to test your infrastructure with certain resources or data sources being overridden.
 You can use the `override_resource` or `override_data` blocks to skip creation and retrieval of these resources or data sources using the real provider.
-Instead, OpenTofu will automatically generate all computed attributes and blocks to be used in tests.
+Instead, Bogform will automatically generate all computed attributes and blocks to be used in tests.
 
 :::tip Note
 
-Learn more on how OpenTofu produces [automatically generated values](#automatically-generated-values).
+Learn more on how Bogform produces [automatically generated values](#automatically-generated-values).
 
 :::
 
@@ -605,8 +605,8 @@ As mentioned before, you can specify an override in either the `mock_provider` b
 
 ### Automatically generated values
 
-Mocking resources and data sources requires OpenTofu to automatically generate computed attributes without calling respective providers.
-When generating these values, OpenTofu cannot follow custom provider logic, so it uses simple rules based on value type:
+Mocking resources and data sources requires Bogform to automatically generate computed attributes without calling respective providers.
+When generating these values, Bogform cannot follow custom provider logic, so it uses simple rules based on value type:
 
 | Attribute type     | Generated value                                                     |
 |:------------------:|---------------------------------------------------------------------|
@@ -630,14 +630,14 @@ Keep in mind, it's possible for both computed/non-computed attributes to be chan
 
 In some cases you may want to test your infrastructure with certain module calls being overridden.
 You can use the `override_module` block to ignore all the configuration provided by called module.
-In this case, OpenTofu will use custom values specified in the `override_module` block as module outputs.
+In this case, Bogform will use custom values specified in the `override_module` block as module outputs.
 
 The block consist of the following elements:
 
 | Name     | Type         | Description                                                                                                            |
 |:--------:|:------------:|------------------------------------------------------------------------------------------------------------------------|
 | target   | reference    | Required. Address of the target module call to be overridden.                                                          |
-| outputs  | object       | Values to be used as module call outputs. If an output is not specified, OpenTofu will set it to `null` by default.       |
+| outputs  | object       | Values to be used as module call outputs. If an output is not specified, Bogform will set it to `null` by default.       |
 
 You can use `override_module` block for the whole test file or inside a single `run` block. The latter takes precedence if both specified for the same `target`.
 

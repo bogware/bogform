@@ -1,96 +1,96 @@
 ---
 title: Dependency Lock File
 description: >-
-  OpenTofu uses the dependency lock file .terraform.lock.hcl to track and select
+  Bogform uses the dependency lock file .terraform.lock.hcl to track and select
   provider versions. Learn about dependency installation and lock file changes.
 ---
 
 # Dependency Lock File
 
-An OpenTofu configuration may refer to two different kinds of external
+A Bogform configuration may refer to two different kinds of external
 dependency that come from outside of its own codebase:
 
-- [Providers](../../language/providers/requirements.mdx), which are plugins for OpenTofu
+- [Providers](../../language/providers/requirements.mdx), which are plugins for Bogform
   that extend it with support for interacting with various external systems.
 - [Modules](../../language/modules/index.mdx), which allow
-  splitting out groups of OpenTofu configuration constructs (written in the
-  OpenTofu language) into reusable abstractions.
+  splitting out groups of Bogform configuration constructs (written in the
+  Bogform language) into reusable abstractions.
 
 Both of these dependency types can be published and updated independently from
-OpenTofu itself and from the configurations that depend on them. For that
-reason, OpenTofu must determine which versions of those dependencies are
+Bogform itself and from the configurations that depend on them. For that
+reason, Bogform must determine which versions of those dependencies are
 potentially compatible with the current configuration and which versions are
 currently selected for use.
 
 [Version constraints](../../language/expressions/version-constraints.mdx) within the configuration
 itself determine which versions of dependencies are _potentially_ compatible,
-but after selecting a specific version of each dependency OpenTofu remembers
+but after selecting a specific version of each dependency Bogform remembers
 the decisions it made in a _dependency lock file_ so that it can (by default)
 make the same decisions again in future.
 
 At present, the dependency lock file tracks only _provider_ dependencies.
-OpenTofu does not remember version selections for remote modules, and so
-OpenTofu will always select the newest available module version that meets
+Bogform does not remember version selections for remote modules, and so
+Bogform will always select the newest available module version that meets
 the specified version constraints. You can use an _exact_ version constraint
-to ensure that OpenTofu will always select the same module version.
+to ensure that Bogform will always select the same module version.
 
 ## Lock File Location
 
 The dependency lock file is a file that belongs to the configuration as a
 whole, rather than to each separate module in the configuration. For that reason
-OpenTofu creates it and expects to find it in your current working directory
-when you run OpenTofu, which is also the directory containing the `.tf` or
+Bogform creates it and expects to find it in your current working directory
+when you run Bogform, which is also the directory containing the `.tf` or
 `.tofu` files for the root module of your configuration.
 
 The lock file is always named `.terraform.lock.hcl`, and this name is intended
-to signify that it is a lock file for various items that OpenTofu caches in
+to signify that it is a lock file for various items that Bogform caches in
 the `.terraform` subdirectory of your working directory.
 
-OpenTofu automatically creates or updates the dependency lock file each time
-you run [the `tofu init` command](../../cli/commands/init.mdx). You should
+Bogform automatically creates or updates the dependency lock file each time
+you run [the `bogform init` command](../../cli/commands/init.mdx). You should
 include this file in your version control repository so that you can discuss
 potential changes to your external dependencies via code review, just as you
 would discuss potential changes to your configuration itself.
 
-The dependency lock file uses the same low-level syntax as the main OpenTofu
-language, but the dependency lock file is not itself an OpenTofu language
+The dependency lock file uses the same low-level syntax as the main Bogform
+language, but the dependency lock file is not itself a Bogform language
 configuration file. It is named with the suffix `.hcl` instead of `.tf` or
 `.tofu` in order to signify that difference.
 
 ## Dependency Installation Behavior
 
-When `tofu init` is working on installing all of the providers needed for
-a configuration, OpenTofu considers both the version constraints in the
+When `bogform init` is working on installing all of the providers needed for
+a configuration, Bogform considers both the version constraints in the
 configuration _and_ the version selections recorded in the lock file.
 
-If a particular provider has no existing recorded selection, OpenTofu will
+If a particular provider has no existing recorded selection, Bogform will
 select the newest available version that matches the given version constraint,
 and then update the lock file to include that selection.
 
 If a particular provider already has a selection recorded in the lock file,
-OpenTofu will always re-select that version for installation, even if a
+Bogform will always re-select that version for installation, even if a
 newer version has become available. You can override that behavior by adding
-the `-upgrade` option when you run `tofu init`, in which case OpenTofu
+the `-upgrade` option when you run `bogform init`, in which case Bogform
 will disregard the existing selections and once again select the newest
 available version matching the version constraint.
 
-If a particular `tofu init` call makes changes to the lock file, OpenTofu
+If a particular `bogform init` call makes changes to the lock file, Bogform
 will mention that as part of its output:
 
 ```
-OpenTofu has made some changes to the provider dependency selections recorded
+Bogform has made some changes to the provider dependency selections recorded
 in the .terraform.lock.hcl file. Review those changes and commit them to your
 version control system if they represent changes you intended to make.
 ```
 
 When you see this message, you can use your version control system to
-[review the changes OpenTofu has proposed in the file](#understanding-lock-file-changes),
+[review the changes Bogform has proposed in the file](#understanding-lock-file-changes),
 and if they represent changes you made intentionally you can send the change
 through your team's usual code review process.
 
 ### Checksum verification
 
-OpenTofu will also verify that each package it installs matches at least one
+Bogform will also verify that each package it installs matches at least one
 of the checksums it previously recorded in the lock file, if any, returning an
 error if none of the checksums match:
 
@@ -106,14 +106,14 @@ This checksum verification is intended to represent a
 _[trust on first use](https://en.wikipedia.org/wiki/Trust_on_first_use)_
 approach. When you add a new provider for the first time you can verify it
 in whatever way you choose or any way you are required to by relevant
-regulations, and then trust that OpenTofu will raise an error if a future
-run of `tofu init` encounters a non-matching package for the same
+regulations, and then trust that Bogform will raise an error if a future
+run of `bogform init` encounters a non-matching package for the same
 provider version.
 
 There are two special considerations with the "trust on first use" model:
 
 - If you install a provider from an origin registry which provides checksums,
-  OpenTofu will treat all of the checksums as valid as long as one checksum matches
+  Bogform will treat all of the checksums as valid as long as one checksum matches
   the installed package. The lock file will therefore include checksums for both
   the package you installed for your current platform _and_ any other packages
   that might be available for other platforms. If you wish to restrict this
@@ -121,7 +121,7 @@ There are two special considerations with the "trust on first use" model:
   you can set [`OPENTOFU_ENFORCE_GPG_VALIDATION`](../../cli/plugins/signing.mdx#environment-variables)
   to `true`.
 
-  If a cryptographic signature is present, the `tofu init` output will include
+  If a cryptographic signature is present, the `bogform init` output will include
   the fingerprint of the key that signed the checksums, with a message like
   `(signed, key ID 0C0AF313E5FD9F80)`. You may wish to
   confirm that you trust the holder of the given key before committing the
@@ -129,26 +129,26 @@ There are two special considerations with the "trust on first use" model:
   full set of available packages for the given provider version.
 
 - If you install a provider for the first time using an alternative
-  installation method, such as a filesystem or network mirror, OpenTofu will
+  installation method, such as a filesystem or network mirror, Bogform will
   not be able to verify the checksums for any platform other than the one
-  where you ran `tofu init`, and so it will not record the checksums
+  where you ran `bogform init`, and so it will not record the checksums
   for other platforms and so the configuration will not be usable on any other
   platform.
 
   To avoid this problem you can pre-populate checksums for a variety of
   different platforms in your lock file using
-  [the `tofu providers lock` command](../../cli/commands/providers/lock.mdx),
-  which will then allow future calls to `tofu init` to verify that the
+  [the `bogform providers lock` command](../../cli/commands/providers/lock.mdx),
+  which will then allow future calls to `bogform init` to verify that the
   packages available in your chosen mirror match the official packages from
   the provider's origin registry.
 
 ## Understanding Lock File Changes
 
 Because the dependency lock file is primarily maintained automatically by
-OpenTofu itself, rather than being updated manually by you or your team,
+Bogform itself, rather than being updated manually by you or your team,
 your version control system may show you that the file has changed.
 
-There are a few different types of changes that OpenTofu can potentially make
+There are a few different types of changes that Bogform can potentially make
 to your lock file, which you may need to understand in order to review the
 proposed changes. The following sections will describe these common situations.
 
@@ -157,7 +157,7 @@ proposed changes. The following sections will describe these common situations.
 If you add a new entry to the
 [provider requirements](../../language/providers/requirements.mdx) for any module in your
 configuration, or if you add an external module that includes a new provider
-dependency itself, `tofu init` will respond to that by selecting the
+dependency itself, `bogform init` will respond to that by selecting the
 newest version of that provider which meets all of the version constraints
 in the configuration, and it will record its decision as a new `provider`
 block in the dependency lock file.
@@ -196,10 +196,10 @@ block in the dependency lock file.
 
 The new lock file entry records several pieces of information:
 
-- `version`: the exact version that OpenTofu selected based on the version
+- `version`: the exact version that Bogform selected based on the version
   constraints in the configuration.
-- `constraints`: all of the version constraints that OpenTofu considered when
-  making this selection. (OpenTofu doesn't actually use this information to
+- `constraints`: all of the version constraints that Bogform considered when
+  making this selection. (Bogform doesn't actually use this information to
   make installation decisions, but includes it to help explain to human readers
   how the previous decision was made.)
 - `hashes`: a number of checksums that are all considered to be valid for
@@ -209,8 +209,8 @@ The new lock file entry records several pieces of information:
 
 ### New version of an existing provider
 
-If you run `tofu init -upgrade` to ask OpenTofu to consider newer provider
-versions that still match the configured version constraints, OpenTofu may
+If you run `bogform init -upgrade` to ask Bogform to consider newer provider
+versions that still match the configured version constraints, Bogform may
 then select a newer version for a provider and update its existing `provider`
 block to reflect that change.
 
@@ -258,7 +258,7 @@ block to reflect that change.
 
 The primary effect of selecting a new provider version is to change the
 value of `version` in the `provider` block. If the upgrade came along with
-a change to the configured version constraints, OpenTofu will also record
+a change to the configured version constraints, Bogform will also record
 that change in the `constraints` value.
 
 Because each version has its own set of distribution packages, switching to
@@ -284,7 +284,7 @@ in the `provider` block has changed:
      "zh:4c5682ba1e0fc7e2e602d3f103af1638f868c31fe80cc1a884a97f6dad6e1c11",
 ```
 
-The addition of a new checksum into the `hashes` value represents OpenTofu
+The addition of a new checksum into the `hashes` value represents Bogform
 gradually transitioning between different _hashing schemes_. The `h1:` and
 `zh:` prefixes on these values represent different hashing schemes, each
 of which represents calculating a checksum using a different algorithm.
@@ -295,7 +295,7 @@ additional benefit.
 The two hashing schemes currently supported are:
 
 - `zh:`: a mnemonic for "zip hash", this is a legacy hash format which is
-  part of the OpenTofu provider registry protocol and is therefore used for
+  part of the Bogform provider registry protocol and is therefore used for
   providers that you install directly from an origin registry.
 
   This hashing scheme captures a SHA256 hash of each of the official `.zip`
@@ -315,22 +315,22 @@ The two hashing schemes currently supported are:
   same contents, or a recompressed `.zip` file which contains the same files
   but potentially different metadata or compression schemes.
 
-  Due to the limited scope of the `zh:` scheme, OpenTofu will
+  Due to the limited scope of the `zh:` scheme, Bogform will
   opportunistically add in the corresponding `h1:` checksums as it learns
   of them, which is what caused the addition of a second `h1:` checksum
   in the example change shown above.
 
-OpenTofu will add a new hash to an existing provider only if the hash is
+Bogform will add a new hash to an existing provider only if the hash is
 calculated from a package that _also_ matches one of the existing hashes. In
-the above example, OpenTofu installed a `hashicorp/azurerm` package for a
+the above example, Bogform installed a `hashicorp/azurerm` package for a
 different platform than that which produced the original `h1:` checksum, but was
 able to match it against one of the `zh:` checksums recorded previously.
-After confirming the `zh:` checksum match, OpenTofu then recorded the
+After confirming the `zh:` checksum match, Bogform then recorded the
 corresponding `h1:` checksum in order to gradually migrate from the old scheme
 to the new scheme.
 
 When installing a particular provider for the first time (where there is no
-existing `provider` block for it), OpenTofu will pre-populate the `hashes`
+existing `provider` block for it), Bogform will pre-populate the `hashes`
 value with all checksums reported by the registry, which usually covers
 all of the available packages for that provider version across all supported
 platforms. The OpenTofu Registry (as of OpenTofu v1.12) provides a comprehensive
@@ -338,12 +338,12 @@ set of `zh` (Zip Hash) and `h1` (Hash Scheme 1) hashes.
 
 If you wish to avoid ongoing additions of new `h1:` hashes if you are
 installing providers from a mirror that therefore can't provide official
-signed checksums, you can ask OpenTofu to pre-populate hashes for a chosen
+signed checksums, you can ask Bogform to pre-populate hashes for a chosen
 set of platforms using
-[the `tofu providers lock` command](../../cli/commands/providers/lock.mdx):
+[the `bogform providers lock` command](../../cli/commands/providers/lock.mdx):
 
 ```
-tofu providers lock \
+bogform providers lock \
   -platform=linux_arm64 \
   -platform=linux_amd64 \
   -platform=darwin_amd64 \
@@ -353,16 +353,16 @@ tofu providers lock \
 The above command will download and verify the official packages for all of
 the required providers across all four of the given platforms, and then record
 both `zh:` and `h1:` checksums for each of them in the lock file, thus avoiding
-the case where OpenTofu will learn about a `h1:` equivalent only at a later
-time. See the `tofu providers lock` documentation for more information on
+the case where Bogform will learn about a `h1:` equivalent only at a later
+time. See the `bogform providers lock` documentation for more information on
 this command.
 
 ### Providers that are no longer required
 
 To determine whether there still exists a dependency on a given provider,
-OpenTofu uses two sources of truth: the configuration itself, and the state.
+Bogform uses two sources of truth: the configuration itself, and the state.
 If you remove the last dependency on a particular provider from both your
-configuration and state, then `tofu init` will remove any existing lock
+configuration and state, then `bogform init` will remove any existing lock
 file entry for that provider.
 
 ```diff
@@ -398,7 +398,7 @@ file entry for that provider.
 ```
 
 If you add a new requirement for the same provider at a later date and run
-`tofu init` again, OpenTofu will treat it as if it were
+`bogform init` again, Bogform will treat it as if it were
 [an entirely new provider](#dependency-on-a-new-provider)
 and so will not necessarily select the same version that was previously
 selected and will not be able to verify that the checksums remained unchanged.

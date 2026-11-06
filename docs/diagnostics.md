@@ -1,10 +1,10 @@
-# OpenTofu Diagnostics Guide
+# Bogform Diagnostics Guide
 
 "Diagnostics" is the general term we use to describe the error and warning
-messages that OpenTofu returns when there are problems with the configuration,
+messages that Bogform returns when there are problems with the configuration,
 or when interactions with external systems fail.
 
-This document is an overview of how we typically use diagnostics in OpenTofu.
+This document is an overview of how we typically use diagnostics in Bogform.
 It includes both some technical information about how we represent diagnostics
 in code, and some more subjective information about the writing style we most
 often use in diagnostic messages.
@@ -157,7 +157,7 @@ all implementations of the interface make use of all of them:
     - Address: The address of some object that the error relates to, which
       is most often a resource instance address.
 
-    OpenTofu does not currently have a localized UI, so built-in diagnostics
+    Bogform does not currently have a localized UI, so built-in diagnostics
     always have their summary and detail written in US English. There's more
     subjective guidance about the content of these fields in sections below.
 - Source location information: optional references to parts of the configuration
@@ -206,7 +206,7 @@ Although there is some variation in diagnostic writing style, particularly in
 parts of the system like state storage backends which were originally written by
 third-parties, most of the _built-in_ diagnostics follow a relatively consistent
 writing style that is in turn based on the writing style used by HCL itself in
-its own diagnostics, because HCL and OpenTofu diagnostics often mix together
+its own diagnostics, because HCL and Bogform diagnostics often mix together
 in the same set of problems.
 
 The "summary" should typically be a very short and concise description of
@@ -217,7 +217,7 @@ readers can become familiar enough with the summaries of problems they see
 frequently to skip reading the rest of the diagnostic when skimming.
 
 The following are some real examples of summaries currently used across both
-HCL and OpenTofu:
+HCL and Bogform:
 
 - Unsupported operator
 - Duplicate argument
@@ -236,7 +236,7 @@ should mention the following information, usually in the following order:
   time including information about specifically what was wrong, such as the
   name of the input variable whose default value was invalid.
 - Why the situation is problematic, if knowing that relies on some
-  characteristic of OpenTofu's design that might not be obvious to a newcomer.
+  characteristic of Bogform's design that might not be obvious to a newcomer.
 - What should be done to fix it, or (if it's unclear what the author's intention
   was) a question-sentence that implies a _possible_ solution, often starting
   with the words "Did you mean" and ending with a question mark.
@@ -261,14 +261,14 @@ writing multiple paragraphs in a detail message they should be separated by
 In many cases our diagnostics only include a subset of this information because
 either the reason why it's problematic is relatively clear or because we don't
 have any specific suggestion for how to solve the problem, but the following
-is an example of a real diagnostic message from OpenTofu at the time of writing
+is an example of a real diagnostic message from Bogform at the time of writing
 this documentation which includes all of these parts:
 
 ```
 Error: Invalid for_each argument
 
 The "for_each" map includes keys derived from resource attributes that cannot
-be determined until apply, and so OpenTofu cannot determine the full set of keys
+be determined until apply, and so Bogform cannot determine the full set of keys
 that will identify the instances of this resource.
 
 When working with unknown values in for_each, it's better to define the map keys
@@ -310,7 +310,7 @@ Some other notes about some other specific situations that arise sometimes:
 
     ```
     To view the root module output values, run:
-        tofu output
+        bogform output
     ```
 
     The goal of this formatting is to make it very clear what part of the
@@ -324,7 +324,7 @@ Some other notes about some other specific situations that arise sometimes:
     useful side-effect of avoiding introducing extra newline characters into
     a command line that is intended to be copied.
 
-- There are some terminology choices we use to refer to some OpenTofu-specific
+- There are some terminology choices we use to refer to some Bogform-specific
   ideas and concepts that disagree slightly with terminology used in the code.
   These differences are the result of learning from feedback from folks who
   had been confused by the original terminology, even though the code still
@@ -333,11 +333,11 @@ Some other notes about some other specific situations that arise sometimes:
     - Instead of referring to "unknown values" or "computed values" we say that
       values are "known after apply" or "cannot be determined until apply".
     - In HCL the word "variable" means anything that's available to refer to
-      in the current evaluation context, which is confusing because OpenTofu
+      in the current evaluation context, which is confusing because Bogform
       itself uses that word to refer only to input variables.
 
         Sometimes messages are generated by HCL itself and so it's unavoidably
-        confusing, but when we're generating messages _inside OpenTofu_ we
+        confusing, but when we're generating messages _inside Bogform_ we
         use the two words "input variable" to refer to an input variable,
         and "symbol" or "object" (depending on whether we're talking about
         the name itself or what the name refers to) as the general word for
@@ -350,7 +350,7 @@ Some other notes about some other specific situations that arise sometimes:
       object type, and "arguments" meaning the names used for individual
       settings inside a configuration block.
 
-        OpenTofu itself uses those words a little more interchangeably because
+        Bogform itself uses those words a little more interchangeably because
         in _many_ cases the configuration arguments in a block directly
         correspond to the attributes of an object created by evaluating that
         block.
@@ -362,7 +362,7 @@ Some other notes about some other specific situations that arise sometimes:
 
         Go uses the term "field" to describe an element of a struct type, and
         JavaScript and JSON use the word "property" to describe an element of
-        an object type. We don't use either of those words in OpenTofu: the
+        an object type. We don't use either of those words in Bogform: the
         elements of an object are its _attributes_, and the settings available
         in a configuration block are its _arguments_. The string values that
         identify elements of a map are called "keys".
@@ -388,28 +388,28 @@ Some other notes about some other specific situations that arise sometimes:
         internal terminology that should never appear in a diagnostic message.
 - When a file or directory path appears as part of a diagnostic message, it
   should typically be presented relative to the current working directory and
-  should use the syntax conventions of the platform where OpenTofu is running.
+  should use the syntax conventions of the platform where Bogform is running.
 
     In particular, we return paths using backslashes as the separator when we
     are running on Windows, but normal slashes otherwise. Using the Go
     `filepath` package is a good way to get this right, though you might need
     to add some complexity to your tests to make them pass on all platforms.
 - If an error message is describing a "should never happen" case, we typically
-  end the detail string with the sentence "This is a bug in OpenTofu.". This
+  end the detail string with the sentence "This is a bug in Bogform.". This
   hopefully prompts the reader that this wasn't directly caused by something
   they did, and so they should probably open a bug report in the
-  OpenTofu repository instead of just trying to solve it themselves.
+  Bogform repository instead of just trying to solve it themselves.
 
     For this kind of error message we often relax our preference against
     mentioning implementation details in the error message, because the most
     likely next step is for the user to copy-paste the entire message into their
-    bug report text and so the final reader of the message is OpenTofu
-    maintainers rather than OpenTofu users.
+    bug report text and so the final reader of the message is Bogform
+    maintainers rather than Bogform users.
     
     For example, it can be okay to use internal terminology like "cty marks" and
     use the `GoString` representations of values in a "This is a bug in
-    OpenTofu" detail message, if that's the most concise way to capture the
-    information the OpenTofu maintainers would need to debug the problem.
+    Bogform" detail message, if that's the most concise way to capture the
+    information the Bogform maintainers would need to debug the problem.
 
 ## Diagnostics caused by unknown or sensitive values
 
@@ -444,7 +444,7 @@ an implementation of one of the following interfaces:
   (Remember that the _text_ of the error message should refer to this as "known
   only after apply", or similar.)
 - [`tfdiags.DiagnosticExtraBecauseSensitive`](https://pkg.go.dev/github.com/bogware/bogform/internal/tfdiags#DiagnosticExtraBecauseSensitive)
-  for situations where a sensitive value was used in a location that OpenTofu
+  for situations where a sensitive value was used in a location that Bogform
   cannot permit it, such as in the instance key of a resource instance.
 
 These extra markers should be used only when mentioning the unknown or sensitive

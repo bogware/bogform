@@ -1,13 +1,13 @@
 ---
 sidebar_label: assume...
-description: The "assume..." family of functions give OpenTofu more information about unknown values
+description: The "assume..." family of functions give Bogform more information about unknown values
 ---
 
 # `assume...` Functions
 
 The family of functions whose names begin with "assume" together allow module
-authors to give OpenTofu optional additional information about values that won't
-be finalized until the apply phase, which might then allow OpenTofu to perform
+authors to give Bogform optional additional information about values that won't
+be finalized until the apply phase, which might then allow Bogform to perform
 more checks during the plan phase instead of failing during the apply phase.
 
 The following sections describe the individual functions in more detail, but
@@ -34,7 +34,7 @@ The calling module could then evaluate expressions like
 `startswith(module.networking.vpc_id, "vpc-")` and get known boolean results
 instead of unknown values, even when the final id hasn't been decided yet.
 
-Whenever possible OpenTofu infers assumptions like these automatically, but
+Whenever possible Bogform infers assumptions like these automatically, but
 module authors can optionally use these functions to explicitly declare them
 in cases where automatic inference is impossible, such as in the above case
 where a provider plugin doesn't report its expectations about an unknown value
@@ -120,7 +120,7 @@ The caller of a module containing this output value could then test
 unknown, even when the EC2 instance has not yet been created. This is most
 useful when the id is just passed into another module that uses the "null-ness"
 of the value to decide whether another object should be enabled, since otherwise
-OpenTofu would not know during the plan phase whether the object should be
+Bogform would not know during the plan phase whether the object should be
 enabled.
 
 The `assumenotnull` function only works for values that have a known type.
@@ -199,9 +199,9 @@ Where possible use this function together with `assumenotnull` for full
 effectiveness, because validation rules often begin by checking whether the
 value is null to avoid passing null values to functions like `length`.
 
-If the explicitly-declared and inferred assumptions together tell OpenTofu
+If the explicitly-declared and inferred assumptions together tell Bogform
 that the value is definitely not null and that its minimum and maximum length
-are equal (i.e. the length is actually known) then OpenTofu automatically
+are equal (i.e. the length is actually known) then Bogform automatically
 promotes the result to a known list whose elements are all individually unknown
 so that the `length` function can return a known value.
 
@@ -243,17 +243,17 @@ value is null to avoid passing null values to functions like `length`.
 
 ## Forward and Backward Compatibility
 
-The documented behavior of these functions is protected by OpenTofu
+The documented behavior of these functions is protected by Bogform
 compatibility promises, but note that the ways in which other features of the
-OpenTofu language react to the hints added to unknown values by these functions
-varies between OpenTofu versions.
+Bogform language react to the hints added to unknown values by these functions
+varies between Bogform versions.
 
 Once something is considered valid it will generally remain valid in future
-versions, but different OpenTofu versions may detect invalid situations at
+versions, but different Bogform versions may detect invalid situations at
 different times, such as starting to detect a problem during the plan phase
 where previously it had been detected only during the apply phase or vice-versa.
 
-OpenTofu makes its best effort to detect and report errors as early as possible
+Bogform makes its best effort to detect and report errors as early as possible
 in the validate/plan/apply sequence, but also prefers where possible to assume
 that an unknown value will become valid once it is known instead of
 conservatively blocking progress when there isn't enough information to decide

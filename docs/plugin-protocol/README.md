@@ -1,7 +1,7 @@
-# OpenTofu Plugin Protocol
+# Bogform Plugin Protocol
 
 This directory contains documentation about the physical wire protocol that
-OpenTofu Core uses to communicate with provider plugins.
+Bogform Core uses to communicate with provider plugins.
 
 Most providers are not written directly against this protocol. Instead, prefer
 to use an SDK that implements this protocol and write the provider against
@@ -9,35 +9,35 @@ the SDK's API.
 
 ----
 
-**If you want to write a plugin for OpenTofu, please refer to
-[Extending OpenTofu](https://github.com/hashicorp/terraform-docs-common) instead.**
+**If you want to write a plugin for Bogform, please refer to
+[Extending Bogform](https://github.com/hashicorp/terraform-docs-common) instead.**
 
-This documentation is for those who are developing _OpenTofu SDKs_, rather
+This documentation is for those who are developing _Bogform SDKs_, rather
 than those implementing plugins.
 
 ----
 
-From OpenTofu v0.12.0 onwards, OpenTofu's plugin protocol is built on
+From OpenTofu v0.12.0 onwards, Bogform's plugin protocol is built on
 [gRPC](https://grpc.io/). This directory contains `.proto` definitions of
-different versions of OpenTofu's protocol.
+different versions of Bogform's protocol.
 
-Only `.proto` files published as part of OpenTofu release tags are actually
+Only `.proto` files published as part of Bogform release tags are actually
 official protocol versions. If you are reading this directory on the `main`
 branch or any other development branch then it may contain protocol definitions
 that are not yet finalized and that may change before final release.
 
 ## RPC Plugin Model
 
-OpenTofu plugins are normal executable programs that, when launched, expose
-gRPC services on a server accessed via the loopback interface. OpenTofu Core
+Bogform plugins are normal executable programs that, when launched, expose
+gRPC services on a server accessed via the loopback interface. Bogform Core
 discovers and launches plugins, waits for a handshake to be printed on the
 plugin's `stdout`, and then connects to the indicated port number as a
 gRPC client.
 
-For this reason, we commonly refer to OpenTofu Core itself as the plugin
+For this reason, we commonly refer to Bogform Core itself as the plugin
 "client" and the plugin program itself as the plugin "server". Both of these
 processes run locally, with the server process appearing as a child process
-of the client. OpenTofu Core controls the lifecycle of these server processes
+of the client. Bogform Core controls the lifecycle of these server processes
 and will terminate them when they are no longer required.
 
 The startup and handshake protocol is not currently documented. We hope to
@@ -51,7 +51,7 @@ more significant breaking changes from time to time while allowing old and
 new plugins to be used together for some period.
 
 The versioning strategy described below was introduced with protocol version
-5.0 in OpenTofu v0.12. Prior versions of OpenTofu and prior protocol versions
+5.0 in OpenTofu v0.12. Prior versions of Bogform and prior protocol versions
 do not follow this strategy.
 
 The authoritative definition for each protocol version is in this directory
@@ -64,11 +64,11 @@ is the minor version.
 The minor version increases for each change introducing optional new
 functionality that can be ignored by implementations of prior versions. For
 example, if a new field were added to an response message, it could be a minor
-release as long as OpenTofu Core can provide some default behavior when that
+release as long as Bogform Core can provide some default behavior when that
 field is not populated.
 
 The major version increases for any significant change to the protocol where
-compatibility is broken. However, OpenTofu Core and an SDK may both choose
+compatibility is broken. However, Bogform Core and an SDK may both choose
 to support multiple major versions at once: the plugin handshake includes a
 negotiation step where client and server can work together to select a
 mutually-supported major version.
@@ -84,9 +84,9 @@ features.
 
 ## Version compatibility for Core, SDK, and Providers
 
-A particular version of OpenTofu Core has both a minimum minor version it
+A particular version of Bogform Core has both a minimum minor version it
 requires and a maximum major version that it supports. A particular version of
-OpenTofu Core may also be able to optionally use a newer minor version when
+Bogform Core may also be able to optionally use a newer minor version when
 available, but fall back on older behavior when that functionality is not
 available.
 
@@ -95,12 +95,12 @@ The compatible versions for a provider are a list of major and minor version
 pairs, such as "4.0", "5.2", which indicates that the provider supports the
 baseline features of major version 4 and supports major version 5 including
 the enhancements from both minor versions 1 and 2. This provider would
-therefore be compatible with a OpenTofu Core release that supports only
+therefore be compatible with a Bogform Core release that supports only
 protocol version 5.0, since major version 5 is supported and the optional
 5.1 and 5.2 enhancements will be ignored.
 
-If OpenTofu Core and the plugin do not have at least one mutually-supported
-major version, OpenTofu Core will return an error from `tofu init`
+If Bogform Core and the plugin do not have at least one mutually-supported
+major version, Bogform Core will return an error from `bogform init`
 during plugin installation:
 
 ```
@@ -119,13 +119,13 @@ it with the following constraint:
 
     version = "~> 2.34.0"
 
-Alternatively, upgrade to the latest version of OpenTofu for compatibility with newer provider releases.
+Alternatively, upgrade to the latest version of Bogform for compatibility with newer provider releases.
 ```
 
-The above messages are for plugins installed via `tofu init` from a
-OpenTofu registry, where the registry API allows OpenTofu Core to recognize
+The above messages are for plugins installed via `bogform init` from a
+OpenTofu registry, where the registry API allows Bogform Core to recognize
 the protocol compatibility for each provider release. For plugins that are
-installed manually to a local plugin directory, OpenTofu Core has no way to
+installed manually to a local plugin directory, Bogform Core has no way to
 suggest specific versions to upgrade or downgrade to, and so the error message
 is more generic:
 
@@ -154,14 +154,14 @@ of the plugin in ways that affect its semver-based version numbering:
 For this reason, SDK developers must be clear in their release notes about
 the addition and removal of support for major versions.
 
-OpenTofu Core also makes an assumption about major version support when
+Bogform Core also makes an assumption about major version support when
 it produces actionable error messages for users about incompatibilities:
 a particular protocol major version is supported for a single consecutive
 range of provider releases, with no "gaps".
 
 ## Using the protobuf specifications in an SDK
 
-If you wish to build an SDK for OpenTofu plugins, an early step will be to
+If you wish to build an SDK for Bogform plugins, an early step will be to
 copy one or more `.proto` files from this directory into your own repository
 (depending on which protocol versions you intend to support) and use the
 `protoc` protocol buffers compiler (with gRPC extensions) to generate suitable
@@ -178,7 +178,7 @@ You can find out more about the tool usage for each target language in
 [the gRPC Quick Start guides](https://grpc.io/docs/quickstart/).
 
 The protobuf specification for a version is immutable after it has been
-included in at least one OpenTofu release. Any changes will be documented in
+included in at least one Bogform release. Any changes will be documented in
 a new `.proto` file establishing a new protocol version.
 
 The protocol buffer compiler will produce some sort of library object appropriate
@@ -200,7 +200,7 @@ and copy the relevant `.proto` file into it, creating a separate set of stubs
 that can in principle allow your SDK to support both major versions at the
 same time. We recommend supporting both the previous and current major versions
 together for a while across a major version upgrade so that users can avoid
-having to upgrade both OpenTofu Core and all of their providers at the same
+having to upgrade both Bogform Core and all of their providers at the same
 time, but you can delete the previous major version stubs once you remove
 support for that version.
 

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 
-tofu version 2>/dev/null >/dev/null
+bogform version 2>/dev/null >/dev/null
 if [ $? -ne 0 ]; then
   set -e
   TOFU_VERSION="1.6.0-alpha2"
@@ -26,12 +26,12 @@ for testcase in $(ls -d */); do
   testcase=$(echo -n "${testcase}" | sed -e 's$/$$')
   (
     cd $testcase
-    tofu init
+    bogform init
     RESULT=$?
     if [ "$RESULT" -ne 0 ]; then
       exit "$RESULT"
     fi
-    tofu test
+    bogform test
     exit $?
   ) 2>/tmp/${testcase}.log >/tmp/${testcase}.log
   RESULT=$?

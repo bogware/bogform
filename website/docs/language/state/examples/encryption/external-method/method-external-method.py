@@ -7,8 +7,8 @@ import sys
 if __name__ == "__main__":
     # Make sure that this program isn't running interactively:
     if sys.stdout.isatty():
-        sys.stderr.write("This is an OpenTofu encryption method and is not meant to be run interactively. "
-                         "Please configure this program in your OpenTofu encryption block to use it.\n")
+        sys.stderr.write("This is a Bogform encryption method and is not meant to be run interactively. "
+                         "Please configure this program in your Bogform encryption block to use it.\n")
         sys.exit(1)
     parser = argparse.ArgumentParser(prog='My External Encryption Method')
     parser.add_argument('--encrypt', action='store_true')

@@ -1,11 +1,11 @@
 # First, set the variable here:
 variables {
-  name = "OpenTofu"
+  name = "Bogform"
 }
 
 run "basic" {
   assert {
-    condition     = output.greeting == "Hello OpenTofu!"
+    condition     = output.greeting == "Hello Bogform!"
     error_message = "Incorrect greeting: ${output.greeting}"
   }
 }
@@ -13,10 +13,10 @@ run "basic" {
 run "override" {
   # Override it for this test case only here:
   variables {
-    name = "OpenTofu user"
+    name = "Bogform user"
   }
   assert {
-    condition     = output.greeting == "Hello OpenTofu user!"
+    condition     = output.greeting == "Hello Bogform user!"
     error_message = "Incorrect greeting: ${output.greeting}"
   }
 }

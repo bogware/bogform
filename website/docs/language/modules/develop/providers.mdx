@@ -10,7 +10,7 @@ for how resources are associated with provider configurations.
 
 Each resource in the configuration must be associated with one provider
 configuration. Provider configurations, unlike most other concepts in
-OpenTofu, are global to an entire OpenTofu configuration and can be shared
+Bogform, are global to an entire Bogform configuration and can be shared
 across module boundaries. Provider configurations can be defined only in a
 root module.
 
@@ -24,7 +24,7 @@ any `provider` blocks. A module containing its own provider configurations is
 not compatible with the `for_each`, `count`, and `depends_on` meta-arguments.
 
 Provider configurations are used for all operations on associated resources,
-including destroying remote objects and refreshing state. OpenTofu retains, as
+including destroying remote objects and refreshing state. Bogform retains, as
 part of its state, a reference to the provider configuration that was most
 recently used to apply changes to each resource. When a `resource` block is
 removed from the configuration, or a dynamic instance of a resource is removed
@@ -35,7 +35,7 @@ present in the configuration.
 
 As a consequence, you must ensure that all resources that belong to a
 particular provider instance are destroyed before you can remove that
-provider instance from your configuration. If OpenTofu finds a resource instance
+provider instance from your configuration. If Bogform finds a resource instance
 tracked in the state whose provider instance is no longer declared in the
 configuration then it will return an error during planning, prompting you
 to reintroduce the provider instance.
@@ -44,7 +44,7 @@ to reintroduce the provider instance.
 
 Although provider _configurations_ are shared between modules, each module must
 declare its own [provider requirements](../../../language/providers/requirements.mdx), so that
-OpenTofu can ensure that there is a single version of the provider that is
+Bogform can ensure that there is a single version of the provider that is
 compatible with all modules in the configuration and to specify the
 [source address](../../../language/providers/requirements.mdx#source-addresses) that serves as
 the global (module-agnostic) identifier for a provider.
@@ -67,7 +67,7 @@ A provider requirement says, for example, "This module requires version v2.7.0
 of the provider `hashicorp/aws` and will refer to it as `aws`." It doesn't,
 however, specify any of the configuration settings that determine what remote
 endpoints the provider will access, such as an AWS region; configuration
-settings come from provider _configurations_, and a particular overall OpenTofu
+settings come from provider _configurations_, and a particular overall Bogform
 configuration can potentially have
 [several different configurations for the same provider](../../../language/providers/configuration.mdx#alias-multiple-provider-configurations).
 

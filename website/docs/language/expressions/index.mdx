@@ -1,6 +1,6 @@
 ---
 description: >-
-  An overview of expressions to reference or compute values in OpenTofu
+  An overview of expressions to reference or compute values in Bogform
   configurations, including types, operators, and functions.
 ---
 
@@ -8,26 +8,26 @@ description: >-
 
 _Expressions_ refer to or compute values within a configuration.
 The simplest expressions are just literal values, like `"hello"` or `5`,
-but the OpenTofu language also allows more complex expressions such as
+but the Bogform language also allows more complex expressions such as
 references to data exported by resources, arithmetic, conditional evaluation,
 and a number of built-in and provider-defined functions.
 
-Expressions can be used in a number of places in the OpenTofu language,
+Expressions can be used in a number of places in the Bogform language,
 but some contexts limit which expression constructs are allowed,
 such as requiring a literal value of a particular type or forbidding
 [references to resource attributes](references.mdx#references-to-resource-attributes).
 Each language feature's documentation describes any restrictions it places on
 expressions.
 
-You can experiment with the behavior of OpenTofu's expressions from
-the OpenTofu expression console, by running
-[the `tofu console` command](../../cli/commands/console.mdx).
+You can experiment with the behavior of Bogform's expressions from
+the Bogform expression console, by running
+[the `bogform console` command](../../cli/commands/console.mdx).
 
-The other pages in this section describe the features of OpenTofu's
+The other pages in this section describe the features of Bogform's
 expression syntax.
 
 - [Types and Values](types.mdx)
-  documents the data types that OpenTofu expressions can resolve to, and the
+  documents the data types that Bogform expressions can resolve to, and the
   literal syntaxes for values of those types.
 
 - [Strings and Templates](strings.mdx)
@@ -41,7 +41,7 @@ expression syntax.
   documents the arithmetic, comparison, and logical operators.
 
 - [Function Calls](function-calls.mdx)
-  documents the syntax for calling OpenTofu's built-in functions.
+  documents the syntax for calling Bogform's built-in functions.
 
 - [Conditional Expressions](conditionals.mdx)
   documents the `<CONDITION> ? <TRUE VAL> : <FALSE VAL>` expression, which
@@ -65,4 +65,4 @@ expression syntax.
 
 - [Version Constraints](version-constraints.mdx)
   documents the syntax of special strings that define a set of allowed software
-  versions. OpenTofu uses version constraints in several places.
+  versions. Bogform uses version constraints in several places.

@@ -1,22 +1,22 @@
 ---
 description: >-
-  The tofu console command provides an interactive console for evaluating
+  The bogform console command provides an interactive console for evaluating
   expressions.
 ---
 
 # Command: console
 
-The `tofu console` command provides an interactive console for
+The `bogform console` command provides an interactive console for
 evaluating [expressions](../../language/expressions/index.mdx).
 
 :::warning
-The `tofu console` command is not designed for use in scripts. You can use it, but
+The `bogform console` command is not designed for use in scripts. You can use it, but
 you may find that some functions don't work as intended.
 :::
 
 ## Usage
 
-Usage: `tofu console [options]`
+Usage: `bogform console [options]`
 
 This command provides an interactive command-line console for evaluating and
 experimenting with [expressions](../../language/expressions/index.mdx).
@@ -30,7 +30,7 @@ or Control-D.
 
 For configurations using
 [the `local` backend](../../language/settings/backends/local.mdx) only,
-`tofu console` accepts the legacy command line option
+`bogform console` accepts the legacy command line option
 [`-state`](../../language/settings/backends/local.mdx#command-line-arguments).
 
 :::note
@@ -38,10 +38,10 @@ Use of variables in [module sources](../../language/modules/sources.mdx#support-
 [backend configuration](../../language/settings/backends/configuration.mdx#variables-and-locals),
 or [encryption block](../../language/state/encryption.mdx#configuration)
 requires [assigning values to root module variables](../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu console`.
+when running `bogform console`.
 :::
 
-This command also accepts the following options for tofu console:
+This command also accepts the following options for bogform console:
 
 - `-var 'NAME=VALUE'` - Sets a value for a single
   [input variable](/docs/language/values/variables) declared in the
@@ -65,13 +65,13 @@ module, aside from the `-var` and `-var-file` options. Refer to
 ## Remote State
 
 If [remote state](../../language/state/remote.mdx) is used by the current backend,
-OpenTofu will read the state for the current workspace from the backend
+Bogform will read the state for the current workspace from the backend
 before evaluating any expressions.
 
 ## Examples
 
-The `tofu console` command will read the OpenTofu configuration in the
-current working directory and the OpenTofu state file from the configured
+The `bogform console` command will read the Bogform configuration in the
+current working directory and the Bogform state file from the configured
 backend so that interpolations can be tested against both the values in the
 configuration and the state file.
 
@@ -98,7 +98,7 @@ resource "random_pet" "example" {
 }
 ```
 
-Executing `tofu console` will drop you into an interactive shell where you
+Executing `bogform console` will drop you into an interactive shell where you
 can test interpolations to:
 
 Print a value from a map:

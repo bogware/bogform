@@ -1,20 +1,20 @@
 ---
 description: >-
-  Learn recommended formatting conventions for the OpenTofu language and a
+  Learn recommended formatting conventions for the Bogform language and a
   command to automatically enforce them.
 ---
 
 # Style Conventions
 
-The OpenTofu parser allows you some flexibility in how you lay out the
-elements in your configuration files, but the OpenTofu language also has some
+The Bogform parser allows you some flexibility in how you lay out the
+elements in your configuration files, but the Bogform language also has some
 idiomatic style conventions which we recommend users always follow
 for consistency between files and modules written by different teams.
 Automatic source code formatting tools may apply these conventions
 automatically.
 
 :::note
-You can enforce these conventions automatically by running [`tofu fmt`](../../cli/commands/fmt.mdx).
+You can enforce these conventions automatically by running [`bogform fmt`](../../cli/commands/fmt.mdx).
 :::
 
 * Indent two spaces for each nesting level.
@@ -35,7 +35,7 @@ You can enforce these conventions automatically by running [`tofu fmt`](../../cl
 * Use empty lines to separate logical groups of arguments within a block.
 
 * For blocks that contain both arguments and "meta-arguments" (as defined by
-  the OpenTofu language semantics), list meta-arguments first
+  the Bogform language semantics), list meta-arguments first
   and separate them from other arguments with one blank line. Place
   meta-argument blocks _last_ and separate them from other blocks with
   one blank line.

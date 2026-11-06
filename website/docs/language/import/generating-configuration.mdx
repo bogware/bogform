@@ -1,25 +1,25 @@
 ---
 description: >-
-  Generate configuration and manage existing resources with OpenTofu using configuration-driven import.
+  Generate configuration and manage existing resources with Bogform using configuration-driven import.
 ---
 
 # Generating configuration
 
 :::warning Experimental
-Configuration generation is available in OpenTofu v1.6 as an experimental feature. Later minor versions may contain changes to the formatting of generated configuration and behavior of the `tofu plan` command using the `-generate-config-out` flag.
+Configuration generation is available in OpenTofu v1.6 as an experimental feature. Later minor versions may contain changes to the formatting of generated configuration and behavior of the `bogform plan` command using the `-generate-config-out` flag.
 :::
 
-OpenTofu can generate code for the resources you define in [`import` blocks](../../language/import/index.mdx) that do not already exist in your configuration. OpenTofu produces HCL to act as a template that contains OpenTofu's best guess at the appropriate value for each resource argument.
+Bogform can generate code for the resources you define in [`import` blocks](../../language/import/index.mdx) that do not already exist in your configuration. Bogform produces HCL to act as a template that contains Bogform's best guess at the appropriate value for each resource argument.
 
-Starting with OpenTofu's generated HCL, we recommend iterating to find your ideal configuration by removing some attributes, adjusting the value of others, and rearranging `resource` blocks into files and modules as appropriate.
+Starting with Bogform's generated HCL, we recommend iterating to find your ideal configuration by removing some attributes, adjusting the value of others, and rearranging `resource` blocks into files and modules as appropriate.
 
-To generate configuration, run `tofu plan` with the `-generate-config-out` flag and supply a new file path. Do not supply a path to an existing file, or OpenTofu throws an error.
+To generate configuration, run `bogform plan` with the `-generate-config-out` flag and supply a new file path. Do not supply a path to an existing file, or Bogform throws an error.
 
 ```shell
-$ tofu plan -generate-config-out=generated_resources.tf
+$ bogform plan -generate-config-out=generated_resources.tf
 ```
 
-If any resources targeted by an `import` block do not exist in your configuration, OpenTofu then generates and writes configuration for those resources in `generated_resources.tf`.
+If any resources targeted by an `import` block do not exist in your configuration, Bogform then generates and writes configuration for those resources in `generated_resources.tf`.
 
 ## Workflow
 
@@ -36,24 +36,24 @@ import {
 }
 ```
 
-The import block's `to` argument points to the address a `resource` will have in your state file. If a resource address in your state matches an `import` block's `to` argument, OpenTofu attempts to import into that resource. In future planning, OpenTofu knows it doesn't need to generate configuration for resources that already exist in your state.
+The import block's `to` argument points to the address a `resource` will have in your state file. If a resource address in your state matches an `import` block's `to` argument, Bogform attempts to import into that resource. In future planning, Bogform knows it doesn't need to generate configuration for resources that already exist in your state.
 
 The import block's `id` argument uses that resource's [import ID](../../language/import/index.mdx#import-id).
 
-If your configuration does not contain other resources for your selected provider, you must add a `provider` block to inform OpenTofu which provider it should use to generate configuration. Otherwise, OpenTofu displays an error if it can not determine which provider to use.
-If you add a new `provider` block to your configuration, you must run `tofu init` again.
+If your configuration does not contain other resources for your selected provider, you must add a `provider` block to inform Bogform which provider it should use to generate configuration. Otherwise, Bogform displays an error if it can not determine which provider to use.
+If you add a new `provider` block to your configuration, you must run `bogform init` again.
 
 ### 2. Plan and generate configuration
 
-To instruct OpenTofu to generate configuration for the `import` blocks you defined, run `tofu plan` with the `-generate-config-out=` flag and a new file path. OpenTofu displays its plan for importing your resource and the file where OpenTofu generated configuration based on this plan.
+To instruct Bogform to generate configuration for the `import` blocks you defined, run `bogform plan` with the `-generate-config-out=` flag and a new file path. Bogform displays its plan for importing your resource and the file where Bogform generated configuration based on this plan.
 
 ```shell
-$ tofu plan -generate-config-out=generated.tf
+$ bogform plan -generate-config-out=generated.tf
 
 aws_iot_thing.bar: Preparing import... [id=foo]
 aws_iot_thing.bar: Refreshing state... [id=foo]
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # aws_iot_thing.bar will be imported
   # (config will be generated)
@@ -76,12 +76,12 @@ Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-OpenTofu has generated configuration and written it to generated.tf. Please review the configuration and edit it as necessary before adding it to version control.
+Bogform has generated configuration and written it to generated.tf. Please review the configuration and edit it as necessary before adding it to version control.
 ```
 
 ### 3. Review generated configuration
 
-The example above instructs OpenTofu to generate configuration in a file named `generated.tf`. The below code is an example of a `generated.tf` file.
+The example above instructs Bogform to generate configuration in a file named `generated.tf`. The below code is an example of a `generated.tf` file.
 
 ```hcl
 resource aws_iot_thing "bar" {
@@ -106,15 +106,15 @@ resource "test_resource" "test" {
 
 ### 4. Apply
 
-Run `tofu apply` to import your infrastructure.
+Run `bogform apply` to import your infrastructure.
 
 ```shell
-$ tofu apply
+$ bogform apply
 
 aws_iot_thing.bar: Preparing import... [id=foo]
 aws_iot_thing.bar: Refreshing state... [id=foo]
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # aws_iot_thing.bar will be imported
     resource "aws_iot_thing" "bar" {
@@ -140,12 +140,12 @@ Commit your new resource configuration to your version control system.
 
 ### Conflicting resource arguments
 
-OpenTofu generates configuration for importable resources during a plan by requesting values for resource attributes from the provider. For certain resources with complex schemas, OpenTofu may not be able to construct a valid configuration from these values.
+Bogform generates configuration for importable resources during a plan by requesting values for resource attributes from the provider. For certain resources with complex schemas, Bogform may not be able to construct a valid configuration from these values.
 
-OpenTofu will display an error like the one below if it does not receive values for resource attributes while generating configuration.
+Bogform will display an error like the one below if it does not receive values for resource attributes while generating configuration.
 
 ```shell
-$ tofu plan -generate-config-out=generated.tf
+$ bogform plan -generate-config-out=generated.tf
 ╷
 │ Error: Conflicting configuration arguments
 │ 
@@ -157,4 +157,4 @@ $ tofu plan -generate-config-out=generated.tf
 ╵
 ```
 
-In the example above, OpenTofu still generates configuration and writes it to `generated.tf`. This error stems from a conflict between the `ipv6_address_count` and `ipv6_addresses` arguments. The resource supports both of these arguments, but you must choose only one when configuring the resource. You could fix the error by removing one of these two arguments, then running `tofu plan` again to check that there are no further issues.
+In the example above, Bogform still generates configuration and writes it to `generated.tf`. This error stems from a conflict between the `ipv6_address_count` and `ipv6_addresses` arguments. The resource supports both of these arguments, but you must choose only one when configuring the resource. You could fix the error by removing one of these two arguments, then running `bogform plan` again to check that there are no further issues.

@@ -1,7 +1,7 @@
 # PBKDF passphrase key provider
 
 > [!WARNING]
-> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the OpenTofu website unless you want to work on the encryption code.
+> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the Bogform website unless you want to work on the encryption code.
 
 This folder contains the code for the PBKDF2 passphrase key provider. The user can enter a passphrase and the key provider will generate `[]byte` keys of a given length and will record the salt in the encryption metadata.
 

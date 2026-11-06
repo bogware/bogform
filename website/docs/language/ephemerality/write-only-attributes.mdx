@@ -25,7 +25,7 @@ The lifecycle of these attributes is quite different compared with other types o
 When present in the plan/apply cli output, it will *always* be displayed as `(write-only attribute)`.
 
 ## Updating a write-only attribute
-As OpenTofu has no way to know what value is currently in the remote resource (ie: null value in the state) and
+As Bogform has no way to know what value is currently in the remote resource (ie: null value in the state) and
 doesn't know what value has been (or planned to be) stored remotely (ie: provider returns null value for these attributes), it
 cannot generate a change for such attributes.
 As a recommendation for the provider authors, alongside the write-only attribute, there should be included

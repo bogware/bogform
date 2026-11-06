@@ -6,9 +6,9 @@ description: >-
 
 # Workspaces
 
-Each OpenTofu configuration has an associated [backend](../../language/settings/backends/configuration.mdx) that defines how OpenTofu executes operations and where OpenTofu stores persistent data, like [state](../../language/state/purpose.mdx).
+Each Bogform configuration has an associated [backend](../../language/settings/backends/configuration.mdx) that defines how Bogform executes operations and where Bogform stores persistent data, like [state](../../language/state/purpose.mdx).
 
-The persistent data stored in the backend belongs to a workspace. The backend initially has only one workspace containing one OpenTofu state associated with that configuration. Some backends support multiple named workspaces, allowing multiple states to be associated with a single configuration. The configuration still has only one backend, but you can deploy multiple distinct instances of that configuration without configuring a new backend or changing authentication
+The persistent data stored in the backend belongs to a workspace. The backend initially has only one workspace containing one Bogform state associated with that configuration. Some backends support multiple named workspaces, allowing multiple states to be associated with a single configuration. The configuration still has only one backend, but you can deploy multiple distinct instances of that configuration without configuring a new backend or changing authentication
 credentials.
 
 ## Backends Supporting Multiple Workspaces
@@ -23,26 +23,25 @@ You can use multiple workspaces with the following backends:
 - [Local](../../language/settings/backends/local.mdx)
 - [OSS](../../language/settings/backends/oss.mdx)
 - [Postgres](../../language/settings/backends/pg.mdx)
-- [Remote](../../language/settings/backends/remote.mdx)
 - [S3](../../language/settings/backends/s3.mdx)
 
 
 ## Using Workspaces
 
 :::warning Important
-Workspaces are not appropriate for system decomposition or deployments requiring separate credentials and access controls. Refer to [Use Cases](../../cli/workspaces/index.mdx#use-cases) in the OpenTofu CLI documentation for details and recommended alternatives.
+Workspaces are not appropriate for system decomposition or deployments requiring separate credentials and access controls. Refer to [Use Cases](../../cli/workspaces/index.mdx#use-cases) in the Bogform CLI documentation for details and recommended alternatives.
 :::
 
-OpenTofu starts with a single, default workspace named `default` that you cannot delete. If you have not created a new workspace, you are using the default workspace in your OpenTofu working directory.
+Bogform starts with a single, default workspace named `default` that you cannot delete. If you have not created a new workspace, you are using the default workspace in your Bogform working directory.
 
-When you run `tofu plan` in a new workspace, OpenTofu does not access existing resources in other workspaces. These resources still physically exist, but you must switch workspaces to manage them.
+When you run `bogform plan` in a new workspace, Bogform does not access existing resources in other workspaces. These resources still physically exist, but you must switch workspaces to manage them.
 
-Refer to the [OpenTofu CLI workspaces](../../cli/workspaces/index.mdx) documentation for full details about how to create and use workspaces.
+Refer to the [Bogform CLI workspaces](../../cli/workspaces/index.mdx) documentation for full details about how to create and use workspaces.
 
 
 ## Current Workspace Interpolation
 
-Within your OpenTofu configuration, you may include the name of the current
+Within your Bogform configuration, you may include the name of the current
 workspace using the `${terraform.workspace}` interpolation sequence. This can
 be used anywhere interpolations are allowed.
 

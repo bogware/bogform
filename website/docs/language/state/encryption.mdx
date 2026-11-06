@@ -44,7 +44,7 @@ import RemoteStateFullB from '!!raw-loader!./examples/encryption/terraform_remot
 
 # State and Plan Encryption
 
-OpenTofu supports encrypting state and plan files at rest, both for local storage and when using a backend. In addition, you can also use encryption with the `terraform_remote_state` data source. This page explains how to set up encryption and what encryption method is suitable for which use case.
+Bogform supports encrypting state and plan files at rest, both for local storage and when using a backend. In addition, you can also use encryption with the `terraform_remote_state` data source. This page explains how to set up encryption and what encryption method is suitable for which use case.
 
 ## General guidance and pitfalls (please read)
 
@@ -52,9 +52,9 @@ When you enable encryption, your state and plan files become unrecoverable witho
 
 ### What does encryption protect against?
 
-When you enable encryption, OpenTofu will encrypt state data *at rest*. If an attacker were to gain access to your state file, they should not be able to read it and use the sensitive values (e.g. access keys) contained in the state file.
+When you enable encryption, Bogform will encrypt state data *at rest*. If an attacker were to gain access to your state file, they should not be able to read it and use the sensitive values (e.g. access keys) contained in the state file.
 
-However, encryption does not protect against data loss (your state file getting damaged) and it also does not protect against replay attack (an attacker using an older state or plan file and tricking you into running it). Additionally, OpenTofu does not and cannot protect the sensitive values in the state file from the person running the `tofu` command.
+However, encryption does not protect against data loss (your state file getting damaged) and it also does not protect against replay attack (an attacker using an older state or plan file and tricking you into running it). Additionally, Bogform does not and cannot protect the sensitive values in the state file from the person running the `tofu` command.
 
 ### What precautions do I need to take?
 
@@ -64,20 +64,20 @@ You will also need to decide what kind of key you would like to use based on you
 
 If you use a key management system (AWS KMS, GCP Cloud KMS, Azure Key Vault, or OpenBao), use a separate key for each state file rather than sharing one key across many states. See [Key providers](#key-providers) for the reasoning.
 
-Finally, before enabling encryption, please exercise your disaster recovery plan and make a temporary backup of your unencrypted state file. Also, make sure you have backups of your keys. Once you enable encryption, OpenTofu cannot read your state file without the correct key.
+Finally, before enabling encryption, please exercise your disaster recovery plan and make a temporary backup of your unencrypted state file. Also, make sure you have backups of your keys. Once you enable encryption, Bogform cannot read your state file without the correct key.
 
 
 ### Migrating from an unencrypted state/plan
 
-If you have a pre-existing state file and want to enable encryption, simply enabling encryption is not enough as OpenTofu will refuse to read plain text data. This is a protection mechanism to prevent OpenTofu from reading manipulated, unencrypted data. Please see the [initial setup](#initial-setup) section below for detailed migration instructions.
+If you have a pre-existing state file and want to enable encryption, simply enabling encryption is not enough as Bogform will refuse to read plain text data. This is a protection mechanism to prevent Bogform from reading manipulated, unencrypted data. Please see the [initial setup](#initial-setup) section below for detailed migration instructions.
 
 ### Compatibility guarantee
 
-Research in cryptography can change the state of the art quickly. We will support all key providers and methods as documented for +1 minor version, but may introduce new versions of the same key providers and methods (e.g. `aes_gcm_v2`), or new key providers and methods in any minor version. If we deprecate a key provider or method, you will receive a warning on the console when running `tofu plan` or `tofu apply`. If you receive such a warning, please switch before upgrading to the next version.
+Research in cryptography can change the state of the art quickly. We will support all key providers and methods as documented for +1 minor version, but may introduce new versions of the same key providers and methods (e.g. `aes_gcm_v2`), or new key providers and methods in any minor version. If we deprecate a key provider or method, you will receive a warning on the console when running `bogform plan` or `bogform apply`. If you receive such a warning, please switch before upgrading to the next version.
 
 ## Configuration
 
-You can configure encryption in OpenTofu either by specifying the configuration in the OpenTofu code, or using the `TF_ENCRYPTION` environment variable. Both solutions are equivalent and if you use both, OpenTofu will merge the two configurations, overriding any code-based settings with the environment ones.
+You can configure encryption in Bogform either by specifying the configuration in the Bogform code, or using the `TF_ENCRYPTION` environment variable. Both solutions are equivalent and if you use both, Bogform will merge the two configurations, overriding any code-based settings with the environment ones.
 
 The basic configuration structure looks as follows:
 
@@ -114,11 +114,11 @@ If you use environment configuration, you can include the following code configu
 
 ## Key and method rollover
 
-In some cases, you may want to change your encryption configuration. This can include renaming a key provider or method, changing a passphrase for a key provider, or switching key-management systems. OpenTofu supports an automatic rollover of your encryption configuration if you provide your old configuration in a `fallback` block:
+In some cases, you may want to change your encryption configuration. This can include renaming a key provider or method, changing a passphrase for a key provider, or switching key-management systems. Bogform supports an automatic rollover of your encryption configuration if you provide your old configuration in a `fallback` block:
 
 <CodeBlock language="hcl">{Fallback}</CodeBlock>
 
-If OpenTofu fails to **read** your state or plan file with the new method, it will automatically try the fallback method. When OpenTofu **saves** your state or plan file, it will always use the new method and not the fallback.
+If Bogform fails to **read** your state or plan file with the new method, it will automatically try the fallback method. When Bogform **saves** your state or plan file, it will always use the new method and not the fallback.
 
 ## Initial setup
 
@@ -130,12 +130,12 @@ If you are setting up a new project and do not yet have a state file, this sampl
 
 ### Pre-existing project
 
-When you first configure encryption on an existing project, your state and plan files are unencrypted. OpenTofu, by default, refuses to read them because they could have been manipulated. To enable reading unencrypted data, you have to specify an `unencrypted` method:
+When you first configure encryption on an existing project, your state and plan files are unencrypted. Bogform, by default, refuses to read them because they could have been manipulated. To enable reading unencrypted data, you have to specify an `unencrypted` method:
 
 <CodeBlock language="hcl">{FallbackFromUnencrypted}</CodeBlock>
 
 :::note
-Variables and locals can be used in configuration, but may not contain any references to data in the state or provider defined functions. All values must be able to be resolved during `tofu init` before the state is available.
+Variables and locals can be used in configuration, but may not contain any references to data in the state or provider defined functions. All values must be able to be resolved during `bogform init` before the state is available.
 :::
 
 ## Rolling back encryption
@@ -174,7 +174,7 @@ Then you can reference it in project "B" as follows:
 
 ## Key providers
 
-When you use a key management system as your key provider (AWS KMS, GCP KMS, Azure Vault, or OpenBao), OpenTofu generates a fresh data encryption key for each state or plan file and wraps it with the key you reference.
+When you use a key management system as your key provider (AWS KMS, GCP KMS, Azure Vault, or OpenBao), Bogform generates a fresh data encryption key for each state or plan file and wraps it with the key you reference.
 
 :::warning
 
@@ -270,11 +270,11 @@ To this:
 
 <CodeBlock language="hcl">{AZVAULTEX2}</CodeBlock>
 
-OpenTofu remembers the algorithm used for the decryption key, keeping that in state. It will still remember how to decrypt the way the key provider was previously configured, and it will encrypt with your new configuration. Do not do this, it will not work:
+Bogform remembers the algorithm used for the decryption key, keeping that in state. It will still remember how to decrypt the way the key provider was previously configured, and it will encrypt with your new configuration. Do not do this, it will not work:
 
 <CodeBlock language="hcl">{AZVAULTEX3}</CodeBlock>
 
-OpenTofu will attempt to both encrypt and decrypt with the fallback; unlike other providers where a fallback is recommended, this will fail if the key version changed, because the fallback cannot encrypt with the now-current key version.
+Bogform will attempt to both encrypt and decrypt with the fallback; unlike other providers where a fallback is recommended, this will fail if the key version changed, because the fallback cannot encrypt with the now-current key version.
 
 :::
 
@@ -285,8 +285,8 @@ This key provider uses the [OpenBao Transit Secret Engine](https://openbao.org/d
 | Option                   | Description                                                                                                                                                                 | Min. | Default                            |
 |--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------|------------------------------------|
 | key_name *(required)*    | Name of the transit encryption key to use to encrypt/decrypt the datakey. [Pre-configure](https://openbao.org/docs/secrets/transit/#setup) it in your in OpenBao server.    | N/A  | -                                  |
-| token                    | [Authorization Token](https://openbao.org/docs/concepts/tokens/) to use when accessing OpenBao API. OpenTofu can read it from the `BAO_TOKEN` environment variable as well. | N/A  | -                                  |
-| address                  | OpenBao server address to access the API. OpenTofu can read it from the `BAO_ADDR` environment variable as well. Your system must trust the TLS certificate of the server.  | N/A  | https://127.0.0.1:8200             |
+| token                    | [Authorization Token](https://openbao.org/docs/concepts/tokens/) to use when accessing OpenBao API. Bogform can read it from the `BAO_TOKEN` environment variable as well. | N/A  | -                                  |
+| address                  | OpenBao server address to access the API. Bogform can read it from the `BAO_ADDR` environment variable as well. Your system must trust the TLS certificate of the server.  | N/A  | https://127.0.0.1:8200             |
 | transit_engine_path      | Path at which the Transit Secret Engine is enabled in OpenBao. Customize this if you changed the transit engine path.                                                       | N/A  | /transit                           |
 | key_length               | Number of bytes to generate as a key. Available options are `16`, `32` or `64` bytes.                                                                                       | 16   | 32                                 |
 | associated_data          | Base64-encoded string sent to OpenBao Transit with data key generation and decryption providing authenticity protection.                                                    | N/A  | -                                  |
@@ -305,7 +305,7 @@ The OpenBao key provider is compatible with the last MPL-licensed version of Has
 ### OVHcloud KMS (external)
 
 This key provider uses the [OVHcloud Key Management Service](https://www.ovhcloud.com/en/identity-security-operations/key-management-service/) to generate and wrap data keys.
-It builds on OpenTofu's built-in [`external` key provider](#external-experimental) and is maintained separately by OVHcloud.
+It builds on Bogform's built-in [`external` key provider](#external-experimental) and is maintained separately by OVHcloud.
 
 For installation and configuration instructions, see the [ovh/opentofu-kms-ovhcloud](https://github.com/ovh/opentofu-kms-ovhcloud) repository.
 
@@ -313,7 +313,7 @@ For installation and configuration instructions, see the [ovh/opentofu-kms-ovhcl
 
 <div id="#external-experimental"></div>{/* preserved fragment identifier from earlier version of these docs */}
 
-The external command provider lets you run external commands in order to obtain encryption keys. These programs must be specifically written to work with OpenTofu. This key provider has the following fields:
+The external command provider lets you run external commands in order to obtain encryption keys. These programs must be specifically written to work with Bogform. This key provider has the following fields:
 
 | Option    | Description                                                                           | Min. | Default |
 |-----------|---------------------------------------------------------------------------------------|------|---------|
@@ -334,15 +334,15 @@ You can use this provider in conjunction with the `chain` option in the [PBKDF2]
 An external provider can be anything as long as it is runnable as an application. The protocol consists of 3 steps:
 
 1. The external program writes the header to the standard output.
-2. OpenTofu sends the metadata to the external program over the standard input.
+2. Bogform sends the metadata to the external program over the standard input.
 3. The external program writes the key information to the standard output.
 
 <Tabs>
     <TabItem value="step1" label="Step 1: Writing the header" default>
-        As a first step, the external program must output a header to the standard output so OpenTofu knows it is a valid external key provider. The header must always be a single line and contain the following:
+        As a first step, the external program must output a header to the standard output so Bogform knows it is a valid external key provider. The header must always be a single line and contain the following:
         <CodeBlock language={"json"}>{ExternalHeader}</CodeBlock>
         <Button
-            href="https://github.com/opentofu/opentofu/tree/main/internal/encryption/keyprovider/external/protocol/header.schema.json"
+            href="https://github.com/bogware/bogform/blob/main/internal/encryption/keyprovider/external/protocol/header.schema.json"
             className="inline-flex"
             target="_blank"
         >
@@ -350,10 +350,10 @@ An external provider can be anything as long as it is runnable as an application
         </Button>
     </TabItem>
     <TabItem value="step2" label="Step 2: Reading the input">
-        Once the header is written, OpenTofu writes the input data to the standard input of the external program. If OpenTofu only needs to encrypt data, this will be `null`. If OpenTofu needs to decrypt data, it will write the metadata previously stored with the encrypted form to the standard input:
+        Once the header is written, Bogform writes the input data to the standard input of the external program. If Bogform only needs to encrypt data, this will be `null`. If Bogform needs to decrypt data, it will write the metadata previously stored with the encrypted form to the standard input:
         <CodeBlock language={"json"}>{ExternalInput}</CodeBlock>
         <Button
-            href="https://github.com/opentofu/opentofu/tree/main/internal/encryption/keyprovider/external/protocol/input.schema.json"
+            href="https://github.com/bogware/bogform/blob/main/internal/encryption/keyprovider/external/protocol/input.schema.json"
             className="inline-flex"
             target="_blank"
         >
@@ -364,7 +364,7 @@ An external provider can be anything as long as it is runnable as an application
         With the input, the external program can now construct the output. If no input is present, the external program only needs to produce an encryption key. If an input is present, it needs to produce a decryption key as well. If needed, the output can also contain metadata that will be stored with the encrypted data and passed as an input on the next run.
         <CodeBlock language={"json"}>{ExternalOutput}</CodeBlock>
         <Button
-            href="https://github.com/opentofu/opentofu/tree/main/internal/encryption/keyprovider/external/protocol/output.schema.json"
+            href="https://github.com/bogware/bogform/blob/main/internal/encryption/keyprovider/external/protocol/output.schema.json"
             className="inline-flex"
             target="_blank"
         >
@@ -406,7 +406,7 @@ AES-GCM is a secure, industry-standard encryption algorithm, but suffers from "k
 
 <div id="#external-experimental-1"></div>{/* preserved fragment identifier from earlier version of these docs */}
 
-The external command method lets you run external commands in order to perform encryption and decryption. These programs must be specifically written to work with OpenTofu. This key provider has the following fields:
+The external command method lets you run external commands in order to perform encryption and decryption. These programs must be specifically written to work with Bogform. This key provider has the following fields:
 
 | Option            | Description                                                                                          | Min. | Default |
 |-------------------|------------------------------------------------------------------------------------------------------|------|---------|
@@ -423,15 +423,15 @@ For example, you can configure the external program as follows:
 An external method can be anything as long as it is runnable as an application. The protocol consists of 3 steps:
 
 1. The external program writes the header to the standard output.
-2. OpenTofu sends the key material and data to encrypt/decrypt to the external program over the standard input.
+2. Bogform sends the key material and data to encrypt/decrypt to the external program over the standard input.
 3. The external program writes the encrypted/decrypted data to the standard output.
 
 <Tabs>
     <TabItem value="step1" label="Step 1: Writing the header" default>
-        As a first step, the external program must output a header to the standard output so OpenTofu knows it is a valid external method. The header must always be a single line and contain the following:
+        As a first step, the external program must output a header to the standard output so Bogform knows it is a valid external method. The header must always be a single line and contain the following:
         <CodeBlock language={"json"}>{ExternalMethodHeader}</CodeBlock>
         <Button
-            href="https://github.com/opentofu/opentofu/tree/main/internal/encryption/method/external/protocol/header.schema.json"
+            href="https://github.com/bogware/bogform/blob/main/internal/encryption/method/external/protocol/header.schema.json"
             className="inline-flex"
             target="_blank"
         >
@@ -439,10 +439,10 @@ An external method can be anything as long as it is runnable as an application. 
         </Button>
     </TabItem>
     <TabItem value="step2" label="Step 2: Reading the input">
-        Once the header is written, OpenTofu writes the key material and the data to process to the standard input of the external program. The key material may not be present if no key provider is configured. The input will always have the following format:
+        Once the header is written, Bogform writes the key material and the data to process to the standard input of the external program. The key material may not be present if no key provider is configured. The input will always have the following format:
         <CodeBlock language={"json"}>{ExternalMethodInput}</CodeBlock>
         <Button
-            href="https://github.com/opentofu/opentofu/tree/main/internal/encryption/method/external/protocol/input.schema.json"
+            href="https://github.com/bogware/bogform/blob/main/internal/encryption/method/external/protocol/input.schema.json"
             className="inline-flex"
             target="_blank"
         >
@@ -453,7 +453,7 @@ An external method can be anything as long as it is runnable as an application. 
         With the input, the external program can now construct the output.
         <CodeBlock language={"json"}>{ExternalMethodOutput}</CodeBlock>
         <Button
-            href="https://github.com/opentofu/opentofu/tree/main/internal/encryption/method/external/protocol/output.schema.json"
+            href="https://github.com/bogware/bogform/blob/main/internal/encryption/method/external/protocol/output.schema.json"
             className="inline-flex"
             target="_blank"
         >

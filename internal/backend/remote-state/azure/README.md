@@ -1,4 +1,4 @@
-Refer to the [official documentation](https://opentofu.org/docs/language/settings/backends/azurerm/) for a quick reference of available authentication methods.
+Refer to the [official documentation](https://bogware.github.io/bogform/docs/language/settings/backends/azurerm/) for a quick reference of available authentication methods.
 
 # Running Tests
 
@@ -180,7 +180,7 @@ You need to have an Microsoft Entra Tenant with an Azure Subscriptions, permissi
 - Set the variables required for the test setup in the `meta-test` directory
   - `use_ado`: Set this to `true` to enable the Azure DevOps specific tests
   - Export the environment variable `AZDO_ORG_SERVICE_URL` with the URL of your Azure DevOps organization (e.g. `https://dev.azure.com/<myorg>`)
-- Run tofu apply in the `meta-test` directory to configure the Azure DevOps org and create the necessary service connection for the tests
-- Follow the rest of the instructions in the output of the `tofu apply` command.
+- Run bogform apply in the `meta-test` directory to configure the Azure DevOps org and create the necessary service connection for the tests
+- Follow the rest of the instructions in the output of the `bogform apply` command.
 
 Now the backend tests using the Azure DevOps service connection should be able to run successfully.

@@ -1,5 +1,5 @@
-# OpenTofu glossary
-This document is intended for anyone who wants to gain more knowledge about the terms and vocabulary used to talk about different concepts in OpenTofu.
+# Bogform glossary
+This document is intended for anyone who wants to gain more knowledge about the terms and vocabulary used to talk about different concepts in Bogform.
 
 > [!NOTE]
 > This was created with the intent of gathering more knowledge over time.
@@ -12,12 +12,12 @@ This document is intended for anyone who wants to gain more knowledge about the 
 > 
 > Optionally, also add a reference link if possible (GitHub conversation, issue, other docs, etc).
 
-## OpenTofu
+## Bogform
 ### Attribute/argument/field
 * Attribute - a named key inside an object type.
 * Argument - a name used for an individual setting inside a configuration block.
 
-It is recommended to avoid using popular programming language terms such as "field" or "property" to describe an element of an object in OpenTofu.
+It is recommended to avoid using popular programming language terms such as "field" or "property" to describe an element of an object in Bogform.
 
 Reference: [link](./diagnostics.md#diagnostic-description-writing-style)
 
@@ -30,13 +30,13 @@ Reference: [link](https://github.com/opentofu/opentofu/pull/3389#discussion_r244
 
 ### Diagnostic
 "Diagnostic" is the general term we use to describe the error or warning
-message that OpenTofu returns when there are problems with the configuration,
+message that Bogform returns when there are problems with the configuration,
 or when interactions with external systems fail.
 
 Reference: [link](./diagnostics.md)
 
 ### Mark/value mark
-OpenTofu uses cty.Value to represent the result of expressions (and other data).
+Bogform uses cty.Value to represent the result of expressions (and other data).
 Occasionally, we will want to annotate that data with additional properties, without actually modifying the underlying value.
 Marks are used for that purpose and are the preferred method of doing so with go-cty.
 
@@ -74,10 +74,10 @@ The list of concepts above, in the context of HCL evaluation, are called [variab
 
 ### Expression
 An expression is any right hand side of an assignment that will be evaluated to generate the value that will be associated with key on the left hand side of the assignment. 
-The simplest expressions are just literal values, like "hello" or 5, but the OpenTofu language also allows more complex 
+The simplest expressions are just literal values, like "hello" or 5, but the Bogform language also allows more complex 
 expressions such as references to data exported by resources, arithmetic, conditional evaluation, and a number of built-in and provider-defined functions.
 
-Reference: [link](https://opentofu.org/docs/language/expressions/)
+Reference: [link](https://bogware.github.io/bogform/docs/language/expressions/)
 
 ### Variable (HCL)
 Anything that's available to refer to in the current evaluation context.

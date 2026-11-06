@@ -1,31 +1,31 @@
 ---
 description: >-
-  The tofu login command can be used to automatically obtain and save an
-  API token for any host that offers OpenTofu-compatible services.
+  The bogform login command can be used to automatically obtain and save an
+  API token for any host that offers Bogform-compatible services.
 ---
 
 # Command: login
 
-The `tofu login` command can be used to automatically obtain and save an
-API token for any host that offers OpenTofu-compatible services.
+The `bogform login` command can be used to automatically obtain and save an
+API token for any host that offers Bogform-compatible services.
 
 :::note
 This command is suitable only for use in interactive scenarios
-where it is possible to launch a web browser on the same host where OpenTofu
-is running. If you are running OpenTofu in an unattended automation scenario,
+where it is possible to launch a web browser on the same host where Bogform
+is running. If you are running Bogform in an unattended automation scenario,
 you can
 [configure credentials manually in the CLI configuration](../../cli/config/config-file.mdx#credentials).
 :::
 
 ## Usage
 
-Usage: `tofu login [hostname]`
+Usage: `bogform login [hostname]`
 
 ## Credentials Storage
 
-By default, OpenTofu will obtain an API token and save it in plain text in a
+By default, Bogform will obtain an API token and save it in plain text in a
 local CLI configuration file called `credentials.tfrc.json`. When you run
-`tofu login`, it will explain specifically where it intends to save
+`bogform login`, it will explain specifically where it intends to save
 the API token and give you a chance to cancel if the current configuration is
 not as desired.
 
@@ -37,5 +37,5 @@ your organization's existing secrets management system.
 
 ## Login Server Support
 
-The `tofu login` command works with any server supporting the
+The `bogform login` command works with any server supporting the
 [login protocol](../../internals/login-protocol.mdx).

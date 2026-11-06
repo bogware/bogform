@@ -1,57 +1,55 @@
-![](https://raw.githubusercontent.com/opentofu/brand-artifacts/main/full/transparent/SVG/on-dark.svg#gh-dark-mode-only)
-![](https://raw.githubusercontent.com/opentofu/brand-artifacts/main/full/transparent/SVG/on-light.svg#gh-light-mode-only)
+# Bogform
 
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/10508/badge)](https://www.bestpractices.dev/projects/10508)
+Bogform is a cheap, secure, and friendly way to manage your infrastructure as code, without paying
+for a hosted platform. It's a fork of [OpenTofu](https://github.com/opentofu/opentofu) that keeps the
+same language and workflow, so existing projects move over by swapping the executable.
 
-[Homepage](https://opentofu.org/) | [Slack](https://opentofu.org/slack) | [Get Started](https://opentofu.org/docs/intro/install)
+[Documentation](https://bogware.github.io/bogform/docs/) |
+[Install](https://bogware.github.io/bogform/docs/intro/install/) |
+[Moving from OpenTofu or Terraform](https://bogware.github.io/bogform/docs/intro/migration/bogform/)
 
-OpenTofu is an OSS tool for building, changing, and versioning infrastructure safely and efficiently. OpenTofu can manage existing and popular service providers as well as custom in-house solutions.
+```shell
+bogform init
+bogform plan
+bogform apply
+```
 
-## Getting help and contributing
+## Status
 
-- Have a question?
-  - Post it in [GitHub Discussions](https://github.com/orgs/opentofu/discussions)
-  - Open a [GitHub issue](https://github.com/opentofu/opentofu/issues/new/choose)
-  - Join us in the [#opentofu channel on the CNCF Slack](https://opentofu.org/slack/)!
-- Want to contribute?
-  - Please read the [Contribution Guide](CONTRIBUTING.md).
-- Recurring Events
-  - [Community Meetings](https://meet.google.com/xfm-cgms-has) on Wednesdays at 12:30 UTC ([calendar](https://calendar.google.com/calendar/event?eid=NDg0aWl2Y3U1aHFva3N0bGhyMHBhNzdpZmsgY18zZjJkZDNjMWZlMGVmNGU5M2VmM2ZjNDU2Y2EyZGQyMTlhMmU4ZmQ4NWY2YjQwNzUwYWYxNmMzZGYzNzBiZjkzQGc))
-  - [Technical Steering Committee Meetings](https://meet.google.com/cry-houa-qbk) every other Tuesday at 4pm UTC ([calendar](https://calendar.google.com/calendar/u/0/event?eid=M3JyMWtuYWptdXI0Zms4ZnJpNmppcDczb3RfMjAyNTA1MjdUMTYwMDAwWiBjXzNmMmRkM2MxZmUwZWY0ZTkzZWYzZmM0NTZjYTJkZDIxOWEyZThmZDg1ZjZiNDA3NTBhZjE2YzNkZjM3MGJmOTNAZw))
+Bogform is in early development. The rename and cleanup are underway, and these ways of running it
+are planned:
 
-> [!TIP]
-> For more OpenTofu events, subscribe to the [OpenTofu Events Calendar](https://calendar.google.com/calendar/embed?src=c_3f2dd3c1fe0ef4e93ef3fc456ca2dd219a2e8fd85f6b40750af16c3df370bf93%40group.calendar.google.com)!
+- **Local:** run the `bogform` command on your own machine. This works today.
+- **Repository (planned):** plan on pull requests and apply on merge, using GitHub Actions, GitLab CI,
+  Azure Pipelines, or Bitbucket Pipelines, with state in low-cost object storage.
+- **Self-hosted web (planned):** a dashboard you deploy to your own AWS account for your organization,
+  using CloudFront, AWS Lambda, and any Postgres database. It starts runs in your existing pipelines,
+  so there are no runners to host.
 
 ## Key features
 
-- **Infrastructure as Code**: Infrastructure is described using a high-level configuration syntax. This allows a blueprint of your datacenter to be versioned and treated as you would any other code. Additionally, infrastructure can be shared and re-used.
+- **Infrastructure as code:** describe your infrastructure in configuration that you can version,
+  review, and reuse.
+- **Execution plans:** see exactly what will change before anything does.
+- **Resource graph:** changes are ordered by their dependencies and run in parallel where possible.
+- **Existing providers and modules:** use the providers and modules from the OpenTofu Registry.
+- **State encryption:** encrypt state and plan files with a key provider you control.
 
-- **Execution Plans**: OpenTofu has a "planning" step where it generates an execution plan. The execution plan shows what OpenTofu will do when you call apply. This lets you avoid any surprises when OpenTofu manipulates infrastructure.
+## Compatibility
 
-- **Resource Graph**: OpenTofu builds a graph of all your resources, and parallelizes the creation and modification of any non-dependent resources. Because of this, OpenTofu builds infrastructure as efficiently as possible, and operators get insight into dependencies in their infrastructure.
+Bogform reads existing `.tf` and `.tofu` files, `TF_*` environment variables, state, and lock files.
+It adds `.bog` files and `BOG_*` variables, which take priority. The HCP Terraform `cloud` block and
+the `remote` backend aren't supported, and Bogform explains how to move your state if it finds them.
 
-- **Change Automation**: Complex changesets can be applied to your infrastructure with minimal human interaction. With the previously mentioned execution plan and resource graph, you know exactly what OpenTofu will change and in what order, avoiding many possible human errors.
+## Contributing and security
 
-## Nightly Builds
-
-Nightly builds are available for testing the latest changes on `main`. These are experimental and not intended for production use. Each build is removed after 30 days.
-
-Nightly builds can be found at `https://nightlies.opentofu.org/nightlies`. For those who want to automate with tooling, `https://nightlies.opentofu.org/nightlies/latest.json` will be kept up to date with the latest build information.
-
-For more details, see [RELEASE.md](RELEASE.md#nightly-builds).
-
-## Reporting security vulnerabilities
-
-If you've found a vulnerability or a potential vulnerability in OpenTofu please follow [Security Policy](https://github.com/opentofu/opentofu/security/policy). We'll send a confirmation email to acknowledge your report, and we'll send an additional email when we've identified the issue positively or negatively.
-
-## Reporting possible copyright issues
-
-If you believe you have found any possible copyright or intellectual property issues, please contact liaison@opentofu.org. We'll send a confirmation email to acknowledge your report.
-
-## Registry Access
-
-In an effort to comply with applicable sanctions, we block access from specific countries of origin. For more details, see the [Registry Inclusion Policy](https://github.com/opentofu/registry/blob/main/POLICY.md).
+- To report a bug or suggest a feature, [open an issue](https://github.com/bogware/bogform/issues).
+- To contribute, read the [contribution guide](CONTRIBUTING.md).
+- To report a vulnerability, follow the [security policy](SECURITY.md).
 
 ## License
 
-[Mozilla Public License v2.0](https://github.com/opentofu/opentofu/blob/main/LICENSE)
+Bogform is licensed under the [Mozilla Public License 2.0](LICENSE). It's derived from OpenTofu, which
+in turn derives from Terraform as it was licensed under the MPL 2.0. Copyright notices for those
+projects are kept in the source files. Bogform isn't affiliated with or endorsed by the OpenTofu
+project, the Linux Foundation, or HashiCorp.

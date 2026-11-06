@@ -1,12 +1,12 @@
 ---
 description: >-
-  The tofu providers command prints information about the providers
+  The bogform providers command prints information about the providers
   required in the current configuration.
 ---
 
 # Command: providers
 
-The `tofu providers` command shows information about the
+The `bogform providers` command shows information about the
 [provider requirements](../../../language/providers/requirements.mdx) of the
 configuration in the current working directory, as an aid to understanding
 where each requirement was detected from.
@@ -15,10 +15,10 @@ This command also has several subcommands with different purposes.
 
 ## Usage
 
-Usage: `tofu providers [options]`
+Usage: `bogform providers [options]`
 
 ```
-$ tofu providers
+$ bogform providers
 
 Providers required by configuration:
 .
@@ -36,7 +36,7 @@ Use of variables in [module sources](../../../language/modules/sources.mdx#suppo
 [backend configuration](../../../language/settings/backends/configuration.mdx#variables-and-locals),
 or [encryption block](../../../language/state/encryption.mdx#configuration)
 requires [assigning values to root module variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu providers`.
+when running `bogform providers`.
 :::
 
 This command accepts the following options:

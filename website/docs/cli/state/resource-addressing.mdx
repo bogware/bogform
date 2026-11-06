@@ -15,7 +15,7 @@ An address is made up of two parts:
 [module path][resource spec]
 ```
 
-In some contexts OpenTofu might allow for an incomplete resource address that
+In some contexts Bogform might allow for an incomplete resource address that
 only refers to a module as a whole, or that omits the index for a
 multi-instance resource. In those cases, the meaning depends on the context,
 so you'll need to refer to the documentation for the specific feature you
@@ -81,7 +81,7 @@ The following specifications apply to index values on modules and resources with
 
 ### count Example
 
-Given a OpenTofu config that includes:
+Given a Bogform config that includes:
 
 ```hcl
 resource "aws_instance" "web" {
@@ -106,7 +106,7 @@ Refers to all four "web" instances.
 
 ### for_each Example
 
-Given a OpenTofu config that includes:
+Given a Bogform config that includes:
 
 ```hcl
 resource "aws_instance" "web" {
@@ -134,10 +134,10 @@ When using resource addresses directly in command line arguments such as
 the `-target`, `-exclude`, and `-replace` planning options, the punctuation
 characters in the resource address syntax might conflict with special
 interpretation of those characters by the shell you are using to run
-OpenTofu.
+Bogform.
 
 To avoid this, you must ensure that those characters are properly quoted
-or escaped so that your shell will pass them literally to OpenTofu.
+or escaped so that your shell will pass them literally to Bogform.
 The syntax for doing so varies depending on your shell or command
 interpreter:
 
@@ -145,7 +145,7 @@ interpreter:
   single quotes (`'`):
 
     ```bash
-    tofu apply -target='aws_instance.example["foo"]'
+    bogform apply -target='aws_instance.example["foo"]'
     ```
 
     If you need to specify an instance key string that includes a
@@ -154,14 +154,14 @@ interpreter:
     the following includes the instance key `"example'foo"`:
 
     ```bash
-    tofu apply -target='aws_instance.example["example'\''foo"]'
+    bogform apply -target='aws_instance.example["example'\''foo"]'
     ```
 
 - For PowerShell 7.3 or later, write the resource address in single
   quotes (`'`):
 
     ```powershell
-    tofu apply -target='aws_instance.example["foo"]'
+    bogform apply -target='aws_instance.example["foo"]'
     ```
 
     Older versions of PowerShell have different requirements. For more
@@ -174,7 +174,7 @@ interpreter:
     includes the instance key `"example'foo"`:
 
     ```powershell
-    tofu apply -target='aws_instance.example["example''foo"]'
+    bogform apply -target='aws_instance.example["example''foo"]'
     ```
 
 - For Windows Command Prompt (`cmd.exe`), write the resource address in
@@ -182,7 +182,7 @@ interpreter:
   using a backslash (`\`):
 
     ```batchfile
-    tofu apply -target="aws_instance.example[\"foo\"]"
+    bogform apply -target="aws_instance.example[\"foo\"]"
     ```
 
 ## Resource Addresses in Targeting Files
@@ -192,15 +192,15 @@ The `-target-file` and `-exclude-file`
 addresses from a separate file that can contain zero or more resource
 addresses.
 
-OpenTofu interprets a targeting file on a line-by-line basis. The
+Bogform interprets a targeting file on a line-by-line basis. The
 content of each line must be one of the following:
 
 - A resource address using the syntax described above, in which case
-  OpenTofu adds the address to the set of target addresses.
-- A comment starting with the `#` character, in which case OpenTofu
+  Bogform adds the address to the set of target addresses.
+- A comment starting with the `#` character, in which case Bogform
   ignores the line completely.
 - A blank line consisting only of zero or more space characters, in
-  which case OpenTofu also ignores the line completely.
+  which case Bogform also ignores the line completely.
 
 For example, the following is a valid targeting file specifying a
 number of resource addresses that might need to be created first

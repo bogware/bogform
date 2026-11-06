@@ -6,27 +6,27 @@ description: >-
 
 # Managing Workspaces
 
-Workspaces in the OpenTofu CLI refer to separate instances of [state data](../../language/state/index.mdx) inside the same OpenTofu working directory. They are distinctly different from workspaces in a cloud backend, which each have their own OpenTofu configuration and function as separate working directories.
+Workspaces in the Bogform CLI refer to separate instances of [state data](../../language/state/index.mdx) inside the same Bogform working directory.
 
-OpenTofu relies on state to associate resources with real-world objects. When you run the same configuration multiple times with separate state data, OpenTofu can manage multiple sets of non-overlapping resources.
+Bogform relies on state to associate resources with real-world objects. When you run the same configuration multiple times with separate state data, Bogform can manage multiple sets of non-overlapping resources.
 
-Workspaces can be helpful for specific [use cases](#use-cases), but they are not required to use the OpenTofu CLI. We recommend using [alternative approaches](#alternatives-to-workspaces) for complex deployments requiring separate credentials and access controls.
+Workspaces can be helpful for specific [use cases](#use-cases), but they are not required to use the Bogform CLI. We recommend using [alternative approaches](#alternatives-to-workspaces) for complex deployments requiring separate credentials and access controls.
 
 
 ## Managing CLI Workspaces
 
 Every [initialized working directory](../init/index.mdx) starts with one workspace named `default`.
 
-Use the [`tofu workspace list`](../commands/workspace/list.mdx), [`tofu workspace new`](../commands/workspace/new.mdx), and [`tofu workspace delete`](../commands/workspace/delete.mdx) commands to manage the available workspaces in the current working directory.
+Use the [`bogform workspace list`](../commands/workspace/list.mdx), [`bogform workspace new`](../commands/workspace/new.mdx), and [`bogform workspace delete`](../commands/workspace/delete.mdx) commands to manage the available workspaces in the current working directory.
 
-Use [the `tofu workspace select` command](../commands/workspace/select.mdx) to change the currently selected workspace. For a given working directory, you can only select one workspace at a time. Most OpenTofu commands only interact with the currently selected workspace. This includes [provisioning](../run/index.mdx) and [state manipulation](../state/index.mdx).
+Use [the `bogform workspace select` command](../commands/workspace/select.mdx) to change the currently selected workspace. For a given working directory, you can only select one workspace at a time. Most Bogform commands only interact with the currently selected workspace. This includes [provisioning](../run/index.mdx) and [state manipulation](../state/index.mdx).
 
 When you provision infrastructure in each workspace, you usually need to manually specify different [input variables](../../language/values/variables.mdx) to differentiate each collection. For example, you might deploy test infrastructure to a different region.
 
 
 ## Use Cases
 
-You can create multiple [working directories](../init/index.mdx) to maintain multiple instances of a configuration with completely separate state data. However, OpenTofu installs a separate cache of plugins and modules for each working directory, so maintaining multiple directories can waste bandwidth and disk space. This approach also requires extra tasks like updating configuration from version control for each directory separately and reinitializing each directory when you change the configuration. Workspaces are convenient because they let you create different sets of infrastructure with the same working copy of your configuration and the same plugin and module caches.
+You can create multiple [working directories](../init/index.mdx) to maintain multiple instances of a configuration with completely separate state data. However, Bogform installs a separate cache of plugins and modules for each working directory, so maintaining multiple directories can waste bandwidth and disk space. This approach also requires extra tasks like updating configuration from version control for each directory separately and reinitializing each directory when you change the configuration. Workspaces are convenient because they let you create different sets of infrastructure with the same working copy of your configuration and the same plugin and module caches.
 
 A common use for multiple workspaces is to create a parallel, distinct copy of
 a set of infrastructure to test a set of changes before modifying production infrastructure.
@@ -39,7 +39,7 @@ The default workspace might correspond to the `main` or `trunk` branch, which de
 
 Workspaces let you quickly switch between multiple instances of a **single configuration** within its **single backend**. They are not designed to solve all problems.
 
-When using OpenTofu to manage larger systems, you should create separate OpenTofu configurations that correspond to architectural boundaries within the system. This lets teams manage different components separately. Workspaces alone are not a suitable tool for system decomposition because each subsystem should have its own separate configuration and backend.
+When using Bogform to manage larger systems, you should create separate Bogform configurations that correspond to architectural boundaries within the system. This lets teams manage different components separately. Workspaces alone are not a suitable tool for system decomposition because each subsystem should have its own separate configuration and backend.
 
 In particular, organizations commonly want to create a strong separation
 between multiple deployments of the same infrastructure serving different
@@ -57,16 +57,16 @@ When multiple configurations represent distinct system components rather than mu
 
 - For server addresses, use a provider-specific resource to create a DNS record with a predictable name. Then you can either use that name directly or use [the `dns` provider](https://registry.terraform.io/providers/hashicorp/dns/latest/docs) to retrieve the published addresses in other configurations.
 
-- If you store a OpenTofu state for one configuration in a remote backend that other configurations can access, then the other configurations can use [`terraform_remote_state`](../../language/state/remote-state-data.mdx) to directly consume its root module outputs. This setup creates a tighter coupling between configurations, and the root configuration does not need to publish its results in a separate system.
+- If you store a Bogform state for one configuration in a remote backend that other configurations can access, then the other configurations can use [`terraform_remote_state`](../../language/state/remote-state-data.mdx) to directly consume its root module outputs. This setup creates a tighter coupling between configurations, and the root configuration does not need to publish its results in a separate system.
 
 ## Workspace Internals
 
-Workspaces are technically equivalent to renaming your state file. OpenTofu then includes a set of protections and support for remote state.
+Workspaces are technically equivalent to renaming your state file. Bogform then includes a set of protections and support for remote state.
 
 Workspaces are also meant to be a shared resource. They are not private, unless you use purely local state and do not commit your state to version control.
 
-For local state, OpenTofu stores the workspace states in a directory called `terraform.tfstate.d`. This directory should be treated similarly to local-only `terraform.tfstate`. Some teams commit these files to version control, but we recommend using a remote backend instead when there are multiple collaborators.
+For local state, Bogform stores the workspace states in a directory called `terraform.tfstate.d`. This directory should be treated similarly to local-only `terraform.tfstate`. Some teams commit these files to version control, but we recommend using a remote backend instead when there are multiple collaborators.
 
 For [remote state](../../language/state/remote.mdx), the workspaces are stored directly in the configured [backend](../../language/settings/backends/configuration.mdx). For example, if you use [Consul](../../language/settings/backends/consul.mdx), the workspaces are stored by appending the workspace name to the state path. To ensure that workspace names are stored correctly and safely in all backends, the name must be valid to use in a URL path segment without escaping.
 
-OpenTofu stores the current workspace name locally in the ignored `.terraform` directory. This allows multiple team members to work on different workspaces concurrently. Workspace names are also attached to associated remote workspaces in a cloud backend. For more details about workspace names in cloud backends, refer to the [CLI Integration (recommended)](../../cli/cloud/settings.mdx#arguments) and [remote backend](../../language/settings/backends/remote.mdx#workspaces) and  documentation.
+Bogform stores the current workspace name locally in the ignored `.terraform` directory. This allows multiple team members to work on different workspaces concurrently.

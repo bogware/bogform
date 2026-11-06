@@ -1,14 +1,14 @@
 ---
-description: The tofu workspace list command is used to list all existing workspaces.
+description: The bogform workspace list command is used to list all existing workspaces.
 ---
 
 # Command: workspace list
 
-The `tofu workspace list` command is used to list all existing workspaces.
+The `bogform workspace list` command is used to list all existing workspaces.
 
 ## Usage
 
-Usage: `tofu workspace list [DIR]`
+Usage: `bogform workspace list [DIR]`
 
 The command will list all existing workspaces. The current workspace is
 indicated using an asterisk (`*`) marker.
@@ -18,7 +18,7 @@ Use of variables in [module sources](../../../language/modules/sources.mdx#suppo
 [backend configuration](../../../language/settings/backends/configuration.mdx#variables-and-locals),
 or [encryption block](../../../language/state/encryption.mdx#configuration)
 requires [assigning values to root module variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu workspace list`.
+when running `bogform workspace list`.
 :::
 
 This command also accepts the following options:
@@ -47,7 +47,7 @@ module, aside from the `-var` and `-var-file` options. Refer to
 ## Example
 
 ```
-$ tofu workspace list
+$ bogform workspace list
   default
 * development
   jsmith-test

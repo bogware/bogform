@@ -1,9 +1,9 @@
 # Encryption methods
 
 > [!WARNING]
-> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the OpenTofu website unless you want to work on the encryption code.
+> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the Bogform website unless you want to work on the encryption code.
 
-This folder contains the implementations for the encryption methods used in OpenTofu. Encryption methods determine how exactly data is encrypted, but they do not determine what exactly is encrypted.
+This folder contains the implementations for the encryption methods used in Bogform. Encryption methods determine how exactly data is encrypted, but they do not determine what exactly is encrypted.
 
 ## Implementing a method
 

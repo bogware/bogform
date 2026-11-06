@@ -1,4 +1,22 @@
-The v1.14.x release series is supported until **February 1 2028**.
+# Changelog
+
+## Unreleased
+
+Bogform forked from OpenTofu at 1.14.0-dev. Entries below this section are inherited from OpenTofu and
+use its name.
+
+BREAKING CHANGES:
+
+- The `cloud` block and the `remote` backend are no longer supported. Configurations that use them
+  fail with steps for moving state to a supported backend.
+
+ENHANCEMENTS:
+
+- The executable is now named `bogform`.
+- Added `.bog`, `.bog.json`, `.bogtest.hcl`, `.bogtest.json`, and `.bogmock.hcl` files, which replace
+  `.tofu` and `.tf` files with the same name.
+- Added `BOG_*` environment variables, which override their `TF_*` and `TOFU_*` equivalents.
+- Added `~/.bogformrc` and `bogform.rc` CLI configuration files.
 
 ## 1.14.0 (Unreleased)
 

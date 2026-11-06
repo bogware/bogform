@@ -1,7 +1,7 @@
 terraform {
   encryption {
     key_provider "pbkdf2" "my_key_provider_name" {
-      passphrase               = "OpenTofu has encryption"
+      passphrase               = "Bogform has encryption"
       # Note the fixed encrypted_metadata_alias here:
       encrypted_metadata_alias = "certificates"
     }
@@ -23,7 +23,7 @@ resource "tls_self_signed_cert" "webserver" {
 
   subject {
     common_name  = "someserver.opentofu.org"
-    organization = "OpenTofu"
+    organization = "Bogform"
   }
 
   validity_period_hours = 24*365*10

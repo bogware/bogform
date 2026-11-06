@@ -1,28 +1,28 @@
 ---
 description: >-
-  The tofu graph command generates a visual representation of a
+  The bogform graph command generates a visual representation of a
   configuration or execution plan that you can use to generate charts.
 ---
 
 # Command: graph
 
-The `tofu graph` command is used to generate a visual
+The `bogform graph` command is used to generate a visual
 representation of either a configuration or execution plan.
 The output is in the DOT format, which can be used by
 [GraphViz](http://www.graphviz.org) to generate charts.
 
 ## Usage
 
-Usage: `tofu graph [options]`
+Usage: `bogform graph [options]`
 
-Outputs the visual execution graph of OpenTofu resources according to
+Outputs the visual execution graph of Bogform resources according to
 either the current configuration or an execution plan.
 
 The graph is outputted in DOT format. The typical program that can
 read this format is GraphViz, but many web services are also available
 to read this format.
 
-The `-type` flag can be used to control the type of graph shown. OpenTofu
+The `-type` flag can be used to control the type of graph shown. Bogform
 creates different graphs for different operations. See the options below
 for the list of types supported. The default type is "plan" if a
 configuration is given, and "apply" if a plan file is passed as an
@@ -33,7 +33,7 @@ Use of variables in [module sources](../../language/modules/sources.mdx#support-
 [backend configuration](../../language/settings/backends/configuration.mdx#variables-and-locals),
 or [encryption block](../../language/state/encryption.mdx#configuration)
 requires [assigning values to root module variables](../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu graph`.
+when running `bogform graph`.
 :::
 
 Options:
@@ -46,7 +46,7 @@ Options:
 
 * `-type=plan`      - Type of graph to output. Can be: `plan`, `plan-refresh-only`, `plan-destroy`, or `apply`.
 
-* `-module-depth=n` - (deprecated) In prior versions of OpenTofu, specified the
+* `-module-depth=n` - (deprecated) In prior versions of Bogform, specified the
   depth of modules to show in the output.
 
 * `-var 'NAME=VALUE'` - Sets a value for a single
@@ -67,12 +67,12 @@ module, aside from the `-var` and `-var-file` options. Refer to
 
 ## Generating Images
 
-The output of `tofu graph` is in the DOT format, which can
+The output of `bogform graph` is in the DOT format, which can
 easily be converted to an image by making use of `dot` provided
 by GraphViz:
 
 ```shellsession
-$ tofu graph | dot -Tsvg > graph.svg
+$ bogform graph | dot -Tsvg > graph.svg
 ```
 
 Here is an example graph output:

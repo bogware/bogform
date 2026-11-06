@@ -19,7 +19,7 @@ terraform {
       ## Step 3: Link the desired encryption method:
       method = method.aes_gcm.my_method_name
 
-      ## Step 4: Run "tofu apply".
+      ## Step 4: Run "bogform apply".
 
       ## Step 5: Consider adding the "enforced" option:
       # enforced = true

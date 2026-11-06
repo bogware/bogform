@@ -56,11 +56,11 @@ In this example, **Configuration B depends on Configuration A**. Configuration B
 
 ### Why this matters for migration
 
-When migrating to OpenTofu, the order in which you migrate configurations is critical because:
+When migrating to Bogform, the order in which you migrate configurations is critical because:
 
 1. **Dependent configurations must read state files** written by their dependencies
-2. **State file compatibility** between Terraform and OpenTofu determines which migration orders are safe
-3. **Mixed environments** (some configs on Terraform, others on OpenTofu) may exist during migration
+2. **State file compatibility** between Terraform and Bogform determines which migration orders are safe
+3. **Mixed environments** (some configs on Terraform, others on Bogform) may exist during migration
 
 ## Understanding your dependency graph
 
@@ -119,17 +119,17 @@ To create your dependency graph:
 
 ### Why bottom-up?
 
-OpenTofu maintains state file compatibility with Terraform 1.x, which means:
+Bogform maintains state file compatibility with Terraform 1.x, which means:
 
- - OpenTofu can read Terraform state files
+ - Bogform can read Terraform state files
 
- - Terraform may not reliably read OpenTofu state files (especially if OpenTofu-specific features are used)
+ - Terraform may not reliably read Bogform state files (especially if Bogform-specific features are used)
 
 This compatibility pattern makes **bottom-up migration safe**:
 
-- Configurations migrated to OpenTofu can safely use `terraform_remote_state` on state from configurations that are still on Terraform
+- Configurations migrated to Bogform can safely use `terraform_remote_state` on state from configurations that are still on Terraform
 - You can migrate gradually without breaking the dependency chain
-- Mixed Terraform/OpenTofu environments work during the transition
+- Mixed Terraform/Bogform environments work during the transition
 
 ### Migration order example
 
@@ -160,13 +160,13 @@ A → (migrate last)
 If you migrate A first (top-down):
 
 ```
-A (OpenTofu) → B, C, D (Terraform)
+A (Bogform) → B, C, D (Terraform)
 ```
 
-Configurations B, C, and D (still on Terraform) would try to read state written by A (now on OpenTofu). This could cause issues if:
+Configurations B, C, and D (still on Terraform) would try to read state written by A (now on Bogform). This could cause issues if:
 
-- OpenTofu writes state in a format Terraform doesn't recognize
-- OpenTofu uses features not present in Terraform
+- Bogform writes state in a format Terraform doesn't recognize
+- Bogform uses features not present in Terraform
 - Compatibility breaks in future versions
 
 Bottom-up migration avoids this risk entirely.
@@ -201,14 +201,14 @@ Before migrating any configuration:
 For each leaf configuration:
 
 1. Follow the standard [Migration Guide](./migration-guide.mdx)
-2. Verify the migration with `tofu plan`
-3. Apply with `tofu apply`
+2. Verify the migration with `bogform plan`
+3. Apply with `bogform apply`
 4. **Test the migration:** For any non leaf configuration, ensure that dependent configuration(s) can still read this configuration's state
 
 ### Step 5: Verify dependencies still work
 
 After migrating a configuration, verify that:
-- Any configurations that depend on it still work correctly by running `terraform plan` (or `tofu plan` if already migrated) on those dependent configs
+- Any configurations that depend on it still work correctly by running `terraform plan` (or `bogform plan` if already migrated) on those dependent configs
 - Confirm no unexpected changes appear
 
 ### Step 6: Continue up the dependency tree
@@ -221,24 +221,24 @@ Once all dependent configurations are migrated, migrate the root configurations 
 
 ## State compatibility notes
 
-### What OpenTofu guarantees
+### What Bogform guarantees
 
-- **OpenTofu reads Terraform 1.x state files** without modification
+- **Bogform reads Terraform 1.x state files** without modification
 - **State format is compatible** during migration
-- **Mixed environments work** (some configs on Terraform, others on OpenTofu)
+- **Mixed environments work** (some configs on Terraform, others on Bogform)
 
 ### Important considerations
 
-- **Avoid OpenTofu-specific features** during migration to maintain maximum compatibility
+- **Avoid Bogform-specific features** during migration to maintain maximum compatibility
 - **Test thoroughly** after each configuration migration
 - **Keep backups** of all state files throughout the migration process
-- **Document which configurations** are on Terraform vs. OpenTofu during the transition
+- **Document which configurations** are on Terraform vs. Bogform during the transition
 
 ### Rolling back
 
 If you need to roll back a specific configuration:
 
-1. **Stop using OpenTofu** for that configuration
+1. **Stop using Bogform** for that configuration
 2. **Restore from backups** if state changes were made
 3. **Run `terraform init` and `terraform plan`**
 4. **Verify no unexpected changes**
@@ -251,11 +251,11 @@ The bottom-up approach makes rollback safer because:
 ## Handling version differences
 Your configurations may be using different Terraform versions (1.6.x, 1.7.x, 1.8.x). 
 
-**Recommended approach:** Before migrating to OpenTofu, upgrade all configurations to the same Terraform version. This narrows down variables and makes troubleshooting easier if you encounter any issues during migration.
+**Recommended approach:** Before migrating to Bogform, upgrade all configurations to the same Terraform version. This narrows down variables and makes troubleshooting easier if you encounter any issues during migration.
 
 ## Getting Help
 If you encounter issues during migration:
 
-- Join the <a href="/slack/">OpenTofu Slack</a>
+- Use <a href="https://github.com/bogware/bogform/issues">GitHub issues</a>
 - Ask on [GitHub Discussions](https://github.com/orgs/opentofu/discussions)
-- Report bugs on [GitHub Issues](https://github.com/opentofu/opentofu/issues)
+- Report bugs on [GitHub Issues](https://github.com/bogware/bogform/issues)

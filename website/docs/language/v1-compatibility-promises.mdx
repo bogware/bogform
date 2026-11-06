@@ -1,23 +1,23 @@
 ---
 sidebar_position: 2
 description: |-
-  From OpenTofu v1.6 onwards the OpenTofu team promises to preserve backward
-  compatibility for most of the OpenTofu language and the primary CLI
+  From OpenTofu v1.6 onwards the Bogform team promises to preserve backward
+  compatibility for most of the Bogform language and the primary CLI
   workflow, until the next major release.
 ---
 
 # OpenTofu v1.x Compatibility Promises
 
 The release of OpenTofu v1.6 represents an important milestone in the
-development of the OpenTofu language and workflow. OpenTofu v1.x is a stable
+development of the Bogform language and workflow. OpenTofu v1.x is a stable
 platform for describing and managing infrastructure.
 
-In this release we're defining a number of OpenTofu behaviors that we intend
+In this release we're defining a number of Bogform behaviors that we intend
 to remain compatible with throughout the 1.x releases:
 
-* A large subset of OpenTofu language features.
-* A more conservative subset of the OpenTofu CLI workflow commands.
-* The wire protocol for communication between OpenTofu Core and OpenTofu
+* A large subset of Bogform language features.
+* A more conservative subset of the Bogform CLI workflow commands.
+* The wire protocol for communication between Bogform Core and Bogform
   providers.
 * The wire protocols for installation of providers and external modules.
 
@@ -35,7 +35,7 @@ need for source code modification or binary recompilation.
 
 In short, we aim to make upgrades between v1.x releases straightforward,
 requiring no changes to your configuration, no extra commands to run upgrade
-steps, and no changes to any automation you've set up around OpenTofu.
+steps, and no changes to any automation you've set up around Bogform.
 
 The OpenTofu v1.x series will be actively maintained for at least 18 months
 after v1.6.
@@ -44,25 +44,25 @@ The following sections include some specific guidance on what we will promise
 throughout the v1.x series, for those who would like full details. At
 a higher level though, we don't intend to make any changes that would cause
 existing modules or automation to require changes when upgrading to a new
-v1.x release. We will generally treat compatibility problems in new OpenTofu
+v1.x release. We will generally treat compatibility problems in new Bogform
 CLI releases as bugs to be fixed unless there was a very significant
 justification for the change, such as in addressing a critical security
 problem or matching with a breaking change to a remote dependency that isn't
 directly under our control.
 
-## The OpenTofu Language
+## The Bogform Language
 
-The main OpenTofu Language includes the language syntax, the top-level
+The main Bogform Language includes the language syntax, the top-level
 structures such as `resource`, `module`, and `provider` blocks, the
 "meta-arguments" in those blocks, and the documented semantics and behaviors
 for the operators and built-in functions available for use in expressions.
 
-There is not a single formal specification for the OpenTofu language, but the
-Configuration section of the documentation on the OpenTofu website serves as a
+There is not a single formal specification for the Bogform language, but the
+Configuration section of the documentation on the Bogform website serves as a
 description of the language features and their intended behaviors.
 
 The following top-level blocks and their defined "meta-arguments" (that is,
-arguments defined by OpenTofu Core rather than by external plugins such as
+arguments defined by Bogform Core rather than by external plugins such as
 providers) will retain their current functionality:
 
 * [`resource`](resources/index.mdx) and
@@ -96,22 +96,22 @@ references to
 [`terraform.workspace`](expressions/references.mdx#terraform-workspace),
 whose behavior may change as part of future changes to the workspace model.
 
-We intend to retain broad compatibility with OpenTofu language features, with
+We intend to retain broad compatibility with Bogform language features, with
 a few specific caveats:
 
-* We consider a configuration to be valid if OpenTofu can create and apply
+* We consider a configuration to be valid if Bogform can create and apply
   a plan for it without reporting any errors.
 
   A configuration that currently produces errors might generate different
   errors or exhibit other non-error behaviors in a future version of
-  OpenTofu. A configuration that generates errors during the apply phase
+  Bogform. A configuration that generates errors during the apply phase
   might generate similar errors at an earlier phase in future, because
   we generally consider it better to detect errors in as early a phase as
   possible.
 
   Generally-speaking, the compatibility promises described in this document
   apply only to valid configurations. Handling of invalid configurations is
-  always subject to change in future OpenTofu releases.
+  always subject to change in future Bogform releases.
 * If the actual behavior of a feature differs from what we explicitly
   documented as the feature's behavior, we will usually treat that as a bug
   and change the feature to match the documentation, although we will avoid
@@ -119,14 +119,14 @@ a few specific caveats:
   We cannot promise to always remain "bug-compatible" with previous releases,
   but we will consider such fixes carefully to minimize their impact.
 * Any experimental features may change or may be removed entirely from future
-  releases. OpenTofu always produces a warning when an experimental language
+  releases. Bogform always produces a warning when an experimental language
   feature is active, to make you aware of that risk. We don't recommend using
   experimental features in production modules.
 * We will introduce new language features, and if you start using them then
-  your configuration won't work with prior OpenTofu versions that didn't
+  your configuration won't work with prior Bogform versions that didn't
   support those features yet.
 * Providers are separate plugins which can change independently of
-  OpenTofu Core and are therefore not subject to these compatibility promises.
+  Bogform Core and are therefore not subject to these compatibility promises.
   If you upgrade any of the providers you are using then you might need to
   change provider or resource configurations related to those providers.
 * A small number of features remain deprecated with explicit warnings in
@@ -135,7 +135,7 @@ a few specific caveats:
 
 ## Workflow
 
-There is a set of often used OpenTofu workflows, which we are calling
+There is a set of often used Bogform workflows, which we are calling
 _protected workflows_. We will not remove these commands, subcommands, and
 flags or make backward-incompatible changes to protected workflow
 functionality. If we accidentally change these, we will consider
@@ -146,41 +146,41 @@ There is another set of commands that we are explicitly _not_ making
 compatibility promises about, because we expect their functionality to change
 in v1.x releases: see [Commands That Might Change](#commands-that-might-change).
 
-The supported ways for external software to interact with OpenTofu are via
+The supported ways for external software to interact with Bogform are via
 the JSON output modes offered by some commands and via exit status codes.
 We may extend certain JSON formats with new object properties but we will not
 remove or make breaking changes to the definitions of existing properties.
 
 Natural language command output or log output is not a stable interface and
 may change in any new version. If you write software that parses this output
-then it may need to be updated when you upgrade OpenTofu. If you need access
+then it may need to be updated when you upgrade Bogform. If you need access
 to data that is not currently available via one of the machine-readable JSON
 interfaces, we suggest opening a feature request to discuss your use-case.
 
 ## Upgrading and Downgrading
 
 Throughout the v1.x series of releases, we intend that you should be able to
-switch to a newer OpenTofu version and use it just as before, without any
+switch to a newer Bogform version and use it just as before, without any
 special upgrade steps.
 
 You should be able to upgrade from any v1.x release to any later v1.x release.
 You might also be able to downgrade to an earlier v1.x release, but that isn't
 guaranteed: later releases may introduce new features that earlier versions
-cannot understand, including new storage formats for OpenTofu state snapshots.
+cannot understand, including new storage formats for Bogform state snapshots.
 
 If you make use of features introduced in a later v1.x release, your
 configuration won't be compatible with releases that predate that feature.
 For example, if a language feature is added in v1.7 and you start using it, your
-OpenTofu configuration will no longer be compatible with OpenTofu v1.6.
+Bogform configuration will no longer be compatible with OpenTofu v1.6.
 
 ## Providers
 
-OpenTofu providers are separate plugins which communicate with OpenTofu using
+Bogform providers are separate plugins which communicate with Bogform using
 a documented protocol. Therefore these compatibility promises can only cover
-the "client" side of this protocol as implemented by OpenTofu Core; the
+the "client" side of this protocol as implemented by Bogform Core; the
 behaviors of individual providers, including which resource types they support
 and which arguments they expect, are decided by the provider development teams
-and can change independently of OpenTofu Core releases.
+and can change independently of Bogform Core releases.
 
 If you upgrade to a new version of a provider then you might need to change
 the parts of your configuration which are interpreted by that provider, even
@@ -188,12 +188,12 @@ if you are still using an OpenTofu v1.x release.
 
 ### Provider Installation Methods
 
-OpenTofu normally installs providers from a provider registry implementing
+Bogform normally installs providers from a provider registry implementing
 [the Provider Registry Protocol](../internals/provider-registry-protocol.mdx),
 version 1. All OpenTofu v1.x releases will remain compatible with that
 protocol, and so correctly-implemented provider registries will stay compatible.
 
-OpenTofu also supports installation of providers from
+Bogform also supports installation of providers from
 [local filesystem directories](../cli/config/config-file.mdx#filesystem_mirror)
 (filesystem mirrors) and from
 [network mirrors](../cli/config/config-file.mdx#network_mirror)
@@ -203,7 +203,7 @@ methods, including
 [the Implied Local Mirror Directories](../cli/config/config-file.mdx#implied-local-mirror-directories).
 
 Specific provider registries or network mirrors are run independently from
-OpenTofu itself and so their own behaviors are not subject to these
+Bogform itself and so their own behaviors are not subject to these
 compatibility promises.
 
 ### Provider Protocol Versions
@@ -227,15 +227,15 @@ compatible with all of the OpenTofu v1.x releases.
 ## External Modules
 
 Modules are reusable infrastructure components written in the
-OpenTofu language. Some modules are "external" in the sense that OpenTofu
+Bogform language. Some modules are "external" in the sense that Bogform
 automatically installs them from a location other than the current
 configuration directory, in which case their contents could change
 independently of changes to your local modules, of the providers you use,
-and of OpenTofu itself.
+and of Bogform itself.
 
 ### Module Installation Methods
 
-OpenTofu supports installing child modules from a number of different
+Bogform supports installing child modules from a number of different
 [module source types](modules/sources.mdx). We will continue
 to support all of the existing source types throughout the v1.x releases.
 
@@ -245,46 +245,46 @@ version 1. All OpenTofu v1.x releases will remain compatible with correct
 implementations of that protocol.
 
 Some module source types work directly with services or protocols defined and
-run by third parties. Although we will not remove OpenTofu's own client-side
+run by third parties. Although we will not remove Bogform's own client-side
 support for those, we cannot guarantee that their owners will keep those
-services running or that they will remain compatible with OpenTofu's client
+services running or that they will remain compatible with Bogform's client
 implementations.
 
 ### External Module Compatibility
 
 If your configuration depends on external modules, newer versions of those
 modules may include breaking changes. External modules are not part of
-OpenTofu and are therefore not subject to these compatibility promises.
+Bogform and are therefore not subject to these compatibility promises.
 
 ## Provisioners
 
 We will maintain compatibility for the `file`, `local-exec`, and `remote-exec`
 provisioner types through all v1.x releases.
 
-OpenTofu supports loading additional provisioners as plugins from certain
+Bogform supports loading additional provisioners as plugins from certain
 local filesystem directories. We'll continue to support that throughout the
-OpenTofu v1.x releases, but since such plugins are separate from OpenTofu
+OpenTofu v1.x releases, but since such plugins are separate from Bogform
 Core itself their own behaviors cannot be subject to these compatibility
 promises. However, we will continue to support the plugin wire protocol as
 defined in OpenTofu v1.6 throughout the v1.x releases, and so
 correctly-implemented provisioner plugins should remain compatible with future
-OpenTofu releases.
+Bogform releases.
 
 ## State Storage Backends
 
-When you use _remote state_, OpenTofu interacts with remote services over
-the network in order to store and manage locks for OpenTofu state.
+When you use _remote state_, Bogform interacts with remote services over
+the network in order to store and manage locks for Bogform state.
 
 For historical reasons, all supported state storage backends are included as
-part of OpenTofu CLI but not all are supported directly by the OpenTofu
-Team. Only the following backends maintained by the OpenTofu team are subject
+part of Bogform CLI but not all are supported directly by the Bogform
+Team. Only the following backends maintained by the Bogform team are subject
 to compatibility promises:
 
 * `local` (the default, when you are not using remote state)
 * `http`
 
 The other state storage backends are maintained by external teams via
-contributions to the OpenTofu CLI codebase, and so their expected
+contributions to the Bogform CLI codebase, and so their expected
 configuration arguments or behaviors might change even in v1.x releases,
 although we will aim to still ensure a good migration path in such cases,
 where possible.
@@ -293,7 +293,7 @@ We are considering allowing external state storage backend implementations
 via plugins, similar to provider plugins. If we introduce such a mechanism
 during the v1.x releases then you may need to make configuration changes in
 order to use those plugins, and state storage backends other than those
-listed above may be removed from later versions of OpenTofu CLI once
+listed above may be removed from later versions of Bogform CLI once
 equivalent plugins are available.
 
 ### The `remote` Backend
@@ -316,7 +316,7 @@ contributors and are not subject to these compatibility promises.
 ### Unmaintained State Storage Backends
 
 The `artifactory`, `etcdv2`, `manta`, and `swift` state storage backends do not
-currently have any maintainers and thus remain in OpenTofu CLI releases on
+currently have any maintainers and thus remain in Bogform CLI releases on
 a best-effort basis. They may be removed in later v1.x releases, and will not
 be updated in case of any breaking changes to the services they integrate with.
 
@@ -329,14 +329,14 @@ the entirety of the v1.x series.
 
 However, we do intend to retain support for platforms that are in broad use
 by our community and which remain well-supported by their vendors and by the
-other software (libraries and programming languages) that OpenTofu is built and
+other software (libraries and programming languages) that Bogform is built and
 tested with. We intend to provide at least two minor release series of advance
 notice before ending support for any currently-supported platform, unless a more
 rapid change is forced on us by sudden changes in vendor support policies
 outside of our control.
 
 We currently consider the following platforms to be officially supported, to
-the extent that the maintainers frequently test OpenTofu on these platforms and
+the extent that the maintainers frequently test Bogform on these platforms and
 aim to prioritize fixing any regressions that are reported:
 
 * macOS on Apple Silicon (`darwin_arm64`)
@@ -344,28 +344,28 @@ aim to prioritize fixing any regressions that are reported:
 * Linux on x64 and 64-bit ARM (`linux_amd64` and `linux_arm64` respectively)
 
 Over time we may require newer versions of these operating systems. For
-example, subsequent OpenTofu releases in the v1.x series might end support
+example, subsequent Bogform releases in the v1.x series might end support
 for earlier versions of macOS or Windows, or earlier Linux kernel releases.
 
 We have historically produced official releases for a number of other platforms
 as a convenience to users of those platforms, but we cannot promise ongoing
 releases or bug fixes for the other platforms throughout the v1.x series. We do
-not routinely test OpenTofu on any platforms other than those listed above.
+not routinely test Bogform on any platforms other than those listed above.
 
 We might add support for new platforms in later v1.x releases. If so, earlier
-OpenTofu releases prior to that support will not be available on those
+Bogform releases prior to that support will not be available on those
 platforms.
 
-All OpenTofu plugins, including provider plugins, are separate programs that
+All Bogform plugins, including provider plugins, are separate programs that
 have their own policies for which platforms they support. We cannot guarantee
 that all providers currently support or will continue to support the platforms
-listed above, even though OpenTofu CLI itself will support them.
+listed above, even though Bogform CLI itself will support them.
 
 :::note
 An earlier version of these compatibility promises _did_ promise ongoing support
 for a specific set of platforms, including some that are no longer listed above.
 
-The original commitments had been made for OpenTofu's predecessor, adopted by
+The original commitments had been made for Bogform's predecessor, adopted by
 our project as part of the fork, and represented a snapshot of platforms that
 were in wide use at the time their version of this document was drafted. The
 trends of platform usage and support then inevitably changed in the meantime,
@@ -396,7 +396,7 @@ stated.
 
 ### Protected Workflow Commands
 
-The following is the list of OpenTofu CLI subcommands and options that are
+The following is the list of Bogform CLI subcommands and options that are
 subject to these compatibility promises. If you build automation around
 these commands then it should be compatible with all later v1.x releases.
 
@@ -501,14 +501,14 @@ Any natural-language output from these commands might change in later releases.
 
 For commands or options not in the above list, we will still avoid breaking
 changes where possible, but can't promise full compatibility throughout the
-v1.x series. If you are building automation around OpenTofu, use only the
+v1.x series. If you are building automation around Bogform, use only the
 commands above to avoid the need for changes when upgrading.
 
-Please note that although OpenTofu's internal logs (via the `TF_LOG`
+Please note that although Bogform's internal logs (via the `TF_LOG`
 environment variable) are available in a JSON format, the particular syntax
 or structure of those log lines is _not_ a supported integration interface.
 The logs are available as JSON only to help with ad-hoc filtering and
-processing of logs by OpenTofu developers.
+processing of logs by Bogform developers.
 
 ### Commands That Might Change
 
@@ -517,18 +517,18 @@ to compatibility promises, either because we have existing plans to improve
 them during the v1.x series or because we are aware of shortcomings in their
 design that might require breaking changes for ongoing maintenance.
 
-While you can freely use these commands when running OpenTofu interactively
+While you can freely use these commands when running Bogform interactively
 as long as they remain supported, we don't recommend using them as part of
 any automation unless you are willing to potentially update that automation
 when upgrading to a later v1.x release.
 
-* `destroy` (consider `tofu apply -destroy` instead)
+* `destroy` (consider `bogform apply -destroy` instead)
 * `console`
-* `get` (consider `tofu init` instead)
+* `get` (consider `bogform init` instead)
 * `graph`
 * `import`
 * `push`
-* `refresh` (consider `tofu apply -refresh-only` instead)
+* `refresh` (consider `bogform apply -refresh-only` instead)
 * `state mv`
 * `state replace-provider`
 * `state rm`
@@ -542,11 +542,11 @@ command names or options used to meet those use-cases.
 
 ### Automated Regression Testing
 
-The OpenTofu codebase includes various unit and integration tests intended to
+The Bogform codebase includes various unit and integration tests intended to
 help us to notice accidental behavior regressions before they ship in a stable
 version.
 
-However, OpenTofu is a relatively complex system with many different features
+However, Bogform is a relatively complex system with many different features
 that can interact in interesting ways. In the past we've seen reports of
 behavior differences that appeared only when combining two or more features in
 a way we hadn't previously anticipated or written automated tests for.
@@ -554,7 +554,7 @@ a way we hadn't previously anticipated or written automated tests for.
 In each case we have both implemented a change to resolve the compatibility
 problem _and_ added one or more integration tests representing the behavior
 of that combination of features. We intend to continue this approach, so we can
-improve OpenTofu's test coverage over time.
+improve Bogform's test coverage over time.
 
 ### Prerelease Versions
 
@@ -588,7 +588,7 @@ releases by proactively testing modules against alpha, beta, and release
 candidate packages. We recommend doing so only in isolated development or
 staging environments rather than against your production infrastructure. If you
 find a change in behavior in a prerelease build that seems contrary to the
-promises in this document, please open an issue in OpenTofu's GitHub
+promises in this document, please open an issue in Bogform's GitHub
 repository to discuss it.
 
 ### Late-reported Regressions
@@ -604,17 +604,17 @@ make this decision with due consideration to the implications of each unique
 situation.
 
 You can minimize the risk of your modules being affected by late-reported
-regressions by upgrading promptly to new minor and patch releases of OpenTofu
-and reporting any compatibility problems you encounter in OpenTofu's GitHub
+regressions by upgrading promptly to new minor and patch releases of Bogform
+and reporting any compatibility problems you encounter in Bogform's GitHub
 repository.
 
 ### Pragmatic Exceptions
 
 We are making the promises above in good faith, with the intent that your
-investment in writing OpenTofu modules or automation will not be invalidated
-by future changes to OpenTofu. However, broad promises like the above can't
+investment in writing Bogform modules or automation will not be invalidated
+by future changes to Bogform. However, broad promises like the above can't
 possibly cover all nuances of practical problems that might arise as we
-continue to develop OpenTofu.
+continue to develop Bogform.
 
 For that reason, there are some situations where we may still need to make
 changes that may impact existing modules or automation:
@@ -622,13 +622,13 @@ changes that may impact existing modules or automation:
 * Security problems: We may become aware of a design problem that has an
   important security impact. Depending on our determination of the associated
   risk, we may choose to break compatibility to achieve a more secure system.
-* External Dependencies: OpenTofu's behavior depends on interfaces provided
+* External Dependencies: Bogform's behavior depends on interfaces provided
   by external codebases, including your chosen operating system and including
   some remote network services for situations such as module and provider
   installation. These external systems can change outside of our control,
-  including potentially removing or changing features that OpenTofu's own
+  including potentially removing or changing features that Bogform's own
   features depend on. In that case, if there is no suitable replacement
-  mechanism then we may need to change OpenTofu's design to work within the
+  mechanism then we may need to change Bogform's design to work within the
   new constraints.
 * Opt-in Compatibility Breaks: The design of a language new feature may require
   changing the behavior or configuration representation of an existing feature.
@@ -636,7 +636,7 @@ changes that may impact existing modules or automation:
   breaking existing modules, but if you change your module to opt in to the
   new feature then you may also then be required to change other parts of your
   configuration to work with the new language design.
-* Bugs in New Features: If we introduce a new feature to OpenTofu and the
+* Bugs in New Features: If we introduce a new feature to Bogform and the
   initial implementation has problems that cause it to not match the documented
   design intent at release, we may make a follow-up release that corrects
   the implementation to match the documented design, even if that represents
@@ -644,7 +644,7 @@ changes that may impact existing modules or automation:
   However, once a feature is well-established and in common use we will usually
   defer to the implemented behavior and instead change the documentation to
   reflect it.
-* Regressions in Existing Features: If we learn that a new OpenTofu release
+* Regressions in Existing Features: If we learn that a new Bogform release
   includes a regression for an existing feature that wasn't detected during
   the development and prerelease periods, and that learning comes promptly
   after the new release, we will typically restore the previous behavior at
@@ -660,10 +660,10 @@ changes that may impact existing modules or automation:
   affects then we may choose to accept the regression as the new promised
   behavior.
 * Situations we cannot anticipate: Although we've made an effort to consider
-  various specific exceptional situations here, OpenTofu and its development
+  various specific exceptional situations here, Bogform and its development
   process are not isolated from broader context, and so we must consider that
   there may be situations that we cannot possibly anticipate that would affect
-  the future of OpenTofu. In those situations, we will always do our best to
+  the future of Bogform. In those situations, we will always do our best to
   find a course of action that will minimize as much as possible the impact to
   existing modules and automation.
 

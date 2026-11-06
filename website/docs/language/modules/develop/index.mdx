@@ -12,7 +12,7 @@ describe your infrastructure in terms of its architecture, rather than
 directly in terms of physical objects.
 
 The `.tf` and/or `.tofu` files in your working directory when you run
-[`tofu plan`](../../../cli/commands/plan.mdx) or [`tofu apply`](../../../cli/commands/apply.mdx)
+[`bogform plan`](../../../cli/commands/plan.mdx) or [`bogform apply`](../../../cli/commands/apply.mdx)
 together form the _root_ module. That module may [call other modules](../../../language/modules/syntax.mdx#calling-a-child-module)
 and connect them together by passing output values from one to input values
 of another.
@@ -35,7 +35,7 @@ Most commonly, modules use:
   infrastructure objects that the module will manage.
 
 To define a module, create a new directory for it and place one or more `.tf`
-files inside just as you would do for a root module. OpenTofu can load modules
+files inside just as you would do for a root module. Bogform can load modules
 either from local relative paths or from remote repositories; if a module will
 be re-used by lots of configurations you may wish to place it in its own
 version control repository.
@@ -48,7 +48,7 @@ the individual modules easier to re-use in different combinations.
 ## When to write a module
 
 In principle any combination of resources and other constructs can be factored
-out into a module, but over-using modules can make your overall OpenTofu
+out into a module, but over-using modules can make your overall Bogform
 configuration harder to understand and maintain, so we recommend moderation.
 
 A good module should raise the level of abstraction by describing a new concept
@@ -71,7 +71,7 @@ calling module instead.
 
 You can include [refactoring blocks](../../../language/modules/develop/refactoring.mdx) to record how resource
 names and module structure have changed from previous module versions.
-OpenTofu uses that information during planning to reinterpret existing objects
+Bogform uses that information during planning to reinterpret existing objects
 as if they had been created at the corresponding new addresses, eliminating a
 separate workflow step to replace or migrate existing objects.
 
@@ -101,7 +101,7 @@ be accompanied by a `README.md` file providing more information about the exampl
 
 ### Testing the module
 Tests are a great way to ensure that the module stays working when community pull requests come in.
-The [`tofu test` command](../../../cli/commands/test/) has a host of tools that allow writing automated tests for
+The [`bogform test` command](../../../cli/commands/test/) has a host of tools that allow writing automated tests for
 the module.
 
 

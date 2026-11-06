@@ -15,7 +15,7 @@ convert(value, type)
 A value of any type can be provided as long as it can be converted to match the
 given type constraint.
 
-Explicit type conversions are rarely necessary in OpenTofu because it converts
+Explicit type conversions are rarely necessary in Bogform because it converts
 types automatically where required. This function can be useful in situations
 where the type of a result is ambiguous, such as when parsing an arbitrary JSON
 string using [`jsonencode`](./jsonencode.mdx) and then ensuring the resulting
@@ -32,9 +32,9 @@ use functions or references to other symbols in the module.
 ```
 > convert("true", bool)
 true
-> convert({}, object({ name = optional(string, "OpenTofu") }))
+> convert({}, object({ name = optional(string, "Bogform") }))
 {
-  name = "OpenTofu"
+  name = "Bogform"
 }
 ```
 

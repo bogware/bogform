@@ -1,41 +1,41 @@
 ---
 description: >-
-    An overview of the linting support in OpenTofu
+    An overview of the linting support in Bogform
 ---
 
 # Linting
 
 :::info
-OpenTofu's linting functionality is currently under active development and considered experimental.
-The features described below may have breaking changes based on feedback, even in minor releases. OpenTofu produces a warning about this whenever linting is enabled.
+Bogform's linting functionality is currently under active development and considered experimental.
+The features described below may have breaking changes based on feedback, even in minor releases. Bogform produces a warning about this whenever linting is enabled.
 :::
 
-OpenTofu provides built-in linting support for the configurations it runs against. It does that by providing several
-linting rules, named _core linting rules_, that could be executed while running regular OpenTofu operations.
+Bogform provides built-in linting support for the configurations it runs against. It does that by providing several
+linting rules, named _core linting rules_, that could be executed while running regular Bogform operations.
 
 ## How it works
 
 The linting functionality is opt-in by providing a `-lint` flag to the `tofu` commands that support it: `validate`,
 `plan`, `apply` and `refresh`. The flag accepts a comma separated list of identifiers, which point to specific linting rules to run:
 ```shell
-tofu apply -lint='all'
+bogform apply -lint='all'
 ```
 
 If there is a particular linting rule that is wanted to be excluded from being executed, it can be disabled by
 including its identifier prefixed by `!`:
 ```shell
-tofu apply -lint='all,!core:unused-local'
+bogform apply -lint='all,!core:unused-local'
 ```
 
 To run just a specific linting rule can be done by specifying only its identifier:
 ```shell
-tofu apply -lint='core:unused-local'
+bogform apply -lint='core:unused-local'
 ```
 
 At the moment of writing this, the core linting rules run only against the root module. In future improvements it will
 allow more granular configuration on what type of modules these could run against.
 
-Because the destroy operations (`tofu plan -destroy`, `tofu apply -destroy`, `tofu destroy`) do not provide the
+Because the destroy operations (`bogform plan -destroy`, `bogform apply -destroy`, `bogform destroy`) do not provide the
 same knowledge depth about the configuration as other operations, the linting is disabled for this particular case.
 For any commands that accept the `-lint` flag and also the `-destroy` one, the linting is silently disabled.
 
@@ -47,7 +47,7 @@ All of the identifiers are case-sensitive and any unknown identifier will be ign
 ### Rule identifiers
 Any linting rule has a unique identifier attached to, which can be used to enable or disable the rule.
 All of the core linting rules identifiers are prefixed with the `core:` keyword which is also called a _namespace_. In future
-versions of OpenTofu, other namespaces will be introduced where linting rules could be defined, like providers, configuration, etc.
+versions of Bogform, other namespaces will be introduced where linting rules could be defined, like providers, configuration, etc.
 
 ### Group identifiers
 Additionally, each rule is also part of one or multiple groups of linting rules.
@@ -58,13 +58,13 @@ Groups pack together multiple rules allowing inclusion of those by specifying ju
 |`core:improvement`|represents all of the rules that notice when the configuration is written by using concepts for which there is a better and cleaner alternative|
 
 ### Global identifiers
-OpenTofu provides 2 global identifiers: `all` and `core:all`.
+Bogform provides 2 global identifiers: `all` and `core:all`.
 For the moment, both behave similarly, but the purpose of these is different:
 * Once other namespaces, besides `core:` will be introduced, the `all` identifier will enable all the rules from all the namespaces, including `core:`
-* `core:all` includes all the linting rules that are implemented inside the OpenTofu codebase
+* `core:all` includes all the linting rules that are implemented inside the Bogform codebase
 
 ### Inclusion/exclusion rules
-If multiple identifiers are either included or excluded, OpenTofu determines which linting rule is executed based on how specific an identifier is.
+If multiple identifiers are either included or excluded, Bogform determines which linting rule is executed based on how specific an identifier is.
 Inclusion of an identifier has higher priority than its exclusion:
 * If a specific core linting rule identifier is included, it will always be executed, regardless of what is excluded.
 * If a specific core linting rule identifier is excluded, it will be skipped as long as it is not also included.

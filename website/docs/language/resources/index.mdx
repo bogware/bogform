@@ -1,24 +1,24 @@
 ---
 description: >-
-  Resources describe infrastructure objects in OpenTofu configurations. Find
+  Resources describe infrastructure objects in Bogform configurations. Find
   documentation for resource syntax, behavior, and meta-arguments.
 ---
 
 # Resources
 
-_Resources_ are the most important element in the OpenTofu language.
+_Resources_ are the most important element in the Bogform language.
 Each resource block describes one or more infrastructure objects, such
 as virtual networks, compute instances, or higher-level components such
 as DNS records.
 
 This section discusses the main kind of resource, known as a "managed resource",
-which represents an infrastructure object managed by OpenTofu.
+which represents an infrastructure object managed by Bogform.
 
 - [Resource Blocks](../../language/resources/syntax.mdx) documents
   the syntax for declaring resources.
 
 - [Resource Behavior](../../language/resources/behavior.mdx) explains in
-  more detail how OpenTofu handles resource declarations when applying a
+  more detail how Bogform handles resource declarations when applying a
   configuration.
 
 - The Meta-Arguments section documents special arguments that can be used with
@@ -35,11 +35,11 @@ which represents an infrastructure object managed by OpenTofu.
   you treat them as a last resort.
 
 There are two other kinds of resources that play different roles within an
-OpenTofu configuration:
+Bogform configuration:
 
 - [Data resources](../../language/data-sources/index.mdx) declare that a
   configuration depends on information read from a data source outside of the
   configuration.
 - [Ephemeral resources](../../language/ephemerality/ephemeral-resources.mdx)
   declare transient objects that are opened only for the duration of a single
-  OpenTofu phase, such as temporary session credentials.
+  Bogform phase, such as temporary session credentials.

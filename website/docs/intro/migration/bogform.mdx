@@ -1,0 +1,49 @@
+---
+sidebar_position: 1
+sidebar_label: From OpenTofu or Terraform
+description: |-
+  Move an existing OpenTofu or Terraform project to Bogform.
+---
+
+# Moving from OpenTofu or Terraform
+
+Bogform is a fork of OpenTofu, so most projects only need a new executable. Your `.tf` and `.tofu`
+files, `TF_*` environment variables, state, lock file, and providers keep working.
+
+## Switch to Bogform
+
+1. Commit your configuration, and back up your state.
+2. [Install Bogform](../install/index.mdx).
+3. Run `bogform init`, then `bogform plan`. The plan shouldn't propose any changes that your
+   previous tool wouldn't have.
+
+Bogform downloads providers and modules from the OpenTofu Registry by default, so existing provider
+addresses in your state stay valid.
+
+## If you use HCP Terraform or Terraform Enterprise
+
+Bogform doesn't support the `cloud` block or the `remote` backend. Move your state to a supported
+backend, such as `s3`, `gcs`, `azurerm`, or `pg`, before you switch:
+
+1. Using your current tool, run `state pull > terraform.tfstate` in each workspace.
+2. Replace the `cloud` block or `remote` backend with the new backend's configuration.
+3. Run `bogform init`, then `bogform state push terraform.tfstate`.
+
+## Optional Bogform names
+
+You can adopt these at your own pace. Each one takes priority over its older equivalents.
+
+| Purpose | Bogform | Also recognized |
+|---|---|---|
+| Configuration files | `.bog`, `.bog.json` | `.tofu`, `.tofu.json`, `.tf`, `.tf.json` |
+| Test files | `.bogtest.hcl`, `.bogtest.json` | `.tofutest.*`, `.tftest.*` |
+| Mock files | `.bogmock.hcl` | `.tofumock.hcl`, `.tfmock.hcl` |
+| Environment variables | `BOG_*`, such as `BOG_LOG` and `BOG_VAR_name` | `TF_*`, `TOFU_*` |
+| CLI configuration, Linux and macOS | `~/.bogformrc` | `~/.tofurc`, `~/.terraformrc` |
+| CLI configuration, Windows | `%APPDATA%\bogform.rc` | `tofu.rc`, `terraform.rc` |
+
+When two files in a directory share a name, such as `main.tf` and `main.bog`, Bogform loads only the
+highest-priority one.
+
+These names stay the same for compatibility: the `.terraform` directory, `.terraform.lock.hcl`, the
+`terraform` block, and the `terraform` and `tofu` language symbols.

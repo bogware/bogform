@@ -1,7 +1,7 @@
-# OpenTofu State and Plan encryption
+# Bogform State and Plan encryption
 
 > [!WARNING]
-> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the OpenTofu website unless you want to work on the encryption code.
+> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the Bogform website unless you want to work on the encryption code.
 
 This folder contains the code for state and plan encryption. For a quick example on how to use this package, please take a look at the [example_test.go](example_test.go) file.
 

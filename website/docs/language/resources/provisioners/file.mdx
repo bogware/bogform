@@ -1,14 +1,14 @@
 ---
 description: >-
   The `file` provisioner is used to copy files or directories from the machine
-  executing OpenTofu to the newly created resource. The `file` provisioner
+  executing Bogform to the newly created resource. The `file` provisioner
   supports both `ssh` and `winrm` type connections.
 ---
 
 # File Provisioner
 
 The `file` provisioner copies files or directories from the machine
-running OpenTofu to the newly created resource.
+running Bogform to the newly created resource.
 
 :::warning Important
 Use provisioners as a last resort. There are better alternatives for most situations. Refer to
@@ -71,7 +71,7 @@ This provisioner copies files to a remote system, so you must also include a
 ## Destination Paths
 
 The path you provide in the `destination` argument will be evaluated by the
-remote system, rather than by OpenTofu itself. Therefore the valid values
+remote system, rather than by Bogform itself. Therefore the valid values
 for that argument can vary depending on the operating system and remote access
 software running on the target.
 
@@ -123,7 +123,7 @@ destination will be created. For example:
 * If the source is `/foo` (no trailing slash), and the destination is `/tmp`,
   then the contents of `/foo` on the local machine will be uploaded to
   `/tmp/foo` on the remote machine. The `foo` directory on the remote machine
-  will be created by OpenTofu.
+  will be created by Bogform.
 
 * If the source, however, is `/foo/` (a trailing slash is present), and the
   destination is `/tmp`, then the contents of `/foo` will be uploaded directly

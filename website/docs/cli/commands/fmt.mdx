@@ -1,50 +1,50 @@
 ---
 description: >-
-  The tofu fmt command rewrites configuration files to a canonical format
+  The bogform fmt command rewrites configuration files to a canonical format
   and style.
 ---
 
 # Command: fmt
 
-The `tofu fmt` command is used to rewrite OpenTofu configuration files
+The `bogform fmt` command is used to rewrite Bogform configuration files
 to a canonical format and style. This command applies a subset of
-the [OpenTofu language style conventions](../../language/syntax/style.mdx),
+the [Bogform language style conventions](../../language/syntax/style.mdx),
 along with other minor adjustments for readability.
 
-Other OpenTofu commands that generate OpenTofu configuration will produce
-configuration files that conform to the style imposed by `tofu fmt`, so
+Other Bogform commands that generate Bogform configuration will produce
+configuration files that conform to the style imposed by `bogform fmt`, so
 using this style in your own files will ensure consistency.
 
-The canonical format may change in minor ways between OpenTofu versions, so
-after upgrading OpenTofu we recommend to proactively run `tofu fmt`
+The canonical format may change in minor ways between Bogform versions, so
+after upgrading Bogform we recommend to proactively run `bogform fmt`
 on your modules along with any other changes you are making to adopt the new
 version.
 
-We don't consider new formatting rules in `tofu fmt` to be a breaking
-change in new versions of OpenTofu, but we do aim to minimize changes for
+We don't consider new formatting rules in `bogform fmt` to be a breaking
+change in new versions of Bogform, but we do aim to minimize changes for
 configurations that are already following the style examples shown in the
-OpenTofu documentation. When adding new formatting rules, they will usually
+Bogform documentation. When adding new formatting rules, they will usually
 aim to apply more of the rules already shown in the configuration examples
 in the documentation, and so we recommend following the documented style even
-for decisions that `tofu fmt` doesn't yet apply automatically.
+for decisions that `bogform fmt` doesn't yet apply automatically.
 
 Formatting decisions are always subjective and so you might disagree with the
-decisions that `tofu fmt` makes. This command is intentionally opinionated
+decisions that `bogform fmt` makes. This command is intentionally opinionated
 and has no customization options because its primary goal is to encourage
-consistency of style between different OpenTofu codebases, even though the
+consistency of style between different Bogform codebases, even though the
 chosen style can never be everyone's favorite.
 
-We recommend that you follow the style conventions applied by `tofu fmt`
-when writing OpenTofu modules, but if you find the results particularly
+We recommend that you follow the style conventions applied by `bogform fmt`
+when writing Bogform modules, but if you find the results particularly
 objectionable then you may choose not to use this command, and possibly choose
 to use a third-party formatting tool instead. If you choose to use a
 third-party tool then you should also run it on files that are generated
-automatically by OpenTofu, to get consistency between your hand-written files
+automatically by Bogform, to get consistency between your hand-written files
 and the generated files.
 
 ## Usage
 
-Usage: `tofu fmt [options] [target...]`
+Usage: `bogform fmt [options] [target...]`
 
 By default, `fmt` scans the current directory for configuration files. If you
 provide a directory for the `target` argument, then `fmt` will scan that
@@ -63,12 +63,12 @@ The command-line flags are all optional. The following flags are available:
 
 ## Directory Scanning Behavior
 
-When `tofu fmt` scans a directory, it applies the following rules to decide
+When `bogform fmt` scans a directory, it applies the following rules to decide
 which files to process:
 
 - **Exclusion rule**: Any file whose name starts with `.` or `~`, or whose name
   both starts and ends with `#`, is skipped. These patterns typically indicate
-  temporary files created by text editors or other tools, and `tofu fmt` skips
+  temporary files created by text editors or other tools, and `bogform fmt` skips
   them to avoid interfering with that software.
 
 - **Inclusion rule**: After applying the exclusion rule, only files with the

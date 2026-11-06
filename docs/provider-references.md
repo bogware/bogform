@@ -1,21 +1,21 @@
-# Provider References Through the OpenTofu Language, Codebase and State
+# Provider References Through the Bogform Language, Codebase and State
 
-The concept of Providers has changed and evolved over the lifetime of OpenTofu, with many of the legacy configuration options still supported today. This document aims to walk through examples and map them to structures within OpenTofu's code.
+The concept of Providers has changed and evolved over the lifetime of Bogform, with many of the legacy configuration options still supported today. This document aims to walk through examples and map them to structures within Bogform's code.
 
 ## Existing Documentation
 
 It is recommended that you have the following open when reading through the rest of this document:
-* https://opentofu.org/docs/language/providers/
-* https://opentofu.org/docs/language/providers/requirements/
-* https://opentofu.org/docs/language/providers/configuration/
+* https://bogware.github.io/bogform/docs/language/providers/
+* https://bogware.github.io/bogform/docs/language/providers/requirements/
+* https://bogware.github.io/bogform/docs/language/providers/configuration/
 
 ## What is a Provider?
 
-In general terms, a provider is a piece of code which interfaces OpenTofu with resources. For example, the AWS provider describes what resources it is able to read/manage, such as s3 buckets and ec2 instances.
+In general terms, a provider is a piece of code which interfaces Bogform with resources. For example, the AWS provider describes what resources it is able to read/manage, such as s3 buckets and ec2 instances.
 
-In most cases providers live in a registry, are downloaded into the local path, and executed to provide a versioned GRPC server to OpenTofu. They could potentially be dynamically loaded directly into the running OpenTofu application, but a distinct process helps with fault tolerance and potential isolation issues.
+In most cases providers live in a registry, are downloaded into the local path, and executed to provide a versioned GRPC server to Bogform. They could potentially be dynamically loaded directly into the running Bogform application, but a distinct process helps with fault tolerance and potential isolation issues.
 
-Providers also may define functions that can be called from the OpenTofu configuration. See [Provider Functions](#Provider-Functions) below for more information.
+Providers also may define functions that can be called from the Bogform configuration. See [Provider Functions](#Provider-Functions) below for more information.
 
 It is HIGHLY recommended to vet all providers you execute locally as they are not sandboxed at all. There are discussions ongoing on how to improve safety in that respect.
 
@@ -84,7 +84,7 @@ resource "aws_s3_bucket" "foo" {
 }
 ```
 
-The result is identical to the previous case, except now the version constraint is tracked in the `config.Module` structure, with `addrs.Provider{Type = "aws"}` as the key. Once all constraints are known, `tofu init` downloads the providers from the registry into a local cache for later execution.
+The result is identical to the previous case, except now the version constraint is tracked in the `config.Module` structure, with `addrs.Provider{Type = "aws"}` as the key. Once all constraints are known, `bogform init` downloads the providers from the registry into a local cache for later execution.
 
 #### Module Provider References
 
@@ -370,7 +370,7 @@ After 1.9.0 (provider iteration), the "provider" field can now exist on either t
 
 Note: This section should be expanded with examples.
 
-Note: `tofu show -json` and the internal statefile format are different and do not always line up one-to-one.
+Note: `bogform show -json` and the internal statefile format are different and do not always line up one-to-one.
 
 ## Provider Workflow
 
@@ -385,7 +385,7 @@ Providers are then added to the graph in a few transformers:
 * ProviderConfigTransformer: Adds configured providers to the graph
 * MissingProviderTransformer: Adds unconfigured but required providers to the graph
 * ProviderTransformer: Links provider nodes to self reported nodes that require them
-* ProviderFunctionTransformer: Links provider nodes to other nodes by inspecting their "OpenTofu Function References"
+* ProviderFunctionTransformer: Links provider nodes to other nodes by inspecting their "Bogform Function References"
 * ProviderPruneTransformer: Removes provider nodes that are not in use by other nodes
 
 Providers are then managed and scoped by the EvalContextBuiltin where the actual `provider.Interface`s are created and attached to resources.

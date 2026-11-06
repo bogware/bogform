@@ -29,7 +29,7 @@ terraform {
         method = method.unencrypted.migrate
       }
 
-      ## Step 6: Run "tofu apply".
+      ## Step 6: Run "bogform apply".
 
       ## Step 7: Remove the "fallback" block above and
       ## consider adding the "enforced" option:

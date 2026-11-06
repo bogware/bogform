@@ -1,15 +1,15 @@
 ---
-description: The tofu workspace select command is used to choose a workspace.
+description: The bogform workspace select command is used to choose a workspace.
 ---
 
 # Command: workspace select
 
-The `tofu workspace select` command is used to choose a different
+The `bogform workspace select` command is used to choose a different
 workspace to use for further operations.
 
 ## Usage
 
-Usage: `tofu workspace select NAME [DIR]`
+Usage: `bogform workspace select NAME [DIR]`
 
 This command will select another workspace. The named workspace must already
 exist.
@@ -19,7 +19,7 @@ Use of variables in [module sources](../../../language/modules/sources.mdx#suppo
 [backend configuration](../../../language/settings/backends/configuration.mdx#variables-and-locals),
 or [encryption block](../../../language/state/encryption.mdx#configuration)
 requires [assigning values to root module variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu workspace select`.
+when running `bogform workspace select`.
 :::
 
 The supported flags are:
@@ -50,11 +50,11 @@ module, aside from the `-var` and `-var-file` options. Refer to
 ## Example
 
 ```
-$ tofu workspace list
+$ bogform workspace list
   default
 * development
   jsmith-test
 
-$ tofu workspace select default
+$ bogform workspace select default
 Switched to workspace "default".
 ```

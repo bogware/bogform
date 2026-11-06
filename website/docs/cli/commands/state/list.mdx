@@ -1,17 +1,17 @@
 ---
 description: >-
-  The tofu state list command is used to list resources within a OpenTofu
+  The bogform state list command is used to list resources within a Bogform
   state.
 ---
 
 # Command: state list
 
-The `tofu state list` command is used to list resources within a
-[OpenTofu state](../../../language/state/index.mdx).
+The `bogform state list` command is used to list resources within a
+[Bogform state](../../../language/state/index.mdx).
 
 ## Usage
 
-Usage: `tofu state list [options] [address...]`
+Usage: `bogform state list [options] [address...]`
 
 The command will list all resources in the state file matching the given
 addresses (if any). If no addresses are given, all resources are listed.
@@ -29,7 +29,7 @@ in [resource addressing format](../../../cli/state/resource-addressing.mdx).
 Use of variables in [backend configuration](../../../language/settings/backends/configuration.mdx#variables-and-locals)
 or [encryption block](../../../language/state/encryption.mdx#configuration)
 requires [assigning values to root module variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu state list`.
+when running `bogform state list`.
 :::
 
 The command-line flags are all optional. The following flags are available:
@@ -65,7 +65,7 @@ module, aside from the `-var` and `-var-file` options. Refer to
 This example will list all resources, including modules:
 
 ```
-$ tofu state list
+$ bogform state list
 aws_instance.foo
 aws_instance.bar[0]
 aws_instance.bar[1]
@@ -77,7 +77,7 @@ module.elb.aws_elb.main
 This example will only list resources for the given name:
 
 ```
-$ tofu state list aws_instance.bar
+$ bogform state list aws_instance.bar
 aws_instance.bar[0]
 aws_instance.bar[1]
 ```
@@ -87,7 +87,7 @@ aws_instance.bar[1]
 This example will list resources in the given module and any submodules:
 
 ```
-$ tofu state list module.elb
+$ bogform state list module.elb
 module.elb.aws_elb.main
 module.elb.module.secgroups.aws_security_group.sg
 ```
@@ -99,6 +99,6 @@ command line. This is useful to find where in your configuration a
 specific resource is located.
 
 ```
-$ tofu state list -id=sg-1234abcd
+$ bogform state list -id=sg-1234abcd
 module.elb.aws_security_group.sg
 ```

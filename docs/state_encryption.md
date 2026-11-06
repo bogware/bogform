@@ -4,11 +4,11 @@ This document details our intended implementation of the state and plan encrypti
 
 ## Notes
 
-This document mentions `HCL` as a short-form for OpenTofu code. Unless otherwise specified, everything written also applies to the [JSON-equivalent of the HCL code](https://opentofu.org/docs/language/syntax/json/).
+This document mentions `HCL` as a short-form for Bogform code. Unless otherwise specified, everything written also applies to the [JSON-equivalent of the HCL code](https://bogware.github.io/bogform/docs/language/syntax/json/).
 
 ## Goals
 
-The goal of this feature is to allow OpenTofu users to fully encrypt state files when they are stored on the local disk or transferred to a remote backend. The feature should also allow reading from an encrypted remote backend using the `terraform_remote_state` data source. The encrypted version should still be a valid JSON file, but not necessarily a valid state file.
+The goal of this feature is to allow Bogform users to fully encrypt state files when they are stored on the local disk or transferred to a remote backend. The feature should also allow reading from an encrypted remote backend using the `terraform_remote_state` data source. The encrypted version should still be a valid JSON file, but not necessarily a valid state file.
 
 Furthermore, this feature should allow users to encrypt plan files when they are stored. However, plan files are not JSON, they are undocumented binary files and should be treated as such.
 
@@ -18,7 +18,7 @@ To enable use cases where multiple teams need to collaborate, the user should be
 
 It is the goal of this feature to let users specify their encryption configuration both in (HCL) code and in environment variables. The latter is necessary to allow users the reuse of code for both encrypted and unencrypted state storage.
 
-Finally, it is the goal of the encryption feature to make available a library that third party tooling can use to encrypt and decrypt state. This may be implemented as a package within the OpenTofu repository, or as a standalone repository.
+Finally, it is the goal of the encryption feature to make available a library that third party tooling can use to encrypt and decrypt state. This may be implemented as a package within the Bogform repository, or as a standalone repository.
 
 ## Possible future goals
 
@@ -42,7 +42,7 @@ It is also not a goal of this feature to protect the state file against the oper
 
 ## User-facing effects
 
-Unless the user explicitly specifies encryption options, no encryption will take place and OpenTofu will continue to function as before. No forced encryption will take place. Furthermore, regardless of the encryption status, other functionality, such as state management CLI functions, JSON output, etc. remain unaffected and will be readable in plain text if they were readable as plain text before. Only state and plan files will be affected by the encryption.
+Unless the user explicitly specifies encryption options, no encryption will take place and Bogform will continue to function as before. No forced encryption will take place. Furthermore, regardless of the encryption status, other functionality, such as state management CLI functions, JSON output, etc. remain unaffected and will be readable in plain text if they were readable as plain text before. Only state and plan files will be affected by the encryption.
 
 Users will be able to specify their encryption configuration both in code and via environment variables. Both configurations are equivalent and will be merged at execution time. For more details, see the [environment configuration](#environment-configuration) section below.
 
@@ -71,7 +71,7 @@ terraform {
 ```
 
 > [!NOTE]
-> The user is responsible for keeping this key safe and follow disaster recovery best practices. OpenTofu is a read-only consumer for the key the user provided and will not perform tasks on the key management system like key rotation.
+> The user is responsible for keeping this key safe and follow disaster recovery best practices. Bogform is a read-only consumer for the key the user provided and will not perform tasks on the key management system like key rotation.
 
 The user also has to specify at least one encryption method referencing the key provider. This encryption method determines how the encryption takes place. It is the user's responsibility to make sure that they provided a key that is suitable for the encryption method.
 
@@ -244,15 +244,15 @@ For example (not final):
 
 ## Encrypted plan format
 
-An unencrypted plan file in OpenTofu is an opaque binary. This specification makes no rules for how the encrypted format should look like and all non-encryption routines should treat the value as opaque.
+An unencrypted plan file in Bogform is an opaque binary. This specification makes no rules for how the encrypted format should look like and all non-encryption routines should treat the value as opaque.
 
 ## Implementation
 
-When implementing the encryption tooling, the implementation should be split in two parts: the library and the OpenTofu implementation. The library should rely on the cty types and hcl as a means to specify schema, but should not be otherwise tied to the OpenTofu codebase. This is necessary to enable encryption capabilities for third party tooling that may need to work with state and plan files.
+When implementing the encryption tooling, the implementation should be split in two parts: the library and the Bogform implementation. The library should rely on the cty types and hcl as a means to specify schema, but should not be otherwise tied to the Bogform codebase. This is necessary to enable encryption capabilities for third party tooling that may need to work with state and plan files.
 
 ### Library implementation
 
-The encryption library should create an interface that other projects and OpenTofu itself can use to encrypt and decrypt state. The library should express its schema needs (e.g. for key provider config) using [cty](https://github.com/zclconf/go-cty) and [hcl](https://github.com/hashicorp/hcl), but be otherwise independent of the OpenTofu codebase. Ideally, the OpenTofu project should provide this library as a standalone dependency that does not pull in the entire OpenTofu dependency tree.
+The encryption library should create an interface that other projects and Bogform itself can use to encrypt and decrypt state. The library should express its schema needs (e.g. for key provider config) using [cty](https://github.com/zclconf/go-cty) and [hcl](https://github.com/hashicorp/hcl), but be otherwise independent of the Bogform codebase. Ideally, the Bogform project should provide this library as a standalone dependency that does not pull in the entire Bogform dependency tree.
 
 #### Encryption interface
 
@@ -294,13 +294,13 @@ Similar to [key providers](#key-providers), the method may need configuration bu
 
 #### Registering key providers and methods
 
-The library should be modular. Anyone using the library, including OpenTofu, should be able to add new key providers and methods and read the configuration for these without modifying the library code. To that end, the library should provide a registry for key providers and methods.
+The library should be modular. Anyone using the library, including Bogform, should be able to add new key providers and methods and read the configuration for these without modifying the library code. To that end, the library should provide a registry for key providers and methods.
 
 The library should also not force any included key providers or methods onto its user, so the registry should not be global. Instead, every library user should configure their own registry. However, the library should provide a way to obtain a preconfigured registry with built-in key providers and methods.
 
 #### Configuration
 
-In order to ensure consistency between OpenTofu and other library users, the library should provide a method to parse an HCL or JSON block and turn it into configuration structures. In parallel, the library should also make it as simple as possible for implementers to safely provide new key providers and methods, which is why the library should also use struct tags in Go to convert the incoming configuration.  
+In order to ensure consistency between Bogform and other library users, the library should provide a method to parse an HCL or JSON block and turn it into configuration structures. In parallel, the library should also make it as simple as possible for implementers to safely provide new key providers and methods, which is why the library should also use struct tags in Go to convert the incoming configuration.  
 
 ```go
 type Config struct {

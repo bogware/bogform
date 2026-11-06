@@ -1,19 +1,19 @@
 ---
 description: >-
-  The `tofu validate` command is used to validate the syntax of the
+  The `bogform validate` command is used to validate the syntax of the
   tofu files.
 ---
 
 # Command: validate
 
-The `tofu validate` command validates the configuration files in a
+The `bogform validate` command validates the configuration files in a
 directory, referring only to the configuration and not accessing any remote
 services such as remote state, provider APIs, etc.
 
 :::note
 Use of [variables in module sources](../../language/modules/sources.mdx#support-for-variable-and-local-evaluation)
 requires [assigning values to root module variables](../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu validate`.
+when running `bogform validate`.
 :::
 
 Validate runs checks that verify whether a configuration is syntactically
@@ -32,16 +32,16 @@ system.
 Validation requires an initialized working directory with any referenced plugins and modules installed. To initialize a working directory for validation without accessing any configured backend, use:
 
 ```
-$ tofu init -backend=false
+$ bogform init -backend=false
 ```
 
 To verify configuration in the context of a particular run (a particular
-target workspace, input variable values, etc), use the `tofu plan`
+target workspace, input variable values, etc), use the `bogform plan`
 command instead, which includes an implied validation check.
 
 ## Usage
 
-Usage: `tofu validate [options]`
+Usage: `bogform validate [options]`
 
 This command accepts the following options:
 
@@ -75,14 +75,14 @@ module, aside from the `-var` and `-var-file` options. Refer to
 
 ## JSON Output Format
 
-When you use the `-json` option, OpenTofu will produce validation results
+When you use the `-json` option, Bogform will produce validation results
 in JSON format to allow using the validation result for tool integrations, such
 as highlighting errors in a text editor.
 
-As with all JSON output options, it's possible that OpenTofu will encounter
+As with all JSON output options, it's possible that Bogform will encounter
 an error prior to beginning the validation task that will thus not be subject
 to the JSON output setting. For that reason, external software consuming
-OpenTofu's output should be prepared to find data on stdout that _isn't_ valid
+Bogform's output should be prepared to find data on stdout that _isn't_ valid
 JSON, which it should then treat as a generic error case.
 
 The output includes a `format_version` key, which has
@@ -98,41 +98,41 @@ value `"1.0"`. The semantics of this version are:
 We will introduce new major versions only within the bounds of
 [the OpenTofu 1.0 Compatibility Promises](../../language/v1-compatibility-promises.mdx).
 
-In the normal case, OpenTofu will print a JSON object to the standard output
+In the normal case, Bogform will print a JSON object to the standard output
 stream. The top-level JSON object will have the following properties:
 
 - `valid` (boolean): Summarizes the overall validation result, by indicating
-  `true` if OpenTofu considers the current configuration to be valid or
+  `true` if Bogform considers the current configuration to be valid or
   `false` if it detected any errors.
 
 - `error_count` (number): A zero or positive whole number giving the count
-  of errors OpenTofu detected. If `valid` is `true` then `error_count` will
+  of errors Bogform detected. If `valid` is `true` then `error_count` will
   always be zero, because it is the presence of errors that indicates that
   a configuration is invalid.
 
 - `warning_count` (number): A zero or positive whole number giving the count
-  of warnings OpenTofu detected. Warnings do not cause OpenTofu to consider
+  of warnings Bogform detected. Warnings do not cause Bogform to consider
   a configuration to be invalid, but they do indicate potential caveats that
   a user should consider and possibly resolve.
 
 - `diagnostics` (array of objects): A JSON array of nested objects that each
-  describe an error or warning from OpenTofu.
+  describe an error or warning from Bogform.
 
 The nested objects in `diagnostics` have the following properties:
 
 - `severity` (string): A string keyword, either `"error"` or
   `"warning"`, indicating the diagnostic severity.
 
-  The presence of errors causes OpenTofu to consider a configuration to be
+  The presence of errors causes Bogform to consider a configuration to be
   invalid, while warnings are just advice or caveats to the user which do not
-  block working with the configuration. Later versions of OpenTofu may
+  block working with the configuration. Later versions of Bogform may
   introduce new severity keywords, so consumers should be prepared to accept
   and ignore severity values they don't understand.
 
 - `summary` (string): A short description of the nature of the problem that
   the diagnostic is reporting.
 
-  In OpenTofu's usual human-oriented diagnostic messages, the summary serves
+  In Bogform's usual human-oriented diagnostic messages, the summary serves
   as a sort of "heading" for the diagnostic, printed after the "Error:" or
   "Warning:" indicator.
 
@@ -145,7 +145,7 @@ The nested objects in `diagnostics` have the following properties:
 - `detail` (string): An optional additional message giving more detail about
   the problem.
 
-  In OpenTofu's usual human-oriented diagnostic messages, the detail provides
+  In Bogform's usual human-oriented diagnostic messages, the detail provides
   the paragraphs of text that appear after the heading and the source location
   reference.
 
@@ -156,7 +156,7 @@ The nested objects in `diagnostics` have the following properties:
   text. Renderers should then soft-wrap the paragraphs to fit the width of the
   rendering container, but leave the preformatted lines unwrapped.
 
-  Some OpenTofu detail messages contain an approximation of bullet
+  Some Bogform detail messages contain an approximation of bullet
   lists using ASCII characters to mark the bullets. This is not a
   contractural formatting convention, so renderers should avoid depending on
   it and should instead treat those lines as either paragraphs or preformatted
@@ -186,7 +186,7 @@ The nested objects in `diagnostics` have the following properties:
     expression which triggered the diagnostic. For some diagnostics this
     information is not available, and then this property will be `null`.
 
-  - `code` (string): A snippet of OpenTofu configuration including the
+  - `code` (string): A snippet of Bogform configuration including the
     source of the diagnostic. This can be multiple lines and may include
     additional configuration source code around the expression which
     triggered the diagnostic.
@@ -241,4 +241,4 @@ exactly which values are responsible for an error. The object has two properties
 - `statement` (string): A short English-language fragment describing the value
   of the expression when the diagnostic was triggered. The contents of this
   string are intended to be human-readable and are subject to change in future
-  versions of OpenTofu.
+  versions of Bogform.

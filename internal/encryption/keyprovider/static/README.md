@@ -1,7 +1,7 @@
 # Example static key provider
 
 > [!WARNING]
-> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the OpenTofu website unless you want to work on the encryption code.
+> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the Bogform website unless you want to work on the encryption code.
 
 > [!WARNING]
 > This provider is not intended for production use and merely serves as a simple example!

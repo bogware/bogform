@@ -35,7 +35,7 @@ module "example" {
 }
 ```
 
-Each module in an OpenTofu configuration has its own separate namespace of
+Each module in a Bogform configuration has its own separate namespace of
 provider configurations, but a child module's namespace is populated with
 configurations from the root module, either inheriting the default provider
 configurations automatically or explicitly passing them from the parent
@@ -67,7 +67,7 @@ Both parts use
 which for alternative provider configurations appears as `<PROVIDER NAME>.<ALIAS>`.
 
 Within a child module, resources are assigned to provider configurations as
-normal — either OpenTofu chooses a default based on the name of the resource
+normal — either Bogform chooses a default based on the name of the resource
 type, or the resource specifies an alternate configuration with the `provider`
 argument. If the module receives a `providers` map when it's called, the
 provider configuration names used within the module are effectively remapped to
@@ -85,7 +85,7 @@ There are two main reasons to use the `providers` argument:
 Most re-usable modules only use default provider configurations, which they can
 automatically inherit from their caller when `providers` is omitted.
 
-However, in OpenTofu configurations that use multiple configurations of the
+However, in Bogform configurations that use multiple configurations of the
 same provider, you might want some child modules to use the default provider
 configuration and other ones to use an alternate. (This usually happens when
 using one configuration to manage resources in multiple different regions of the
@@ -190,14 +190,14 @@ can vary between the instances of the module.
 **The `for_each` expression for a module must *be different from* the
 `for_each` expression for its associated provider configuration.**
 
-OpenTofu uses a provider instance to plan and apply _all_ actions related
+Bogform uses a provider instance to plan and apply _all_ actions related
 to a module instance, including destroying a module instance that
 has been removed from the configuration.
 
 Therefore a provider instance passed into a child module that will declare
 resources associated with that provider instance must always remain in the
 configuration for at least one more plan/apply round after the module instance
-has been removed, or OpenTofu will fail to plan to destroy the resource instances
+has been removed, or Bogform will fail to plan to destroy the resource instances
 declared in the module.
 
 You can find more information on this constraint in

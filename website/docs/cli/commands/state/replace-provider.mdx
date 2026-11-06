@@ -1,17 +1,17 @@
 ---
 description: >-
-  The `tofu state replace-provider` command replaces the provider for
-  resources in the OpenTofu state.
+  The `bogform state replace-provider` command replaces the provider for
+  resources in the Bogform state.
 ---
 
 # Command: state replace-provider
 
-The `tofu state replace-provider` command is used to replace the provider
-for resources in a [OpenTofu state](../../../language/state/index.mdx).
+The `bogform state replace-provider` command is used to replace the provider
+for resources in a [Bogform state](../../../language/state/index.mdx).
 
 ## Usage
 
-Usage: `tofu state replace-provider [options] FROM_PROVIDER_FQN TO_PROVIDER_FQN`
+Usage: `bogform state replace-provider [options] FROM_PROVIDER_FQN TO_PROVIDER_FQN`
 
 This command will update all resources using the "from" provider, setting the
 provider to the specified "to" provider. This allows changing the source of a
@@ -26,7 +26,7 @@ Use of variables in [module sources](../../../language/modules/sources.mdx#suppo
 [backend configuration](../../../language/settings/backends/configuration.mdx#variables-and-locals),
 or [encryption block](../../../language/state/encryption.mdx#configuration)
 requires [assigning values to root module variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu state replace-providers`.
+when running `bogform state replace-providers`.
 :::
 
 This command also accepts the following options:
@@ -62,14 +62,9 @@ There are several other ways to set values for input variables in the root
 module, aside from the `-var` and `-var-file` options. Refer to
 [Assigning Values to Root Module Variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables) for more information.
 
-For configurations using the [`cloud` backend](../../../cli/cloud/index.mdx) or the [`remote` backend](../../../language/settings/backends/remote.mdx)
-only, `tofu state replace-provider`
-also accepts the option
-[`-ignore-remote-version`](../../../cli/cloud/command-line-arguments.mdx#ignore-remote-version).
-
 For configurations using
 [the `local` state](../../../language/settings/backends/local.mdx) only,
-`tofu state replace-provider` also accepts the legacy options
+`bogform state replace-provider` also accepts the legacy options
 [`-state`, `-state-out`, and `-backup`](../../../language/settings/backends/local.mdx#command-line-arguments).
 
 ## Example
@@ -77,5 +72,5 @@ For configurations using
 The example below replaces the `hashicorp/aws` provider with a fork by `acme`, hosted at a private registry at `registry.acme.corp`:
 
 ```shell
-$ tofu state replace-provider hashicorp/aws registry.acme.corp/acme/aws
+$ bogform state replace-provider hashicorp/aws registry.acme.corp/acme/aws
 ```

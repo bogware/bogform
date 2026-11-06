@@ -1,40 +1,40 @@
 ---
 description: |-
-  The `tofu providers lock` command adds new provider selection information
+  The `bogform providers lock` command adds new provider selection information
   to the dependency lock file without initializing the referenced providers.
 ---
 
 # Command: providers lock
 
-The `tofu providers lock` consults upstream registries (by default) in
+The `bogform providers lock` consults upstream registries (by default) in
 order to write provider dependency information into
 [the dependency lock file](../../../language/files/dependency-lock.mdx).
 
 The common way to update the dependency lock file is as a side-effect of normal
 provider installation during
-[`tofu init`](../../../cli/commands/init.mdx).
+[`bogform init`](../../../cli/commands/init.mdx).
 
-If you are running OpenTofu in an environment that uses
+If you are running Bogform in an environment that uses
 [alternative provider installation methods](../../../cli/config/config-file.mdx#provider-installation),
 such as filesystem or network mirrors, normal provider installation will not
-access the origin registry for a provider and therefore OpenTofu will not
+access the origin registry for a provider and therefore Bogform will not
 be able to populate all of the possible package checksums for the selected
 provider versions.
 
-If you use `tofu providers lock` to write the official release checksums for a
-provider into the dependency lock file then future `tofu init` runs
+If you use `bogform providers lock` to write the official release checksums for a
+provider into the dependency lock file then future `bogform init` runs
 will verify the packages available in your selected mirror against the
 official checksums previously recorded, giving additional certainty that
 the mirror is serving the provider packages it is claiming to.
 
 ## Usage
 
-Usage: `tofu providers lock [options] [providers...]`
+Usage: `bogform providers lock [options] [providers...]`
 
 :::note
 Use of variables in [module sources](../../../language/modules/sources.mdx#support-for-variable-and-local-evaluation)
 requires [assigning values to root module variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu providers lock`.
+when running `bogform providers lock`.
 :::
 
 This command accepts the following generic options:
@@ -55,7 +55,7 @@ There are several other ways to set values for input variables in the root
 module, aside from the `-var` and `-var-file` options. Refer to
 [Assigning Values to Root Module Variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables) for more information.
 
-With no additional command line arguments, `tofu providers lock` will
+With no additional command line arguments, `bogform providers lock` will
 analyze the configuration in the current working directory to find all of
 the providers it depends on, and it will fetch the necessary data about those
 providers from their origin registries and then update
@@ -64,7 +64,7 @@ include a selected version for each provider and all of the package checksums
 that are covered by the provider developer's cryptographic signature.
 
 :::warning
-The `tofu providers lock` command prints information
+The `bogform providers lock` command prints information
 about what it has fetched and whether each package was signed using a
 cryptographic signature, but it cannot automatically verify that the
 providers are trustworthy and that they comply with your local system
@@ -74,22 +74,22 @@ the updated lock file to your version control system.
 :::
 
 If you list one or more provider source addresses on the command line then
-`tofu providers lock` will restrict its work only to those providers,
+`bogform providers lock` will restrict its work only to those providers,
 leaving the lock entries for other providers (if any) unchanged.
 
 You can customize the default behavior using the following additional option:
 
-* `-fs-mirror=PATH` - Direct OpenTofu to look for provider packages in the
+* `-fs-mirror=PATH` - Direct Bogform to look for provider packages in the
   given local filesystem mirror directory, instead of in upstream registries.
   The given directory must use the usual filesystem mirror directory layout.
 
-* `-net-mirror=URL` - Direct OpenTofu to look for provider packages in the
+* `-net-mirror=URL` - Direct Bogform to look for provider packages in the
   given network mirror service, instead of in upstream registries. The
   given URL must implement
-  [the OpenTofu provider network mirror protocol](../../../internals/provider-network-mirror-protocol.mdx).
+  [the Bogform provider network mirror protocol](../../../internals/provider-network-mirror-protocol.mdx).
 
 * `-platform=OS_ARCH` - Specify a platform you intend to use to work with this
-  OpenTofu configuration. OpenTofu will ensure that the providers are all
+  Bogform configuration. Bogform will ensure that the providers are all
   available for the given platform and will save enough package checksums in
   the lock file to support _at least_ the specified platforms.
 
@@ -111,16 +111,16 @@ You can customize the default behavior using the following additional option:
 ## Specifying Target Platforms
 
 In your environment you may, for example, have both developers who work with
-your OpenTofu configuration on their Windows or macOS workstations _and_
+your Bogform configuration on their Windows or macOS workstations _and_
 automated systems that apply the configuration while running on Linux.
 
 In that situation, you could choose to verify that all of your providers support
 all of those platforms, and to pre-populate the lock file with the necessary
-checksums, by running `tofu providers lock` and specifying those three
+checksums, by running `bogform providers lock` and specifying those three
 platforms:
 
 ```
-tofu providers lock \
+bogform providers lock \
   -platform=windows_amd64 \ # 64-bit Windows
   -platform=darwin_amd64 \  # 64-bit macOS
   -platform=linux_amd64     # 64-bit Linux
@@ -132,12 +132,12 @@ arguments on a single line, and remove the backslashes and comments.)
 
 ## Lock Entries for In-house Providers
 
-An _in-house provider_ is one that isn't published on a real OpenTofu provider
+An _in-house provider_ is one that isn't published on a real Bogform provider
 registry because it's developed and used only within a particular organization and
 distributed via either a filesystem mirror or network mirror.
 
-By default, `tofu providers lock` assumes all providers are available
-at a OpenTofu provider registry and tries to contact the origin registries
+By default, `bogform providers lock` assumes all providers are available
+at a Bogform provider registry and tries to contact the origin registries
 in order to get access to the most detailed information about the provider
 packages.
 
@@ -147,7 +147,7 @@ line options to override the default behavior of consulting the provider's
 origin registry:
 
 ```
-tofu providers lock \
+bogform providers lock \
   -fs-mirror=/usr/local/tofu/providers
   -platform=windows_amd64 \
   -platform=darwin_amd64 \
@@ -160,10 +160,10 @@ you are running the command on Windows then you will need to put all of the
 arguments on a single line, and remove the backslashes.)
 
 Because the command above includes the provider source address
-`tf.example.com/ourcompany/ourplatform`, `tofu providers lock` will only
+`tf.example.com/ourcompany/ourplatform`, `bogform providers lock` will only
 attempt to access that particular provider and will leave the lock entries
 for any other providers unchanged. If you have a variety of different providers
-available from different sources, you can run `tofu providers lock`
+available from different sources, you can run `bogform providers lock`
 multiple times and specify a different subset of your providers each time.
 
 The `-fs-mirror` and `-net-mirror` options have the same meaning as

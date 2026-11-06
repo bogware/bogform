@@ -1,14 +1,14 @@
 ---
-description: The tofu workspace new command is used to create a new workspace.
+description: The bogform workspace new command is used to create a new workspace.
 ---
 
 # Command: workspace new
 
-The `tofu workspace new` command is used to create a new workspace.
+The `bogform workspace new` command is used to create a new workspace.
 
 ## Usage
 
-Usage: `tofu workspace new [OPTIONS] NAME [DIR]`
+Usage: `bogform workspace new [OPTIONS] NAME [DIR]`
 
 This command will create a new workspace with the given name. A workspace with
 this name must not already exist.
@@ -21,7 +21,7 @@ Use of variables in [module sources](../../../language/modules/sources.mdx#suppo
 [backend configuration](../../../language/settings/backends/configuration.mdx#variables-and-locals),
 or [encryption block](../../../language/state/encryption.mdx#configuration)
 requires [assigning values to root module variables](../../../language/values/variables.mdx#assigning-values-to-root-module-variables)
-when running `tofu workspace new`.
+when running `bogform workspace new`.
 :::
 
 The command-line flags are all optional. The supported flags are:
@@ -58,11 +58,11 @@ module, aside from the `-var` and `-var-file` options. Refer to
 ## Example: Create
 
 ```
-$ tofu workspace new example
+$ bogform workspace new example
 Created and switched to workspace "example"!
 
 You're now on a new, empty workspace. Workspaces isolate their state,
-so if you run "tofu plan" OpenTofu will not see any existing state
+so if you run "bogform plan" Bogform will not see any existing state
 for this configuration.
 ```
 
@@ -71,10 +71,10 @@ for this configuration.
 To create a new workspace from a pre-existing local state file:
 
 ```
-$ tofu workspace new -state=old.terraform.tfstate example
+$ bogform workspace new -state=old.terraform.tfstate example
 Created and switched to workspace "example".
 
 You're now on a new, empty workspace. Workspaces isolate their state,
-so if you run "tofu plan" OpenTofu will not see any existing state
+so if you run "bogform plan" Bogform will not see any existing state
 for this configuration.
 ```

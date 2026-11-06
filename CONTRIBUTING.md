@@ -8,7 +8,7 @@ management from your laptop, your repository's pipelines, or a small self-hosted
 
 ## Development
 
-You need the Go version named in `.go-version` or `go.mod`.
+You need the Go version named in `go.mod`.
 
 ```sh
 go build -o bin/bogform ./cmd/bogform   # build the CLI

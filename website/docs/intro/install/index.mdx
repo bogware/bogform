@@ -1,82 +1,66 @@
 ---
 sidebar_position: 3
 description: |-
-  Learn how to install OpenTofu.
+  Learn how to install Bogform.
 ---
 
-import DocCardList from "@theme/DocCardList";
+# Installing Bogform
 
-# Installing OpenTofu
+Bogform is a single executable, published on
+[GitHub Releases](https://github.com/bogware/bogform/releases) and as a container image.
 
-You can install OpenTofu via a wide range of methods. Please select your operating system and installation method:
+## Download a release
 
-<DocCardList
-    items={[
-        {
-            type: "link",
-            href: "alpine/",
-            label: "Alpine Linux (.apk)",
-            description: "Install OpenTofu from an .apk package directly.",
-        },
-        {
-            type: "link",
-            href: "deb/",
-            label: "Debian Linux and derivatives (.deb)",
-            description:
-                "Install OpenTofu on Debian, Ubuntu, or any other .deb-based Linux distribution using your package manager.",
-        },
-        {
-            type: "link",
-            href: "bsd/",
-            label: "FreeBSD",
-            description:
-                "Install OpenTofu from the FreeBSD ports and packages system.",
-        },
-        {
-            type: "link",
-            href: "fedora/",
-            label: "Fedora",
-            description: "Installing OpenTofu on Fedora.",
-        },
-        {
-            type: "link",
-            href: "rpm/",
-            label: "RHEL and derivatives (.rpm)",
-            description:
-                "Install OpenTofu on RHEL, openSUSE, AlmaLinux, or any other .rpm-based Linux distribution using your package manager.",
-        },
-        {
-            type: "link",
-            href: "snap/",
-            label: "Ubuntu Linux (Snap)",
-            description:
-                "Install OpenTofu on Ubuntu, Manjaro, or any other Linux distribution using Snap.",
-        },
-        {
-            type: "link",
-            href: "homebrew/",
-            label: "MacOS or Linux (Homebrew)",
-            description: "Install OpenTofu on MacOS or Linux using Homebrew.",
-        },
-        {
-            type: "link",
-            href: "windows/",
-            label: "Windows",
-            description: "Install OpenTofu on Windows.",
-        },
-        {
-            type: "link",
-            href: "docker/",
-            label: "OCI container image",
-            description:
-                "Use official OCI container image available on GitHub Container Registry.",
-        },
-        {
-            type: "link",
-            href: "standalone/",
-            label: "Standalone (Linux/MacOS/Windows/BSD)",
-            description:
-                "Use OpenTofu without installation on Linux, MacOS, Windows or FreeBSD.",
-        },
-    ]}
-/>
+1. Download the archive for your operating system and CPU from the
+   [releases page](https://github.com/bogware/bogform/releases). Archives are named
+   `bogform_<VERSION>_<OS>_<ARCH>.tar.gz` or `.zip`. Each release also includes `.deb`, `.rpm`,
+   and `.apk` packages.
+2. Verify the download:
+
+   ```shell
+   sha256sum --ignore-missing -c bogform_<VERSION>_SHA256SUMS
+   ```
+
+3. Unpack the archive and put `bogform` somewhere on your `PATH`.
+4. Confirm that it works:
+
+   ```shell
+   bogform version
+   ```
+
+## Verify a release signature
+
+Releases are signed with [cosign](https://docs.sigstore.dev/cosign/system_config/installation/)
+using GitHub's identity, so there is no long-lived signing key to trust. To verify the checksum file:
+
+```shell
+cosign verify-blob \
+  --certificate bogform_<VERSION>_SHA256SUMS.pem \
+  --signature bogform_<VERSION>_SHA256SUMS.sig \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp '^https://github\.com/bogware/bogform/\.github/workflows/release\.yml@' \
+  bogform_<VERSION>_SHA256SUMS
+```
+
+## Use the container image
+
+```shell
+docker run --rm -it -v "$PWD:/workspace" -w /workspace ghcr.io/bogware/bogform:latest init
+```
+
+The `-minimal` image tags contain only the `bogform` executable. Use the standard tags if your
+configuration needs `git` or `ssh`, for example to download modules from a Git repository.
+
+## Build from source
+
+With the Go version named in `go.mod` installed:
+
+```shell
+git clone https://github.com/bogware/bogform.git
+cd bogform
+go build -o bogform ./cmd/bogform
+```
+
+## Next steps
+
+If you already use Bogform or Terraform, see [Migrating to Bogform](../migration/index.mdx).

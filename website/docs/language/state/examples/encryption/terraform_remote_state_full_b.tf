@@ -2,7 +2,7 @@ terraform {
   encryption {
     # Note that the name of the key here is different:
     key_provider "pbkdf2" "my_key_renamed" {
-      passphrase               = "OpenTofu has encryption"
+      passphrase               = "Bogform has encryption"
       # Note the fixed encrypted_metadata_alias here:
       encrypted_metadata_alias = "certificates"
     }

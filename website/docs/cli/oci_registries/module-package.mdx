@@ -1,15 +1,15 @@
 ---
 description: >-
-  Use OCI registries as an distribution mechanism for OpenTofu module packages
+  Use OCI registries as an distribution mechanism for Bogform module packages
 ---
 
 # Module Packages in OCI Registries
 
-OpenTofu supports installing module packages from
+Bogform supports installing module packages from
 [a variety of different sources](/language/modules/sources.mdx), including
 from repositories in registries that implement the OCI Distribution protocol.
 
-You can configure OpenTofu to install a module from an OCI repository by
+You can configure Bogform to install a module from an OCI repository by
 using the `oci:` source address scheme:
 
 ```hcl
@@ -21,7 +21,7 @@ module "example" {
 For more information on how to select OCI artifacts to install, refer to
 [the module sources documentation](/language/modules/sources.mdx#oci-distribution-repository).
 The remainder of this page focuses on how to construct suitable OCI artifacts
-for use as OpenTofu module packages.
+for use as Bogform module packages.
 
 ## Required OCI Repository Content
 
@@ -45,7 +45,7 @@ then be selected using the usual syntax for
 [Modules in Package Sub-directories](/language/modules/sources.mdx#modules-in-package-sub-directories).
 
 If the specified source address does not include either of the `tag` or `digest` query
-string arguments then OpenTofu attempts to resolve a tag named `latest`. OpenTofu makes
+string arguments then Bogform attempts to resolve a tag named `latest`. Bogform makes
 no other assumptions about tag naming convention beyond the syntax constraints required
 by the OCI Distribution specification.
 
@@ -100,11 +100,11 @@ artifact into. `latest` is the tag name to use.
 
 `module-package.zip` is the name of the `.zip` archive created in the previous
 step. The `:archive/zip` suffix tells ORAS which media type to specify for
-this file in the artifact manifest. OpenTofu does not support any other media
+this file in the artifact manifest. Bogform does not support any other media
 types.
 
 The `--artifact-type` option included above must be used _exactly as shown_
-to ensure that OpenTofu will recognize this artifact as a module package.
+to ensure that Bogform will recognize this artifact as a module package.
 
 The repository address and tag shown above can be specified in a `module`
 block source address as follows:
@@ -117,5 +117,5 @@ module "example" {
 
 If you chose the tag name `latest` as shown here then you can omit the
 `tag` argument, specifying just `oci://example.com/repository-name`,
-because "latest" is the tag name OpenTofu uses by default.
+because "latest" is the tag name Bogform uses by default.
 

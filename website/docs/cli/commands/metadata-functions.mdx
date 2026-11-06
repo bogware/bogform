@@ -1,7 +1,7 @@
 ---
 description: >-
-  The 'tofu metadata functions' command displays the OpenTofu functions available
-  in the OpenTofu evaluation context
+  The 'bogform metadata functions' command displays the Bogform functions available
+  in the Bogform evaluation context
 ---
 
 # Command: metadata functions
@@ -10,7 +10,7 @@ Prints out a json representation of the available function signatures.
 
 ## Usage
 
-`tofu [global options] metadata functions -json`
+`bogform [global options] metadata functions -json`
 
 This command has one required flag:
 
@@ -20,6 +20,6 @@ This command has one required flag:
 ## Example
 
 ```shellsession
-$ tofu metadata functions -json
+$ bogform metadata functions -json
 {"format_version":"1.0","function_signatures":{"abs":{"description":"`abs` returns...}}
 ```

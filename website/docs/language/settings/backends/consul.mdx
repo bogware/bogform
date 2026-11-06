@@ -1,6 +1,6 @@
 ---
 sidebar_label: consul
-description: OpenTofu can store state in Consul.
+description: Bogform can store state in Consul.
 ---
 
 # Backend Type: consul
@@ -38,7 +38,7 @@ data "terraform_remote_state" "foo" {
 ## Configuration Variables
 
 :::danger Warning
-We recommend using environment variables to supply credentials and other sensitive data. If you use `-backend-config` or hardcode these values directly in your configuration, OpenTofu will include these values in both the `.terraform` subdirectory and in plan files. Refer to [Credentials and Sensitive Data](../../../language/settings/backends/configuration.mdx#credentials-and-sensitive-data) for details.
+We recommend using environment variables to supply credentials and other sensitive data. If you use `-backend-config` or hardcode these values directly in your configuration, Bogform will include these values in both the `.terraform` subdirectory and in plan files. Refer to [Credentials and Sensitive Data](../../../language/settings/backends/configuration.mdx#credentials-and-sensitive-data) for details.
 :::
 
 The following configuration options / environment variables are supported:

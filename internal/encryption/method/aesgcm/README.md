@@ -1,7 +1,7 @@
 # AES-GCM encryption method
 
 > [!WARNING]
-> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the OpenTofu website unless you want to work on the encryption code.
+> This file is not an end-user documentation, it is intended for developers. Please follow the user documentation on the Bogform website unless you want to work on the encryption code.
 
 This folder contains the state encryption implementation of the AES-GCM encryption method. This is implemented following the guidance of the following document: ([NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)).
 

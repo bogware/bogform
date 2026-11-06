@@ -11,21 +11,21 @@ import ExampleDynamicProviderInstances from '!!raw-loader!../meta-arguments/exam
 
 # Provider Configuration
 
-Providers allow OpenTofu to interact with cloud providers, SaaS providers, and
+Providers allow Bogform to interact with cloud providers, SaaS providers, and
 other APIs.
 
 Some providers require you to configure them with endpoint URLs, cloud regions,
-or other settings before OpenTofu can use them. This page documents how to
+or other settings before Bogform can use them. This page documents how to
 configure settings for providers.
 
-Additionally, all OpenTofu configurations must declare which providers they
-require so that OpenTofu can install and use them. The
+Additionally, all Bogform configurations must declare which providers they
+require so that Bogform can install and use them. The
 [Provider Requirements](requirements.mdx)
-page documents how to declare providers so OpenTofu can install them.
+page documents how to declare providers so Bogform can install them.
 
 ## Provider Configuration
 
-Provider configurations belong in the root module of an OpenTofu configuration.
+Provider configurations belong in the root module of a Bogform configuration.
 (Child modules receive their provider configurations from the root module; for
 more information, see
 [The Module `providers` Meta-Argument](../../language/meta-arguments/module-providers.mdx)
@@ -69,9 +69,9 @@ provider's header.
 Some providers can use shell environment variables (or other alternate sources,
 like VM instance profiles) as values for some of their arguments; when
 available, we recommend using this as a way to keep credentials out of your
-version-controlled OpenTofu code.
+version-controlled Bogform code.
 
-There are also two "meta-arguments" that are defined by OpenTofu itself
+There are also two "meta-arguments" that are defined by Bogform itself
 and available for all `provider` blocks:
 
 - [`alias`, for defining additional configurations for the same provider][inpage-alias]
@@ -79,8 +79,8 @@ and available for all `provider` blocks:
 - [`version`, which we no longer recommend][inpage-versions] (use
   [provider requirements](../../language/providers/requirements.mdx) instead)
 
-Unlike many other objects in the OpenTofu language, a `provider` block may
-be omitted if its contents would otherwise be empty. OpenTofu assumes an
+Unlike many other objects in the Bogform language, a `provider` block may
+be omitted if its contents would otherwise be empty. Bogform assumes an
 empty default configuration for any provider that is not explicitly configured.
 
 ## `alias`: Multiple Provider Configurations
@@ -140,7 +140,7 @@ resource type name. (For example, an `aws_instance` resource uses the default
 `aws` provider configuration unless otherwise stated.)
 
 If there is no `provider` block defining the default configuration for a
-provider, OpenTofu automatically infers an empty default provider configuration
+provider, Bogform automatically infers an empty default provider configuration
 for that provider. If the provider's configuration schema includes any required
 arguments then the empty configuration would be invalid, and so an explicit
 `provider` block is required.
@@ -216,11 +216,11 @@ aws_regions = {
 
 The `for_each` argument can only be used in combination with `alias`, because
 the default configuration for each provider must always have exactly one
-instance so that OpenTofu can select it automatically when appropriate.
+instance so that Bogform can select it automatically when appropriate.
 
 ## Selecting Alternate Provider Configurations
 
-Each resource in your OpenTofu configuration must be bound to one
+Each resource in your Bogform configuration must be bound to one
 provider configuration.
 
 By default, each resource is bound to a
@@ -266,7 +266,7 @@ resource "aws_instance" "foo" {
 {/* old section anchor to preserve existing external links */}
 <a id="referring-to-alternate-provider-configurations"></a>
 
-To explicitly refer to provider configurations, OpenTofu uses a
+To explicitly refer to provider configurations, Bogform uses a
 provider-configuration-specific reference syntax of the form
 `<PROVIDER NAME>.<ALIAS>`. For example, `aws.west` refers to the
 `provider "aws"` block with `alias = "west"`.
@@ -311,9 +311,9 @@ all resources in a child module as part of a `module` block. Refer to
 for more information.
 
 Although the instance key expression in square brackets is dynamic, the
-provider configuration reference is static so that OpenTofu can infer the
+provider configuration reference is static so that Bogform can infer the
 dependencies between `resource` blocks and `provider` blocks before
-evaluating any expressions. The dependencies then ensure that OpenTofu
+evaluating any expressions. The dependencies then ensure that Bogform
 can resolve dynamic expressions in the correct order. This means that
 all instances of a particular resource must be bound to instances of the
 same provider configuration block, but can they each be bound to a different
@@ -323,13 +323,13 @@ instance.
 **The `for_each` expression for a resource must *be different* from the
 `for_each` expression for its associated provider configuration.**
 
-OpenTofu uses a provider instance to plan and apply _all_ actions related
+Bogform uses a provider instance to plan and apply _all_ actions related
 to a resource instance, including destroying a resource instance that
 has been removed from the configuration.
 
 Therefore the provider instance associated with any resource instance must
 always remain in the configuration for at least one more plan/apply round
-after the resource instance has been removed, or OpenTofu will fail to
+after the resource instance has been removed, or Bogform will fail to
 plan to destroy the resource instance.
 
 The above example uses a null element in `var.aws_regions` to represent
@@ -337,7 +337,7 @@ that a provider instance is needed but no resource instances should be
 associated with it.
 
 Setting a particular region's element to `null` would therefore cause
-OpenTofu to propose to destroy the `aws_vpc.private` instance for that
+Bogform to propose to destroy the `aws_vpc.private` instance for that
 region while retaining the provider instance needed to plan and apply that
 action. You can then remove the element altogether on the next round, once
 all of the associated resource instances have been destroyed.
@@ -381,22 +381,22 @@ This configuration will produce the following warning:
 │ resource, which means that subsequent removal of elements from this
 │ collection would cause a planning error.
 │
-│ OpenTofu relies on a provider instance to destroy resource instances
+│ Bogform relies on a provider instance to destroy resource instances
 │ that are associated with it, and so the provider instance must
 │ outlive all of its resource instances by at least one plan/apply
 │ round. For removal of instances to succeed in future you must
 │ structure the configuration so that the provider block's for_each
 │ expression can produce a superset of the instances of the resources
-│ associated with the provider configuration. Refer to the OpenTofu
+│ associated with the provider configuration. Refer to the Bogform
 │ documentation for specific suggestions.
 │
 │ To destroy this object before removing the provider configuration,
 │ consider first performing a targeted destroy:
-│     tofu apply -destroy -target=aws_cloudwatch_log_group.lambda_cloudfront
+│     bogform apply -destroy -target=aws_cloudwatch_log_group.lambda_cloudfront
 ╵
 ```
 
-This approach is error-prone because you must run `apply -destroy -target` for all resources associated with the provider instance before you can remove the provider instance itself. If you try to remove the provider instance by deleting the key from `aws_active_regions` before destroying the resources, OpenTofu will prevent you:
+This approach is error-prone because you must run `apply -destroy -target` for all resources associated with the provider instance before you can remove the provider instance itself. If you try to remove the provider instance by deleting the key from `aws_active_regions` before destroying the resources, Bogform will prevent you:
 
 ```
 ╷
@@ -459,7 +459,7 @@ variable "aws_disabled_regions" {
 }
 ```
 
-With this approach, running `tofu plan` and `tofu apply` is sufficient to disable the provider instance and remove all associated resources.
+With this approach, running `bogform plan` and `bogform apply` is sufficient to disable the provider instance and remove all associated resources.
 
 ### Passing provider configurations between modules
 

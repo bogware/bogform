@@ -1,13 +1,13 @@
 ---
 description: |-
   The provider registry protocol is implemented by a host intending to be the
-  origin host for one or more OpenTofu providers, specifying which providers
+  origin host for one or more Bogform providers, specifying which providers
   are available and where to find their distribution packages.
 ---
 
 # Provider Registry Protocol
 
-The provider registry protocol is what OpenTofu CLI uses to discover metadata
+The provider registry protocol is what Bogform CLI uses to discover metadata
 about providers available for installation and to locate the distribution
 packages for a selected provider.
 
@@ -19,18 +19,18 @@ alternative to publishing them on the public OpenTofu Registry.
 
 This page describes the provider _registry_ protocol, which is the protocol
 for finding providers available for installation. It _doesn't_ describe the
-API that provider plugins themselves implement to serve requests from OpenTofu
-CLI at runtime. For more information on the provider API, see the OpenTofu
+API that provider plugins themselves implement to serve requests from Bogform
+CLI at runtime. For more information on the provider API, see the Bogform
 SDK documentation.
 
 ## Provider Addresses
 
-Each OpenTofu provider has an associated address which uniquely identifies it
-within OpenTofu. A provider address has the syntax `hostname/namespace/type`,
+Each Bogform provider has an associated address which uniquely identifies it
+within Bogform. A provider address has the syntax `hostname/namespace/type`,
 where:
 
 * `hostname` is the registry host that the provider is considered to have
-  originated from, and the default location OpenTofu will consult for
+  originated from, and the default location Bogform will consult for
   information about the provider
   [unless overridden in the CLI configuration](../cli/config/config-file.mdx#provider-installation).
 * `namespace` is the name of a namespace, unique on a particular hostname, that
@@ -54,16 +54,16 @@ For example:
   third-party provider registry on `example.com`.
 
 If you intend only to share a provider you've developed for use by all
-OpenTofu users, please consider publishing it into the public
+Bogform users, please consider publishing it into the public
 [OpenTofu Registry](https://registry.opentofu.org/), which will make your
 provider discoverable. You only need to implement this provider registry
 protocol if you wish to publish providers whose addresses include a different
 hostname that is under your control.
 
-OpenTofu uses the full address (after normalization to always include a
+Bogform uses the full address (after normalization to always include a
 hostname) as its global identifier for providers internally, and so it's
 important to note that re-uploading the `examplecorp/azurerm` provider into
-another namespace or publishing it on a different hostname will cause OpenTofu
+another namespace or publishing it on a different hostname will cause Bogform
 to see it as an entirely separate provider that will _not_ be usable by modules
 that declare a dependency on `examplecorp/azurerm`. If your goal is to create
 an alternative local distribution source for an existing provider -- that is,
@@ -74,21 +74,21 @@ instead.
 ## Provider Versions
 
 Each distinct provider address has associated with it a set of versions, each
-of which has an associated version number. OpenTofu assumes version numbers
+of which has an associated version number. Bogform assumes version numbers
 follow the [Semantic Versioning 2.0](https://semver.org/) conventions, with
 the schema and behavior of the provider as documented from the perspective of
-an end-user of OpenTofu serving as the "public API".
+an end-user of Bogform serving as the "public API".
 
 All available versions for a particular provider address are considered to be
-the same provider by OpenTofu. Each OpenTofu configuration selects only one
+the same provider by Bogform. Each Bogform configuration selects only one
 version of each provider for use in the entire configuration, so the version
 constraints across all modules are considered together for the purposes of
 version selection.
 
 ## Service Discovery
 
-The providers protocol begins with OpenTofu CLI using
-[OpenTofu's remote service discovery protocol](../internals/remote-service-discovery.mdx),
+The providers protocol begins with Bogform CLI using
+[Bogform's remote service discovery protocol](../internals/remote-service-discovery.mdx),
 with the hostname in the provider address acting as the "User-facing Hostname".
 
 The service identifier for the provider registry protocol is `providers.v1`.
@@ -104,14 +104,14 @@ the provider registry protocol might contain the following:
 }
 ```
 
-If the given URL is a relative URL then OpenTofu will interpret it as relative
+If the given URL is a relative URL then Bogform will interpret it as relative
 to the discovery document itself. The specific provider registry protocol
 endpoints are defined as URLs relative to the given base URL, and so the
 specified base URL should generally end with a slash to ensure that those
 relative paths will be resolved as expected.
 
 The following sections describe the various operations that a provider
-registry must implement to be compatible with OpenTofu CLI's provider
+registry must implement to be compatible with Bogform CLI's provider
 installer. The indicated URLs are all relative to the URL resulting from
 service discovery, as described above. We use a hypothetical URL for a provider
 registry, assuming that the caller already performed service discovery on a hypothetical
@@ -182,15 +182,15 @@ with the following properties:
 * `version` (required): the version number this object is describing, using
   the semantic versioning string notation. `version` must be unique across
   all objects in the response.
-* `protocols` (recommended): an array of OpenTofu provider API versions that
+* `protocols` (recommended): an array of Bogform provider API versions that
   this version supports, each given in `MAJOR.MINOR` format where each major
   version appears only once and the given minor version is the highest minor
   version supported. For example, `5.1` means that the provider supports both
   protocol `5.0` and protocol `5.1`.
 
-  OpenTofu uses this information, when available, to provide hints to users
+  Bogform uses this information, when available, to provide hints to users
   about upgrading or downgrading their version of a particular provider to
-  work with their current version of OpenTofu, if their currently-selected
+  work with their current version of Bogform, if their currently-selected
   versions are not compatible.
 
   Which API versions are supported is, for most providers, decided by which
@@ -199,7 +199,7 @@ with the following properties:
 * `platforms` (recommended): an array of objects describing platforms that have
   packages available for this version.
 
-  OpenTofu may use this information, when available, to provide hints to
+  Bogform may use this information, when available, to provide hints to
   users about upgrading or downgrading their version of a particular provider
   for compatibility with their current platform.
 
@@ -216,7 +216,7 @@ This operation returns the download URL of and associated metadata about the
 distribution package for a particular version of a provider for a particular
 operating system and architecture.
 
-OpenTofu CLI uses this operation after it has selected the newest available
+Bogform CLI uses this operation after it has selected the newest available
 version matching the configured version constraints, in order to find the zip
 archive containing the plugin itself.
 
@@ -290,12 +290,12 @@ curl 'https://registry.opentofu.org/v1/providers/examplecorp/random/2.0.0/downlo
 
 A successful result is a JSON object with the following properties:
 
-* `protocols` (required): an array of OpenTofu provider API versions that
+* `protocols` (required): an array of Bogform provider API versions that
   the provider supports, in the same format as for
   [List Available Versions](#list-available-versions).
 
   While this property is optional when listing available options, it is
-  _required_ for describing an individual provider package so that OpenTofu
+  _required_ for describing an individual provider package so that Bogform
   CLI can avoid downloading a package that will not be compatible with it.
 
 * `os` (required): this must echo back the `os` parameter from the
@@ -305,14 +305,14 @@ A successful result is a JSON object with the following properties:
   request. 
 
 * `filename` (required): the filename for this provider's zip archive as
-  recorded in the "shasums" document, so that OpenTofu CLI can determine which
+  recorded in the "shasums" document, so that Bogform CLI can determine which
   of the given checksums should be used for this specific package.
 
-* `download_url` (required): a URL from which OpenTofu can retrieve the
+* `download_url` (required): a URL from which Bogform can retrieve the
   provider's zip archive. If this is a relative URL then it will be resolved
   relative to the URL that returned the containing JSON object.
 
-* `shasums_url` (required): a URL from which OpenTofu can retrieve a text
+* `shasums_url` (required): a URL from which Bogform can retrieve a text
   document recording expected SHA256 checksums for this package and possibly
   other packages for the same provider version on other platforms.
 
@@ -320,7 +320,7 @@ A successful result is a JSON object with the following properties:
   command available on many Unix systems, with one entry recording the
   same filename given in the `filename` property (case sensitive).
 
-* `shasums_signature_url` (required): a URL from which OpenTofu can retrieve
+* `shasums_signature_url` (required): a URL from which Bogform can retrieve
   a binary, detached GPG signature for the document at `shasums_url`, signed
   by one of the keys indicated in the `signing_keys` property.
   
@@ -348,17 +348,17 @@ A successful result is a JSON object with the following properties:
     Used to help prevent hash collision attacks.
     
     If `packages` is included then the information for all platforms must be included regardless of which platform was requested, because the included checksums will typically be copied into a dependency lock file for verifying packages installed on other platforms in future. The entry for each platform must include at least a `zh:` hash matching the value that would be returned in the top-level `shasum` property when requesting that platform.
-* `use_registry_credentials` (optional): if `true`, represents that OpenTofu
+* `use_registry_credentials` (optional): if `true`, represents that Bogform
   should use the same credentials used to fetch this package metadata when
   fetching the artifacts mentioned in `download_url`, `shasums_url`, and
   `shasums_signature_url`.
 
-  By default OpenTofu fetches these artifacts with no authentication token at
+  By default Bogform fetches these artifacts with no authentication token at
   all, because some registries act only as indices of packages hosted elsewhere
   and this default avoids unintentionally sending the registry's credentials to
   the third-party package host.
 
 Return `404 Not Found` to signal that the given provider version isn't
-available for the requested operating system and/or architecture. OpenTofu
+available for the requested operating system and/or architecture. Bogform
 CLI will only attempt to download versions that it has previously seen in
 response to [List Available Versions](#list-available-versions).

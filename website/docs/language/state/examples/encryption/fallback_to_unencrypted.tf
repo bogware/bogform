@@ -21,7 +21,7 @@ terraform {
       method = method.unencrypted.migrate
     }
 
-    ## Step 6: Run "tofu apply".
+    ## Step 6: Run "bogform apply".
 
     ## Step 7: Remove the "state" block once the migration is complete.
 

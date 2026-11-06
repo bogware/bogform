@@ -7,13 +7,13 @@ $ az login
 $ export ARM_SUBSCRIPTION_ID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
-Once those are set, you can initialize and apply the OpenTofu workspace:
+Once those are set, you can initialize and apply the Bogform workspace:
 
 ```bash
-$ tofu init
-$ tofu apply
+$ bogform init
+$ bogform apply
 # When you're ready to obtain the secrets through environment variables
-$ tofu apply -show-sensitive
+$ bogform apply -show-sensitive
 ```
 
 You should see some environment variables that look like this:
@@ -37,7 +37,7 @@ export TF_AZURE_TEST_CERT_PASSWORD=SoMePaSsWoRd
 By default, the virtual machine, identity, and associated authorizations required for MSI testing are not set up by this workspace. In order to set those up, you need some extra variables:
 
 ```bash
-$ tofu apply -show-sensitive -var 'use_msi=true' -var 'location=centralus' -var 'ssh_pub_key_path=~/.ssh/id_rsa.pub'
+$ bogform apply -show-sensitive -var 'use_msi=true' -var 'location=centralus' -var 'ssh_pub_key_path=~/.ssh/id_rsa.pub'
 ```
 
 The last two variables are optional; the defaults have been provided here. After running this, some additional environment variables will be available.
@@ -48,14 +48,14 @@ Additionally, there should be a small output with the ssh instructions, and the 
 ssh_instructions = "ssh azureadmin@xxx.xxx.xxx.xxx"
 ```
 
-In order to tear down msi infrastructure, while keeping the rest of the credentials and setup, simply run the `tofu apply` without the `use_msi=true` variable.
+In order to tear down msi infrastructure, while keeping the rest of the credentials and setup, simply run the `bogform apply` without the `use_msi=true` variable.
 
 ### AKS Workload Identity
 
 By default, the Kubernetes cluster, identity, and associated authorizations required for AKS Workload Identity testing are not set up by this workspace. In order to set those up, you need some extra variables:
 
 ```bash
-$ tofu apply -show-sensitive -var 'use_aks_workload_identity=true' -var 'location=centralus'
+$ bogform apply -show-sensitive -var 'use_aks_workload_identity=true' -var 'location=centralus'
 ```
 
 There are additional instructions listed under `aks_kubectl_instructions`. It should look something like this:
@@ -96,32 +96,32 @@ EOF
 
 Copying and pasting this into the shell will authenticate into the newly-created kubernetes cluster and create a service account and pod. This pod will be the workload the test will be running in.
 
-In order to tear down Kubernetes cluster infrastructure, while keeping the rest of the credentials and setup, simply run the `tofu apply` without the `use_aks_workload_identity=true` variable.
+In order to tear down Kubernetes cluster infrastructure, while keeping the rest of the credentials and setup, simply run the `bogform apply` without the `use_aks_workload_identity=true` variable.
 
 ### Customer Managed Keys
 
 By default, the Key Vault, encryption key, and encryption scope required for CMK testing are not set up by this workspace. In order to set those up, you need an extra variable:
 
 ```bash
-$ tofu apply -show-sensitive -var 'use_cmk=true' -var 'location=centralus'
+$ bogform apply -show-sensitive -var 'use_cmk=true' -var 'location=centralus'
 ```
 
 The location variable is optional; the default has been provided here. After running this, the CMK environment variables will be available. You can get them under `cmk_env_vars`.
 
 ```bash
-$ tofu output cmk_env_vars -show-sensitive
+$ bogform output cmk_env_vars -show-sensitive
 ```
 
 Copy and paste these into the command line to provide the secrets for the CMK backend tests.
 
-In order to tear down CMK infrastructure, while keeping the rest of the credentials and setup, simply run `tofu apply` without the `use_cmk=true` variable.
+In order to tear down CMK infrastructure, while keeping the rest of the credentials and setup, simply run `bogform apply` without the `use_cmk=true` variable.
 
 ### Cleanup
 
 Simply run
 
 ```bash
-$ tofu destroy
+$ bogform destroy
 ```
 
 ... and all the test infrastructure will be deleted.

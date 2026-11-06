@@ -1,32 +1,32 @@
 ---
 description: >-
-  The tofu destroy command destroys all objects managed by a OpenTofu
+  The bogform destroy command destroys all objects managed by a Bogform
   configuration.
 ---
 
 # Command: destroy
 
-The `tofu destroy` command is a convenient way to destroy all remote
-objects managed by a particular OpenTofu configuration.
+The `bogform destroy` command is a convenient way to destroy all remote
+objects managed by a particular Bogform configuration.
 
 While you will typically not want to destroy long-lived objects in a production
-environment, OpenTofu is sometimes used to manage ephemeral infrastructure
-for development purposes, in which case you can use `tofu destroy` to
+environment, Bogform is sometimes used to manage ephemeral infrastructure
+for development purposes, in which case you can use `bogform destroy` to
 conveniently clean up all of those temporary objects once you are finished
 with your work.
 
 ## Usage
 
-Usage: `tofu destroy [options]`
+Usage: `bogform destroy [options]`
 
 This command is just a convenience alias for the following command:
 
 ```
-tofu apply -destroy
+bogform apply -destroy
 ```
 
 For that reason, this command accepts most of the options that
-[`tofu apply`](../commands/apply.mdx) accepts, although it does
+[`bogform apply`](../commands/apply.mdx) accepts, although it does
 not accept a plan file argument and forces the selection of the "destroy"
 planning mode.
 
@@ -34,17 +34,17 @@ You can also create a speculative destroy plan, to see what the effect of
 destroying would be, by running the following command:
 
 ```
-tofu plan -destroy
+bogform plan -destroy
 ```
 
-This will run [`tofu plan`](plan.mdx) in _destroy_ mode, showing
+This will run [`bogform plan`](plan.mdx) in _destroy_ mode, showing
 you the proposed destroy changes without executing them.
 
 ## Forgotten Resources
 
 <span id="forgotten-resources"></span>
 
-When you run `tofu destroy`, OpenTofu will attempt to destroy all resources
+When you run `bogform destroy`, Bogform will attempt to destroy all resources
 managed by the configuration. However, if any resources have the
 [`lifecycle.destroy`](../../language/resources/behavior.mdx#lifecycle-customizations)
 meta-argument set to `false`, those resources will be "forgotten" instead of
@@ -52,14 +52,14 @@ destroyed.
 
 When resources are forgotten:
 
-- They are removed from the OpenTofu state file
+- They are removed from the Bogform state file
 - The actual infrastructure objects remain intact in your cloud provider or remote system
-- The `tofu destroy` command exits with a non-zero status code to indicate
+- The `bogform destroy` command exits with a non-zero status code to indicate
   that not all resources were fully removed
 
 This exit code behavior might be important for automation and CI/CD pipelines, as it
 signals that the destroy operation did not complete as a typical destroy would.
-In case you want `tofu destroy` to not emit errors and exit with zero status code when resources are forgotten,
+In case you want `bogform destroy` to not emit errors and exit with zero status code when resources are forgotten,
 you can use the `-suppress-forget-errors` flag.
 
 :::warning

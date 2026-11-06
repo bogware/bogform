@@ -1,41 +1,25 @@
-# OpenTofu Documentation
+# Bogform documentation
 
-This directory contains the portions of [the OpenTofu website](https://opentofu.org) that pertain to the core functionality, excluding providers and the overall configuration.
+This directory contains the [Bogform documentation site](https://bogware.github.io/bogform/docs/),
+built with [Docusaurus](https://docusaurus.io/).
 
-## Development server
+## Preview your changes
 
-You can start a local development server with Docker by running the following command from this (the `website`) directory:
+With Node.js 20 or later installed, run these commands from this directory:
 
+```shell
+npm ci
+npm start
 ```
-docker compose up --build
-```
 
-The development server will be available on http://localhost:3000/docs/main/ .
+To check for broken links, run `npm run build`. The build fails if it finds any.
 
-Under `Docs` in the navigation bar, select `Development` version to see local changes.
+## Add or move a page
 
-## Suggesting Changes
+The sidebar follows the `docs` directory. Set `sidebar_position` and `sidebar_label` in a page's front
+matter to control where it appears and what it's called.
 
-You can [submit an issue](https://github.com/opentofu/opentofu/issues/new/choose) with documentation requests or submit a pull request with suggested changes.
+## Publish
 
-Click **Edit this page** at the bottom of any OpenTofu website page to go directly to the associated markdown file in GitHub.
-
-## Modifying Sidebar Navigation
-
-You must update the sidebar navigation when you add or delete documentation .mdx files. If you do not update the navigation, the website deploy preview fails.
-
-To update the sidebar navigation, you must edit the appropriate `nav-data.json` file. This repository contains the sidebar navigation files for the following documentation sets:
-
-- OpenTofu Language: [`language-nav-data.json`](https://github.com/opentofu/opentofu/blob/main/website/data/language-nav-data.json)
-- OpenTofu CLI: [`cli-nav-data.json`](https://github.com/opentofu/opentofu/blob/main/website/data/cli-nav-data.json)
-- Introduction to OpenTofu: [`intro-nav-data.json`](https://github.com/opentofu/opentofu/blob/main/website/data/intro-nav-data.json)
-
-## Previewing Changes
-
-Currently, you can preview your changes through the [opentofu/opentofu.org](https://github.com/opentofu/opentofu.org/blob/main/README.md) repository.
-
-Follow the [Getting Started](https://github.com/opentofu/opentofu.org/blob/main/README.md#getting-started) guide.
-
-## Copyright headers for code examples
-
-In order to not include copyright headers for code examples used in docs, please, add the files under `examples` folder. This way, it will be ignored on automated copyright headers check.
+Merging to `main` publishes the site with GitHub Pages. To use a custom domain, change `url` and
+`baseUrl` in `docusaurus.config.js`, and update the `bogware.github.io` links in the Go code.

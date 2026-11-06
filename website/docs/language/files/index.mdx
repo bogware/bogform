@@ -1,32 +1,35 @@
 ---
 description: >-
-  Learn how to name, organize, and store OpenTofu configuration files. Also
-  learn how OpenTofu evaluates modules.
+  Learn how to name, organize, and store Bogform configuration files. Also
+  learn how Bogform evaluates modules.
 ---
 
 # Files and Directories
 
 ## File Extension
 
-Code in the OpenTofu language is stored in plain text files with the `.tf`
+Code in the Bogform language is stored in plain text files with the `.bog`, `.tf`,
 or `.tofu` file extensions. There is also
 [a JSON-based variant of the language](../../language/syntax/json.mdx) that is
-named with the `.tf.json` or `.tofu.json` file extensions.
+named with the `.bog.json`, `.tf.json`, or `.tofu.json` file extensions.
 
-Files containing OpenTofu code are often called _configuration files._
+Files containing Bogform code are often called _configuration files._
 
 ### Extension Precedence
 
-When both `.tf` and `.tofu` files with the same base name are present in a
-directory, OpenTofu will prioritize the `.tofu` file and ignore the `.tf` file.
-For example:
+When files with the same base name and different extensions are present in a
+directory, Bogform loads only one of them. A `.bog` file takes priority over a
+`.tofu` file, which takes priority over a `.tf` file. For example:
 
-- If both `foo.tf` and `foo.tofu` exist in the same directory, OpenTofu will
+- If both `foo.tf` and `foo.bog` exist in the same directory, Bogform will
+only load `foo.bog` and ignore `foo.tf`.
+
+- If both `foo.tf` and `foo.tofu` exist in the same directory, Bogform will
 only load `foo.tofu` and ignore `foo.tf`.
 
 This ensures that `.tofu` files always take precedence over `.tf` files when
 both are available. This scenario can be useful for module authors who want
-their modules to support both OpenTofu and Terraform.
+their modules to support both Bogform and Terraform.
 
 ## Text Encoding
 
@@ -39,16 +42,16 @@ line endings (CRLF), though both are accepted.
 A _module_ is a collection of one or many `.tf`, `.tf.json`, `.tofu`,
 `.tofu.json` files kept together in a directory.
 
-An OpenTofu module only consists of the top-level configuration files in a
+A Bogform module only consists of the top-level configuration files in a
 directory; nested directories are treated as completely separate modules, and
 are not automatically included in the configuration.
 
-OpenTofu evaluates all of the configuration files in a module, effectively
+Bogform evaluates all of the configuration files in a module, effectively
 treating the entire module as a single document. Separating various blocks into
 different files is purely for the convenience of readers and maintainers, and
 has no effect on the module's behavior.
 
-An OpenTofu module can use [module calls](../../language/modules/index.mdx) to
+A Bogform module can use [module calls](../../language/modules/index.mdx) to
 explicitly include other modules into the configuration. These child modules can
 come from local directories (nested in the parent module's directory, or
 anywhere else on disk), or from external sources like the
@@ -56,15 +59,15 @@ anywhere else on disk), or from external sources like the
 
 ## The Root Module
 
-OpenTofu always runs in the context of a single _root module._ A complete
-_OpenTofu configuration_ consists of a root module and the tree of child
+Bogform always runs in the context of a single _root module._ A complete
+_Bogform configuration_ consists of a root module and the tree of child
 modules (which includes the modules called by the root module, any modules
 called by those modules, etc.).
 
-- In OpenTofu CLI, the root module is the working directory where OpenTofu is
+- In Bogform CLI, the root module is the working directory where Bogform is
   invoked. (You can use command line options to specify a root module outside
   the working directory, but in practice this is rare.)
-- In [TACOS](../../intro/tacos.mdx) (TF Automation and Collaboration Software), the root module for a workspace
+- In TACOS (TF Automation and Collaboration Software), the root module for a workspace
   defaults to the top level of the configuration directory (supplied via version
   control repository or direct upload), but the workspace settings can specify a
   subdirectory to use instead.
