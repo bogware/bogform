@@ -1,0 +1,26 @@
+{
+  "severity": "error",
+  "summary": "Nonsense input",
+  "detail": "What you wrote makes no sense",
+  "range": {
+    "filename": "just-comment.tf",
+    "start": {
+      "line": 1,
+      "column": 2,
+      "byte": 1
+    },
+    "end": {
+      "line": 1,
+      "column": 4,
+      "byte": 3
+    }
+  },
+  "snippet": {
+    "context": null,
+    "code": "# ...",
+    "start_line": 1,
+    "highlight_start_offset": 1,
+    "highlight_end_offset": 3,
+    "values": []
+  }
+}

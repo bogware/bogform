@@ -1,0 +1,279 @@
+// Copyright (c) The OpenTofu Authors
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2023 HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+package logging
+
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"os"
+	"runtime/debug"
+	"strings"
+	"sync"
+
+	"github.com/hashicorp/go-hclog"
+)
+
+// This output is shown if a panic happens.
+const panicOutput = `
+!!!!!!!!!!!!!!!!!!!!!!!!!!! OPENTOFU CRASH !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+OpenTofu crashed! This is always indicative of a bug within OpenTofu.
+Please report the crash with OpenTofu[1] so that we can fix this.
+
+When reporting bugs, please include your OpenTofu version, the stack trace
+shown below, and any additional information which may help replicate the issue.
+
+[1]: https://github.com/opentofu/opentofu/issues
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!! OPENTOFU CRASH !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+`
+
+// In case multiple goroutines panic concurrently, ensure only the first one
+// recovered by PanicHandler starts printing.
+var panicMutex sync.Mutex
+
+// PanicHandler is called to recover from an internal panic in OpenTofu, and
+// augments the standard stack trace with a more user friendly error message.
+// PanicHandler must be called as a deferred function, and must be the first
+// defer called at the start of a new goroutine.
+func PanicHandler() {
+	recovered := recover()
+	panicHandler(recovered, nil, "", nil)
+}
+
+// PanicHandlerWithTraceFn returns a function similar to PanicHandler which is
+// called to recover from an internal panic in OpenTofu, and augments the
+// standard stack trace with a more complete stack trace.
+// The calling stack trace is captured before returning the augmented panicHandler
+// The returned panicHandler must be called as a deferred function, and must be the
+// first defer called at the start of a new goroutine.
+//
+// Callers of this function should create the panicHandler before any tight looping
+// as there may be a performance impact if called excessively.
+//
+// This only is a partial solution to the problem of panics within deeply nested
+// go-routines.  It only works between the go-routine being called and the calling
+// go-routine.  If you have multiple nested go-routines, it will only preserve the
+// calling stack and the called panic stack.  Ideally we would be able to use context
+// or a similar construct to build a more comprehensive panic handler, but this
+// is a significant step in the right direction that will dramatically improve crash
+// debugging
+func PanicHandlerWithTraceFn() func() {
+	ret := PanicHandlerWithTraceHandlerFn()
+	return func() {
+		ret("", nil)
+	}
+}
+
+// PanicHandlerWithTraceHandlerFn is an enhanced version of PanicHandlerWithTraceFn
+// that supports providing information about the caller
+func PanicHandlerWithTraceHandlerFn() func(caller string, handler func()) {
+	traces := [][]byte{debug.Stack()}
+	return func(caller string, handler func()) {
+		recovered := recover()
+		panicHandler(recovered, traces, caller, handler)
+	}
+}
+
+var panicTrace bool
+
+func init() {
+	panicTrace = os.Getenv("TOFU_PANIC_TRACE") != ""
+}
+
+// PanicHandlerWithContext adds the current stack to the context and builds
+// a panicHandler in case a recover() is possible.
+func PanicHandlerWithContext(ctx context.Context, label string, labelArgs ...any) (context.Context, func()) {
+	if !panicTrace {
+		// Due to the sheer number of go-routines the new runtime
+		// deals with, we only enable this panic handler if explicitly requested
+		return ctx, func() {
+			recovered := recover()
+			panicHandler(recovered, nil, fmt.Sprintf(label, labelArgs...), nil)
+		}
+	}
+	stack := debug.Stack()
+	if label != "" {
+		labelFmt := fmt.Sprintf("label: %s\n", label)
+		stack = append([]byte(fmt.Sprintf(labelFmt, labelArgs...)), debug.Stack()...)
+	}
+	ctx = ContextWithStack(ctx, stack)
+	return ctx, func() {
+		recovered := recover()
+		panicHandler(recovered, StacksFromContext(ctx), fmt.Sprintf(label, labelArgs...), nil)
+	}
+}
+
+func panicHandler(recovered interface{}, traces [][]byte, caller string, handler func()) {
+	if recovered == nil {
+		return
+	}
+
+	// Have all managed goroutines checkin here, and prevent them from exiting
+	// if there's a panic in progress. While this can't lock the entire runtime
+	// to block progress, we can prevent some cases where OpenTofu may return
+	// early before the panic has been printed out.
+	panicMutex.Lock()
+	defer panicMutex.Unlock()
+
+	// Given that multiple routines may be spewing to stderr at the same time
+	// buffer our message to prevent it being split.
+	buffer := new(bytes.Buffer)
+
+	fmt.Fprint(buffer, panicOutput)
+	if caller != "" {
+		fmt.Fprint(buffer, caller, "\n\n")
+	}
+	fmt.Fprint(buffer, recovered, "\n")
+
+	// When called from a deferred function, debug.PrintStack will include the
+	// full stack from the point of the pending panic.
+	buffer.Write(debug.Stack())
+	for _, trace := range traces {
+		fmt.Fprint(buffer, "\nWith go-routine called from:\n")
+		buffer.Write(trace)
+	}
+
+	// Write the complete buffer to stderr
+	os.Stderr.Write(buffer.Bytes())
+
+	// Now that we have written the buffer, we can do a potentially dangerous action by calling handler()
+	if handler != nil {
+		handler()
+	}
+
+	// An exit code of 11 keeps us out of the way of the detailed exitcodes
+	// from plan, and also happens to be the same code as SIGSEGV which is
+	// roughly the same type of condition that causes most panics.
+	os.Exit(11)
+}
+
+const pluginPanicOutput = `
+Stack trace from the %[1]s plugin:
+
+%s
+
+Error: The %[1]s plugin crashed!
+
+This is always indicative of a bug within the plugin. It would be immensely
+helpful if you could report the crash with the plugin's maintainers so that it
+can be fixed. The output above should help diagnose the issue.
+`
+
+// PluginPanics returns a series of provider panics that were collected during
+// execution, and formatted for output.
+func PluginPanics() []string {
+	return panics.allPanics()
+}
+
+// panicRecorder provides a registry to check for plugin panics that may have
+// happened when a plugin suddenly terminates.
+type panicRecorder struct {
+	sync.Mutex
+	// panics maps the plugin name to the panic output lines received from
+	// the logger.
+	panics map[string][]string
+
+	// maxLines is the max number of lines we'll record after seeing a
+	// panic header. Since this is going to be printed in the UI output, we
+	// don't want to destroy the scrollback. In most cases, the first few lines
+	// of the stack trace is all that are required.
+	maxLines int
+}
+
+// registerPlugin returns an accumulator function which will accept lines of
+// a panic stack trace to collect into an error when requested.
+func (p *panicRecorder) registerPlugin(name string) func(string) {
+	p.Lock()
+	defer p.Unlock()
+
+	// In most cases we shouldn't be starting a plugin if it already
+	// panicked, but clear out previous entries just in case.
+	delete(p.panics, name)
+
+	count := 0
+
+	// this callback is used by the logger to store panic output
+	return func(line string) {
+		p.Lock()
+		defer p.Unlock()
+
+		// stop recording if there are too many lines.
+		if count > p.maxLines {
+			return
+		}
+		count++
+
+		p.panics[name] = append(p.panics[name], line)
+	}
+}
+
+func (p *panicRecorder) allPanics() []string {
+	p.Lock()
+	defer p.Unlock()
+
+	var res []string
+	for name, lines := range p.panics {
+		if len(lines) == 0 {
+			continue
+		}
+
+		res = append(res, fmt.Sprintf(pluginPanicOutput, name, strings.Join(lines, "\n")))
+	}
+	return res
+}
+
+// logPanicWrapper wraps an hclog.Logger and intercepts and records any output
+// that appears to be a panic.
+type logPanicWrapper struct {
+	hclog.Logger
+	panicRecorder func(string)
+	inPanic       bool
+}
+
+// go-plugin will create a new named logger for each plugin binary.
+func (l *logPanicWrapper) Named(name string) hclog.Logger {
+	return &logPanicWrapper{
+		Logger:        l.Logger.Named(name),
+		panicRecorder: panics.registerPlugin(name),
+	}
+}
+
+// we only need to implement Debug, since that is the default output level used
+// by go-plugin when encountering unstructured output on stderr.
+func (l *logPanicWrapper) Debug(msg string, args ...interface{}) {
+	// We don't have access to the binary itself, so guess based on the stderr
+	// output if this is the start of the traceback. An occasional false
+	// positive shouldn't be a big deal, since this is only retrieved after an
+	// error of some sort.
+
+	panicPrefix := strings.HasPrefix(msg, "panic: ") || strings.HasPrefix(msg, "fatal error: ")
+
+	l.inPanic = l.inPanic || panicPrefix
+
+	if l.inPanic && l.panicRecorder != nil {
+		l.panicRecorder(msg)
+	}
+
+	l.Logger.Debug(msg, args...)
+}
+
+type contextKey rune
+
+const stackContextKey = contextKey('S')
+
+func ContextWithStack(ctx context.Context, stack []byte) context.Context {
+	currentStacks := StacksFromContext(ctx)
+	stacks := append([][]byte{stack}, currentStacks...)
+	return context.WithValue(ctx, stackContextKey, stacks)
+}
+
+func StacksFromContext(ctx context.Context) [][]byte {
+	value, _ := ctx.Value(stackContextKey).([][]byte)
+	return value
+}

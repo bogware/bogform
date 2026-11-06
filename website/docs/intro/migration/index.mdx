@@ -1,0 +1,31 @@
+---
+sidebar_position: 4
+sidebar_label: Migrating to OpenTofu
+description: |-
+  Learn how to migrate to OpenTofu from Terraform.
+---
+
+# Migrating to OpenTofu from Terraform
+## Before you begin
+
+OpenTofu aims to maintain compatibility with Terraform configurations. While most Terraform code will work without modification, we recommend following our [migration guide](migration-guide) to ensure a smooth transition.
+
+## Migration process overview
+
+The migration process is designed to be safe and reversible:
+
+1. **Back up your infrastructure state and code**
+2. **Install OpenTofu**
+3. **Initialize and verify your configuration**
+4. **Test with a small change**
+
+
+[→ Read the complete migration guide](migration-guide)
+
+:::note
+Do you have multiple Terraform configurations to migrate?
+
+Some systems are built from multiple Terraform configurations that propagate data using the `terraform_remote_state` data source, which typically requires some additional care during migration.
+
+For more information, refer to [Migrating interdependent Terraform configurations](multiple-configurations).
+:::

@@ -1,0 +1,24 @@
+---
+description: >-
+  The meta-arguments in a lifecycle block allow you to customize resource
+  behavior.
+---
+
+# `lifecycle` Blocks
+
+Several different declaration types in the OpenTofu language support a nested
+block named `lifecycle` which includes settings that customize the plan and
+apply behavior of the associated object.
+
+Each different type of declaration relates to objects that have a different
+lifecycle, and so the arguments available in these blocks are distinct for
+each parent block type:
+
+* [`resource` block lifecycle](../../language/resources/behavior.mdx#lifecycle-customizations), for managed resources.
+* [`data` block lifecycle](../../language/data-sources/index.mdx#lifecycle-customizations), for data resources.
+* [`ephemeral` block lifecycle](../../language/ephemerality/ephemeral-resources.mdx#lifecycle-customizations), for ephemeral resources.
+* [`module` block lifecycle](../../language/modules/syntax.mdx#module-lifecycle), for settings that relate to an overall module call instead of the individual resources inside it.
+
+Although all of these features involve a block type named `lifecycle`, the
+expected arguments and associated behavior is defined separately for each
+context where a block of that type is allowed to appear.

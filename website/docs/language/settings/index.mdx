@@ -1,0 +1,132 @@
+---
+description: >-
+  The language block type declares which versions of OpenTofu a module is
+  compatible with, and what edition of the OpenTofu language the module
+  is written for.
+---
+
+# Language and Compatibility Settings
+
+Configuration blocks of type `language` can be used to explicitly declare which
+versions of OpenTofu a module is intended to be compatible with, and what
+edition of the OpenTofu language the module is written for.
+
+OpenTofu also supports some other settings as an aid to writing modules that
+are cross-compatible between OpenTofu and Terraform, described later in this
+page.
+
+## `language` Block Syntax
+
+Language-related settings are written in `language` blocks:
+
+```hcl
+language {
+  # ...
+}
+```
+
+**Blocks of this type are accepted only in OpenTofu v1.12 and later.** If you
+are writing a module that must be compatible with older versions of OpenTofu,
+refer to [Compatibility with Older Versions and Other Software](#compatibility-with-older-versions-and-other-software)
+below for an alternative to specifying which OpenTofu versions your module
+is intended to be compatible with.
+
+### Declaring Implementation Compatibility
+
+A `compatible_with` block nested inside `language` specifies which software a
+module is intended to be compatible with:
+
+```hcl
+language {
+  compatible_with {
+    opentofu = ">= 1.12"
+  }
+}
+```
+
+OpenTofu ignores everything except an `opentofu` argument inside a
+`compatible_with` block. Other software which interacts with OpenTofu modules
+may define its own argument name for describing additional compatibility
+constraints with that software, in which case those arguments should be
+mentioned in the documentation for that software.
+
+### Language Editions and Experimental Features
+
+The `language` block type supports two additional arguments that are not
+useful in current OpenTofu versions, but may be extended in future versions
+of OpenTofu:
+
+- `edition`: Specifies a "language edition" that the module is written for,
+  which in a future version of OpenTofu might opt in to one or more language
+  features that are not completely backward compatible with previous versions
+  of OpenTofu.
+
+    Modules written for today's OpenTofu should typically not set this argument
+    at all. It's valid to assign the keyword `tofu2024` to represent the
+    current edition of the OpenTofu language, but that has no useful effect
+    because that edition will always be the default.
+
+- `experiments`: Specifies a set of experimental language features the module
+  is using.
+
+    If present, the argument must be set to a literal list of keywords
+    representing currently-active experiments. The syntax and keyword to use
+    will generally be mentioned in the documentation for any active experiment.
+    If you are not intending to use any specific experiment in your module
+    then you should not set this argument at all.
+
+Current OpenTofu only has basic handling of these arguments enough to return
+helpful error messages if different possibilities are introduced in future
+versions of OpenTofu.
+
+## Compatibility with Older Versions and Other Software
+
+The `language` block type is not supported in OpenTofu v1.11 or earlier, and
+also not recognized by any version of Terraform that's available at the time
+of writing this documentation.
+
+To allow writing modules that declare compatibility with older versions of
+OpenTofu or with Terraform, OpenTofu supports an alternative way to specify
+version constraints, which uses a top-level block type named `terraform` only
+for compatibility with Terraform.
+
+```hcl
+terraform {
+  required_version = ">= 0.11"
+}
+```
+
+Older versions of OpenTofu interpreted this setting as specifying an OpenTofu
+version constraint in all cases, which is bothersome when using a module that
+was originally written for Terraform and so uses this to specify a Terraform
+version constraint.
+
+To write a cross-compatible module that works with older versions of OpenTofu
+and with Terraform, we recommend the following strategy:
+
+- Create a `versions.tofu` file which contains either a `required_version`
+  argument (if older version compatibility is important) or a `language` block
+  specifying which versions of OpenTofu the module is intended to be compatible
+  with.
+- Create a `versions.tf` file which contains a `required_version` argument
+  specifying which versions of Terraform the module is intended to be compatible
+  with.
+
+When both `versions.tofu` and `versions.tf` files are present, OpenTofu will
+ignore the `versions.tf` file assuming that it is intended for Terraform's use.
+At the time of writing this documentation Terraform does not read `.tofu` files,
+and so Terraform should similarly ignore `versions.tofu`.
+
+### Other uses of `terraform` blocks
+
+This page is focused on specifying OpenTofu version compatibility and language
+edition settings, but a `terraform` block accepts a number of other unrelated
+settings described elsewhere:
+
+- `backend` blocks represent [backend configuration](./backends/configuration.mdx).
+- `cloud` blocks represent [cloud configuration](./tf-cloud.mdx).
+- `required_providers` blocks represent [provider requirements](../providers/requirements.mdx).
+
+OpenTofu also accepts `provider_meta` blocks for compatibility with modules that
+were written for Terraform, but silently ignores them instead of sending their
+data to providers.

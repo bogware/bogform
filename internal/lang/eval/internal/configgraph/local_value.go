@@ -1,0 +1,58 @@
+// Copyright (c) The OpenTofu Authors
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2023 HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+package configgraph
+
+import (
+	"context"
+
+	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/opentofu/opentofu/internal/lang/exprs"
+	"github.com/opentofu/opentofu/internal/plans/objchange"
+	"github.com/opentofu/opentofu/internal/tfdiags"
+)
+
+type LocalValue struct {
+	Addr     addrs.AbsLocalValue
+	RawValue *OnceValuer
+}
+
+var _ exprs.Valuer = (*LocalValue)(nil)
+
+// StaticCheckTraversal implements exprs.Valuer.
+func (l *LocalValue) StaticCheckTraversal(traversal hcl.Traversal) tfdiags.Diagnostics {
+	return l.RawValue.StaticCheckTraversal(traversal)
+}
+
+// Value implements exprs.Valuer.
+func (l *LocalValue) Value(ctx context.Context) (cty.Value, tfdiags.Diagnostics) {
+	ctx = withDebugAddr(ctx, l.Addr, "Value")
+	// There aren't really any special rules for a local value: it just
+	// allows authors to associate a value with a name so they can reuse
+	// it multiple places.
+
+	// Actually, there's one special rule for local values:
+	// pending changes do not propagate through them!
+	// See TestContext2Plan_dataReferencesResourceIndirectly
+
+	v, diags := l.RawValue.Value(ctx)
+	v = objchange.RemovePendingChangesMark(v)
+	return v, diags
+}
+
+// ValueSourceRange implements exprs.Valuer.
+func (l *LocalValue) ValueSourceRange() *tfdiags.SourceRange {
+	return l.RawValue.ValueSourceRange()
+}
+
+// CheckAll implements allChecker.
+func (l *LocalValue) CheckAll(ctx context.Context) tfdiags.Diagnostics {
+	var cg CheckGroup
+	cg.CheckValuer(ctx, l) // We just check our overall Valuer method because it aggregates everything
+	return cg.Complete(ctx)
+}

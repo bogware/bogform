@@ -1,0 +1,215 @@
+// Copyright (c) The OpenTofu Authors
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2023 HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+package eval
+
+import (
+	"context"
+
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/opentofu/opentofu/internal/lang/eval/internal/configgraph"
+	"github.com/opentofu/opentofu/internal/lang/eval/internal/evalglue"
+)
+
+// ConfiguredResourceInstanceObjectMeta represents the subset of metadata
+// about a resource instance object that comes from some module instance in
+// the configuration configuration, based on configuration arguments that could
+// potentially vary between language editions.
+//
+// It's up to the specific language edition implementation to decide how to
+// populate an object of this type. Some fields will be based on per-resource
+// or per-resource-instance configuration elements shared across multiple
+// objects, but at this level of abstraction those decisions are already made
+// and we must not assume anything is necessarily shared by objects belonging
+// to the same resource or resource instance.
+//
+// Note that this is NOT what you should use directly in the planning or
+// applying engines as the full metadata for a resource instance object.
+// Instead, a set of these contained inside
+// [ModuleConfiguredResourceInstanceObjectMeta] wrappers describing the
+// information from different module instances should be combined with
+// information taken from the prior state (in a way that's outside the scope of
+// this package) to determine the full effective metadata for an object.
+//
+// The design of this type is biased towards the needs of the "managed" resource
+// mode since that represents our primary functionality and the most complicated
+// set of available metadata features. Nonetheless we do still use this type
+// for other resource modes and just leave the irrelevant fields unpopulated
+// for objects of those modes, as described in the comments on each field.
+type ConfiguredResourceInstanceObjectMeta = evalglue.ConfiguredResourceInstanceObjectMeta
+
+// ResourceInstanceObjectProvider is a container for the provider-related
+// information in [ConfiguredResourceInstanceObjectMeta].
+type ResourceInstanceObjectProvider = evalglue.ResourceInstanceObjectProvider
+
+// ModuleConfiguredResourceInstanceObjectMeta describes the relationship
+// between a [ConfiguredResourceInstanceObjectMeta] object and the module
+// instance that produced it.
+//
+// The module instance where the object is declared and all of its ancestors
+// each get to contribute their own [ConfiguredResourceInstanceObjectMeta]
+// describing whatever is declared about the object in that module, and then
+// eventually all of the individual declarations, along with similar information
+// derived from the prior state, is merged together to produce a single
+// object describing the overall effective metadata for the resource instance.
+type ModuleConfiguredResourceInstanceObjectMeta struct {
+	// ModuleInstance is the address of the module that provided this specific
+	// metadata, which is important for interpreting certain information inside
+	// which could be module-instance-relative.
+	//
+	// For example, "moved" statements are described relative to the module
+	// where they are declared, and so they need to be "absolutized" using
+	// [addrs.MoveEndpointInModule.InModuleInstance] when we
+	// finally assemble the merged effective metadata for the resource instance
+	// based on the statements across all modules.
+	ModuleInstance addrs.ModuleInstance
+	*ConfiguredResourceInstanceObjectMeta
+}
+
+// DesiredResourceInstance describes a resource instance that is part of
+// the desired state (i.e. declared in the configuration).
+//
+// In situations where unknown values mean that we cannot yet determine exactly
+// which instances exist for a given resource an object of this type can
+// potentially instead represent a placeholder for zero or more instances
+// of the same resource, in which case we can still produce a "speculative"
+// planned new state but will not be able to actually apply changes to those
+// resource instances until a subsequent plan/apply round.
+// [DesiredResourceInstance.IsPlaceholder] returns true for these placeholder
+// objects.
+//
+// Prior state resource instances are not represented in this package at all.
+// The plan and apply mechanisms implemented elsewhere are responsible for
+// comparing desired resource instances with prior state resource instances
+// to determine what actions are needed, if any.
+type DesiredResourceInstance struct {
+	// Addr is the absolute address of the resource instance, suitable for
+	// correlation with resource instances in the prior state and (during the
+	// apply phase) in the plan.
+	//
+	// For objects that represent placeholders for zero or more instances whose
+	// instance expansion is not yet known,
+	// [addrs.AbsResourceInstance.IsPlaceholder] returns true.
+	//
+	// Nothing about resource instance addresses should be exposed to providers
+	// through the provider protocol, because exactly how we track resource
+	// instances between rounds is a detail we want to be able to change later
+	// without breaking existing providers. In particular, when populating a
+	// resource type name in a request to a provider you should request the
+	// metadata for the resource instance object and use its ResourceType field
+	// instead of using the resource type from from this address field.
+	Addr addrs.AbsResourceInstance
+
+	// ConfigVal is an object-typed value representing the configuration, which
+	// has already been validated against the schema for the corresponding
+	// resource type.
+	//
+	// This will contain unknown values if the configuration for this resource
+	// instance is derived from the results of other resource instances which
+	// have pending actions in this same plan.
+	ConfigVal cty.Value
+
+	// RequiredResourceInstances are the addresses of zero or more resource
+	// instances that must exist and must be fully converged before the
+	// final plan for this resource instance could be calculated.
+	//
+	// These addresses can potentially contain unknown instance keys if the
+	// configuration for this resource instance was derived from placeholders
+	// for upstream resource instances that had unknown keys in their own
+	// addresses.
+	RequiredResourceInstances addrs.Set[addrs.AbsResourceInstance]
+
+	// IgnoreChangesPaths are paths for which the module author requested
+	// that we "ignore changes".
+	//
+	// To "ignore changes" means to disregard what is configured for anything
+	// under a matching path in ConfigVal and to instead treat the corresponding
+	// value from the prior state as the effective desired state. This is
+	// meaningful only when planning in-place updates to an object that is
+	// already tracked in the prior state; it should be ignored when planning
+	// to create or delete the object associated with a resource instance.
+	//
+	// Index steps within the path can potentially have unknown keys if the
+	// decision about what to ignore is based on a value that won't be known
+	// until the apply phase.
+	//
+	// This is meaningful only for resource modes that support the "update"
+	// change action, and so is always empty for other modes.
+	IgnoreChangesPaths []cty.Path
+
+	// ReplaceTriggeredBy describes zero ore more attribute prefixes within
+	// other resource instances for which the planning engine should force
+	// replacement of this resource instance if any value beneath one of
+	// the nominated paths has a change already planned for the current
+	// plan/apply round.
+	//
+	// Index steps within the paths and instance keys within the resource
+	// instance addresses can both potentially have unknown keys if the
+	// decision about what to refer to is based on a value that won't be known
+	// until the apply phase.
+	//
+	// This is meaningful only for resource modes that support the "update"
+	// change action, and so is always false for other modes.
+	//
+	// Any resource instance mentioned in this collection will always also
+	// appear in RequiredResourceInstances.
+	ReplaceTriggeredBy []ResourceInstanceAttributePath
+}
+
+// IsPlaceholder returns true if this object is acting as a placeholder for
+// zero or more resource instances whose full expansion is not yet known.
+//
+// In that case the other fields of [DesiredResourceInstance] describe
+// characteristics that all of those instances would have in common, so that
+// it's hopefully still possible to perform some speculative planning and
+// transfer partial results downstream to other resource instances so we can
+// present as complete as possible an overview of how the system is likely
+// to be configured after subsequent plan/apply rounds once everything is fully
+// converged.
+//
+// This is not the only reason why a particular resource instance might need
+// to have its actions deferred to a future plan/apply round. Refer to the
+// documentation for other fields of [DesiredResourceInstance] for some other
+// situations where this is true. The planning engine might also have additional
+// reasons for deferring particular resource instances that are outside the
+// scope of the configuration.
+func (ri *DesiredResourceInstance) IsPlaceholder() bool {
+	return ri.Addr.IsPlaceholder()
+}
+
+// ResourceProvisioner represents a single provisioner configured for a
+// resource instance object.
+type ResourceProvisioner = evalglue.ResourceProvisioner
+
+// FIXME: Don't directly expose a configgraph type here, since that package
+// is supposed to be an implementation detail of tofu2024 and any other future
+// HCL-based language editions.
+type ResourceInstanceAttributePath = configgraph.ResourceInstanceAttributePath
+type ImportStatement = evalglue.ImportStatement
+
+func collectResourceInstanceObjectMeta(ctx context.Context, addr addrs.AbsResourceInstanceObject, rootModInst evalglue.CompiledModuleInstance) []ModuleConfiguredResourceInstanceObjectMeta {
+	leafModuleInstAddr := addr.InstanceAddr.Module
+	ret := make([]ModuleConfiguredResourceInstanceObjectMeta, 0, len(leafModuleInstAddr))
+	for moduleInstAddr, moduleInst := range evalglue.ModuleInstanceSteps(ctx, rootModInst, leafModuleInstAddr) {
+		if moduleInst == nil {
+			// We've reached the deepest level that is currently declared in
+			// the configuration, so any info we didn't already learn about
+			// this object will need to come from the previous run state, and
+			// that's the caller's responsibility to deal with.
+			break
+		}
+		relativeModuleInst := []addrs.ModuleInstanceStep(leafModuleInstAddr[len(moduleInstAddr):])
+		meta := moduleInst.ResourceInstanceObjectMeta(ctx, relativeModuleInst, addr)
+		if meta != nil {
+			ret = append(ret, ModuleConfiguredResourceInstanceObjectMeta{
+				ModuleInstance:                       moduleInstAddr,
+				ConfiguredResourceInstanceObjectMeta: meta,
+			})
+		}
+	}
+	return ret
+}

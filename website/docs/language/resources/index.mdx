@@ -1,0 +1,45 @@
+---
+description: >-
+  Resources describe infrastructure objects in OpenTofu configurations. Find
+  documentation for resource syntax, behavior, and meta-arguments.
+---
+
+# Resources
+
+_Resources_ are the most important element in the OpenTofu language.
+Each resource block describes one or more infrastructure objects, such
+as virtual networks, compute instances, or higher-level components such
+as DNS records.
+
+This section discusses the main kind of resource, known as a "managed resource",
+which represents an infrastructure object managed by OpenTofu.
+
+- [Resource Blocks](../../language/resources/syntax.mdx) documents
+  the syntax for declaring resources.
+
+- [Resource Behavior](../../language/resources/behavior.mdx) explains in
+  more detail how OpenTofu handles resource declarations when applying a
+  configuration.
+
+- The Meta-Arguments section documents special arguments that can be used with
+  any managed resource type, including
+  [`depends_on`](../../language/meta-arguments/depends_on.mdx),
+  [`count`](../../language/meta-arguments/count.mdx),
+  [`for_each`](../../language/meta-arguments/for_each.mdx),
+  [`provider`](../../language/meta-arguments/resource-provider.mdx),
+  and [`lifecycle`](behavior.mdx#lifecycle-customizations).
+
+- [Provisioners](provisioners/syntax.mdx) are post-creation actions for a
+  resource using the `provisioner` and `connection` blocks. Since provisioners
+  are non-declarative and potentially unpredictable, we strongly recommend that
+  you treat them as a last resort.
+
+There are two other kinds of resources that play different roles within an
+OpenTofu configuration:
+
+- [Data resources](../../language/data-sources/index.mdx) declare that a
+  configuration depends on information read from a data source outside of the
+  configuration.
+- [Ephemeral resources](../../language/ephemerality/ephemeral-resources.mdx)
+  declare transient objects that are opened only for the duration of a single
+  OpenTofu phase, such as temporary session credentials.

@@ -1,0 +1,119 @@
+// Copyright (c) The OpenTofu Authors
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2023 HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+package command
+
+import (
+	"fmt"
+
+	"github.com/opentofu/opentofu/internal/command/arguments"
+	"github.com/opentofu/opentofu/internal/command/views"
+	"github.com/opentofu/opentofu/internal/tracing"
+	"github.com/opentofu/svchost"
+
+	"github.com/opentofu/opentofu/internal/command/cliconfig"
+	"github.com/opentofu/opentofu/internal/tfdiags"
+)
+
+func LogoutCommander() Command {
+	cmd := Command{
+		Name:  "logout",
+		Short: "Remove locally-stored credentials for a remote host",
+		Long: `Removes locally-stored credentials for specified hostname.
+
+Note: the API token is only removed from local storage, not destroyed on the remote server, so it will remain valid until manually revoked.`,
+
+		DiagsWithNewline: true,
+	}
+
+	args := arguments.BindLogout(&cmd.CommandLine)
+	cmd.Run = func(meta Meta) int {
+		return LogoutCommand{meta}.Execute(args, views.NewLogout(args.View, meta.View))
+	}
+
+	return cmd
+}
+
+// LogoutCommand is a Command implementation which removes stored credentials
+// for a remote service host.
+type LogoutCommand struct {
+	Meta
+}
+
+func (c LogoutCommand) Execute(args *arguments.Logout, view views.Logout) int {
+	var diags tfdiags.Diagnostics
+
+	ctx := c.CommandContext()
+	ctx, span := tracing.Tracer().Start(ctx, "Logout")
+	defer span.End()
+
+	givenHostname := args.Host
+
+	hostname, err := svchost.ForComparison(givenHostname)
+	if err != nil {
+		diags = diags.Append(tfdiags.Sourceless(
+			tfdiags.Error,
+			"Invalid hostname",
+			fmt.Sprintf("The given hostname %q is not valid: %s.", givenHostname, err.Error()),
+		))
+		view.Diagnostics(diags)
+		return 1
+	}
+
+	// From now on, since we've validated the given hostname, we should use
+	// dispHostname in the UI to ensure we're presenting it in the canonical
+	// form, in case that helps users with debugging when things aren't
+	// working as expected. (Perhaps the normalization is part of the cause.)
+	dispHostname := hostname.ForDisplay()
+
+	creds := c.Services.CredentialsSource().(*cliconfig.CredentialsSource)
+	filename, _ := creds.CredentialsFilePath()
+	credsCtx := &loginCredentialsContext{
+		Location:      creds.HostCredentialsLocation(hostname),
+		LocalFilename: filename, // empty in the very unlikely event that we can't select a config directory for this user
+		HelperType:    creds.CredentialsHelperType(),
+	}
+
+	if credsCtx.Location == cliconfig.CredentialsInOtherFile {
+		diags = diags.Append(tfdiags.Sourceless(
+			tfdiags.Error,
+			fmt.Sprintf("Credentials for %s are manually configured", dispHostname),
+			"The \"tofu logout\" command cannot log out because credentials for this host are manually configured in a CLI configuration file.\n\nTo log out, revoke the existing credentials and remove that block from the CLI configuration.",
+		))
+	}
+
+	if diags.HasErrors() {
+		view.Diagnostics(diags)
+		return 1
+	}
+
+	switch credsCtx.Location {
+	case cliconfig.CredentialsNotAvailable:
+		view.NoCredentialsStored(dispHostname)
+		return 0
+	case cliconfig.CredentialsViaHelper:
+		view.RemovingCredentialsFromHelper(dispHostname, credsCtx.HelperType)
+	case cliconfig.CredentialsInPrimaryFile:
+		view.RemovingCredentialsFromFile(dispHostname, credsCtx.LocalFilename)
+	}
+
+	err = creds.ForgetForHost(ctx, hostname)
+	if err != nil {
+		diags = diags.Append(tfdiags.Sourceless(
+			tfdiags.Error,
+			"Failed to remove API token",
+			fmt.Sprintf("Unable to remove stored API token: %s", err),
+		))
+	}
+
+	view.Diagnostics(diags)
+	if diags.HasErrors() {
+		return 1
+	}
+
+	view.LogoutSuccess(dispHostname)
+
+	return 0
+}

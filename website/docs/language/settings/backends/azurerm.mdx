@@ -1,0 +1,441 @@
+---
+sidebar_label: azurerm
+description: OpenTofu can store state remotely in Azure Blob Storage.
+---
+
+# Backend Type: azurerm
+
+Stores the state as a Blob with the given Key within the Blob Container within [the Blob Storage Account](https://docs.microsoft.com/en-us/azure/storage/common/storage-introduction).
+
+This backend supports state locking and consistency checking with Azure Blob Storage native capabilities.
+
+## Example Configurations
+
+### Access Key
+
+This examples authenticates using the Access Key associated with the Storage Account:
+
+```hcl
+terraform {
+  backend "azurerm" {
+    storage_account_name = "abcd1234"
+    container_name       = "tfstate"
+    key                  = "prod.terraform.tfstate"
+
+    access_key = "abcdefghijklmnopqrstuvwxyz0123456789..."
+  }
+}
+```
+
+We recommend using the environment variable `ARM_ACCESS_KEY` instead of storing sensitive information in your source code.
+
+***
+
+
+### Shared Access Signature
+
+This example authenticates using the SAS Token, which is a set of query parameters signed with the Access Key associated with the Storage Account:
+
+```hcl
+terraform {
+  backend "azurerm" {
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+
+    sas_token = "sv=2024-11-04&ss=b&srt=sco&sp=rwdlaciytfx&se=2025-08-05T23:46:49Z&st=2025-08-05T15:31:49Z&spr=https&sig=abcdefg..."
+  }
+}
+```
+
+We recommend using the environment variable `ARM_SAS_TOKEN` instead of storing sensitive information in your source code.
+
+***
+
+### Using Entra ID (Previously AzureAD)
+
+The previous two authentication methods are specific to the storage account, and are not tied to any Service Principal. Every authentication method after those two can be modified to use Entra ID authentication rather than storage account-based authentication using the following parameter:
+
+```hcl
+...
+use_azuread_auth = true
+...
+```
+
+Using Entra ID, you can authenticate directly to the storage account or storage container using the service principal, which only requires the `Storage Blob Data Contributor` role. Without this parameter, OpenTofu will authenticate and try to obtain the Access Key for the Storage Account.
+
+:::note
+The `Owner` role does not automatically grant access to the storage container through Entra ID; you need to explicitly provide a role for the storage account such as `Storage Blob Data Contributor`. However, having an `Owner` role does allow the principal to obtain the Access Key to the Storage Account.
+:::
+
+:::note
+If you do not set `use_azuread_auth = true`, you *must* set the `resource_group_name`. A `resource_group_name` is not required when using Entra ID authentication.
+:::
+
+***
+
+### CLI Authentication
+
+This example authenticates the user with the azure profile set up by the `az` command.
+
+```hcl
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tofu-rg"
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+  }
+}
+```
+
+:::note
+You can disable CLI Authentication by setting `use_cli = false`.
+:::
+
+***
+
+### Certificate Authentication
+
+This example authenticates the principal using a certificate authentication.
+
+```hcl
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tofu-rg"
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+
+    subscription_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    tenant_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    client_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    client_certificate_path = "cert.pfx"
+  }
+}
+```
+
+***
+
+### Basic Authentication
+
+This example authenticates the principal using a basic secret.
+
+```hcl
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tofu-rg"
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+
+    subscription_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    tenant_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    client_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    client_secret = "hunter2"
+  }
+}
+```
+
+We recommend using the environment variable `ARM_CLIENT_SECRET` instead of storing sensitive information in your source code.
+
+***
+
+### OpenID Connect Token
+
+This example authenticates the principal using an OpenID Connect token for Federated Credentials.
+
+```hcl
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tofu-rg"
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+
+    subscription_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    tenant_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    client_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    use_oidc = true
+    oidc_token_file_path = "token.env"
+  }
+}
+```
+
+***
+
+#### GitHub Token Request
+
+If you're using GitHub Actions, the environment variables `ACTIONS_ID_TOKEN_REQUEST_URL` and `ACTIONS_ID_TOKEN_REQUEST_TOKEN` will provide you with a way to obtain the OIDC request token. OpenTofu is programmed to accept these environment variables; a workload with OpenTofu on GitHub Actions using OIDC will have this backend configuration to authenticate.
+
+```hcl
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tofu-rg"
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+
+    subscription_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    tenant_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    client_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    use_oidc = true
+  }
+}
+```
+
+***
+
+#### Azure DevOps / Pipelines Workload Identity Federation
+
+If you're using Azure DevOps / Azure Pipelines, the environment variables `SYSTEM_OIDCREQUESTURI`, `SYSTEM_ACCESSTOKEN` and `AZURESUBSCRIPTION_SERVICE_CONNECTION_ID` will provide you with a way to obtain the OIDC request token. OpenTofu is programmed to accept these environment variables and other naming variants; a workload with OpenTofu on Azure DevOps / Azure Pipelines using OIDC will have this backend configuration to authenticate. Refer to the [Azure DevOps Documentation](https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken) for more information on setting up this kind of workload identity federation.
+
+```hcl
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tofu-rg"
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+
+    use_azuread_auth = true
+    subscription_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    tenant_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    client_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    use_oidc = true
+  }
+}
+```
+
+***
+
+### Managed Service Identity
+
+This example authenticates a managed service identity attached to the Azure VM or other compute.
+```hcl
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tofu-rg"
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+
+    subscription_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    tenant_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    use_msi = true
+  }
+}
+```
+
+***
+
+### AKS Workload Identity
+
+This example authenticates using workload identity on Azure Kubernetes.
+
+```hcl
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tofu-rg"
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+
+    subscription_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    tenant_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    use_aks_workload_identity = true
+  }
+}
+```
+
+***
+
+## Data Source Configuration
+
+Authentication for a data source works equivalently to the remote state authentication shown above, though with slightly different syntax. For example, this is how to obtain the remote state using CLI Authentication:
+
+```hcl
+data "terraform_remote_state" "foo" {
+  backend = "azurerm"
+  config = {
+    resource_group_name  = "tofu-rg"
+    storage_account_name = "tofu123abc"
+    container_name       = "tofu-state"
+    key                  = "prod.terraform.tfstate"
+  }
+}
+```
+
+## Configuration Variables
+
+:::danger Warning
+We recommend using environment variables to supply credentials and other sensitive data. If you use `-backend-config` or hardcode these values directly in your configuration, OpenTofu will include these values in both the `.terraform` subdirectory and in plan files. Refer to [Credentials and Sensitive Data](../../../language/settings/backends/configuration.mdx#credentials-and-sensitive-data) for details.
+:::
+
+The following configuration options are supported:
+
+* `storage_account_name` - (Required) The Name of [the Storage Account](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account).
+
+* `container_name` - (Required) The Name of [the Storage Container](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) within the Storage Account.
+
+* `key` - (Required) The name of the Blob used to retrieve/store OpenTofu's State file inside the Storage Container.
+
+* `resource_group_name` - (Required when not using Entra ID auth) The name of the Resource Group in which the Storage Account exists.
+
+* `environment` - (Optional) The Azure Cloud Configuration which should be used; set this for special compliance environments like Azure China or Azure US Government. This can also be sourced from the `ARM_ENVIRONMENT` environment variable. Possible values are `public`, `china`, and `usgovernment`. Defaults to `public`.
+
+* `endpoint` - (**Deprecated in 1.1x.xx**) The Custom Endpoint for Azure Resource Manager. This can also be sourced from the `ARM_ENDPOINT` environment variable.
+
+  :::warning Note
+  An `endpoint` should only be configured when using Azure Stack. This variable has no effect on operation from OpenTofu version 1.1x.xx onward.
+  :::
+
+* `timeout_seconds` - (Optional) The number of seconds before a timeout is reached when attempting to initialize a client, retrieve a Blob or a Metadata from Azure. This can also be sourced from the `ARM_TIMEOUT_SECONDS` environment variable. Defaults to `300` (5 minutes). To disable the timeout, set this to `0`.
+
+  :::warning Note
+  Setting `timeout_seconds` to `0` or a large value only disables/extends timeouts originating from OpenTofu. Requests will still time out based on your system's network configuration.
+  :::
+
+* `metadata_host` - (Optional) The Hostname of the Azure Metadata Service (for example `management.azure.com`), used to obtain the Cloud Environment when using a Custom Azure Environment. This can also be sourced from the `ARM_METADATA_HOSTNAME` Environment Variable.
+
+  :::warning Note
+  We recommend `metadata_host` only be configured when using Azure Stack.
+  :::
+
+* `snapshot` - (Optional) Should the Blob used to store the OpenTofu Statefile be snapshotted before use? Defaults to `false`. This value can also be sourced from the `ARM_SNAPSHOT` environment variable.
+
+  :::note
+  Rather than using snapshots, we recommend enabling versioning and soft deletion on your Azure storage container.
+  :::
+
+* `customer_provided_key` - (Optional) An Base64 encoded AES-256 key used for server-side encryption/decryption of the Blob used to store the OpenTofu statefile. 
+This value can also be sourced from the `ARM_CUSTOMER_PROVIDED_KEY` environment variable.
+
+* `encryption_scope` - (Optional) The encryption scope which must be used for the encryption/decryption of the Blob used to store the OpenTofu statefile.
+This value can also be sourced from the `ARM_ENCRYPTION_SCOPE` environment variable.
+
+  :::note
+  `customer_provided_key` and `encryption_scope` are mutually exclusive. You can use one of these two for encrypting the Blob server-side.
+  :::
+
+  :::warning Note
+  A Blob encrypted with `customer_provided_key` cannot be recovered if the key is lost.
+  :::
+
+***
+
+When authenticating using the Managed Service Identity (MSI) - the following fields are also supported:
+
+* `msi_endpoint` - (**Deprecated in 1.1x.xx**) The path to a custom Managed Service Identity endpoint which is automatically determined if not specified. This can also be sourced from the `ARM_MSI_ENDPOINT` environment variable.
+
+  :::warning Note
+  We recommend using the MSI_ENDPOINT environment variable instead.
+  :::
+
+* `subscription_id` - (Optional) The Subscription ID in which the Storage Account exists. This can also be sourced from the `ARM_SUBSCRIPTION_ID` environment variable.
+
+* `tenant_id` - (Optional) The Tenant ID in which the Subscription exists. This can also be sourced from the `ARM_TENANT_ID` environment variable.
+
+* `use_msi` - (Optional) Should Managed Service Identity authentication be used? This can also be sourced from the `ARM_USE_MSI` environment variable.
+
+***
+
+When authenticating using the AKS Workload Identity - the following fields are also supported:
+
+* `subscription_id` - (Optional) The Subscription ID in which the Storage Account exists. This can also be sourced from the `ARM_SUBSCRIPTION_ID` environment variable.
+
+* `tenant_id` - (Optional) The Tenant ID in which the Subscription exists. This can also be sourced from the `ARM_TENANT_ID` environment variable.
+
+* `use_aks_workload_identity` - (Optional) Set to true to if you want to use Azure's AKS Workload Identity to authenticate to Azure. This will only work if Workload Identity is set up on your Kubernetes workload. This can also be sourced from the `ARM_USE_AKS_WORKLOAD_IDENTITY` environment variable.
+
+***
+
+When authenticating using a Service Principal with OpenID Connect (OIDC) - the following fields are also supported:
+
+* `client_id` - (Optional) The Client ID of the Service Principal. This can also be sourced from the `ARM_CLIENT_ID` environment variable.
+
+* `client_id_file_path` - (Optional) The path to a file containing the Client ID of the Service Principal. This can also be sourced from the `ARM_CLIENT_ID_FILE_PATH` environment variable.
+
+* `subscription_id` - (Optional) The Subscription ID in which the Storage Account exists. This can also be sourced from the `ARM_SUBSCRIPTION_ID` environment variable.
+
+* `tenant_id` - (Optional) The Tenant ID in which the Subscription exists. This can also be sourced from the `ARM_TENANT_ID` environment variable.
+
+* `oidc_request_url` - (Optional) The URL for the OIDC provider from which to request an ID token. This can also be sourced from the `ARM_OIDC_REQUEST_URL`, `ACTIONS_ID_TOKEN_REQUEST_URL` or `SYSTEM_OIDCREQUESTURI` environment variables.
+
+* `oidc_request_token` - (Optional) The bearer token for the request to the OIDC provider. This can also be sourced from the `ARM_OIDC_REQUEST_TOKEN`, `ACTIONS_ID_TOKEN_REQUEST_TOKEN` or `SYSTEM_ACCESSTOKEN` environment variables.
+
+* `oidc_token` - (Optional) The ID token when authenticating using OpenID Connect (OIDC). This can also be sourced from the `ARM_OIDC_TOKEN` environment variable.
+
+* `oidc_token_file_path` - (Optional) The path to a file containing an ID token when authenticating using OpenID Connect (OIDC). This can also be sourced from the `ARM_OIDC_TOKEN_FILE_PATH` or `AZURE_FEDERATED_TOKEN_FILE` environment variable.
+
+* `use_oidc` - (Optional) Should OIDC authentication be used? This can also be sourced from the `ARM_USE_OIDC` environment variable.
+
+***
+
+When authenticating using a Service Principal with OpenID Connect (OIDC) running in Azure DevOps / Azure Pipelines - the following fields are also supported in addition to the generic OIDC fields above:
+
+* `ado_service_connection_id` (Optional) The ID of the ADO Service Connection to use for workload identity federation. This would usually be sourced from the `AZURESUBSCRIPTION_SERVICE_CONNECTION_ID`, `ARM_OIDC_AZURE_SERVICE_CONNECTION_ID` or `ARM_ADO_PIPELINE_SERVICE_CONNECTION_ID` environment variables.
+
+***
+
+When authenticating using a SAS Token associated with the Storage Account - the following fields are also supported:
+
+* `sas_token` - (Optional) The SAS Token used to access the Blob Storage Account. This can also be sourced from the `ARM_SAS_TOKEN` environment variable.
+
+***
+
+When authenticating using the Storage Account's Access Key - the following fields are also supported:
+
+* `access_key` - (Optional) The Access Key used to access the Blob Storage Account. This can also be sourced from the `ARM_ACCESS_KEY` environment variable.
+
+***
+
+When authenticating using Entra ID Authentication - the following fields are also supported:
+
+* `use_azuread_auth` - (Optional) Whether to use Entra ID Authentication to access the Storage Account or Container. This can also be sourced from the `ARM_USE_AZUREAD` environment variable.
+
+  :::note
+  When using Entra ID for Authentication to Storage you also need to ensure the `Storage Blob Data Contributor` role is assigned.
+  :::
+
+***
+
+When authenticating using the command line - the following fields are also supported:
+
+* `use_cli` - (Optional) Whether to authenticate with the CLI. Defaults to `true`. This can also be sourced from the `ARM_USE_CLI` environment variable.
+
+
+***
+
+When authenticating using a Service Principal with a Client Certificate - the following fields are also supported:
+
+* `client_id` - (Optional) The Client ID of the Service Principal. This can also be sourced from the `ARM_CLIENT_ID` environment variable.
+
+* `client_id_file_path` - (Optional) The path to a file containing the Client ID of the Service Principal. This can also be sourced from the `ARM_CLIENT_ID_FILE_PATH` environment variable.
+
+* `client_certificate` - (Optional) A Base64-encoded PKCS#12 (PFX, not PEM) certificate used as the Client Certificate when authenticating as a Service Principal. The provided data string must encode both the public certificate and its private key. This can also be sourced from the `ARM_CLIENT_CERTIFICATE` environment variable.
+
+* `client_certificate_password` - (Optional) The password associated with the Client Certificate specified in `client_certificate` or `client_certificate_path`. This can also be sourced from the `ARM_CLIENT_CERTIFICATE_PASSWORD` environment variable.
+
+* `client_certificate_path` - (Optional) The path to the PKCS#12 PFX file used as the Client Certificate when authenticating as a Service Principal. The file must encode both the public certificate and its private key. This can also be sourced from the `ARM_CLIENT_CERTIFICATE_PATH` environment variable.
+
+* `subscription_id` - (Optional) The Subscription ID in which the Storage Account exists. This can also be sourced from the `ARM_SUBSCRIPTION_ID` environment variable.
+
+* `tenant_id` - (Optional) The Tenant ID in which the Subscription exists. This can also be sourced from the `ARM_TENANT_ID` environment variable.
+
+***
+
+When authenticating using a Service Principal with a Client Secret - the following fields are also supported:
+
+
+* `client_id` - (Optional) The Client ID of the Service Principal. This can also be sourced from the `ARM_CLIENT_ID` environment variable.
+
+* `client_id_file_path` - (Optional) The path to a file containing the Client ID of the Service Principal. This can also be sourced from the `ARM_CLIENT_ID_FILE_PATH` environment variable.
+
+* `client_secret` - (Optional) The Client Secret of the Service Principal. This can also be sourced from the `ARM_CLIENT_SECRET` environment variable.
+
+* `client_secret_file_path` - (Optional) The path to a file containing the Client Secret of the Service Principal. This can also be sourced from the `ARM_CLIENT_SECRET_FILE_PATH` environment variable.
+
+* `subscription_id` - (Optional) The Subscription ID in which the Storage Account exists. This can also be sourced from the `ARM_SUBSCRIPTION_ID` environment variable.
+
+* `tenant_id` - (Optional) The Tenant ID in which the Subscription exists. This can also be sourced from the `ARM_TENANT_ID` environment variable.

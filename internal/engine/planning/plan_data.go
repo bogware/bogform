@@ -1,0 +1,159 @@
+// Copyright (c) The OpenTofu Authors
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2023 HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+package planning
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/opentofu/opentofu/internal/addrs"
+	"github.com/opentofu/opentofu/internal/engine/internal/exec"
+	"github.com/opentofu/opentofu/internal/lang/eval"
+	"github.com/opentofu/opentofu/internal/providers"
+	"github.com/opentofu/opentofu/internal/states"
+	"github.com/opentofu/opentofu/internal/tfdiags"
+)
+
+func (p *planGlue) planDesiredDataResourceInstance(ctx context.Context, inst *eval.DesiredResourceInstance) (*resourceInstanceObject, tfdiags.Diagnostics) {
+	var diags tfdiags.Diagnostics
+
+	tracer := contextTracer(ctx)
+	if cb := tracer.StartDataResourceInstancePlanning; cb != nil {
+		ctx = cb(ctx, inst.Addr)
+	}
+	if cb := tracer.EndDataResourceInstancePlanning; cb != nil {
+		defer func() { // closure to delay evaluating diags until we return
+			cb(ctx, inst.Addr, diags)
+		}()
+	}
+
+	configMeta := p.oracle.ResourceInstanceObjectMeta(ctx, inst.Addr.CurrentObject())
+	if configMeta == nil {
+		// Should not happen: the evaluator is required to always produce
+		// non-nil metadata for a desired object.
+		panic(fmt.Sprintf("no metadata available for desired object %s", inst.Addr))
+	}
+	// Data resource instances don't have meaningful prior state (we store it
+	// only for ancillary uses like the "tofu console" command) and so the
+	// metadata is always exclusively from the configuration.
+	meta := exec.BuildResourceInstanceObjectMeta(inst.Addr.CurrentObject(), configMeta, (*states.ResourceInstanceObjectFullSrc)(nil))
+
+	ret := &resourceInstanceObject{
+		Addr:               inst.Addr.CurrentObject(),
+		ConfigDependencies: addrs.MakeSet[addrs.AbsResourceInstanceObject](),
+		Provider:           meta.Provider,
+
+		// We'll start off with a completely-unknown placeholder value, but
+		// we might refine this to be more specific as we learn more below.
+		PlaceholderValue: cty.DynamicVal,
+
+		// NOTE: PlannedChange remains nil until we actually produce a plan,
+		// so early returns with errors are not guaranteed to have a valid
+		// change object. Evaluation falls back on using PlaceholderValue
+		// when no planned change is present.
+	}
+	for dep := range inst.RequiredResourceInstances.All() {
+		ret.ConfigDependencies.Add(dep.CurrentObject())
+	}
+
+	unmarkedConfigVal, _ := inst.ConfigVal.UnmarkDeep()
+
+	// TODO resourceType.ValidateConfig
+	validateDiags := p.planCtx.providers.ValidateResourceConfig(ctx, meta.Provider, addrs.DataResourceMode, meta.ResourceType, unmarkedConfigVal)
+	diags = diags.Append(validateDiags)
+	if diags.HasErrors() {
+		return ret, diags
+	}
+
+	providerInstUnmarked, providerInstMarks := meta.ProviderInstance.Unmark()
+	// TODO: What should we do with these marks, if anything?
+	_ = providerInstMarks
+	providerInstAddr, ok := providerInstUnmarked.ValueOk()
+	if !ok {
+		// TODO: Record that this was deferred because we don't yet know which
+		// provider instance it belongs to.
+		return ret, diags
+	}
+
+	// The equivalent of "refreshing" a data resource is just to discard it
+	// completely, because we only retain the previous result in state snapshots
+	// to support unusual situations like "tofu console"; it's not expected that
+	// data resource instances persist between rounds and they cannot because
+	// the protocol doesn't include any way to "upgrade" them if the provider
+	// schema has changed since previous round.
+	ret.PrevRoundAddr = ret.Addr
+
+	// TODO: If the config value is not wholly known, or if any resource
+	// instance in inst.RequiredResourceInstances already has a planned change,
+	// then plan to read this during the apply phase and set ret.PlannedChange
+	// to an object using the [plans.Read] action, without writing a new
+	// object into the refreshed state yet.
+
+	providerClient, moreDiags := p.providerClient(ctx, providerInstAddr)
+	if providerClient == nil {
+		moreDiags = moreDiags.Append(tfdiags.AttributeValue(
+			tfdiags.Error,
+			"Provider instance not available",
+			fmt.Sprintf("Cannot plan %s because its associated provider instance %s cannot initialize.", inst.Addr, providerInstAddr),
+			nil,
+		))
+	}
+	diags = diags.Append(moreDiags)
+	if moreDiags.HasErrors() {
+		return ret, diags
+	}
+
+	readCtx := ctx
+	if cb := tracer.StartDataResourceInstanceRead; cb != nil {
+		readCtx = cb(ctx, inst.Addr)
+	}
+	resp := providerClient.ReadDataSource(readCtx, providers.ReadDataSourceRequest{
+		TypeName: meta.ResourceType,
+		Config:   unmarkedConfigVal,
+	})
+	diags = diags.Append(resp.Diagnostics)
+	if cb := tracer.EndDataResourceInstanceRead; cb != nil {
+		resultVal := cty.DynamicVal
+		if resp.State != cty.NilVal {
+			// TODO: Should apply "sensitive" marks here where appropriate in
+			// case the tracer is reporting events in the UI.
+			resultVal = resp.State
+		}
+		cb(readCtx, inst.Addr, resultVal, diags)
+	}
+	if resp.Diagnostics.HasErrors() {
+		return ret, diags
+	}
+	// TODO: Verify that the object the provider returned is a valid completion
+	// of the configuration value.
+
+	// TODO: Update the refreshed state to match what we've just read.
+
+	// Since we've already read the data source during the planning phase,
+	// we don't need a PlannedChange here and can instead just use the result
+	// as the PlaceholderValue.
+	ret.PlaceholderValue = resp.State
+
+	return ret, diags
+}
+
+func (p *planGlue) planOrphanDataResourceInstance(_ context.Context, addr addrs.AbsResourceInstance, state *states.ResourceInstanceObjectFullSrc) (*resourceInstanceObject, tfdiags.Diagnostics) {
+	var diags tfdiags.Diagnostics
+
+	return &resourceInstanceObject{
+		Addr:               addr.CurrentObject(),
+		PrevRoundAddr:      addr.CurrentObject(),
+		ConfigDependencies: addrs.MakeSet[addrs.AbsResourceInstanceObject](),
+		Provider:           state.ProviderInstanceAddr.Config.Config.Provider,
+		PlaceholderValue:   cty.NullVal(cty.DynamicPseudoType),
+		// An orphan data object is always just discarded completely, because
+		// OpenTofu retains them only for esoteric uses like the "tofu console"
+		// command: they are not actually expected to persist between rounds.
+		// Therefore upgrade and refresh state are not set
+	}, diags
+}
