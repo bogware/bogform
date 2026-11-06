@@ -175,7 +175,7 @@ func (n *newRuntimePlugins) ValidateResourceConfig(ctx context.Context, provider
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Unsupported resource mode",
-			fmt.Sprintf("Attempted to validate resource of unsupported mode %s; this is a bug in OpenTofu.", mode),
+			fmt.Sprintf("Attempted to validate resource of unsupported mode %s; this is a bug in Bogform.", mode),
 		))
 	}
 	return diags

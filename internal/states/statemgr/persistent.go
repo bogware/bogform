@@ -18,7 +18,7 @@ import (
 // that deal with persistent snapshots.
 //
 // Persistent snapshots are ones that are retained in storage that will
-// outlive a particular OpenTofu process, and are shared with other OpenTofu
+// outlive a particular Bogform process, and are shared with other Bogform
 // processes that have a similarly-configured state manager.
 //
 // A manager may also choose to retain historical persistent snapshots, but
@@ -122,7 +122,7 @@ type SnapshotMeta struct {
 	Lineage string
 	Serial  uint64
 
-	// TerraformVersion is the number of the version of OpenTofu that created
+	// TerraformVersion is the number of the version of Bogform that created
 	// the snapshot.
 	TerraformVersion *version.Version
 }

@@ -224,7 +224,7 @@ func TestPackageOCIBlobArchive(t *testing.T) {
 // "README". The "terraform-provider-foo" file is generated with the
 // content given in fakeExeContent, while the "README" content is
 // unspecified since it's just here to act as additional baggage that
-// a real provider could hypothetically make use of but OpenTofu itself
+// a real provider could hypothetically make use of but Bogform itself
 // doesn't care about.
 func makePlaceholderProviderPackageZip(t *testing.T, fakeExeContent string) []byte {
 	t.Helper()

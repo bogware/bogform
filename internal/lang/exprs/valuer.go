@@ -56,7 +56,7 @@ type Valuer interface {
 	// once the value has been finalized.
 	//
 	// This function should only return errors that should not be interceptable
-	// by the "try" or "can" functions in the OpenTofu language.
+	// by the "try" or "can" functions in the Bogform language.
 	StaticCheckTraversal(traversal hcl.Traversal) tfdiags.Diagnostics
 
 	// ValueSourceRange returns an optional source range where this value (or an

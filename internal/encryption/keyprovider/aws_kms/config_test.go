@@ -37,11 +37,11 @@ func TestConfig_asAWSBase(t *testing.T) {
 				region = "magic-mountain"`,
 			expected: awsbase.Config{
 				Region:                 "magic-mountain",
-				CallerDocumentationURL: "https://opentofu.org/docs/language/state/encryption/#aws-kms",
+				CallerDocumentationURL: "https://bogware.github.io/bogform/docs/language/state/encryption/#aws-kms",
 				CallerName:             "KMS Key Provider",
 				MaxRetries:             5,
 				APNInfo: &awsbase.APNInfo{
-					PartnerName: "OpenTofu-AWS-KMS",
+					PartnerName: "Bogform-AWS-KMS",
 					Products: []awsbase.UserAgentProduct{
 						{Name: httpclient.DefaultApplicationName, Version: version.String()},
 					},
@@ -105,10 +105,10 @@ func TestConfig_asAWSBase(t *testing.T) {
 				retry_mode = "adaptive"
 				`,
 			expected: awsbase.Config{
-				CallerDocumentationURL: "https://opentofu.org/docs/language/state/encryption/#aws-kms",
+				CallerDocumentationURL: "https://bogware.github.io/bogform/docs/language/state/encryption/#aws-kms",
 				CallerName:             "KMS Key Provider",
 				APNInfo: &awsbase.APNInfo{
-					PartnerName: "OpenTofu-AWS-KMS",
+					PartnerName: "Bogform-AWS-KMS",
 					Products: []awsbase.UserAgentProduct{
 						{Name: httpclient.DefaultApplicationName, Version: version.String()},
 					},

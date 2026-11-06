@@ -335,7 +335,7 @@ func TestMarshalPlanResources(t *testing.T) {
 			t.Fatalf("expected error but got nil")
 		}
 		gotErr := err.Error()
-		const wantErr = `ephemeral resource "ephemeral.foo_res.bar_name" detected in the plan. This is an error in OpenTofu`
+		const wantErr = `ephemeral resource "ephemeral.foo_res.bar_name" detected in the plan. This is an error in Bogform`
 		if wantErr != gotErr {
 			t.Errorf("invalid error received. wanted:\n\t%s\ngot:\n\t%s", wantErr, gotErr)
 		}

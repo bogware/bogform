@@ -21,7 +21,7 @@ func PlanCommander() Command {
 	cmd := Command{
 		Name:  "plan",
 		Short: "Show changes required by the current configuration",
-		Long: `Generates a speculative execution plan, showing what actions OpenTofu would take to apply the current configuration. This command will not actually perform the planned actions.
+		Long: `Generates a speculative execution plan, showing what actions Bogform would take to apply the current configuration. This command will not actually perform the planned actions.
 
 You can optionally save the plan to a file, which you can then pass to the "apply" command to perform exactly the actions described in the plan.`,
 
@@ -36,7 +36,7 @@ You can optionally save the plan to a file, which you can then pass to the "appl
 	return cmd
 }
 
-// PlanCommand is a Command implementation that compares a OpenTofu
+// PlanCommand is a Command implementation that compares a Bogform
 // configuration to an actual infrastructure and shows the differences.
 type PlanCommand struct {
 	Meta

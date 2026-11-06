@@ -162,7 +162,7 @@ type Operations interface {
 	// the fallback object (which is always a deposed object) should be
 	// reinterpreted as the new current object for the resource instance. This
 	// occurs when performing a "create then destroy" replace operation, so
-	// that a total failure of the "create" step leaves OpenTofu still tracking
+	// that a total failure of the "create" step leaves Bogform still tracking
 	// the previous object (which was presumably deposed earlier in the same
 	// apply phase using ManagedPerformDepose) as the current object.
 	//
@@ -189,7 +189,7 @@ type Operations interface {
 	//
 	// This is intended to act as a substitute for [Operations.ManagedApply]
 	// working with a deletion plan, and so on success the returned object
-	// always has a nil state to represent that -- as far as OpenTofu is
+	// always has a nil state to represent that -- as far as Bogform is
 	// concerned, at least -- this object no longer exists.
 	//
 	// Note that "forgetting" is still potentially fallible for a resource

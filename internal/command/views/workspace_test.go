@@ -28,7 +28,7 @@ func TestWorkspaceViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "error",
-					"@message": `Workspace "test-workspace" already exists. Use "tofu workspace select test-workspace" to switch to it`,
+					"@message": `Workspace "test-workspace" already exists. Use "bogform workspace select test-workspace" to switch to it`,
 					"@module":  "tofu.ui",
 				},
 			},
@@ -36,7 +36,7 @@ func TestWorkspaceViews(t *testing.T) {
 Error: Workspace "test-workspace" already exists
 
 A workspace having the given name already exists.
-Use "tofu workspace select test-workspace" to switch to it.
+Use "bogform workspace select test-workspace" to switch to it.
 `,
 		},
 		"workspace_does_not_exist": {
@@ -111,11 +111,11 @@ URL safe characters, and no path separators.
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": `Created and switched to workspace "new-workspace". You're now on a new, empty workspace. Workspaces isolate their state, so if you run "tofu plan" OpenTofu will not see any existing state for this configuration`,
+					"@message": `Created and switched to workspace "new-workspace". You're now on a new, empty workspace. Workspaces isolate their state, so if you run "bogform plan" Bogform will not see any existing state for this configuration`,
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: withNewline("Created and switched to workspace \"new-workspace\"!\n\nYou're now on a new, empty workspace. Workspaces isolate their state,\nso if you run \"tofu plan\" OpenTofu will not see any existing state\nfor this configuration."),
+			wantStdout: withNewline("Created and switched to workspace \"new-workspace\"!\n\nYou're now on a new, empty workspace. Workspaces isolate their state,\nso if you run \"bogform plan\" Bogform will not see any existing state\nfor this configuration."),
 		},
 		"workspace_changed": {
 			viewCall: func(workspace Workspace) {
@@ -187,7 +187,7 @@ command again.
 			wantJson: []map[string]any{
 				{
 					"@level":   "warn",
-					"@message": `"workspace-with-resources" was non-empty. The resources managed by the deleted workspace may still exist, but are no longer manageable by OpenTofu since the state has been deleted`,
+					"@message": `"workspace-with-resources" was non-empty. The resources managed by the deleted workspace may still exist, but are no longer manageable by Bogform since the state has been deleted`,
 					"@module":  "tofu.ui",
 				},
 			},
@@ -195,7 +195,7 @@ command again.
 Warning: "workspace-with-resources" was non-empty
 
 The resources managed by the deleted workspace may still exist, but are no
-longer manageable by OpenTofu since the state has been deleted.
+longer manageable by Bogform since the state has been deleted.
 `,
 		},
 		"cannot_delete_current_workspace": {
@@ -236,19 +236,19 @@ workspace and try again.
 			wantJson: []map[string]any{
 				{
 					"@level":   "warn",
-					"@message": `The "tofu env" family of commands is deprecated. Use "tofu workspace" instead`,
+					"@message": `The "bogform env" family of commands is deprecated. Use "bogform workspace" instead`,
 					"@module":  "tofu.ui",
 				},
 			},
 			wantStdout: `
-Warning: The "tofu env" family of commands is deprecated
+Warning: The "bogform env" family of commands is deprecated
 
-"Workspace" is now the preferred term for what earlier OpenTofu versions
+"Workspace" is now the preferred term for what earlier Bogform versions
 called "environment", to reduce ambiguity caused by the latter term colliding
 with other concepts.
 
-The "tofu workspace" commands should be used instead. "tofu env" will be
-removed in a future OpenTofu version.
+The "bogform workspace" commands should be used instead. "bogform env" will
+be removed in a future Bogform version.
 `,
 		},
 		"warn_when_used_as_env_cmd_false": {

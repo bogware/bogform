@@ -12,7 +12,7 @@ import (
 )
 
 // fileDetector is a replacement for go-getter's own file detector which
-// better meets OpenTofu's needs: specifically, it rejects relative filesystem
+// better meets Bogform's needs: specifically, it rejects relative filesystem
 // paths with a somewhat-decent error message.
 //
 // This is a replacement for some historical hackery we did where we tried to
@@ -66,5 +66,5 @@ type MaybeRelativePathErr struct {
 }
 
 func (e *MaybeRelativePathErr) Error() string {
-	return fmt.Sprintf("OpenTofu cannot detect a supported external module source type for %s", e.Addr)
+	return fmt.Sprintf("Bogform cannot detect a supported external module source type for %s", e.Addr)
 }

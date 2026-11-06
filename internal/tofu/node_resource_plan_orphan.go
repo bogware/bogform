@@ -157,7 +157,7 @@ func (n *NodePlannableResourceInstanceOrphan) managedResourceExecute(ctx context
 		// order to catch missing resources. If this is a normal plan,
 		// providers expect a Read request to remove missing resources from the
 		// plan before apply, and may not handle a missing resource during
-		// Delete correctly.  If this is a simple refresh, OpenTofu is
+		// Delete correctly.  If this is a simple refresh, Bogform is
 		// expected to remove the missing resource from the state entirely
 		refreshedState, refreshDiags := n.refresh(ctx, evalCtx, states.NotDeposed, oldState)
 		diags = diags.Append(refreshDiags)
@@ -386,6 +386,6 @@ func (n *NodePlannableResourceInstanceOrphan) ephemeralResourceExecute(_ context
 	return diags.Append(tfdiags.Sourceless(
 		tfdiags.Error,
 		"An ephemeral resource registered as orphan",
-		fmt.Sprintf("Ephemeral resource %q registered as orphan. This is an OpenTofu error. Please report this.", n.Addr),
+		fmt.Sprintf("Ephemeral resource %q registered as orphan. This is a Bogform error. Please report this.", n.Addr),
 	))
 }

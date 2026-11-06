@@ -169,17 +169,17 @@ func ParseVariableValues(vv map[string]UnparsedVariableValue, decls map[string]*
 
 	// By this point we should've gathered all the required root module
 	// variables from one of the many possible sources. We'll now populate
-	// any we haven't gathered as unset placeholders which OpenTofu Core
+	// any we haven't gathered as unset placeholders which Bogform Core
 	// can then react to.
 	for name, vc := range decls {
 		if isDefinedAny(name, ret, undeclared) {
 			continue
 		}
 
-		// This check is redundant with a check made in OpenTofu Core when
+		// This check is redundant with a check made in Bogform Core when
 		// processing undeclared variables, but allows us to generate a more
 		// specific error message which mentions -var and -var-file command
-		// line options, whereas the one in OpenTofu Core is more general
+		// line options, whereas the one in Bogform Core is more general
 		// due to supporting both root and child module variables.
 		if vc.Required() {
 			diags = diags.Append(&hcl.Diagnostic{
@@ -200,9 +200,9 @@ func ParseVariableValues(vv map[string]UnparsedVariableValue, decls map[string]*
 			}
 		} else {
 			// We're still required to put an entry for this variable
-			// in the mapping to be explicit to OpenTofu Core that we
+			// in the mapping to be explicit to Bogform Core that we
 			// visited it, but its value will be cty.NilVal to represent
-			// that it wasn't set at all at this layer, and so OpenTofu Core
+			// that it wasn't set at all at this layer, and so Bogform Core
 			// should substitute a default if available, or generate an error
 			// if not.
 			ret[name] = &tofu.InputValue{

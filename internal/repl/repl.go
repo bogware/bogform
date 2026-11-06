@@ -4,6 +4,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // Package repl provides the structs and functions necessary to run
-// REPL for OpenTofu. The REPL allows experimentation of OpenTofu
-// interpolations without having to run a OpenTofu configuration.
+// REPL for Bogform. The REPL allows experimentation of Bogform
+// interpolations without having to run a Bogform configuration.
 package repl

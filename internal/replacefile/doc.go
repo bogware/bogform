@@ -12,6 +12,6 @@
 //
 // This package uses conditional compilation to select a different
 // implementation for Windows vs. all other platforms. It may therefore
-// require further fiddling in future if OpenTofu is ported to another
+// require further fiddling in future if Bogform is ported to another
 // OS that is neither Unix-like nor Windows.
 package replacefile

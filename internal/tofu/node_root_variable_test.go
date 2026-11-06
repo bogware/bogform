@@ -64,7 +64,7 @@ func TestNodeRootVariableExecute(t *testing.T) {
 	t.Run("validation", func(t *testing.T) {
 		evalCtx := new(MockEvalContext)
 
-		// The variable validation function gets called with OpenTofu's
+		// The variable validation function gets called with Bogform's
 		// built-in functions available, so we need a minimal scope just for
 		// it to get the functions from.
 		evalCtx.EvaluationScopeScope = &lang.Scope{}

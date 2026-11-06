@@ -13,7 +13,7 @@ import (
 )
 
 // Function is a description of the JSON representation of the signature of
-// a function callable from the OpenTofu language.
+// a function callable from the Bogform language.
 type Function struct {
 	// Name is the leaf name of the function, without any namespace prefix.
 	Name string `json:"name"`

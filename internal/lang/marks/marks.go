@@ -65,11 +65,11 @@ func ContainsAnyMark(val cty.Value, marks ...valueMark) bool {
 }
 
 // Sensitive indicates that this value is marked as sensitive in the context of
-// OpenTofu.
+// Bogform.
 const Sensitive = valueMark("Sensitive")
 
 // Ephemeral indicates that this value is marked as ephemeral in the context of
-// OpenTofu.
+// Bogform.
 const Ephemeral = valueMark("Ephemeral")
 
 // TypeType is used to indicate that the value contains a representation of

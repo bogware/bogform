@@ -1,5 +1,5 @@
 # Minimal reproducer for https://github.com/opentofu/opentofu/issues/4251
-# Bug requires to run `tofu test` when the configuration contains also an `ephemeral` block
+# Bug requires to run `bogform test` when the configuration contains also an `ephemeral` block
 
 terraform {
   required_version = ">= 1.11.5"

@@ -422,7 +422,7 @@ func TestNewDiagnostic(t *testing.T) {
 			// The EvalContext in this case is set up to resemble what
 			// happens in nested scopes such as those created by "for"
 			// expressions, where there are local symbols that are not
-			// subject to OpenTofu's usual rules for references and can
+			// subject to Bogform's usual rules for references and can
 			// potentially shadow the prefixes normally used for references.
 			&hcl.Diagnostic{
 				Severity: hcl.DiagError,

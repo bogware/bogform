@@ -193,7 +193,7 @@ func evaluateImportExpression(
 		return cty.NilVal, diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  fmt.Sprintf("Invalid import %s argument", fieldName),
-			Detail:   fmt.Sprintf(`The import block "%s" argument depends on resource attributes that cannot be determined until apply, so OpenTofu cannot plan to import this resource.`, fieldName),
+			Detail:   fmt.Sprintf(`The import block "%s" argument depends on resource attributes that cannot be determined until apply, so Bogform cannot plan to import this resource.`, fieldName),
 			Subject:  expr.Range().Ptr(),
 			Extra:    evalchecks.DiagnosticCausedByUnknown(true),
 		})

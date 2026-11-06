@@ -308,7 +308,7 @@ func TestPlanGraphBuilder_ephemeralResourceDestroy(t *testing.T) {
 	}
 	diags := found.Execute(t.Context(), evalCtx, walkPlanDestroy)
 	got := diags.Err().Error()
-	want := `An ephemeral resource planned for destroy: A destroy operation has been planned for the ephemeral resource "ephemeral.aws_secretmanager_secret.test". This is an OpenTofu error. Please report this.`
+	want := `An ephemeral resource planned for destroy: A destroy operation has been planned for the ephemeral resource "ephemeral.aws_secretmanager_secret.test". This is a Bogform error. Please report this.`
 	if got != want {
 		t.Fatalf("unexpected error returned.\ngot: %s\nwant:%s", got, want)
 	}

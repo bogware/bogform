@@ -11,7 +11,7 @@ import (
 	"github.com/bogware/bogform/internal/providers"
 )
 
-// Schemas is a container for various kinds of schema that OpenTofu needs
+// Schemas is a container for various kinds of schema that Bogform needs
 // during processing.
 //
 // Although not all schemas necessarily come from plugins, this type lives here

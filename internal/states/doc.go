@@ -3,6 +3,6 @@
 // Copyright (c) 2023 HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
-// Package states contains the types that are used to represent OpenTofu
+// Package states contains the types that are used to represent Bogform
 // states.
 package states

@@ -49,7 +49,7 @@ func ShowCommander() Command {
 	cmd := Command{
 		Name:  "show",
 		Short: "Show the current state or a saved plan",
-		Long:  `Reads and outputs a OpenTofu state or plan file in a human-readable form. If no path is specified, the current state will be shown.`,
+		Long:  `Reads and outputs a Bogform state or plan file in a human-readable form. If no path is specified, the current state will be shown.`,
 	}
 
 	args := arguments.BindShow(&cmd.CommandLine)
@@ -61,7 +61,7 @@ func ShowCommander() Command {
 }
 
 // ShowCommand is a Command implementation that reads and outputs the
-// contents of a OpenTofu plan or state file.
+// contents of a Bogform plan or state file.
 // write about config here
 type ShowCommand struct {
 	Meta
@@ -105,7 +105,7 @@ func (c ShowCommand) Execute(args *arguments.Show, view views.Show) int {
 	renderResult, showDiags := c.show(ctx, args.TargetType, args.TargetArg, enc)
 	diags = diags.Append(showDiags)
 	if showDiags.HasErrors() {
-		// "tofu show" intentionally ignores warnings unless there is at
+		// "bogform show" intentionally ignores warnings unless there is at
 		// least one error, because view.Diagnostics produces human output
 		// even in the JSON view and so would cause the JSON output to
 		// be invalid if only warnings were returned.
@@ -313,7 +313,7 @@ func (c *ShowCommand) legacyShowFromPath(ctx context.Context, path string, enc e
 // will be nil no matter what; local plan files do not yield a json plan,
 // cloud plans do not yield real plan/state/config structs or embedded
 // schemas, and even a local plan file may not have embedded schemas (e.g.
-// plan files written by older versions of OpenTofu). An error generally
+// plan files written by older versions of Bogform). An error generally
 // suggests that the given path is either a directory or a statefile.
 func (c *ShowCommand) getPlanFromPath(ctx context.Context, path string, enc encryption.Encryption, rootCall configs.StaticModuleCall) (*plans.Plan, *statefile.File, *configs.Config, *tofu.Schemas, error) {
 	var err error
@@ -337,7 +337,7 @@ func (c *ShowCommand) getPlanFromPath(ctx context.Context, path string, enc encr
 // maybeGetSchemas is a thin wrapper around [Meta.MaybeGetSchemas] that
 // takes a [*statefile.File] instead of a [*states.State] and tolerates
 // the state file being nil, since that's more convenient for the
-// "tofu show" methods that may or may not have a state file to use.
+// "bogform show" methods that may or may not have a state file to use.
 //
 // If preferred is non-nil, it's returned as-is without doing any further
 // work
@@ -451,7 +451,7 @@ func (c *ShowCommand) showConfiguration(ctx context.Context) (showRenderFunc, tf
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Error validating configuration directory",
-			fmt.Sprintf("OpenTofu encountered an unexpected error while verifying that the given configuration directory is valid: %s.", err),
+			fmt.Sprintf("Bogform encountered an unexpected error while verifying that the given configuration directory is valid: %s.", err),
 		))
 		return nil, diags
 	}
@@ -459,7 +459,7 @@ func (c *ShowCommand) showConfiguration(ctx context.Context) (showRenderFunc, tf
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"No configuration files",
-			"This directory contains no OpenTofu configuration files.",
+			"This directory contains no Bogform configuration files.",
 		))
 		return nil, diags
 	}

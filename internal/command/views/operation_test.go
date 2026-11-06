@@ -102,7 +102,7 @@ func TestOperation_planNoChanges(t *testing.T) {
 					Changes: plans.NewChanges(),
 				}
 			},
-			"OpenTofu has checked that the real remote objects still match",
+			"Bogform has checked that the real remote objects still match",
 		},
 		"nothing at all in destroy mode": {
 			func(schemas *tofu.Schemas) *plans.Plan {
@@ -199,7 +199,7 @@ func TestOperation_planNoChanges(t *testing.T) {
 					}},
 				}
 			},
-			"Objects have changed outside of OpenTofu",
+			"Objects have changed outside of Bogform",
 		},
 		"drift detected in refresh-only mode": {
 			func(schemas *tofu.Schemas) *plans.Plan {
@@ -341,11 +341,11 @@ func TestOperation_plan(t *testing.T) {
 	v.Plan(plan, schemas)
 
 	want := `
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   + create
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.foo will be created
   + resource "test_resource" "foo" {
@@ -370,12 +370,12 @@ func TestOperation_planWithDatasource(t *testing.T) {
 	v.Plan(plan, schemas)
 
 	want := `
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   + create
  <= read (data resources)
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # data.test_data_source.bar will be read during apply
  <= data "test_data_source" "bar" {
@@ -406,12 +406,12 @@ func TestOperation_planWithDatasourceAndDrift(t *testing.T) {
 	v.Plan(plan, schemas)
 
 	want := `
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   + create
  <= read (data resources)
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # data.test_data_source.bar will be read during apply
  <= data "test_data_source" "bar" {
@@ -444,7 +444,7 @@ func TestOperation_planNextStep(t *testing.T) {
 		},
 		"state path": {
 			path: "good plan.tfplan",
-			want: `tofu apply "good plan.tfplan"`,
+			want: `bogform apply "good plan.tfplan"`,
 		},
 	}
 	for name, tc := range testCases {

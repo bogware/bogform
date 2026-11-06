@@ -41,11 +41,11 @@ func FmtCommander(input io.Reader) Command {
 	cmd := Command{
 		Name:  "fmt",
 		Short: "Reformat your configuration in the standard style",
-		Long: `Rewrites all OpenTofu configuration files to a canonical format. All configuration files (.tf), variables files (.tfvars), and testing files (.tftest.hcl) are updated. JSON files (.tf.json, .tfvars.json, or .tftest.json) are not modified.
+		Long: `Rewrites all Bogform configuration files to a canonical format. All configuration files (.tf), variables files (.tfvars), and testing files (.tftest.hcl) are updated. JSON files (.tf.json, .tfvars.json, or .tftest.json) are not modified.
 
 By default, fmt scans the current directory for configuration files. If you provide a directory for the target argument, then fmt will scan that directory instead. If you provide a file, then fmt will process just that file. If you provide a single dash ("-"), then fmt will read from standard input (STDIN).
 
-The content must be in the OpenTofu language native syntax; JSON is not supported.`,
+The content must be in the Bogform language native syntax; JSON is not supported.`,
 
 		DiagsWithNewline: true,
 	}
@@ -58,7 +58,7 @@ The content must be in the OpenTofu language native syntax; JSON is not supporte
 	return cmd
 }
 
-// FmtCommand is a Command implementation that rewrites OpenTofu config
+// FmtCommand is a Command implementation that rewrites Bogform config
 // files to a canonical format and style.
 type FmtCommand struct {
 	Meta
@@ -166,7 +166,7 @@ func (c *FmtCommand) fmt(paths []string, stdin io.Reader, stdout io.Writer, args
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Invalid file extension",
-					"Only .tf, .tofu, .bog, .tfvars, .tftest.hcl, .tofutest.hcl, and .bogtest.hcl files can be processed with tofu fmt",
+					"Only .tf, .tofu, .bog, .tfvars, .tftest.hcl, .tofutest.hcl, and .bogtest.hcl files can be processed with bogform fmt",
 				))
 				continue
 			}
@@ -179,7 +179,7 @@ func (c *FmtCommand) fmt(paths []string, stdin io.Reader, stdout io.Writer, args
 func (c *FmtCommand) processFile(path string, r io.Reader, w io.Writer, args arguments.Fmt) tfdiags.Diagnostics {
 	var diags tfdiags.Diagnostics
 
-	log.Printf("[TRACE] tofu fmt: Formatting %s", path)
+	log.Printf("[TRACE] bogform fmt: Formatting %s", path)
 
 	src, err := io.ReadAll(r)
 	if err != nil {
@@ -259,7 +259,7 @@ func (c *FmtCommand) processFile(path string, r io.Reader, w io.Writer, args arg
 func (c *FmtCommand) processDir(path string, stdout io.Writer, args arguments.Fmt) tfdiags.Diagnostics {
 	var diags tfdiags.Diagnostics
 
-	log.Printf("[TRACE] tofu fmt: looking for files in %s", path)
+	log.Printf("[TRACE] bogform fmt: looking for files in %s", path)
 
 	entries, err := os.ReadDir(path)
 	if err != nil {
@@ -295,7 +295,7 @@ func (c *FmtCommand) processDir(path string, stdout io.Writer, args arguments.Fm
 			}
 
 			// We do not recurse into child directories by default because we
-			// want to mimic the file-reading behavior of "tofu plan", etc,
+			// want to mimic the file-reading behavior of "bogform plan", etc,
 			// operating on one module at a time.
 			continue
 		}

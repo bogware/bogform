@@ -405,11 +405,11 @@ func TestStateHasResourceInstanceObjects(t *testing.T) {
 		},
 		"one empty resource husk in root module": {
 			func(ss *SyncState) {
-				// Current OpenTofu doesn't actually create resource husks
+				// Current Bogform doesn't actually create resource husks
 				// as part of its everyday work, so this is a "should never
 				// happen" case but we'll test to make sure we're robust to
 				// it anyway, because this was a historical bug blocking
-				// "tofu workspace delete" and similar.
+				// "bogform workspace delete" and similar.
 				ss.SetResourceInstanceCurrent(
 					mustAbsResourceAddr("test.foo").Instance(addrs.NoKey),
 					&ResourceInstanceObjectSrc{

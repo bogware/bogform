@@ -47,7 +47,7 @@ func EvaluateCountExpression(expr hcl.Expression, ctx EvaluateFunc, excludableAd
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Invalid count argument",
-			Detail:   "The \"count\" value depends on resource attributes that cannot be determined until apply, so OpenTofu cannot predict how many instances will be created.\n\n" + suggestion,
+			Detail:   "The \"count\" value depends on resource attributes that cannot be determined until apply, so Bogform cannot predict how many instances will be created.\n\n" + suggestion,
 			Subject:  expr.Range().Ptr(),
 
 			// TODO: Also populate Expression and EvalContext in here, but

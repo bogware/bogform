@@ -105,7 +105,7 @@ func resolveProviderInstance(ctx context.Context, keyExpr hcl.Expression, keySco
 		return nil, diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Invalid provider instance key",
-			Detail:   fmt.Sprintf("The provider instance key for %s depends on values that cannot be determined until apply, and so OpenTofu cannot select a provider instance to create a plan for this resource instance.", source),
+			Detail:   fmt.Sprintf("The provider instance key for %s depends on values that cannot be determined until apply, and so Bogform cannot select a provider instance to create a plan for this resource instance.", source),
 			Subject:  keyExpr.Range().Ptr(),
 			Extra:    evalchecks.DiagnosticCausedByUnknown(true),
 		})

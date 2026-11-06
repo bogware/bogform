@@ -197,7 +197,7 @@ func schemaForInputSniffing(schema *hcl.BodySchema) *hcl.BodySchema {
 
 // collectResourcesImplicitProvider collects in "pas" all the provider addresses that are not having an explicit configuration
 // existing in "pcs". In other words, it collects all the implicit providers from resources that are not explicitly configured.
-// Later on, this information is used to determine what implicit providers need additional configuration and OpenTofu
+// Later on, this information is used to determine what implicit providers need additional configuration and Bogform
 // will ask for input on configuring those.
 func collectResourcesImplicitProvider(resources map[string]*configs.Resource, pcs map[string]*configs.Provider, pas map[string]addrs.LocalProviderConfig) {
 	for _, rc := range resources {

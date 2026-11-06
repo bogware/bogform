@@ -275,7 +275,7 @@ func TestLoadConfig_providerInstallationOCIMirrorErrors(t *testing.T) {
 		}
 	})
 	t.Run("unmappable characters in provider source address", func(t *testing.T) {
-		// This deals with a particularly-annoying case: OpenTofu provider source addresses
+		// This deals with a particularly-annoying case: Bogform provider source addresses
 		// support a wide range of unicode characters with the intent that folks can name
 		// their private providers using the alphabet of their native language, but OCI Distribution
 		// only allows ASCII characters in repository names, so for now the OCI mirror

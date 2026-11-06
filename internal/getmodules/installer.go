@@ -102,7 +102,7 @@ func (f *PackageFetcher) FetchPackage(ctx context.Context, instDir string, packa
 
 // PackageFetcherEnvironment is an interface used with [NewPackageFetcher]
 // to allow the caller to define how the package fetcher should interact
-// with the rest of OpenTofu and with OpenTofu's execution environment.
+// with the rest of Bogform and with Bogform's execution environment.
 //
 // This interface may grow to include new methods if we learn of new
 // requirements, so implementations of this interface should all be

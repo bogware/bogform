@@ -11,7 +11,7 @@ import (
 
 // Login represents the command-line arguments for the login command.
 type Login struct {
-	// Host represents the host that OpenTofu will try to login to
+	// Host represents the host that Bogform will try to login to
 	Host string
 
 	// View represents the global view options

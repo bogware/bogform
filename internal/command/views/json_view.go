@@ -25,10 +25,10 @@ const JSON_UI_VERSION = "1.2"
 
 // NewJSONView creates a new JSONView that wraps the logger configured for the JSON output.
 // This method is meant to be called only from the views that are root level, meaning that
-// are created for the invoked OpenTofu command.
+// are created for the invoked Bogform command.
 // The other utilitary views (eg: Backend, StateLocker, jsonHook, etc) needs to get JSONView
 // from a root level view. That's because when this method is called, it prints a log entry
-// with the OpenTofu version. By invoking this method multiple times in a run, will produce
+// with the Bogform version. By invoking this method multiple times in a run, will produce
 // multiple version log entries, which might disrupt any other external parsing tool that
 // might rely on the machine readable output.
 func NewJSONView(view *View, out *os.File) *JSONView {
@@ -67,7 +67,7 @@ type JSONView struct {
 func (v *JSONView) Version() {
 	version := tfversion.String()
 	v.log.Info(
-		fmt.Sprintf("OpenTofu %s", version),
+		fmt.Sprintf("Bogform %s", version),
 		"type", json.MessageVersion,
 		"tofu", version,
 		"ui", JSON_UI_VERSION,

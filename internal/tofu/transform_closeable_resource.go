@@ -14,7 +14,7 @@ import (
 )
 
 // resourceCloser is the definition of the function that needs to exist on the node that wants to release external
-// resources before exit of the OpenTofu process.
+// resources before exit of the Bogform process.
 type resourceCloser func() tfdiags.Diagnostics
 
 // closableResource needs to be implemented by whatever resource wants to be closed before closing the associated

@@ -205,7 +205,7 @@ func marshalPlanResources(changeMap map[string]*plans.ResourceInstanceChangeSrc,
 		case addrs.DataResourceMode:
 			resource.Mode = "data"
 		case addrs.EphemeralResourceMode:
-			return ret, fmt.Errorf("ephemeral resource %q detected in the plan. This is an error in OpenTofu", r.Addr.String())
+			return ret, fmt.Errorf("ephemeral resource %q detected in the plan. This is an error in Bogform", r.Addr.String())
 		default:
 			return nil, fmt.Errorf("resource %s has an unsupported mode %s",
 				r.Addr.String(),

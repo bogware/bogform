@@ -9,9 +9,9 @@
 // The logic for converting to and from the types defined in here is
 // encapsulated in package execgraph. The specific serialization format for
 // execution graphs is an implementation detail that may change arbitrarily
-// between OpenTofu versions: it's not supported to take an execution graph
-// marshaled by one OpenTofu version and then try to unmarshal it with a
-// different OpenTofu version. Even the fact that there is an execution
+// between Bogform versions: it's not supported to take an execution graph
+// marshaled by one Bogform version and then try to unmarshal it with a
+// different Bogform version. Even the fact that there is an execution
 // graph _at all_ is an implementation detail, with the public-facing model
 // only representing a set of high-level actions against resource instances
 // and output values.

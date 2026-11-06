@@ -221,7 +221,7 @@ type ResourceInstanceObjectMeta struct {
 	// that the old object would be temporarily deposed to during the process.
 	// This reflects a small inconsistency/ambiguity in our usual terminology
 	// where "object" normally refers to the actual remote object, but in this
-	// case it refers only to the _object address_ from OpenTofu's perspective,
+	// case it refers only to the _object address_ from Bogform's perspective,
 	// and two different remote objects will appear at this address over
 	// the course of the apply phase.
 	Addr addrs.AbsResourceInstanceObject

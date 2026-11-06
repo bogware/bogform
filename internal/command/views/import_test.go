@@ -30,12 +30,12 @@ func TestImportViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "For information on valid syntax, see: https://opentofu.org/docs/cli/state/resource-addressing/",
+					"@message": "For information on valid syntax, see: https://bogware.github.io/bogform/docs/cli/state/resource-addressing/",
 					"@module":  "tofu.ui",
 				},
 			},
 			wantStdout: withNewline(`For information on valid syntax, see:
-https://opentofu.org/docs/cli/state/resource-addressing/`),
+https://bogware.github.io/bogform/docs/cli/state/resource-addressing/`),
 		},
 		"missing resource configuration": {
 			viewCall: func(v Import) {
@@ -72,13 +72,13 @@ resource "test" "test_name" {
 Import successful!
 
 The resources that were imported are shown above. These resources are now in
-your OpenTofu state and will henceforth be managed by OpenTofu.
+your Bogform state and will henceforth be managed by Bogform.
 `),
 			wantStderr: "",
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Import successful! The resources that were imported are shown above. These resources are now in your OpenTofu state and will henceforth be managed by OpenTofu",
+					"@message": "Import successful! The resources that were imported are shown above. These resources are now in your Bogform state and will henceforth be managed by Bogform",
 					"@module":  "tofu.ui",
 				},
 			},
@@ -93,7 +93,7 @@ your OpenTofu state and will henceforth be managed by OpenTofu.
 					"@message": "Error: The configured backend doesn't support this operation",
 					"@module":  "tofu.ui",
 					"diagnostic": map[string]any{
-						"detail":   `The "backend" in OpenTofu defines how OpenTofu operates. The default backend performs all operations locally on your machine. Your configuration is configured to use a non-local backend. This backend doesn't support this operation.`,
+						"detail":   `The "backend" in Bogform defines how Bogform operates. The default backend performs all operations locally on your machine. Your configuration is configured to use a non-local backend. This backend doesn't support this operation.`,
 						"severity": "error",
 						"summary":  "The configured backend doesn't support this operation",
 					},
@@ -103,7 +103,7 @@ your OpenTofu state and will henceforth be managed by OpenTofu.
 			wantStderr: `
 Error: The configured backend doesn't support this operation
 
-The "backend" in OpenTofu defines how OpenTofu operates. The default backend
+The "backend" in Bogform defines how Bogform operates. The default backend
 performs all operations locally on your machine. Your configuration is
 configured to use a non-local backend. This backend doesn't support this
 operation.
@@ -241,12 +241,12 @@ operation.
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "\nInterrupt received.\nPlease wait for OpenTofu to exit or data loss may occur.\nGracefully shutting down...\n",
+					"@message": "\nInterrupt received.\nPlease wait for Bogform to exit or data loss may occur.\nGracefully shutting down...\n",
 					"@module":  "tofu.ui",
 					"type":     "log",
 				},
 			},
-			wantStdout: withNewline("\nInterrupt received.\nPlease wait for OpenTofu to exit or data loss may occur.\nGracefully shutting down...\n"),
+			wantStdout: withNewline("\nInterrupt received.\nPlease wait for Bogform to exit or data loss may occur.\nGracefully shutting down...\n"),
 		},
 	}
 	for name, tc := range tests {

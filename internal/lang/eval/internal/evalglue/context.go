@@ -17,13 +17,13 @@ import (
 // This type should be used only for settings that would typically remain
 // equivalent throughout an entire validate/plan/apply round, and NOT for
 // phase-specific settings. Specifically, it should be possible for a caller
-// like the OpenTofu CLI layer to construct a single [EvalContext] object
+// like the Bogform CLI layer to construct a single [EvalContext] object
 // based on whole-process concerns like command line arguments and the current
 // CLI configuration, and then reuse it without modification across multiple
 // calls into different execution phases.
 type EvalContext struct {
 	// This type should only contain broad stuff that'd typically be set up
-	// only once for a particular OpenTofu CLI command, and NOT
+	// only once for a particular Bogform CLI command, and NOT
 	// operation-specific things like the input variables provided for a
 	// given module, or where state is supposed to be stored, etc.
 
@@ -60,7 +60,7 @@ type EvalContext struct {
 	// being asked to perform.
 	Applying bool
 
-	// Workspace is the current tofu workspace passed in from the command
+	// Workspace is the current bogform workspace passed in from the command
 	// layer
 	Workspace string
 

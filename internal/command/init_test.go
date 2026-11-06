@@ -812,11 +812,11 @@ func TestInit_backendCli_no_config_block(t *testing.T) {
 	}
 
 	// The previous used output here was the stderr. That was correct in terms of the MockUi (and cli.BasicUi) implementation.
-	// The was not correct in terms of OpenTofu configuration. The Ui configured for OpenTofu, sends the warning diagnostics
+	// The was not correct in terms of Bogform configuration. The Ui configured for Bogform, sends the warning diagnostics
 	// to stdout and not stderr. (see https://github.com/opentofu/opentofu/blob/db8c872defd8666618649ef7e29fa2b809adfd5e/cmd/tofu/main.go#L49-L51)
 	// This change from stderr to stdout has been done while we migrated the init command to use views, which the underlying
 	// logic, writes the warnings to stdout.
-	// Before the change, the MockUi used in this test was not considering this particularity of OpenTofu.
+	// Before the change, the MockUi used in this test was not considering this particularity of Bogform.
 	errMsg := output.Stdout()
 	if !strings.Contains(errMsg, "Warning: Missing backend configuration") {
 		t.Fatal("expected missing backend block warning, got", errMsg)
@@ -1369,19 +1369,19 @@ func TestInit_getProviderDetectedDuplicate(t *testing.T) {
 	// error output is the main focus of this test
 	//
 	// The previous used output here was the stderr. That was correct in terms of the MockUi (and cli.BasicUi) implementation.
-	// The was not correct in terms of OpenTofu configuration. The Ui configured for OpenTofu, sends the warning diagnostics
+	// The was not correct in terms of Bogform configuration. The Ui configured for Bogform, sends the warning diagnostics
 	// to stdout and not stderr. (see https://github.com/opentofu/opentofu/blob/db8c872defd8666618649ef7e29fa2b809adfd5e/cmd/tofu/main.go#L49-L51)
 	// This change from stderr to stdout has been done while we migrated the init command to use views, which the underlying
 	// logic, writes the warnings to stdout.
-	// Before the change, the MockUi used in this test was not considering this particularity of OpenTofu.
+	// Before the change, the MockUi used in this test was not considering this particularity of Bogform.
 	stdOutput := output.Stdout()
 	warnings := []string{
 		"Warning: Potential provider misconfiguration",
-		"OpenTofu has detected multiple providers of type foo",
+		"Bogform has detected multiple providers of type foo",
 		"If this is intentional you can ignore this warning",
 	}
 	unexpected := []string{
-		"OpenTofu has detected multiple providers of type bar",
+		"Bogform has detected multiple providers of type bar",
 	}
 	for _, want := range warnings {
 		if !strings.Contains(stdOutput, want) {
@@ -1424,7 +1424,7 @@ func TestInit_providerSource(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("bad: \n%s", output.Stderr())
 	}
-	if strings.Contains(output.Stdout(), "OpenTofu has initialized, but configuration upgrades may be needed") {
+	if strings.Contains(output.Stdout(), "Bogform has initialized, but configuration upgrades may be needed") {
 		t.Fatalf("unexpected \"configuration upgrade\" warning in output")
 	}
 
@@ -1505,18 +1505,18 @@ func TestInit_providerSource(t *testing.T) {
 	// are not available.
 	//
 	// The previous used output here was the stderr. That was correct in terms of the MockUi (and cli.BasicUi) implementation.
-	// The was not correct in terms of OpenTofu configuration. The Ui configured for OpenTofu, sends the warning diagnostics
+	// The was not correct in terms of Bogform configuration. The Ui configured for Bogform, sends the warning diagnostics
 	// to stdout and not stderr. (seehttps://github.com/opentofu/opentofu/blob/db8c872defd8666618649ef7e29fa2b809adfd5e/cmd/tofu/main.go#L49-L51)
 	// This change from stderr to stdout has been done while we migrated the init command to use views, which the underlying
 	// logic, writes the warnings to stdout.
-	// Before the change, the MockUi used in this test was not considering this particularity of OpenTofu.
+	// Before the change, the MockUi used in this test was not considering this particularity of Bogform.
 	if got, want := output.Stdout(), "\n  - hashicorp/source\n  - hashicorp/test\n  - hashicorp/test-beta"; !strings.Contains(got, want) {
 		t.Fatalf("wrong error message\nshould contain: %s\ngot:\n%s", want, got)
 	}
 }
 
 func TestInit_cancelModules(t *testing.T) {
-	// This test runs `tofu init` against a server that stalls indefinitely
+	// This test runs `bogform init` against a server that stalls indefinitely
 	// instead of responding, and then requests shutdown in the same way
 	// as package main would in response to SIGINT (or similar on other
 	// platforms). This ensures that slow requests can be interrupted.
@@ -1585,7 +1585,7 @@ func TestInit_cancelModules(t *testing.T) {
 }
 
 func TestInit_cancelProviders(t *testing.T) {
-	// This test runs `tofu init` as if SIGINT (or similar on other
+	// This test runs `bogform init` as if SIGINT (or similar on other
 	// platforms) were sent to it, testing that it is interruptible.
 
 	td := t.TempDir()
@@ -1839,7 +1839,7 @@ func TestInit_checkRequiredVersionFirst(t *testing.T) {
 			t.Fatalf("got exit status %d; want 1\nstderr:\n%s\n\nstdout:\n%s", code, output.Stderr(), output.Stdout())
 		}
 		errStr := output.Stderr()
-		if !strings.Contains(errStr, `This module is not compatible with OpenTofu v`) {
+		if !strings.Contains(errStr, `This module is not compatible with Bogform v`) {
 			t.Fatalf("output should point to unmet version constraint, but is:\n\n%s", errStr)
 		}
 	})
@@ -1862,7 +1862,7 @@ func TestInit_checkRequiredVersionFirst(t *testing.T) {
 			t.Fatalf("got exit status %d; want 1\nstderr:\n%s\n\nstdout:\n%s", code, output.Stderr(), output.Stdout())
 		}
 		errStr := output.Stderr()
-		if !strings.Contains(errStr, `This module is not compatible with OpenTofu v`) {
+		if !strings.Contains(errStr, `This module is not compatible with Bogform v`) {
 			t.Fatalf("output should point to unmet version constraint, but is:\n\n%s", errStr)
 		}
 	})
@@ -1908,7 +1908,7 @@ func TestInit_providerLockFile(t *testing.T) {
 	// The hashes in here are for the fake package that newMockProviderSource produces
 	// (so they'll change if newMockProviderSource starts producing different contents)
 	wantLockFile := strings.TrimSpace(`
-# This file is maintained automatically by "tofu init".
+# This file is maintained automatically by "bogform init".
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/hashicorp/test" {
@@ -1942,7 +1942,7 @@ func TestInit_providerLockFileReadonly(t *testing.T) {
 	// The hash in here is for the fake package that newMockProviderSource produces
 	// (so it'll change if newMockProviderSource starts producing different contents)
 	inputLockFile := strings.TrimSpace(`
-# This file is maintained automatically by "tofu init".
+# This file is maintained automatically by "bogform init".
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/hashicorp/test" {
@@ -1955,7 +1955,7 @@ provider "registry.opentofu.org/hashicorp/test" {
 `)
 
 	badLockFile := strings.TrimSpace(`
-# This file is maintained automatically by "tofu init".
+# This file is maintained automatically by "bogform init".
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/hashicorp/test" {
@@ -1968,7 +1968,7 @@ provider "registry.opentofu.org/hashicorp/test" {
 `)
 
 	updatedLockFile := strings.TrimSpace(`
-# This file is maintained automatically by "tofu init".
+# This file is maintained automatically by "bogform init".
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/hashicorp/test" {
@@ -1982,7 +1982,7 @@ provider "registry.opentofu.org/hashicorp/test" {
 `)
 
 	emptyUpdatedLockFile := strings.TrimSpace(`
-# This file is maintained automatically by "tofu init".
+# This file is maintained automatically by "bogform init".
 # Manual edits may be lost in future updates.
 `)
 
@@ -2372,8 +2372,8 @@ func TestInit_pluginDirWithBuiltIn(t *testing.T) {
 	}
 
 	outputStr := output.Stdout()
-	if subStr := "terraform.io/builtin/terraform is built in to OpenTofu"; !strings.Contains(outputStr, subStr) {
-		t.Errorf("output should mention the tofu provider\nwant substr: %s\ngot:\n%s", subStr, outputStr)
+	if subStr := "terraform.io/builtin/terraform is built in to Bogform"; !strings.Contains(outputStr, subStr) {
+		t.Errorf("output should mention the bogform provider\nwant substr: %s\ngot:\n%s", subStr, outputStr)
 	}
 }
 
@@ -2409,7 +2409,7 @@ func TestInit_invalidBuiltInProviders(t *testing.T) {
 	if subStr := "Cannot use terraform.io/builtin/terraform: built-in"; !strings.Contains(errStr, subStr) {
 		t.Errorf("error output should mention the terraform provider\nwant substr: %s\ngot:\n%s", subStr, errStr)
 	}
-	if subStr := "Cannot use terraform.io/builtin/nonexist: this OpenTofu release"; !strings.Contains(errStr, subStr) {
+	if subStr := "Cannot use terraform.io/builtin/nonexist: this Bogform release"; !strings.Contains(errStr, subStr) {
 		t.Errorf("error output should mention the 'nonexist' provider\nwant substr: %s\ngot:\n%s", subStr, errStr)
 	}
 }
@@ -2432,7 +2432,7 @@ func TestInit_invalidSyntaxNoBackend(t *testing.T) {
 	}
 
 	errStr := output.Stderr()
-	if subStr := "OpenTofu encountered problems during initialization, including problems\nwith the configuration, described below."; !strings.Contains(errStr, subStr) {
+	if subStr := "Bogform encountered problems during initialization, including problems\nwith the configuration, described below."; !strings.Contains(errStr, subStr) {
 		t.Errorf("Error output should include preamble\nwant substr: %s\ngot:\n%s", subStr, errStr)
 	}
 	if subStr := "Error: Unsupported block type"; !strings.Contains(errStr, subStr) {
@@ -2458,7 +2458,7 @@ func TestInit_invalidSyntaxWithBackend(t *testing.T) {
 	}
 
 	errStr := output.Stderr()
-	if subStr := "OpenTofu encountered problems during initialization, including problems\nwith the configuration, described below."; !strings.Contains(errStr, subStr) {
+	if subStr := "Bogform encountered problems during initialization, including problems\nwith the configuration, described below."; !strings.Contains(errStr, subStr) {
 		t.Errorf("Error output should include preamble\nwant substr: %s\ngot:\n%s", subStr, errStr)
 	}
 	if subStr := "Error: Unsupported block type"; !strings.Contains(errStr, subStr) {
@@ -2484,7 +2484,7 @@ func TestInit_invalidSyntaxBackendAttribute(t *testing.T) {
 	}
 
 	errStr := output.Stderr()
-	if subStr := "OpenTofu encountered problems during initialization, including problems\nwith the configuration, described below."; !strings.Contains(errStr, subStr) {
+	if subStr := "Bogform encountered problems during initialization, including problems\nwith the configuration, described below."; !strings.Contains(errStr, subStr) {
 		t.Errorf("Error output should include preamble\nwant substr: %s\ngot:\n%s", subStr, errStr)
 	}
 	if subStr := "Error: Invalid character"; !strings.Contains(errStr, subStr) {
@@ -2845,7 +2845,7 @@ func TestInit_platformSupportWarnings(t *testing.T) {
 		expectWarning := runtime.GOARCH == "386" || runtime.GOARCH == "arm"
 
 		// We use an empty directory for this test, because the warning we're
-		// testing for is produced very early on in "tofu init", regardless
+		// testing for is produced very early on in "bogform init", regardless
 		// of what's in the configuration.
 		td := t.TempDir()
 		t.Chdir(td)

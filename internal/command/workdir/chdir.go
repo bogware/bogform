@@ -19,7 +19,7 @@ import (
 // TODO meta-refactor: this is a temporary solution until we will switch the CLI library that
 // will be able to handle root-only flags in a similar fashion with what we are doing here manually.
 func runChdir(args []string) ([]string, error) {
-	// The arguments can begin with a -chdir option to ask OpenTofu to switch
+	// The arguments can begin with a -chdir option to ask Bogform to switch
 	// to a different working directory for the rest of its work. If that
 	// option is present then extractChdirOption returns a trimmed args with that option removed.
 	overrideWd, args, err := extractChdirOption(args)

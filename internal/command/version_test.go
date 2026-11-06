@@ -61,7 +61,7 @@ func TestVersion(t *testing.T) {
 	}
 
 	actual := strings.TrimSpace(output.Stdout())
-	expected := "OpenTofu v4.5.6-foo\non aros_riscv64\n+ provider registry.opentofu.org/hashicorp/test1 v7.8.9-beta.2\n+ provider registry.opentofu.org/hashicorp/test2 v1.2.3"
+	expected := "Bogform v4.5.6-foo\non aros_riscv64\n+ provider registry.opentofu.org/hashicorp/test1 v7.8.9-beta.2\n+ provider registry.opentofu.org/hashicorp/test2 v1.2.3"
 	if actual != expected {
 		t.Fatalf("wrong output\ngot:\n%s\nwant:\n%s", actual, expected)
 	}
@@ -86,7 +86,7 @@ func TestVersion_flags(t *testing.T) {
 	}
 
 	actual := strings.TrimSpace(output.Stdout())
-	expected := "OpenTofu v4.5.6-foo\non aros_riscv64"
+	expected := "Bogform v4.5.6-foo\non aros_riscv64"
 	if actual != expected {
 		t.Fatalf("wrong output\ngot: %#v\nwant: %#v", actual, expected)
 	}
@@ -102,7 +102,7 @@ func TestVersion_json(t *testing.T) {
 		View:       view,
 	}
 
-	// `tofu version -json` without prerelease
+	// `bogform version -json` without prerelease
 	version := "4.5.6"
 	platform := getproviders.Platform{OS: "aros", Arch: "riscv64"}
 	code := RunCommander(t, VersionCommander(version, "", platform), meta, []string{"-json"})
@@ -144,7 +144,7 @@ func TestVersion_json(t *testing.T) {
 		nil,
 	)
 
-	// `tofu version -json` with prerelease and provider dependencies
+	// `bogform version -json` with prerelease and provider dependencies
 	if err := meta.replaceLockedDependencies(context.Background(), locks); err != nil {
 		t.Fatal(err)
 	}

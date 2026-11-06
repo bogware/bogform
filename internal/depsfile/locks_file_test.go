@@ -167,7 +167,7 @@ func TestLoadLocksFromFile(t *testing.T) {
 
 func TestLoadLocksFromFileAbsent(t *testing.T) {
 	t.Run("lock file is a directory", func(t *testing.T) {
-		// This can never happen when OpenTofu is the one generating the
+		// This can never happen when Bogform is the one generating the
 		// lock file, but might arise if the user makes a directory with the
 		// lock file's name for some reason. (There is no actual reason to do
 		// so, so that would always be a mistake.)
@@ -247,7 +247,7 @@ func TestSaveLocksToFile(t *testing.T) {
 		t.Fatalf("%s", err.Error())
 	}
 	gotContent := string(gotContentBytes)
-	wantContent := `# This file is maintained automatically by "tofu init".
+	wantContent := `# This file is maintained automatically by "bogform init".
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/test/bar" {

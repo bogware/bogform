@@ -20,7 +20,7 @@ func OutputCommander() Command {
 	cmd := Command{
 		Name:  "output",
 		Short: "Show output values from your root module",
-		Long:  `Reads an output variable from a OpenTofu state file and prints the value. With no additional arguments, output will display all the outputs for the root module.  If NAME is not specified, all outputs are printed.`,
+		Long:  `Reads an output variable from a Bogform state file and prints the value. With no additional arguments, output will display all the outputs for the root module.  If NAME is not specified, all outputs are printed.`,
 	}
 
 	args := arguments.BindOutput(&cmd.CommandLine)
@@ -32,7 +32,7 @@ func OutputCommander() Command {
 }
 
 // OutputCommand is a Command implementation that reads an output
-// from a OpenTofu state and prints it.
+// from a Bogform state and prints it.
 type OutputCommand struct {
 	Meta
 }

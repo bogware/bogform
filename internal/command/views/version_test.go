@@ -27,7 +27,7 @@ func TestVersionViews(t *testing.T) {
 					"registry.opentofu.org/test/test": "0.2.0",
 				}, nil)
 			},
-			wantStdout: `OpenTofu v0.1.0-dev
+			wantStdout: `Bogform v0.1.0-dev
 on darwin_arm64
 + provider registry.opentofu.org/test/test v0.2.0
 `,
@@ -40,7 +40,7 @@ on darwin_arm64
 					"registry.opentofu.org/test/test": "0.2.0",
 				}, nil)
 			},
-			wantStdout: `OpenTofu v0.1.0-dev
+			wantStdout: `Bogform v0.1.0-dev
 on darwin_arm64
 running in FIPS 140-3 mode (not yet supported)
 + provider registry.opentofu.org/test/test v0.2.0
@@ -54,7 +54,7 @@ running in FIPS 140-3 mode (not yet supported)
 					"registry.opentofu.org/test/test": "0.0.0",
 				}, nil)
 			},
-			wantStdout: `OpenTofu v0.1.0-dev
+			wantStdout: `Bogform v0.1.0-dev
 on darwin_arm64
 + provider registry.opentofu.org/test/test (unversioned)
 `,
@@ -140,7 +140,7 @@ on darwin_arm64
 					{Source: "registry.opentofu.org/terraform-aws-modules/eks/aws", Version: "20.24.0"},
 				})
 			},
-			wantStdout: `OpenTofu v0.1.0-dev
+			wantStdout: `Bogform v0.1.0-dev
 on darwin_arm64
 + module registry.opentofu.org/terraform-aws-modules/eks/aws v20.24.0
 `,
@@ -160,7 +160,7 @@ on darwin_arm64
 					{Source: "registry.opentofu.org/terraform-aws-modules/vpc/aws", Version: "6.7.2"},
 				})
 			},
-			wantStdout: `OpenTofu v0.1.0-dev
+			wantStdout: `Bogform v0.1.0-dev
 on darwin_arm64
 + module registry.opentofu.org/terraform-aws-modules/eks/aws v20.24.0
 + module registry.opentofu.org/terraform-aws-modules/eks/aws//modules/_user_data v20.24.0

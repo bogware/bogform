@@ -16,7 +16,7 @@ import (
 )
 
 // e2eTestingApplyHooks simulates particularly nasty
-// scenarios within OpenTofu's apply engine, such
+// scenarios within Bogform's apply engine, such
 // as panics due to programming errors
 type e2eTestingApplyHook struct {
 	tofu.NilHook

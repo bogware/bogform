@@ -96,7 +96,7 @@ func (s *Session) handleEval(line string) (string, tfdiags.Diagnostics) {
 
 func (s *Session) handleHelp() string {
 	text := `
-The OpenTofu console allows you to experiment with OpenTofu interpolations.
+The Bogform console allows you to experiment with Bogform interpolations.
 You may access resources in the state (if you have one) just as you would
 from a configuration. For example: "aws_instance.foo.id" would evaluate
 to the ID of "aws_instance.foo" if it exists in your state.
@@ -111,7 +111,7 @@ Control-D.
 }
 
 // typeString returns a string representation of a given type that is
-// reminiscent of the OpenTofu type constraint syntax that might be used
+// reminiscent of the Bogform type constraint syntax that might be used
 // to declare the type as part of an input variable declaration.
 //
 // This is a modified copy of TypeString from go-cty-debug, adapted to

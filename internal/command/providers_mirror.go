@@ -45,7 +45,7 @@ The mirror directory will contain JSON index files that can be published along w
 }
 
 // ProvidersMirrorCommand is a Command implementation that implements the
-// "tofu providers mirror" command, which populates a directory with
+// "bogform providers mirror" command, which populates a directory with
 // local copies of provider plugins needed by the current configuration so
 // that the mirror can be used to work offline, or similar.
 type ProvidersMirrorCommand struct {
@@ -101,7 +101,7 @@ func (c ProvidersMirrorCommand) Execute(args *arguments.ProvidersMirror, view vi
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Inconsistent dependency lock file",
-				fmt.Sprintf("To update the locked dependency selections to match a changed configuration, run:\n  tofu init -upgrade\n got:%v", errs),
+				fmt.Sprintf("To update the locked dependency selections to match a changed configuration, run:\n  bogform init -upgrade\n got:%v", errs),
 			))
 		}
 	}
@@ -200,7 +200,7 @@ func (c ProvidersMirrorCommand) Execute(args *arguments.ProvidersMirror, view vi
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Provider release not available",
-					fmt.Sprintf("Failed to download %s v%s for %s: OpenTofu's provider registry client returned unexpected location type %T. This is a bug in OpenTofu.", provider.String(), selected.String(), platform.String(), meta.Location),
+					fmt.Sprintf("Failed to download %s v%s for %s: Bogform's provider registry client returned unexpected location type %T. This is a bug in Bogform.", provider.String(), selected.String(), platform.String(), meta.Location),
 				))
 				continue
 			}

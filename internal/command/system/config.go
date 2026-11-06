@@ -20,7 +20,7 @@ type Config struct {
 	// commands, since the user consuming the output will not be
 	// in a position to run such commands.
 	//
-	// The intended use-case of this flag is when OpenTofu is running in
+	// The intended use-case of this flag is when Bogform is running in
 	// some sort of workflow orchestration tool which is abstracting away
 	// the specific commands being run.
 	RunningInAutomation bool
@@ -41,6 +41,6 @@ type Config struct {
 	GlobalPluginDirs []string
 
 	// E2ETestingFeaturesEnabled controls functionality related to replicating
-	// odd edge cases in OpenTofu, such as programming errors.
+	// odd edge cases in Bogform, such as programming errors.
 	E2ETestingFeaturesEnabled bool
 }

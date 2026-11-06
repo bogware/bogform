@@ -3,10 +3,10 @@
 // Copyright (c) 2023 HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
-// Package e2etest contains a set of tests that run against a real OpenTofu
+// Package e2etest contains a set of tests that run against a real Bogform
 // binary, compiled on the fly at the start of the test run.
 //
-// These tests help ensure that key end-to-end OpenTofu use-cases are working
+// These tests help ensure that key end-to-end Bogform use-cases are working
 // for a real binary, whereas other tests always have at least _some_ amount
 // of test stubbing.
 //
@@ -18,7 +18,7 @@
 //
 //	go test -v github.com/bogware/bogform/internal/command/e2etest
 //
-// This will compile on the fly a OpenTofu binary and run the tests against
+// This will compile on the fly a Bogform binary and run the tests against
 // it.
 //
 // The TF_ACC environment variable must be set for the tests to reach out
@@ -41,14 +41,14 @@
 // anyway.
 //
 // Because of that tension, we don't aspire for anything close to 100% coverage
-// of OpenTofu's features by tests in this package. Instead, out of pragmatism
+// of Bogform's features by tests in this package. Instead, out of pragmatism
 // we typically limit the scope of this package to the following situations:
 //
 //   - A fuzzily-defined subset of features that we think of as the
 //     "primary workflow", verifying that the usual init/validate/plan/apply
 //     sequence is generally functional without exhaustively testing all possible
 //     language features. This includes both the primary workflow as often used
-//     manually at a command line, where "tofu apply" is used to both plan and
+//     manually at a command line, where "bogform apply" is used to both plan and
 //     apply in a single command, and the primary workflow used by automation
 //     systems (e.g. TACOS) where plan and apply happen as separate commands
 //     connected using a saved plan file.
@@ -56,8 +56,8 @@
 //     together architecturally-separate components. For example, we tests some
 //     aspects of provider installation with end-to-end tests because the
 //     configurable installation methods rely on interactions between the CLI
-//     configuration system, the "tofu init" command, our shared mechanism for
-//     authenticating to OpenTofu-native services, and of course the provider
+//     configuration system, the "bogform init" command, our shared mechanism for
+//     authenticating to Bogform-native services, and of course the provider
 //     installer itself.
 //
 // Overall we prefer to write unit tests or more focused integration tests
@@ -69,7 +69,7 @@
 // Our end-to-end tests are structured like normal Go tests as much as possible,
 // but there are some special touches that are unique to this package:
 //
-//   - Any test that could potentially cause the OpenTofu CLI process being run
+//   - Any test that could potentially cause the Bogform CLI process being run
 //     to access network services aside from those offered by the test itself
 //     on the loopback interface MUST call "skipIfCannotAccessNetwork" early
 //     in its execution to ensure that it will run only when the "TF_ACC"
@@ -78,15 +78,15 @@
 //     test is expected to make, so that those who want to run the test know
 //     what to expect.
 //   - Even tests that access external network services must only access
-//     services directly controlled by the OpenTofu project, such as OpenTofu's
+//     services directly controlled by the Bogform project, such as Bogform's
 //     public registry. We don't write end-to-end tests that access third-party
 //     services such as GitHub where we have no influence over the availability
 //     of the service and where our automated runs of these tests as part of
 //     pull request checks would cause nuisance requests to the target.
-//   - We use the helpers in [e2e] to run the OpenTofu CLI executable that
+//   - We use the helpers in [e2e] to run the Bogform CLI executable that
 //     gets built automatically in TestMain. Tests therefore typically call
 //     [e2e.NewBinary] at some point during their setup code and then use the
-//     resulting object to run OpenTofu inside a temporary working directory.
+//     resulting object to run Bogform inside a temporary working directory.
 //     The package-level variable "tofuBin" contains the path to the temporary
 //     "tofu" executable to use for testing.
 //   - When testing human-oriented output (as opposed to than machine-oriented

@@ -108,7 +108,7 @@ func TestEvaluateCountExpression_errors(t *testing.T) {
 			cty.UnknownVal(cty.Number),
 			nil,
 			"Invalid count argument",
-			"The \"count\" value depends on resource attributes that cannot be determined until apply, so OpenTofu cannot predict how many instances will be created.\n\nTo work around this, use the -target option to first apply only the resources that the count depends on, and then apply normally to converge.",
+			"The \"count\" value depends on resource attributes that cannot be determined until apply, so Bogform cannot predict how many instances will be created.\n\nTo work around this, use the -target option to first apply only the resources that the count depends on, and then apply normally to converge.",
 			true,
 		},
 		"unknown with excludable address": {
@@ -119,7 +119,7 @@ func TestEvaluateCountExpression_errors(t *testing.T) {
 				Type: "bar",
 			}.Absolute(addrs.RootModuleInstance.Child("a", addrs.NoKey)),
 			"Invalid count argument",
-			"The \"count\" value depends on resource attributes that cannot be determined until apply, so OpenTofu cannot predict how many instances will be created.\n\nTo work around this, use the planning option -exclude=module.a.bar.foo to first apply without this object, and then apply normally to converge.",
+			"The \"count\" value depends on resource attributes that cannot be determined until apply, so Bogform cannot predict how many instances will be created.\n\nTo work around this, use the planning option -exclude=module.a.bar.foo to first apply without this object, and then apply normally to converge.",
 			true,
 		},
 		"ephemeral value": {

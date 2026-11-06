@@ -8,7 +8,7 @@ package backend
 //go:generate go tool golang.org/x/tools/cmd/stringer -type=OperationType operation_type.go
 
 // OperationType is an enum used with Operation to specify the operation
-// type to perform for OpenTofu.
+// type to perform for Bogform.
 type OperationType uint
 
 const (

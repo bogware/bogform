@@ -369,8 +369,8 @@ func TestShow_planWithChanges(t *testing.T) {
 func TestShow_planWithForceReplaceChange(t *testing.T) {
 	// The main goal of this test is to see that the "replace by request"
 	// resource instance action reason can round-trip through a plan file and
-	// be reflected correctly in the "tofu show" output, the same way
-	// as it would appear in "tofu plan" output.
+	// be reflected correctly in the "bogform show" output, the same way
+	// as it would appear in "bogform plan" output.
 
 	_, snap := testModuleWithSnapshot(t, "show")
 	plannedVal := cty.ObjectVal(map[string]cty.Value{
@@ -470,7 +470,7 @@ func TestShow_planErrored(t *testing.T) {
 	}
 
 	got := output.Stdout()
-	want := `Planning failed. OpenTofu encountered an error while generating this plan.`
+	want := `Planning failed. Bogform encountered an error while generating this plan.`
 	if !strings.Contains(got, want) {
 		t.Fatalf("unexpected output\ngot: %s\nwant: %s", got, want)
 	}
@@ -1243,7 +1243,7 @@ func showFixtureSensitiveSchema() *providers.GetProviderSchemaResponse {
 // operation with the configuration in testdata/show. This mock has
 // GetSchemaResponse, PlanResourceChangeFn, and ApplyResourceChangeFn populated,
 // with the plan/apply steps just passing through the data determined by
-// OpenTofu Core.
+// Bogform Core.
 func showFixtureProvider() *tofu.MockProvider {
 	p := testProvider()
 	p.GetProviderSchemaResponse = showFixtureSchema()
@@ -1306,7 +1306,7 @@ func showFixtureProvider() *tofu.MockProvider {
 // operation with the configuration in testdata/show. This mock has
 // GetSchemaResponse, PlanResourceChangeFn, and ApplyResourceChangeFn populated,
 // with the plan/apply steps just passing through the data determined by
-// OpenTofu Core. It also has a sensitive attribute in the provider schema.
+// Bogform Core. It also has a sensitive attribute in the provider schema.
 func showFixtureSensitiveProvider() *tofu.MockProvider {
 	p := testProvider()
 	p.GetProviderSchemaResponse = showFixtureSensitiveSchema()
@@ -1544,7 +1544,7 @@ func TestShow_config_noArgs(t *testing.T) {
 	}
 
 	got := output.Stderr()
-	want := "This directory contains no OpenTofu configuration files."
+	want := "This directory contains no Bogform configuration files."
 	if !strings.Contains(got, want) {
 		t.Errorf("unexpected output\ngot: %s\nwant:\n%s", got, want)
 	}
@@ -1702,10 +1702,10 @@ func TestShow_config_conflictingOptions(t *testing.T) {
 }
 
 func TestShow_module(t *testing.T) {
-	// We intentionally don't cause the effect of a "tofu init" for this one,
+	// We intentionally don't cause the effect of a "bogform init" for this one,
 	// because the single-module mode is required to work without any
 	// dependencies installed and without a backend initialized so it can
-	// be used by the OpenTofu module registry indexing process.
+	// be used by the Bogform module registry indexing process.
 
 	view, done := testView(t)
 

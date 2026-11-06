@@ -43,7 +43,7 @@ func TestInitProviders(t *testing.T) {
 		t.Errorf("unexpected stderr output:\n%s", stderr)
 	}
 
-	if !strings.Contains(stdout, "OpenTofu has been successfully initialized!") {
+	if !strings.Contains(stdout, "Bogform has been successfully initialized!") {
 		t.Errorf("success message is missing from output:\n%s", stdout)
 	}
 
@@ -52,7 +52,7 @@ func TestInitProviders(t *testing.T) {
 		t.Logf("(this can happen if you have a copy of the plugin in one of the global plugin search dirs)")
 	}
 
-	if !strings.Contains(stdout, "OpenTofu has created a lock file") {
+	if !strings.Contains(stdout, "Bogform has created a lock file") {
 		t.Errorf("lock file notification is missing from output:\n%s", stdout)
 	}
 
@@ -77,7 +77,7 @@ func TestInitProvidersInternal(t *testing.T) {
 			t.Errorf("unexpected stderr output:\n%s", stderr)
 		}
 
-		if !strings.Contains(stdout, "OpenTofu has been successfully initialized!") {
+		if !strings.Contains(stdout, "Bogform has been successfully initialized!") {
 			t.Errorf("success message is missing from output:\n%s", stdout)
 		}
 
@@ -108,7 +108,7 @@ func TestInitProvidersInternal(t *testing.T) {
 		}
 
 		// we can not check timestamp, so the sub string is not a valid json object
-		if !strings.Contains(stdout, `{"@level":"info","@message":"OpenTofu has been successfully initialized!","@module":"tofu.ui"`) {
+		if !strings.Contains(stdout, `{"@level":"info","@message":"Bogform has been successfully initialized!","@module":"tofu.ui"`) {
 			t.Errorf("success message is missing from output:\n%s", stdout)
 		}
 
@@ -159,7 +159,7 @@ func TestInitProvidersVendored(t *testing.T) {
 		t.Errorf("unexpected stderr output:\n%s", stderr)
 	}
 
-	if !strings.Contains(stdout, "OpenTofu has been successfully initialized!") {
+	if !strings.Contains(stdout, "Bogform has been successfully initialized!") {
 		t.Errorf("success message is missing from output:\n%s", stdout)
 	}
 
@@ -184,7 +184,7 @@ func TestInitProvidersLocalOnly(t *testing.T) {
 		fixturePath := filepath.Join("testdata", "local-only-provider")
 		tf := e2e.NewBinary(t, tofuBin, fixturePath)
 		// If you run this test on a workstation with a plugin-cache directory
-		// configured, it will leave a bad directory behind and tofu init will
+		// configured, it will leave a bad directory behind and bogform init will
 		// not work until you remove it.
 		//
 		// To avoid this, we will  "zero out" any existing cli config file.
@@ -209,7 +209,7 @@ func TestInitProvidersLocalOnly(t *testing.T) {
 			t.Errorf("unexpected stderr output:\n%s", stderr)
 		}
 
-		if !strings.Contains(stdout, "OpenTofu has been successfully initialized!") {
+		if !strings.Contains(stdout, "Bogform has been successfully initialized!") {
 			t.Errorf("success message is missing from output:\n%s", stdout)
 		}
 
@@ -223,7 +223,7 @@ func TestInitProvidersLocalOnly(t *testing.T) {
 		fixturePath := filepath.Join("testdata", "local-only-provider")
 		tf := e2e.NewBinary(t, tofuBin, fixturePath)
 		// If you run this test on a workstation with a plugin-cache directory
-		// configured, it will leave a bad directory behind and tofu init will
+		// configured, it will leave a bad directory behind and bogform init will
 		// not work until you remove it.
 		//
 		// To avoid this, we will  "zero out" any existing cli config file.
@@ -249,7 +249,7 @@ func TestInitProvidersLocalOnly(t *testing.T) {
 		}
 
 		// we can not check timestamp, so the sub string is not a valid json object
-		if !strings.Contains(stdout, `{"@level":"info","@message":"OpenTofu has been successfully initialized!","@module":"tofu.ui"`) {
+		if !strings.Contains(stdout, `{"@level":"info","@message":"Bogform has been successfully initialized!","@module":"tofu.ui"`) {
 			t.Errorf("success message is missing from output:\n%s", stdout)
 		}
 
@@ -299,7 +299,7 @@ func TestInitProvidersCustomMethod(t *testing.T) {
 				t.Errorf("unexpected stderr output:\n%s", stderr)
 			}
 
-			if !strings.Contains(stdout, "OpenTofu has been successfully initialized!") {
+			if !strings.Contains(stdout, "Bogform has been successfully initialized!") {
 				t.Errorf("success message is missing from output:\n%s", stdout)
 			}
 
@@ -449,7 +449,7 @@ func TestInitProviderNotFound(t *testing.T) {
 		}
 
 		oneLineStdout := strings.ReplaceAll(stdout, "\n", " ")
-		if !strings.Contains(oneLineStdout, `"diagnostic":{"severity":"error","summary":"Failed to query available provider packages","detail":"Could not retrieve the list of available versions for provider hashicorp/nonexist: provider registry registry.opentofu.org does not have a provider named registry.opentofu.org/hashicorp/nonexist\n\nAll modules should specify their required_providers so that external consumers will get the correct providers when using a module. To see which modules are currently depending on hashicorp/nonexist, run the following command:\n    tofu providers\n\nIf you believe this provider is missing from the registry, please submit a issue on the OpenTofu Registry https://github.com/opentofu/registry/issues/new/choose"},"type":"diagnostic"}`) {
+		if !strings.Contains(oneLineStdout, `"diagnostic":{"severity":"error","summary":"Failed to query available provider packages","detail":"Could not retrieve the list of available versions for provider hashicorp/nonexist: provider registry registry.opentofu.org does not have a provider named registry.opentofu.org/hashicorp/nonexist\n\nAll modules should specify their required_providers so that external consumers will get the correct providers when using a module. To see which modules are currently depending on hashicorp/nonexist, run the following command:\n    bogform providers\n\nIf you believe this provider is missing from the registry, please submit a issue on the OpenTofu Registry https://github.com/opentofu/registry/issues/new/choose"},"type":"diagnostic"}`) {
 			t.Errorf("expected error message is missing from output:\n%s", stdout)
 		}
 	})
@@ -507,7 +507,7 @@ func TestInitProviderNotFound(t *testing.T) {
 │ consumers will get the correct providers when using a module. To see which
 │ modules are currently depending on hashicorp/nonexist, run the following
 │ command:
-│     tofu providers
+│     bogform providers
 │ 
 │ If you believe this provider is missing from the registry, please submit a
 │ issue on the OpenTofu Registry
@@ -539,13 +539,13 @@ func TestInitProviderNotFound(t *testing.T) {
 │   on main.tf line 2:
 │    2: resource "nonexistingProv_res" "test1" {
 │ 
-│ Due to the prefix of the resource type name OpenTofu guessed that you
+│ Due to the prefix of the resource type name Bogform guessed that you
 │ intended to associate nonexistingProv_res.test1 with a provider whose local
 │ name is "nonexistingprov", but that name is not declared in this module's
-│ required_providers block. OpenTofu therefore guessed that you intended to
+│ required_providers block. Bogform therefore guessed that you intended to
 │ use hashicorp/nonexistingprov, but that provider does not exist.
 │ 
-│ Make at least one of the following changes to tell OpenTofu which provider
+│ Make at least one of the following changes to tell Bogform which provider
 │ to use:
 │ 
 │ - Add a declaration for local name "nonexistingprov" to this module's
@@ -554,7 +554,7 @@ func TestInitProviderNotFound(t *testing.T) {
 │ - Verify that "nonexistingProv_res" is the correct resource type name to
 │ use. Did you omit a prefix which would imply the correct provider?
 │ - Use a "provider" argument within this resource block to override
-│ OpenTofu's automatic selection of the local name "nonexistingprov".
+│ Bogform's automatic selection of the local name "nonexistingprov".
 │`}
 		for _, expectedOutput := range expectedContentInOutput {
 			if cleanOut := strings.TrimSpace(stripAnsi(stdout)); !strings.Contains(cleanOut, expectedOutput) {
@@ -627,7 +627,7 @@ func escapeStringJSON(v string) string {
 	return string(marshaledV[1 : len(marshaledV)-2])
 }
 
-// TestTelemetrySchemaConflict reproduces the issue where OpenTofu fails to initialize
+// TestTelemetrySchemaConflict reproduces the issue where Bogform fails to initialize
 // telemetry due to conflicting OpenTelemetry schema URLs from different semconv versions.
 //
 // The issue occurs because different parts of the codebase import different versions

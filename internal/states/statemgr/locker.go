@@ -30,10 +30,10 @@ var rngSource = rand.New(rand.NewSource(time.Now().UnixNano()))
 // Implementing Locker alongside Persistent relaxes some of the usual
 // implementation constraints for implementations of Refresher and Persister,
 // under the assumption that the locking mechanism effectively prevents
-// multiple OpenTofu processes from reading and writing state concurrently.
+// multiple Bogform processes from reading and writing state concurrently.
 // In particular, a type that implements both Locker and Persistent is only
 // required to that the Persistent implementation is concurrency-safe within
-// a single OpenTofu process.
+// a single Bogform process.
 //
 // A Locker implementation must ensure that another processes with a
 // similarly-configured state manager cannot successfully obtain a lock while
@@ -139,7 +139,7 @@ type LockInfo struct {
 	// returned by the call to Lock.
 	ID string `json:"ID"`
 
-	// OpenTofu operation, provided by the caller.
+	// Bogform operation, provided by the caller.
 	Operation string `json:"Operation"`
 
 	// Extra information to store with the lock, provided by the caller.
@@ -148,7 +148,7 @@ type LockInfo struct {
 	// user@hostname when available
 	Who string `json:"Who"`
 
-	// OpenTofu version
+	// Bogform version
 	Version string `json:"Version"`
 
 	// Time that the lock was taken.
@@ -163,7 +163,7 @@ type LockInfo struct {
 func NewLockInfo() *LockInfo {
 	// this doesn't need to be cryptographically secure, just unique.
 	// Using math/rand alleviates the need to check handle the read error.
-	// Use a uuid format to match other IDs used throughout OpenTofu.
+	// Use a uuid format to match other IDs used throughout Bogform.
 	buf := make([]byte, 16)
 	rngSource.Read(buf)
 

@@ -464,7 +464,7 @@ func testGetClientOptions(t *testing.T) ([]option.ClientOption, error) {
 	// closely as possible.
 	credOptions = append(credOptions, option.WithCredentialsJSON([]byte(contents)))
 	opts = append(opts, credOptions...)
-	opts = append(opts, option.WithUserAgent(httpclient.OpenTofuUserAgent(version.Version)))
+	opts = append(opts, option.WithUserAgent(httpclient.BogformUserAgent(version.Version)))
 
 	return opts, nil
 }

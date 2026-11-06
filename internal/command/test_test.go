@@ -367,10 +367,10 @@ func TestTest_DoubleInterrupt(t *testing.T) {
 		t.Errorf("output didn't produce the right output:\n\n%s", output)
 	}
 
-	cleanupMessage := `OpenTofu was interrupted while executing main.tftest.hcl, and may not have
+	cleanupMessage := `Bogform was interrupted while executing main.tftest.hcl, and may not have
 performed the expected cleanup operations.
 
-OpenTofu has already created the following resources from the module under
+Bogform has already created the following resources from the module under
 test:
   - test_resource.primary
   - test_resource.secondary
@@ -600,11 +600,11 @@ func TestTest_Verbose(t *testing.T) {
 	expected := `main.tftest.hcl... pass
   run "validate_test_resource"... pass
 
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   + create
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.foo will be created
   + resource "test_resource" "foo" {
@@ -997,11 +997,11 @@ resource "test_resource" "resource" {
 }
   run "plan_second_example"... pass
 
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   + create
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.second_module_resource will be created
   + resource "test_resource" "second_module_resource" {
@@ -1012,11 +1012,11 @@ OpenTofu will perform the following actions:
 Plan: 1 to add, 0 to change, 0 to destroy.
   run "plan_update"... pass
 
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   ~ update in-place (current -> planned)
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.resource will be updated in-place
   ~ resource "test_resource" "resource" {
@@ -1027,11 +1027,11 @@ OpenTofu will perform the following actions:
 Plan: 0 to add, 1 to change, 0 to destroy.
   run "plan_update_example"... pass
 
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   ~ update in-place (current -> planned)
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.module_resource will be updated in-place
   ~ resource "test_resource" "module_resource" {
@@ -1073,7 +1073,7 @@ changes requested by the current configuration.
 
 The -target and -exclude options are not for routine use, and are provided
 only for exceptional situations such as recovering from errors or mistakes,
-or when OpenTofu specifically suggests to use it as part of an error message.
+or when Bogform specifically suggests to use it as part of an error message.
 
 Warning: Applied changes may be incomplete
 
@@ -1081,11 +1081,11 @@ The plan was created with the -target or the -exclude option in effect, so
 some changes requested in the configuration may have been ignored and the
 output values may not be fully updated. Run the following command to verify
 that no other changes are pending:
-    tofu plan
+    bogform plan
 	
 Note that the -target and -exclude options are not suitable for routine use,
 and are provided only for exceptional situations such as recovering from
-errors or mistakes, or when OpenTofu specifically suggests to use it as part
+errors or mistakes, or when Bogform specifically suggests to use it as part
 of an error message.
   run "second"... pass
 
@@ -1105,7 +1105,7 @@ changes requested by the current configuration.
 
 The -target and -exclude options are not for routine use, and are provided
 only for exceptional situations such as recovering from errors or mistakes,
-or when OpenTofu specifically suggests to use it as part of an error message.
+or when Bogform specifically suggests to use it as part of an error message.
 
 Warning: Applied changes may be incomplete
 
@@ -1113,11 +1113,11 @@ The plan was created with the -target or the -exclude option in effect, so
 some changes requested in the configuration may have been ignored and the
 output values may not be fully updated. Run the following command to verify
 that no other changes are pending:
-    tofu plan
+    bogform plan
 	
 Note that the -target and -exclude options are not suitable for routine use,
 and are provided only for exceptional situations such as recovering from
-errors or mistakes, or when OpenTofu specifically suggests to use it as part
+errors or mistakes, or when Bogform specifically suggests to use it as part
 of an error message.
 
 Failure! 0 passed, 1 failed.
@@ -1422,8 +1422,8 @@ digits, underscores, and dashes.
 	}
 }
 
-// TestTest_MockProviderValidation checks if tofu test runs proper validation for
-// mock_provider. Even if provider schema has required fields, tofu test should
+// TestTest_MockProviderValidation checks if bogform test runs proper validation for
+// mock_provider. Even if provider schema has required fields, bogform test should
 // ignore it completely, because the provider is mocked.
 func TestTest_MockProviderValidation(t *testing.T) {
 	td := t.TempDir()
@@ -1492,8 +1492,8 @@ func TestTest_MockProviderValidation(t *testing.T) {
 	}
 }
 
-// TestTest_MockProviderValidationForEach checks if tofu test runs proper validation for
-// mock_provider with for_each. Even if provider schema has required fields, tofu test should
+// TestTest_MockProviderValidationForEach checks if bogform test runs proper validation for
+// mock_provider with for_each. Even if provider schema has required fields, bogform test should
 // ignore it completely, because the provider is mocked.
 func TestTest_MockProviderValidationForEach(t *testing.T) {
 	td := t.TempDir()

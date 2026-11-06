@@ -50,12 +50,12 @@ func TestSourceAvailableVersions(t *testing.T) {
 		{
 			"not.example.com/foo/bar",
 			nil,
-			`host not.example.com does not offer a OpenTofu provider registry`,
+			`host not.example.com does not offer a Bogform provider registry`,
 		},
 		{
 			"too-new.example.com/foo/bar",
 			nil,
-			`host too-new.example.com does not support the provider registry protocol required by this OpenTofu version, but may be compatible with a different OpenTofu version`,
+			`host too-new.example.com does not support the provider registry protocol required by this Bogform version, but may be compatible with a different Bogform version`,
 		},
 		{
 			"fails.example.com/foo/bar",
@@ -181,14 +181,14 @@ func TestSourcePackageMeta(t *testing.T) {
 			"1.2.0",
 			"linux", "amd64",
 			PackageMeta{},
-			`host not.example.com does not offer a OpenTofu provider registry`,
+			`host not.example.com does not offer a Bogform provider registry`,
 		},
 		{
 			"too-new.example.com/awesomesauce/happycloud",
 			"1.2.0",
 			"linux", "amd64",
 			PackageMeta{},
-			`host too-new.example.com does not support the provider registry protocol required by this OpenTofu version, but may be compatible with a different OpenTofu version`,
+			`host too-new.example.com does not support the provider registry protocol required by this Bogform version, but may be compatible with a different Bogform version`,
 		},
 		{
 			"fails.example.com/awesomesauce/happycloud",

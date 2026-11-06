@@ -169,7 +169,7 @@ func (rt *ManagedResourceType) ImportState(ctx context.Context, req *ManagedReso
 		log.Printf("[TRACE] graphNodeImportState: import %s %q produced instance object of type %s", dispAddr, req.Target, obj.TypeName)
 	}
 	if len(imported) > 1 {
-		// Note: This was previously supported, but only through the `tofu import` command and not through
+		// Note: This was previously supported, but only through the `bogform import` command and not through
 		// import blocks. The plugin sdk still technically allows this, but the plugin framework forbids it.
 		// Additionally, any providers which decide to try to make this work, will be fundimentally incompatible
 		// with import blocks, the preferred method if interacting with the import feature.
@@ -623,7 +623,7 @@ func (rt *ManagedResourceType) providerCanPlanDestroy(ctx context.Context) bool 
 //
 // This compensates for common provider misbehavior of returning
 // "requires replace" paths even when the corresponding value isn't actually
-// changing, which unfortunately we must allow because OpenTofu and its
+// changing, which unfortunately we must allow because Bogform and its
 // predecessor accepted it long enough that many existing providers ended up
 // inadvertently relying on it.
 func (rt *ManagedResourceType) filteredRequiresReplace(returned []cty.Path, currentVal, plannedVal cty.Value, schema *configschema.Block) (cty.PathSet, tfdiags.Diagnostics) {
@@ -650,7 +650,7 @@ func (rt *ManagedResourceType) filteredRequiresReplace(returned []cty.Path, curr
 		if plannedPathDiags.HasErrors() && currentPathDiags.HasErrors() {
 			// This means the path is invalid in both the current and new
 			// values, which is an error with the provider itself.
-			// (This particular thing is something that both OpenTofu and
+			// (This particular thing is something that both Bogform and
 			// its predecessor historically enforced, so it's safe for us to
 			// continue enforcing it here.)
 			diags = diags.Append(tfdiags.AttributeValue(

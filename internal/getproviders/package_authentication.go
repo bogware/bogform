@@ -224,11 +224,11 @@ type packageHashAuthentication struct {
 
 // NewPackageHashAuthentication returns a PackageAuthentication implementation
 // that checks whether the contents of the package match whatever subset of the
-// given hashes are considered acceptable by the current version of OpenTofu.
+// given hashes are considered acceptable by the current version of Bogform.
 //
 // This uses the hash algorithms implemented by functions PackageHash and
 // MatchesHash. The PreferredHashes function will select which of the given
-// hashes are considered by OpenTofu to be the strongest verification, and
+// hashes are considered by Bogform to be the strongest verification, and
 // authentication succeeds as long as one of those matches.
 func NewPackageHashAuthentication(platform Platform, validHashes []Hash, trustAllHashes bool) PackageAuthentication {
 	requiredHashes := PreferredHashes(validHashes)
@@ -244,8 +244,8 @@ func (a packageHashAuthentication) AuthenticatePackage(localLocation PackageLoca
 	if len(a.RequiredHashes) == 0 {
 		// Indicates that none of the hashes given to
 		// NewPackageHashAuthentication were considered to be usable by this
-		// version of OpenTofu.
-		return nil, fmt.Errorf("this version of OpenTofu does not support any of the checksum formats given for this provider")
+		// version of Bogform.
+		return nil, fmt.Errorf("this version of Bogform does not support any of the checksum formats given for this provider")
 	}
 
 	hashes := make(HashDispositions, len(a.RequiredHashes))
@@ -265,7 +265,7 @@ func (a packageHashAuthentication) AuthenticatePackage(localLocation PackageLoca
 			// all of the reported hashes.
 			//
 			// We use RequiredHashes here as we know they are compatible with this version
-			// of OpenTofu. If PreferredHashes ever changes, we may need to change this loop.
+			// of Bogform. If PreferredHashes ever changes, we may need to change this loop.
 			for _, hash := range a.RequiredHashes {
 				if _, ok := hashes[hash]; !ok {
 					hashes[hash] = &HashDisposition{
@@ -531,7 +531,7 @@ var ErrUnknownIssuer = fmt.Errorf("authentication signature from unknown issuer"
 // ShouldEnforceGPGValidationForProvider returns true if GPG signature
 // validation must be enforced for the given provider.
 //
-// OpenTofu requires a valid GPG signature for any provider for which this
+// Bogform requires a valid GPG signature for any provider for which this
 // function returns true. The result of this function only applies if the
 // provider's origin registry does not return any signing keys for the
 // provider; GPG signature is always required for any provider whose
@@ -714,7 +714,7 @@ func (s signatureAuthentication) findSigningKey() (*SigningKey, string, error) {
 
 	// Warn only once when ALL keys are expired.
 	if expiredKey != nil && !s.shouldEnforceGPGExpiration() {
-		fmt.Printf("[WARN] Provider %s/%s (%v) gpg key expired, this will fail in future versions of OpenTofu\n",
+		fmt.Printf("[WARN] Provider %s/%s (%v) gpg key expired, this will fail in future versions of Bogform\n",
 			s.Meta.Provider.Namespace, s.Meta.Provider.Type, s.Meta.Provider.Hostname)
 		return expiredKey, expiredKeyID, nil
 	}

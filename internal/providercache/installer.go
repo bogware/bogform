@@ -54,12 +54,12 @@ type Installer struct {
 
 	// builtInProviderTypes is an optional set of types that should be
 	// considered valid to appear in the special terraform.io/builtin/...
-	// namespace, which we use for providers that are built in to OpenTofu
+	// namespace, which we use for providers that are built in to Bogform
 	// and thus do not need any separate installation step.
 	builtInProviderTypes []string
 
 	// unmanagedProviderTypes is a set of provider addresses that should be
-	// considered implemented, but that OpenTofu does not manage the
+	// considered implemented, but that Bogform does not manage the
 	// lifecycle for, and therefore does not need to worry about the
 	// installation of.
 	unmanagedProviderTypes map[addrs.Provider]struct{}
@@ -127,7 +127,7 @@ func (i *Installer) SetGlobalCacheDir(cacheDir *Dir) {
 // If this is set then if we install a provider for the first time from the
 // cache then the dependency lock file will include only the checksum from
 // the package in the global cache, which means the lock file won't be portable
-// to OpenTofu running on another operating system or CPU architecture.
+// to Bogform running on another operating system or CPU architecture.
 func (i *Installer) SetGlobalCacheDirMayBreakDependencyLockFile(mayBreak bool) {
 	i.globalCacheDirMayBreakDependencyLockFile = mayBreak
 }
@@ -141,7 +141,7 @@ func (i *Installer) HasGlobalCacheDir() bool {
 // SetBuiltInProviderTypes tells the receiver to consider the type names in the
 // given slice to be valid as providers in the special special
 // terraform.io/builtin/... namespace that we use for providers that are
-// built in to OpenTofu and thus do not need a separate installation step.
+// built in to Bogform and thus do not need a separate installation step.
 //
 // If a caller requests installation of a provider in that namespace, the
 // installer will treat it as a no-op if its name exists in this list, but
@@ -157,10 +157,10 @@ func (i *Installer) SetBuiltInProviderTypes(types []string) {
 }
 
 // SetUnmanagedProviderTypes tells the receiver to consider the providers
-// indicated by the passed addrs.Providers as unmanaged. OpenTofu does not
+// indicated by the passed addrs.Providers as unmanaged. Bogform does not
 // need to control the lifecycle of these providers, and they are assumed to be
-// running already when OpenTofu is started. Because these are essentially
-// processes, not binaries, OpenTofu will not do any work to ensure presence
+// running already when Bogform is started. Because these are essentially
+// processes, not binaries, Bogform will not do any work to ensure presence
 // or versioning of these binaries.
 func (i *Installer) SetUnmanagedProviderTypes(types map[addrs.Provider]struct{}) {
 	i.unmanagedProviderTypes = types
@@ -234,7 +234,7 @@ func (i *Installer) EnsureProviderVersions(ctx context.Context, locks *depsfile.
 	// Step 3: For each provider version we've decided we need to install,
 	// install its package into our target cache (possibly via the global cache).
 	targetPlatform := i.targetDir.targetPlatform // we inherit this to behave correctly in unit tests
-	span.SetAttributes(traceattrs.OpenTofuTargetPlatform(targetPlatform.String()))
+	span.SetAttributes(traceattrs.BogformTargetPlatform(targetPlatform.String()))
 	span.SetName("Install Providers - " + targetPlatform.String())
 	authResults, err := i.ensureProviderVersionsInstall(ctx, locks, reqs, mode, need, targetPlatform, errs)
 	if err != nil {
@@ -297,11 +297,11 @@ func (i *Installer) ensureProviderVersionsMightNeed(
 				} else {
 					// A built-in provider is not permitted to have an explicit
 					// version constraint, because we can only use the version
-					// that is built in to the current OpenTofu release.
+					// that is built in to the current Bogform release.
 					err = fmt.Errorf("built-in providers do not support explicit version constraints")
 				}
 			} else {
-				err = fmt.Errorf("this OpenTofu release has no built-in provider named %q", provider.Type)
+				err = fmt.Errorf("this Bogform release has no built-in provider named %q", provider.Type)
 			}
 			if err != nil {
 				errs[provider] = err
@@ -323,7 +323,7 @@ func (i *Installer) ensureProviderVersionsMightNeed(
 			if lock := locks.Provider(provider); lock != nil {
 				if !acceptableVersions.Has(lock.Version()) {
 					err := fmt.Errorf(
-						"locked provider %s %s does not match configured version constraint %s; must use tofu init -upgrade to allow selection of new versions",
+						"locked provider %s %s does not match configured version constraint %s; must use bogform init -upgrade to allow selection of new versions",
 						provider, lock.Version(), getproviders.VersionConstraintsString(versionConstraints),
 					)
 					errs[provider] = err
@@ -488,9 +488,9 @@ func (i *Installer) ensureProviderVersionsInstall(
 			traceCtx, span := tracing.Tracer().Start(ctx,
 				fmt.Sprintf("Install Provider %q", provider.String()),
 				tracing.SpanAttributes(
-					traceattrs.OpenTofuProviderAddress(provider.String()),
-					traceattrs.OpenTofuProviderVersion(version.String()),
-					traceattrs.OpenTofuTargetPlatform(targetPlatform.String()),
+					traceattrs.BogformProviderAddress(provider.String()),
+					traceattrs.BogformProviderVersion(version.String()),
+					traceattrs.BogformTargetPlatform(targetPlatform.String()),
 				),
 			)
 			defer span.End()
@@ -586,7 +586,7 @@ func (i *Installer) ensureProviderVersionInstalled(
 		// cache directory.
 		new = linkTo.ProviderVersion(provider, version)
 		if new == nil {
-			err := fmt.Errorf("after installing %s it is still not detected in %s; this is a bug in OpenTofu", provider, linkTo.BasePath())
+			err := fmt.Errorf("after installing %s it is still not detected in %s; this is a bug in Bogform", provider, linkTo.BasePath())
 			if cb := evts.LinkFromCacheFailure; cb != nil {
 				cb(provider, version, err)
 			}
@@ -681,7 +681,7 @@ func (i *Installer) ensureProviderVersionInDirectory(
 
 	new := installTo.ProviderVersion(provider, version)
 	if new == nil {
-		err := fmt.Errorf("after installing %s it is still not detected in %s; this is a bug in OpenTofu", provider, installTo.BasePath())
+		err := fmt.Errorf("after installing %s it is still not detected in %s; this is a bug in Bogform", provider, installTo.BasePath())
 		if cb := evts.FetchPackageFailure; cb != nil {
 			cb(provider, version, err)
 		}
@@ -748,7 +748,7 @@ func (i *Installer) ensureProviderVersionInDirectory(
 			// the evts object. We also allow trusted mirror hashes
 			// here and treat those equivalent to ones reported by the
 			// registry.
-			// Note that the "tofu init" UI relies on us pretending
+			// Note that the "bogform init" UI relies on us pretending
 			// that these are "signed" to avoid generating its warning
 			// that the dependency lock file might be incomplete.
 			return hd.ReportedByRegistry || hd.ReportedByTrustedMirror
@@ -792,7 +792,7 @@ func checkUnspecifiedVersion(acceptableVersions versions.Set) error {
 	if !acceptableVersions.Exactly(versions.Unspecified) {
 		return nil
 	}
-	tip := "If the version 0.0.0 is intended to represent a non-published provider, consider using dev_overrides - https://opentofu.org/docs/cli/config/config-file/#development-overrides-for-provider-developers"
+	tip := "If the version 0.0.0 is intended to represent a non-published provider, consider using dev_overrides - https://bogware.github.io/bogform/docs/cli/config/config-file/#development-overrides-for-provider-developers"
 	return fmt.Errorf("0.0.0 is not a valid provider version. \n%s", tip)
 }
 

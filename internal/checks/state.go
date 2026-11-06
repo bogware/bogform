@@ -15,7 +15,7 @@ import (
 )
 
 // State is a container for state tracking of all of the checks declared in
-// a particular OpenTofu configuration and their current statuses.
+// a particular Bogform configuration and their current statuses.
 //
 // A State object is mutable during plan and apply operations but should
 // otherwise be treated as a read-only snapshot of the status of checks
@@ -44,7 +44,7 @@ type State struct {
 // the evaluation status for a particular addrs.ConfigCheckable address.
 //
 // Its initial state, at the beginning of a run, is that it doesn't even know
-// how many checkable objects will be dynamically-declared yet. OpenTofu Core
+// how many checkable objects will be dynamically-declared yet. Bogform Core
 // will notify the State object of the associated Checkables once
 // it has decided the appropriate expansion of that configuration object,
 // and then will gradually report the results of each check once the graph
@@ -62,11 +62,11 @@ type configCheckableState struct {
 	// objects represents the set of dynamic checkable objects associated
 	// with this configuration construct. This is initially nil to represent
 	// that we don't know the objects yet, and is replaced by a non-nil map
-	// once OpenTofu Core reports the expansion of this configuration
+	// once Bogform Core reports the expansion of this configuration
 	// construct.
 	//
 	// The leaf Status values will initially be StatusUnknown
-	// and then gradually updated by OpenTofu Core as it visits the
+	// and then gradually updated by Bogform Core as it visits the
 	// individual checkable objects and reports their status.
 	objects addrs.Map[addrs.Checkable, map[addrs.CheckRuleType][]Status]
 }
@@ -188,7 +188,7 @@ func (c *State) AggregateCheckStatus(addr addrs.ConfigCheckable) Status {
 // ObjectCheckStatus returns a summarization of all of the check results
 // for a particular checkable object into a single status.
 //
-// The given address must refer to a checkable object that OpenTofu Core
+// The given address must refer to a checkable object that Bogform Core
 // previously reported while doing a graph walk, or this method will panic.
 func (c *State) ObjectCheckStatus(addr addrs.Checkable) Status {
 	c.mu.Lock()

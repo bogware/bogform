@@ -20,7 +20,7 @@ package kubernetes
 // you can explicitly select the one added by minikube by setting:
 //    KUBE_CTX=minikube
 //
-// As usual with acceptance tests in OpenTofu, you will also need to set
+// As usual with acceptance tests in Bogform, you will also need to set
 // either TF_ACC=1 or TF_K8S_TEST=1 to confirm that you want the test suite
 // to try to connect to a Kubernetes cluster.
 ////////////////////////////////////////////////////////////////////////////

@@ -11,7 +11,7 @@ import (
 
 // Logout represents the command-line arguments for the logout command.
 type Logout struct {
-	// Host represents the host that OpenTofu will try to log out of
+	// Host represents the host that Bogform will try to log out of
 	Host string
 
 	// View represents the global view options

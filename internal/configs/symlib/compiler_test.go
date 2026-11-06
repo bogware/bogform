@@ -271,7 +271,7 @@ func TestRFCExamples(t *testing.T) {
 		files: map[string]string{
 			"./types.sym.hcl": `
 typedef "simple_type" {
-  # https://opentofu.org/docs/language/expressions/types/
+  # https://bogware.github.io/bogform/docs/language/expressions/types/
   # Any builtin type may be used here
   type = number
 }
@@ -357,7 +357,7 @@ function "add" {
 }
 
 # Function with parameter validation
-# https://opentofu.org/docs/language/expressions/custom-conditions/#input-variable-validation
+# https://bogware.github.io/bogform/docs/language/expressions/custom-conditions/#input-variable-validation
 function "divide" {
   parameter "a" {
     type = number

@@ -106,7 +106,7 @@ var TimeCmpFunc = function.New(&function.Spec{
 
 // Timestamp returns a string representation of the current date and time.
 //
-// In the OpenTofu language, timestamps are conventionally represented as
+// In the Bogform language, timestamps are conventionally represented as
 // strings using RFC 3339 "Date and Time format" syntax, and so timestamp
 // returns a string in this format.
 func Timestamp() (cty.Value, error) {
@@ -115,7 +115,7 @@ func Timestamp() (cty.Value, error) {
 
 // TimeAdd adds a duration to a timestamp, returning a new timestamp.
 //
-// In the OpenTofu language, timestamps are conventionally represented as
+// In the Bogform language, timestamps are conventionally represented as
 // strings using RFC 3339 "Date and Time format" syntax. Timeadd requires
 // the timestamp argument to be a string conforming to this syntax.
 //
@@ -136,7 +136,7 @@ func TimeAdd(timestamp cty.Value, duration cty.Value) (cty.Value, error) {
 // TimeCmp considers the UTC offset of each given timestamp when making its
 // decision, so for example 6:00 +0200 and 4:00 UTC are equal.
 //
-// In the OpenTofu language, timestamps are conventionally represented as
+// In the Bogform language, timestamps are conventionally represented as
 // strings using RFC 3339 "Date and Time format" syntax. TimeCmp requires
 // the timestamp argument to be a string conforming to this syntax.
 //

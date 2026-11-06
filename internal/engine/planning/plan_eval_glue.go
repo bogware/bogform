@@ -139,7 +139,7 @@ func (p *planGlue) PlanDesiredResourceInstance(ctx context.Context, inst *eval.D
 	default:
 		// We should not get here because the cases above should always be
 		// exhaustive for all of the valid resource modes.
-		diags = diags.Append(fmt.Errorf("the planning engine does not support %s; this is a bug in OpenTofu", mode))
+		diags = diags.Append(fmt.Errorf("the planning engine does not support %s; this is a bug in Bogform", mode))
 		return cty.DynamicVal, diags
 	}
 	rv := obj.ResultValue()
@@ -238,12 +238,12 @@ func (p *planGlue) planOrphanResourceInstance(ctx context.Context, addr addrs.Ab
 		// It should not be possible for an ephemeral resource to be an
 		// orphan because ephemeral resources should never be persisted
 		// in a state snapshot.
-		diags = diags.Append(fmt.Errorf("unexpected ephemeral resource instance %s in prior state; this is a bug in OpenTofu", addr))
+		diags = diags.Append(fmt.Errorf("unexpected ephemeral resource instance %s in prior state; this is a bug in Bogform", addr))
 		return diags
 	default:
 		// We should not get here because the cases above should always be
 		// exhaustive for all of the valid resource modes.
-		diags = diags.Append(fmt.Errorf("the planning engine does not support %s; this is a bug in OpenTofu", mode))
+		diags = diags.Append(fmt.Errorf("the planning engine does not support %s; this is a bug in Bogform", mode))
 		return diags
 	}
 	p.planCtx.resourceInstObjs.Put(obj)
@@ -256,7 +256,7 @@ func (p *planGlue) planDeposedResourceInstanceObject(ctx context.Context, addr a
 		// Should not be possible because only managed resource instances
 		// support "replace" and so nothing else can have deposed objects.
 		var diags tfdiags.Diagnostics
-		diags = diags.Append(fmt.Errorf("deposed object for non-managed resource instance %s; this is a bug in OpenTofu", addr))
+		diags = diags.Append(fmt.Errorf("deposed object for non-managed resource instance %s; this is a bug in Bogform", addr))
 		return diags
 	}
 	obj, diags := p.planDeposedManagedResourceInstanceObject(ctx, addr, state)

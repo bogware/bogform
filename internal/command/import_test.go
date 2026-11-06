@@ -186,7 +186,7 @@ func TestImport_remoteState(t *testing.T) {
 	}
 
 	// (Using log here rather than t.Log so that these messages interleave with other trace logs)
-	log.Print("[TRACE] TestImport_remoteState running: tofu init")
+	log.Print("[TRACE] TestImport_remoteState running: bogform init")
 	code := RunCommander(t, InitCommander(), m, []string{})
 	initOutput := initDone(t)
 	if code != 0 {
@@ -248,7 +248,7 @@ func TestImport_remoteState(t *testing.T) {
 		"test_instance.foo",
 		"bar",
 	}
-	log.Printf("[TRACE] TestImport_remoteState running: tofu import %s %s", args[0], args[1])
+	log.Printf("[TRACE] TestImport_remoteState running: bogform import %s %s", args[0], args[1])
 	code = RunCommander(t, ImportCommander(), meta, args)
 	importOutput := importDone(t)
 	if code != 0 {
@@ -296,7 +296,7 @@ func TestImport_initializationErrorShouldUnlock(t *testing.T) {
 	}
 
 	// (Using log here rather than t.Log so that these messages interleave with other trace logs)
-	log.Print("[TRACE] TestImport_initializationErrorShouldUnlock running: tofu init")
+	log.Print("[TRACE] TestImport_initializationErrorShouldUnlock running: bogform init")
 	code := RunCommander(t, InitCommander(), m, []string{})
 	initOutput := initDone(t)
 	if code != 0 {
@@ -321,7 +321,7 @@ func TestImport_initializationErrorShouldUnlock(t *testing.T) {
 		"unknown_instance.baz",
 		"bar",
 	}
-	log.Printf("[TRACE] TestImport_initializationErrorShouldUnlock running: tofu import %s %s", args[0], args[1])
+	log.Printf("[TRACE] TestImport_initializationErrorShouldUnlock running: bogform import %s %s", args[0], args[1])
 
 	// this should fail
 	code = RunCommander(t, ImportCommander(), meta, args)
@@ -673,7 +673,7 @@ func TestImport_emptyConfig(t *testing.T) {
 	}
 
 	msg := output.Stderr()
-	if want := `No OpenTofu configuration files`; !strings.Contains(msg, want) {
+	if want := `No Bogform configuration files`; !strings.Contains(msg, want) {
 		t.Errorf("incorrect message\nwant substring: %s\ngot:\n%s", want, msg)
 	}
 }

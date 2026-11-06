@@ -20,7 +20,7 @@ type descriptionEntry struct {
 }
 
 // DescriptionList is a consolidated list containing all descriptions for all
-// functions available within OpenTofu. A function's description should point
+// functions available within Bogform. A function's description should point
 // to the matching entry in this list.
 //
 // We keep this as a single list, so we can quickly review descriptions within
@@ -48,47 +48,47 @@ var DescriptionList = map[string]descriptionEntry{
 		ParamDescription: []string{"actual_value", "expected_value"},
 	},
 	"assumelistlength": {
-		Description:      "`assumelistlength` returns the given list only if its length is in the given bounds, and then tells OpenTofu to assume the result has such a length for subsequent analysis.",
+		Description:      "`assumelistlength` returns the given list only if its length is in the given bounds, and then tells Bogform to assume the result has such a length for subsequent analysis.",
 		ParamDescription: []string{"list", "min", "max"},
 	},
 	"assumelistlengthmax": {
-		Description:      "`assumelistlengthmax` returns the given list only if it is at most as long as specified, and then tells OpenTofu to assume the result has such a length for subsequent analysis.",
+		Description:      "`assumelistlengthmax` returns the given list only if it is at most as long as specified, and then tells Bogform to assume the result has such a length for subsequent analysis.",
 		ParamDescription: []string{"list", "max"},
 	},
 	"assumelistlengthmin": {
-		Description:      "`assumelistlengthmin` returns the given list only if it is at least as long as specified, and then tells OpenTofu to assume the result has such a length for subsequent analysis.",
+		Description:      "`assumelistlengthmin` returns the given list only if it is at least as long as specified, and then tells Bogform to assume the result has such a length for subsequent analysis.",
 		ParamDescription: []string{"list", "min"},
 	},
 	"assumemaplength": {
-		Description:      "`assumemaplength` returns the given map only if its length is in the given bounds, and then tells OpenTofu to assume the result has such a length for subsequent analysis.",
+		Description:      "`assumemaplength` returns the given map only if its length is in the given bounds, and then tells Bogform to assume the result has such a length for subsequent analysis.",
 		ParamDescription: []string{"map", "min", "max"},
 	},
 	"assumemaplengthmax": {
-		Description:      "`assumelistlengthmax` returns the given map only if it is at most as long as specified, and then tells OpenTofu to assume the result has such a length for subsequent analysis.",
+		Description:      "`assumelistlengthmax` returns the given map only if it is at most as long as specified, and then tells Bogform to assume the result has such a length for subsequent analysis.",
 		ParamDescription: []string{"map", "max"},
 	},
 	"assumemaplengthmin": {
-		Description:      "`assummaplengthmin` returns the given map only if it is at least as long as specified, and then tells OpenTofu to assume the result has such a length for subsequent analysis.",
+		Description:      "`assummaplengthmin` returns the given map only if it is at least as long as specified, and then tells Bogform to assume the result has such a length for subsequent analysis.",
 		ParamDescription: []string{"map", "min"},
 	},
 	"assumenotnull": {
-		Description:      "`assumenotnull` returns the given value only if it isn't null, and then tells OpenTofu to assume the result isn't null for subsequent analysis.",
+		Description:      "`assumenotnull` returns the given value only if it isn't null, and then tells Bogform to assume the result isn't null for subsequent analysis.",
 		ParamDescription: []string{"value"},
 	},
 	"assumesetlength": {
-		Description:      "`assumesetlength` returns the given set only if its length is in the given bounds, and then tells OpenTofu to assume the result has such a length for subsequent analysis.",
+		Description:      "`assumesetlength` returns the given set only if its length is in the given bounds, and then tells Bogform to assume the result has such a length for subsequent analysis.",
 		ParamDescription: []string{"set", "min", "max"},
 	},
 	"assumesetlengthmax": {
-		Description:      "`assumesetlength` returns the given set only if it is at most as long as specified, and then tells OpenTofu to assume the result has such a length for subsequent analysis.",
+		Description:      "`assumesetlength` returns the given set only if it is at most as long as specified, and then tells Bogform to assume the result has such a length for subsequent analysis.",
 		ParamDescription: []string{"set", "max"},
 	},
 	"assumesetlengthmin": {
-		Description:      "`assumesetlength` returns the given set only if it is at least as long as specified, and then tells OpenTofu to assume the result has such a length for subsequent analysis.",
+		Description:      "`assumesetlength` returns the given set only if it is at least as long as specified, and then tells Bogform to assume the result has such a length for subsequent analysis.",
 		ParamDescription: []string{"set", "min"},
 	},
 	"assumestringprefix": {
-		Description:      "`assumestringprefix` returns the given string only if it has the given prefix, and then tells OpenTofu to assume the result has that prefix for subsequent analysis.",
+		Description:      "`assumestringprefix` returns the given string only if it has the given prefix, and then tells Bogform to assume the result has that prefix for subsequent analysis.",
 		ParamDescription: []string{"string", "prefix"},
 	},
 	"base64decode": {
@@ -417,7 +417,7 @@ var DescriptionList = map[string]descriptionEntry{
 		ParamDescription: []string{"", ""},
 	},
 	"sensitive": {
-		Description:      "`sensitive` takes any value and returns a copy of it marked so that OpenTofu will treat it as sensitive, with the same meaning and behavior as for [sensitive input variables](/language/values/variables#suppressing-values-in-cli-output).",
+		Description:      "`sensitive` takes any value and returns a copy of it marked so that Bogform will treat it as sensitive, with the same meaning and behavior as for [sensitive input variables](/language/values/variables#suppressing-values-in-cli-output).",
 		ParamDescription: []string{""},
 	},
 	"setintersection": {
@@ -499,7 +499,7 @@ var DescriptionList = map[string]descriptionEntry{
 		ParamDescription: []string{"", ""},
 	},
 	"textencodebase64": {
-		Description:      "`textencodebase64` encodes the unicode characters in a given string using a specified character encoding, returning the result base64 encoded because OpenTofu language strings are always sequences of unicode characters.",
+		Description:      "`textencodebase64` encodes the unicode characters in a given string using a specified character encoding, returning the result base64 encoded because Bogform language strings are always sequences of unicode characters.",
 		ParamDescription: []string{"", ""},
 	},
 	"timeadd": {

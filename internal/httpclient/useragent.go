@@ -15,7 +15,7 @@ import (
 
 const (
 	appendUaEnvVar         = "TF_APPEND_USER_AGENT"
-	DefaultApplicationName = "OpenTofu"
+	DefaultApplicationName = "Bogform"
 )
 
 type userAgentRoundTripper struct {
@@ -31,7 +31,7 @@ func (rt *userAgentRoundTripper) RoundTrip(req *http.Request) (*http.Response, e
 	return rt.inner.RoundTrip(req)
 }
 
-func OpenTofuUserAgent(version string) string {
+func BogformUserAgent(version string) string {
 	ua := fmt.Sprintf("%s/%s", DefaultApplicationName, version)
 
 	if add := os.Getenv(appendUaEnvVar); add != "" {

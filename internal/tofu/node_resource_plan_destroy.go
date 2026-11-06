@@ -187,6 +187,6 @@ func (n *NodePlanDestroyableResourceInstance) ephemeralResourceExecute(_ context
 	return diags.Append(tfdiags.Sourceless(
 		tfdiags.Error,
 		"An ephemeral resource planned for destroy",
-		fmt.Sprintf("A destroy operation has been planned for the ephemeral resource %q. This is an OpenTofu error. Please report this.", n.Addr),
+		fmt.Sprintf("A destroy operation has been planned for the ephemeral resource %q. This is a Bogform error. Please report this.", n.Addr),
 	))
 }

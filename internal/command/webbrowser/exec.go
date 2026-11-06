@@ -75,8 +75,8 @@ func ParseBrowserEnv(raw string) string {
 	execPath, err := exec.LookPath(raw)
 	if err != nil {
 		// We silently ignore variable values we cannot use, because this
-		// environment variable is not OpenTofu-specific and so it may have
-		// been set for the benefit of software other than OpenTofu which
+		// environment variable is not Bogform-specific and so it may have
+		// been set for the benefit of software other than Bogform which
 		// interprets it differently.
 		return ""
 	}

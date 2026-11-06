@@ -4,5 +4,5 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // Package providers contains the interface and primary types required to
-// implement a OpenTofu resource provider.
+// implement a Bogform resource provider.
 package providers

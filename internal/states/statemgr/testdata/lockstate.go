@@ -15,7 +15,7 @@ import (
 	"github.com/bogware/bogform/internal/states/statemgr"
 )
 
-// Attempt to open and lock a tofu state file.
+// Attempt to open and lock a bogform state file.
 // Lock failure exits with 0 and writes "lock failed" to stderr.
 func main() {
 	if len(os.Args) != 2 {

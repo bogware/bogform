@@ -76,17 +76,17 @@ func GetOCIRepositoryStore(ctx context.Context, registryDomain, repositoryName s
 	ctx, span := tracing.Tracer().Start(
 		ctx, "Authenticate to OCI Registry",
 		tracing.SpanAttributes(
-			traceattrs.OpenTofuOCIRegistryDomain(registryDomain),
-			traceattrs.OpenTofuOCIRepositoryName(repositoryName),
+			traceattrs.BogformOCIRegistryDomain(registryDomain),
+			traceattrs.BogformOCIRepositoryName(repositoryName),
 		),
 	)
 	defer span.End()
 
 	// Since there are lots of different ways to provide OCI credentials to
-	// OpenTofu, and several are implicit based on files and/or environment
+	// Bogform, and several are implicit based on files and/or environment
 	// variables we found on the system, we'll generate some debug logs
 	// listing the locations where we're searching so we'll have some good
-	// context for a bug report about OpenTofu selecting different credentials
+	// context for a bug report about Bogform selecting different credentials
 	// than the operator expected. There should not typically be more than a
 	// few of these on a reasonably-configured system.
 	for _, cfg := range credsPolicy.AllConfigs() {
@@ -142,7 +142,7 @@ func getOCIRepositoryORASClient(ctx context.Context, registryDomain, repositoryN
 		return nil, fmt.Errorf("finding credentials for %q: %w", registryDomain, err)
 	}
 	return &orasAuth.Client{
-		Client: httpclient.New(ctx), // the underlying HTTP client to use, preconfigured with OpenTofu's User-Agent string
+		Client: httpclient.New(ctx), // the underlying HTTP client to use, preconfigured with Bogform's User-Agent string
 		Credential: func(ctx context.Context, hostport string) (orasAuth.Credential, error) {
 			if hostport != registryDomain {
 				// We should not send the credentials we selected to any registry

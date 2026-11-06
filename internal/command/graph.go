@@ -38,7 +38,7 @@ The graph is presented in the DOT language. The typical program that can read th
 	return cmd
 }
 
-// GraphCommand is a Command implementation that takes a OpenTofu
+// GraphCommand is a Command implementation that takes a Bogform
 // configuration and outputs the dependency tree in graphical form.
 type GraphCommand struct {
 	Meta
@@ -105,7 +105,7 @@ func (c GraphCommand) Execute(args *arguments.Graph, view views.Graph) int {
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Failed to read plan from plan file",
-				"The given plan file does not have a valid backend configuration. This is a bug in the OpenTofu command that generated this plan file.",
+				"The given plan file does not have a valid backend configuration. This is a bug in the Bogform command that generated this plan file.",
 			))
 			view.Diagnostics(diags)
 			return 1
@@ -204,7 +204,7 @@ func (c GraphCommand) Execute(args *arguments.Graph, view views.Graph) int {
 	case "apply":
 		plan := lr.Plan
 
-		// Historically "tofu graph" would allow the nonsensical request to
+		// Historically "bogform graph" would allow the nonsensical request to
 		// render an apply graph without a plan, so we continue to support that
 		// here, though perhaps one day this should be an error.
 		if lr.Plan == nil {

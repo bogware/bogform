@@ -37,7 +37,7 @@ func ProvidersLockCommander() Command {
 	cmd := Command{
 		Name:  "lock",
 		Short: "Write out dependency locks for the configured providers",
-		Long: `Normally the dependency lock file (.terraform.lock.hcl) is updated automatically by "tofu init", but the information available to the normal provider installer can be constrained when you're installing providers from filesystem or network mirrors, and so the generated lock file can end up incomplete.
+		Long: `Normally the dependency lock file (.terraform.lock.hcl) is updated automatically by "bogform init", but the information available to the normal provider installer can be constrained when you're installing providers from filesystem or network mirrors, and so the generated lock file can end up incomplete.
 
 The "providers lock" subcommand addresses that by updating the lock file based on the official packages available in the origin registry, ignoring the currently-configured installation strategy.
 
@@ -57,7 +57,7 @@ By default this command updates the lock file for every provider declared in the
 }
 
 // ProvidersLockCommand is a Command implementation that implements the
-// "tofu providers lock" command, which creates or updates the current
+// "bogform providers lock" command, which creates or updates the current
 // configuration's dependency lock file using information from upstream
 // registries, regardless of the provider installation configuration that
 // is configured for normal provider installation.
@@ -117,7 +117,7 @@ func (c ProvidersLockCommand) Execute(args *arguments.ProvidersLock, view views.
 	//
 	// This is so that folks who use a local mirror for everyday use can
 	// use this command to populate their lock files from upstream so
-	// subsequent "tofu init" calls can then verify the local mirror
+	// subsequent "bogform init" calls can then verify the local mirror
 	// against the upstream checksums.
 	var source getproviders.Source
 	switch {
@@ -230,10 +230,10 @@ func (c ProvidersLockCommand) Execute(args *arguments.ProvidersLock, view views.
 
 	// Our general strategy here is to install the requested providers into
 	// a separate temporary directory -- thus ensuring that the results won't
-	// ever be inadvertently executed by other OpenTofu commands -- and then
+	// ever be inadvertently executed by other Bogform commands -- and then
 	// use the results of that installation to update the lock file for the
 	// current working directory. Because we throwaway the packages we
-	// downloaded after completing our work, a subsequent "tofu init" will
+	// downloaded after completing our work, a subsequent "bogform init" will
 	// then respect the CLI configuration's provider installation strategies
 	// but will verify the packages against the hashes we found upstream.
 
@@ -276,7 +276,7 @@ func (c ProvidersLockCommand) Execute(args *arguments.ProvidersLock, view views.
 						tfdiags.Error,
 						"Inconsistent provider versions",
 						fmt.Sprintf(
-							"The version constraint for %s selected inconsistent versions for different platforms, which is unexpected.\n\nThe upstream registry may have changed its available versions during OpenTofu's work. If so, re-running this command may produce a successful result.",
+							"The version constraint for %s selected inconsistent versions for different platforms, which is unexpected.\n\nThe upstream registry may have changed its available versions during Bogform's work. If so, re-running this command may produce a successful result.",
 							provider,
 						),
 					))
@@ -303,7 +303,7 @@ func (c ProvidersLockCommand) Execute(args *arguments.ProvidersLock, view views.
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Could not retrieve providers for locking",
-				fmt.Sprintf("OpenTofu failed to fetch the requested providers for %s in order to calculate their checksums: %s.", platform, err),
+				fmt.Sprintf("Bogform failed to fetch the requested providers for %s in order to calculate their checksums: %s.", platform, err),
 			))
 			break
 		}

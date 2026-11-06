@@ -216,7 +216,7 @@ func (b *Backend) configure(ctx context.Context) error {
 		opts = append(opts, credOptions...)
 	}
 
-	opts = append(opts, option.WithUserAgent(httpclient.OpenTofuUserAgent(version.Version)))
+	opts = append(opts, option.WithUserAgent(httpclient.BogformUserAgent(version.Version)))
 
 	// Custom endpoint for storage API
 	if storageEndpoint, ok := data.GetOk("storage_custom_endpoint"); ok {

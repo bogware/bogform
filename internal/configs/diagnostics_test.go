@@ -53,7 +53,7 @@ func TestRequiredVersion(t *testing.T) {
 			fakeSourceRange := hcl.Range{
 				// This must have a .tofu suffix for the required_version
 				// subtest to work, because we only support that legacy form
-				// in OpenTofu-specific files.
+				// in Bogform-specific files.
 				Filename: "versions.tofu",
 				Start:    hcl.InitialPos,
 				End:      hcl.InitialPos,

@@ -6,11 +6,11 @@
 // Package svcauthconfig contains some helper functions and types to support
 // the cliconfig package's use of [github.com/opentofu/svchost/svcauth],
 // which is our mechanism for representing the policy for authenticating to
-// OpenTofu-native services such as implementations OpenTofu's provider registry
+// Bogform-native services such as implementations Bogform's provider registry
 // protocol.
 //
 // The intended separation of concerns is that the upstream library provides
-// the "vocabulary types" that other parts of OpenTofu interact with, while
+// the "vocabulary types" that other parts of Bogform interact with, while
 // this package contains concrete implementations of those types and helpers
 // to assist in constructing them which should be used _only_ by package
 // cliconfig to satisfy the upstream interfaces. This separation means that

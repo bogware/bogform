@@ -94,7 +94,7 @@ func PrereqChangesForValue(v cty.Value) iter.Seq[addrs.AbsResourceInstance] {
 //
 // Ideally we'd merge [PlannedUnknownObject] and this function together to do
 // both jobs at once instead of doing this in two passes, but that'll wait until
-// we're ready to start changing code that the older OpenTofu runtime depends
+// we're ready to start changing code that the older Bogform runtime depends
 // on, rather than having new-runtime-specific needs intentionally separated.
 func MarkUnknownValuesAsPending(v cty.Value, instAddr addrs.AbsResourceInstance) cty.Value {
 	// This transform cannot fail because the given callback never returns an error.

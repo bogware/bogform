@@ -28,7 +28,7 @@ type config struct {
 
 // ProviderConfig describes all of the provider configurations throughout the
 // configuration tree, flattened into a single map for convenience since
-// provider configurations are the one concept in OpenTofu that can span across
+// provider configurations are the one concept in Bogform that can span across
 // module boundaries.
 type providerConfig struct {
 	Name              string         `json:"name,omitempty"`
@@ -376,7 +376,7 @@ func marshalModule(c *configs.Config, schemas *plugins.Schemas, addr string) (mo
 			dependencies := make([]string, len(v.DependsOn))
 			for i, d := range v.DependsOn {
 				ref, diags := addrs.ParseRef(d)
-				// we should not get an error here, because `tofu validate`
+				// we should not get an error here, because `bogform validate`
 				// would have complained well before this point, but if we do we'll
 				// silently skip it.
 				if !diags.HasErrors() {
@@ -506,7 +506,7 @@ func marshalModuleCall(c *configs.Config, mc *configs.ModuleCall, schemas *plugi
 		dependencies := make([]string, len(mc.DependsOn))
 		for i, d := range mc.DependsOn {
 			ref, diags := addrs.ParseRef(d)
-			// we should not get an error here, because `tofu validate`
+			// we should not get an error here, because `bogform validate`
 			// would have complained well before this point, but if we do we'll
 			// silently skip it.
 			if !diags.HasErrors() {
@@ -586,7 +586,7 @@ func marshalResources(resources map[string]*configs.Resource, schemas *plugins.S
 			dependencies := make([]string, len(v.DependsOn))
 			for i, d := range v.DependsOn {
 				ref, diags := addrs.ParseRef(d)
-				// we should not get an error here, because `tofu validate`
+				// we should not get an error here, because `bogform validate`
 				// would have complained well before this point, but if we do we'll
 				// silently skip it.
 				if !diags.HasErrors() {

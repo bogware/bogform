@@ -39,7 +39,7 @@ func TestUserAgentString_env(t *testing.T) {
 				t.Setenv(appendUaEnvVar, c.additional)
 			}
 
-			actual := OpenTofuUserAgent(version.Version)
+			actual := BogformUserAgent(version.Version)
 
 			if c.expected != actual {
 				t.Fatalf("Expected User-Agent '%s' does not match '%s'", c.expected, actual)
@@ -49,7 +49,7 @@ func TestUserAgentString_env(t *testing.T) {
 }
 
 func TestUserAgentAppendViaEnvVar(t *testing.T) {
-	expectedBase := "OpenTofu/0.0.0"
+	expectedBase := "Bogform/0.0.0"
 
 	testCases := []struct {
 		envVarValue string
@@ -65,7 +65,7 @@ func TestUserAgentAppendViaEnvVar(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Setenv(appendUaEnvVar, tc.envVarValue)
-			givenUA := OpenTofuUserAgent("0.0.0")
+			givenUA := BogformUserAgent("0.0.0")
 			if givenUA != tc.expected {
 				t.Fatalf("Expected User-Agent '%s' does not match '%s'", tc.expected, givenUA)
 			}

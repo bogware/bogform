@@ -31,7 +31,7 @@ import (
 // This makes use of the View.runningInAutomation to know when it's executed by an
 // automated system rather than directly by a command prompt.
 // This is a hint not to produce messages that expect that a user can
-// run a follow-up command, perhaps because OpenTofu is running in
+// run a follow-up command, perhaps because Bogform is running in
 // some sort of workflow automation tool that abstracts away the
 // exact commands that are being run.
 type Operation interface {
@@ -365,21 +365,21 @@ Two interrupts received. Exiting immediately. Note that data loss may have occur
 
 const interrupted = `
 Interrupt received.
-Please wait for OpenTofu to exit or data loss may occur.
+Please wait for Bogform to exit or data loss may occur.
 Gracefully shutting down...
 `
 
 const planHeaderNoOutput = `
-Note: You didn't use the -out option to save this plan, so OpenTofu can't guarantee to take exactly these actions if you run "tofu apply" now.
+Note: You didn't use the -out option to save this plan, so Bogform can't guarantee to take exactly these actions if you run "bogform apply" now.
 `
 
 const planHeaderYesOutput = `
 Saved the plan to: %s
 
 To perform exactly these actions, run the following command to apply:
-    tofu apply %q
+    bogform apply %q
 `
 
 const planHeaderGenConfig = `
-OpenTofu has generated configuration and written it to %s. Please review the configuration and edit it as necessary before adding it to version control.
+Bogform has generated configuration and written it to %s. Please review the configuration and edit it as necessary before adding it to version control.
 `

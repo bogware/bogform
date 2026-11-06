@@ -43,10 +43,10 @@ const (
 func TestCommander() Command {
 	cmd := Command{
 		Name:  "test",
-		Short: "Execute integration tests for OpenTofu modules",
-		Long: `Executes automated integration tests against the current OpenTofu configuration.
+		Short: "Execute integration tests for Bogform modules",
+		Long: `Executes automated integration tests against the current Bogform configuration.
 
-OpenTofu will search for .tftest.hcl files within the current configuration and testing directories. OpenTofu will then execute the testing run blocks 
+Bogform will search for .tftest.hcl files within the current configuration and testing directories. Bogform will then execute the testing run blocks 
 within any testing files in order, and verify conditional checks and assertions against the created infrastructure. 
 
 This command creates real infrastructure and will attempt to clean up the testing infrastructure on completion. Monitor the output carefully to ensure this cleanup process is successful.`,
@@ -295,7 +295,7 @@ type TestSuiteRunner struct {
 	Stopped   bool
 	Cancelled bool
 
-	// StoppedCtx and CancelledCtx allow in progress OpenTofu operations to
+	// StoppedCtx and CancelledCtx allow in progress Bogform operations to
 	// respond to external calls from the test command.
 	StoppedCtx   context.Context
 	CancelledCtx context.Context
@@ -387,7 +387,7 @@ func (runner *TestFileRunner) ExecuteTestFile(ctx context.Context, file *modulet
 				run.Diagnostics = run.Diagnostics.Append(&hcl.Diagnostic{
 					Severity: hcl.DiagError,
 					Summary:  "Invalid module source",
-					Detail:   fmt.Sprintf("The source for the selected module evaluated to %s which should not be possible. This is a bug in OpenTofu - please report it!", key),
+					Detail:   fmt.Sprintf("The source for the selected module evaluated to %s which should not be possible. This is a bug in Bogform - please report it!", key),
 					Subject:  run.Config.Module.DeclRange.Ptr(),
 				})
 
@@ -525,7 +525,7 @@ func (runner *TestFileRunner) ExecuteTestRun(ctx context.Context, run *moduletes
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Warning,
 					"Failed to print verbose output",
-					fmt.Sprintf("OpenTofu failed to print the verbose output for %s, other diagnostics will contain more details as to why.", path.Join(file.Name, run.Name))))
+					fmt.Sprintf("Bogform failed to print the verbose output for %s, other diagnostics will contain more details as to why.", path.Join(file.Name, run.Name))))
 			} else {
 				run.Verbose = &moduletest.Verbose{
 					Plan:         plan,
@@ -602,7 +602,7 @@ func (runner *TestFileRunner) ExecuteTestRun(ctx context.Context, run *moduletes
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Warning,
 				"Failed to print verbose output",
-				fmt.Sprintf("OpenTofu failed to print the verbose output for %s, other diagnostics will contain more details as to why.", path.Join(file.Name, run.Name))))
+				fmt.Sprintf("Bogform failed to print the verbose output for %s, other diagnostics will contain more details as to why.", path.Join(file.Name, run.Name))))
 		} else {
 			run.Verbose = &moduletest.Verbose{
 				Plan:         plan,
@@ -945,7 +945,7 @@ func (runner *TestFileRunner) Cleanup(ctx context.Context, file *moduletest.File
 			// print a diagnostic instead of panicking later.
 
 			var diags tfdiags.Diagnostics
-			diags = diags.Append(tfdiags.Sourceless(tfdiags.Error, "Inconsistent state", fmt.Sprintf("Found inconsistent state while cleaning up %s. This is a bug in OpenTofu - please report it", file.Name)))
+			diags = diags.Append(tfdiags.Sourceless(tfdiags.Error, "Inconsistent state", fmt.Sprintf("Found inconsistent state while cleaning up %s. This is a bug in Bogform - please report it", file.Name)))
 			runner.Suite.View.DestroySummary(diags, nil, file, state.State)
 			continue
 		}
@@ -1249,7 +1249,7 @@ func (runner *TestFileRunner) prepareInputVariablesForAssertions(config *configs
 	}
 
 	// We've gathered all the values we have, let's convert them into
-	// tofu.InputValues so they can be passed into the OpenTofu graph.
+	// tofu.InputValues so they can be passed into the Bogform graph.
 	// Also, apply default values from the configuration variables where applicable.
 	inputs, valDiags := parseAndApplyDefaultValues(variables, config.Module.Variables)
 	diags.Append(valDiags)

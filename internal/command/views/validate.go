@@ -67,7 +67,7 @@ func (m ValidateMulti) Diagnostics(diags tfdiags.Diagnostics) {
 }
 
 // The ValidateHuman implementation renders diagnostics in a human-readable form,
-// along with a success/failure message if OpenTofu is able to execute the
+// along with a success/failure message if Bogform is able to execute the
 // validation walk.
 type ValidateHuman struct {
 	view *View

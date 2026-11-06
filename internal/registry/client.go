@@ -43,7 +43,7 @@ var (
 	tfVersion = version.String()
 )
 
-// Client provides methods to query OpenTofu module registries.
+// Client provides methods to query Bogform module registries.
 //
 // This client implements the "modules.v1" protocol. It does not implement
 // any other OpenTofu registry protocols, and in particular the client for
@@ -95,7 +95,7 @@ func (c *Client) discoverBaseURL(ctx context.Context, host svchost.Hostname) (*u
 // ModulePackageVersions queries the registry for a module package, and returns the available versions.
 func (c *Client) ModulePackageVersions(ctx context.Context, packageAddr regaddr.ModulePackage) (*response.ModuleVersions, error) {
 	ctx, span := tracing.Tracer().Start(ctx, "List Versions", tracing.SpanAttributes(
-		traceattrs.OpenTofuModuleSource(packageAddr.String()),
+		traceattrs.BogformModuleSource(packageAddr.String()),
 	))
 	defer span.End()
 
@@ -162,8 +162,8 @@ func (c *Client) ModulePackageVersions(ctx context.Context, packageAddr regaddr.
 // how each variant should be used to actually install the package.
 func (c *Client) ModulePackageLocation(ctx context.Context, packageAddr regaddr.ModulePackage, version string, subdir string) (PackageLocation, error) {
 	ctx, span := tracing.Tracer().Start(ctx, "Find Module Location", tracing.SpanAttributes(
-		traceattrs.OpenTofuModuleSource(packageAddr.String()),
-		traceattrs.OpenTofuModuleVersion(version),
+		traceattrs.BogformModuleSource(packageAddr.String()),
+		traceattrs.BogformModuleVersion(version),
 	))
 	defer span.End()
 
@@ -227,7 +227,7 @@ func (c *Client) ModulePackageLocation(ctx context.Context, packageAddr regaddr.
 				// _quite_ restore the original behavior of ignoring the body completely
 				// when using this header. Nonetheless, we're keeping this constraint
 				// to avoid churning this protocol further since registry
-				// implementers tend to want to support many OpenTofu versions
+				// implementers tend to want to support many Bogform versions
 				// at once and so having many different variations is harder
 				// to test. Those who want to do the legacy thing of using
 				// X-Terraform-Get should use a "204 No Content" status code if

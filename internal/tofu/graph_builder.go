@@ -15,7 +15,7 @@ import (
 )
 
 // GraphBuilder is an interface that can be implemented and used with
-// OpenTofu to build the graph that OpenTofu walks.
+// Bogform to build the graph that Bogform walks.
 type GraphBuilder interface {
 	// Build builds the graph for the given module path. It is up to
 	// the interface implementation whether this build should expand

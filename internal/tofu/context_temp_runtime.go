@@ -293,7 +293,7 @@ func (c *Context) newEnginePlanTracer() *planning.Tracer {
 				// The prior value for a data resource instance is always null
 				// because conceptually it is always read anew for each round.
 				// (It's retained in the state as a convenience for unusual
-				// situations like "tofu console", but the prior state value
+				// situations like "bogform console", but the prior state value
 				// cannot be used in the main codepath because the protocol
 				// includes no way to "upgrade" when the provider schema changes.)
 				return h.PreRefresh(addr, addrs.CurrentResourceInstanceObjectGeneration, cty.NullVal(cty.DynamicPseudoType))
@@ -362,9 +362,9 @@ func (c *Context) newEngineApply(ctx context.Context, config *configs.Config, pl
 			tfdiags.Warning,
 			"Applied changes may be incomplete",
 			`The plan was created with the -target or the -exclude option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
-    tofu plan
+    bogform plan
 	
-Note that the -target and -exclude options are not suitable for routine use, and are provided only for exceptional situations such as recovering from errors or mistakes, or when OpenTofu specifically suggests to use it as part of an error message.`,
+Note that the -target and -exclude options are not suitable for routine use, and are provided only for exceptional situations such as recovering from errors or mistakes, or when Bogform specifically suggests to use it as part of an error message.`,
 		))
 	}
 
@@ -455,7 +455,7 @@ func (c *Context) newEngineApplyTracer() *applying.Tracer {
 				// The prior value for a data resource instance is always null
 				// because conceptually it is always read anew for each round.
 				// (It's retained in the state as a convenience for unusual
-				// situations like "tofu console", but the prior state value
+				// situations like "bogform console", but the prior state value
 				// cannot be used in the main codepath because the protocol
 				// includes no way to "upgrade" when the provider schema changes.)
 				return h.PreRefresh(addr, addrs.CurrentResourceInstanceObjectGeneration, cty.NullVal(cty.DynamicPseudoType))

@@ -24,7 +24,7 @@ import (
 // returns a graph that is functionally-equivalent to (but not necessarily
 // identical to) the original graph.
 //
-// Because this is working with data loaded from outside OpenTofu it returns
+// Because this is working with data loaded from outside Bogform it returns
 // errors when encountering problems, but if it fails when unmarshaling an
 // unmodified result from [Graph.Marshal] then that represents a bug in either
 // this or that function: they should always be updated together so they are
@@ -99,7 +99,7 @@ func UnmarshalGraph(src []byte) (*Graph, error) {
 			// The above cases should cover all of the valid values of
 			// execgraphproto.case_Element_Request, so we should not get here
 			// for any serialized graph that was produced by this version
-			// of OpenTofu.
+			// of Bogform.
 			return nil, fmt.Errorf("unrecognized request type %#v for element %d", reqType, idx)
 		}
 	}
@@ -150,7 +150,7 @@ func unmarshalOperationElem(protoOp *execgraphproto.Operation, prevResults []Any
 	default:
 		// The above cases should cover all valid values of [opCode], so we
 		// should not get here unless the serialized graph was tampered
-		// with outside of OpenTofu.
+		// with outside of Bogform.
 		return nil, fmt.Errorf("unrecognized opcode %d", c)
 	}
 }

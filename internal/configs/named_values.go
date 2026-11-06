@@ -329,7 +329,7 @@ func decodeVariableType(expr hcl.Expression, typeCtx *typeexpr.TypeContext) (cty
 			diags = append(diags, &hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Invalid quoted type constraints",
-				Detail:   "OpenTofu 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of OpenTofu. Remove the quotes around \"string\".",
+				Detail:   "OpenTofu 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Bogform. Remove the quotes around \"string\".",
 				Subject:  expr.Range().Ptr(),
 			})
 			return cty.DynamicPseudoType, nil, VariableParseLiteral, diags
@@ -337,7 +337,7 @@ func decodeVariableType(expr hcl.Expression, typeCtx *typeexpr.TypeContext) (cty
 			diags = append(diags, &hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Invalid quoted type constraints",
-				Detail:   "OpenTofu 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of OpenTofu. Remove the quotes around \"list\" and write list(string) instead to explicitly indicate that the list elements are strings.",
+				Detail:   "OpenTofu 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Bogform. Remove the quotes around \"list\" and write list(string) instead to explicitly indicate that the list elements are strings.",
 				Subject:  expr.Range().Ptr(),
 			})
 			return cty.DynamicPseudoType, nil, VariableParseHCL, diags
@@ -345,7 +345,7 @@ func decodeVariableType(expr hcl.Expression, typeCtx *typeexpr.TypeContext) (cty
 			diags = append(diags, &hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Invalid quoted type constraints",
-				Detail:   "OpenTofu 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of OpenTofu. Remove the quotes around \"map\" and write map(string) instead to explicitly indicate that the map elements are strings.",
+				Detail:   "OpenTofu 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Bogform. Remove the quotes around \"map\" and write map(string) instead to explicitly indicate that the map elements are strings.",
 				Subject:  expr.Range().Ptr(),
 			})
 			return cty.DynamicPseudoType, nil, VariableParseHCL, diags

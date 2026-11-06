@@ -103,8 +103,8 @@ func discoverAmbientOCICredentials(ctx context.Context, dockerStyleConfigFiles [
 	)
 	if err != nil {
 		// If we were just probing in standard locations then we ignore errors because
-		// these files are not used exclusively by OpenTofu and an anomaly in one of them
-		// should never prevent someone from using OpenTofu.
+		// these files are not used exclusively by Bogform and an anomaly in one of them
+		// should never prevent someone from using Bogform.
 		log.Printf("[WARN] Problems during OCI registry ambient credentials discovery:\n%s", err.Error())
 		return nil, nil
 	}
@@ -118,25 +118,25 @@ func discoverAmbientOCICredentials(ctx context.Context, dockerStyleConfigFiles [
 // to be considered in conjunction with all of the OCICredentials objects across
 // the CLI configuration too.
 type OCIDefaultCredentials struct {
-	// DiscoverAmbientCredentials decides whether OpenTofu will attempt to find
-	// credentials "ambiently" in the environment where OpenTofu is running, such
+	// DiscoverAmbientCredentials decides whether Bogform will attempt to find
+	// credentials "ambiently" in the environment where Bogform is running, such
 	// as searching the conventional locations for Docker-style configuration files.
 	//
 	// This defaults to true, but operators can set it to false to completely opt out
-	// of OpenTofu using credentials from anywhere other than elsewhere in the
-	// OpenTofu CLI configuration.
+	// of Bogform using credentials from anywhere other than elsewhere in the
+	// Bogform CLI configuration.
 	DiscoverAmbientCredentials bool
 
 	// DockerStyleConfigFiles forces a specific set of filenames to try to use as
 	// sources of OCI credentials, interpreting them as Docker CLI-style configuration
 	// files.
 	//
-	// If this is nil, OpenTofu uses a default set of search locations mimicking the
+	// If this is nil, Bogform uses a default set of search locations mimicking the
 	// behavior of other tools in the ecosystem such as Podman, Buildah, etc.
 	//
 	// If this is non-nil but zero length, it effectively disables using any Docker CLI-style
 	// configuration files at all, but if DiscoverAmbientCredentials is also true then
-	// future versions of OpenTofu might try to use other sources of ambient credentials.
+	// future versions of Bogform might try to use other sources of ambient credentials.
 	//
 	// This field is always nil if DiscoverAmbientCredentials is false, because this field
 	// exists only to customize one aspect of the "ambient credentials" discovery behavior.

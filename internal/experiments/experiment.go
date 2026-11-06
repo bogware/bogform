@@ -69,13 +69,13 @@ func (e Experiment) IsConcluded() bool {
 }
 
 // currentExperiments are those which are available to activate in the current
-// version of OpenTofu.
+// version of Bogform.
 //
 // Members of this set are registered in the init function above.
 var currentExperiments = make(Set)
 
 // concludedExperiments are those which were available to activate in an earlier
-// version of OpenTofu but are no longer available, either because the feature
+// version of Bogform but are no longer available, either because the feature
 // in question has been implemented or because the experiment failed and the
 // feature was abandoned. Each experiment maps to a message describing the
 // outcome, so we can give users feedback about what they might do in modules

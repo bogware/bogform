@@ -5,9 +5,9 @@
 
 // Package terminal encapsulates some platform-specific logic for detecting
 // if we're running in a terminal and, if so, properly configuring that
-// terminal to meet the assumptions that the rest of OpenTofu makes.
+// terminal to meet the assumptions that the rest of Bogform makes.
 //
-// Specifically, OpenTofu requires a Terminal which supports virtual terminal
+// Specifically, Bogform requires a Terminal which supports virtual terminal
 // sequences and which accepts UTF-8-encoded text.
 //
 // This is an abstraction only over the platform-specific detection of and
@@ -34,7 +34,7 @@ import (
 // terminal-requiring operations.
 //
 // Note that it's possible for only a subset of the streams to be connected
-// to a terminal. For example, this happens if the user runs OpenTofu with
+// to a terminal. For example, this happens if the user runs Bogform with
 // I/O redirection where Stdout might refer to a regular disk file while Stderr
 // refers to a terminal, or various other similar combinations.
 type Streams struct {
@@ -43,12 +43,12 @@ type Streams struct {
 	Stdin  *InputStream
 }
 
-// Init tries to initialize a terminal, if OpenTofu is running in one, and
+// Init tries to initialize a terminal, if Bogform is running in one, and
 // returns an object describing what it was able to set up.
 //
 // An error for this function indicates that the current execution context
-// can't meet OpenTofu's assumptions. For example, on Windows Init will return
-// an error if OpenTofu is running in a Windows Console that refuses to
+// can't meet Bogform's assumptions. For example, on Windows Init will return
+// an error if Bogform is running in a Windows Console that refuses to
 // activate UTF-8 mode, which can happen if we're running on an unsupported old
 // version of Windows.
 //

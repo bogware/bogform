@@ -63,7 +63,7 @@ func (m *Meta) providerInstaller() *providercache.Installer {
 // The result of providerInstallerCustomSource differs from
 // providerInstaller only in how it determines package installation locations
 // during EnsureProviderVersions. A caller that doesn't call
-// EnsureProviderVersions (anything other than "tofu init") can safely
+// EnsureProviderVersions (anything other than "bogform init") can safely
 // just use the providerInstaller method unconditionally.
 func (m *Meta) providerInstallerCustomSource(source getproviders.Source) *providercache.Installer {
 	targetDir := providercache.NewDir(m.WorkingDir.ProviderLocalCacheDir())
@@ -89,7 +89,7 @@ func (m *Meta) providerInstallerCustomSource(source getproviders.Source) *provid
 // providerCustomLocalDirectorySource produces a provider source that consults
 // only the given local filesystem directories for plugins to install.
 //
-// This is used to implement the -plugin-dir option for "tofu init", where
+// This is used to implement the -plugin-dir option for "bogform init", where
 // the result of this method is used instead of what would've been returned
 // from m.providerInstallSource.
 //
@@ -125,12 +125,12 @@ func (m *Meta) providerGlobalCacheDir() *providercache.Dir {
 
 // providerInstallSource returns an object that knows how to consult one or
 // more external sources to determine the availability of and package
-// locations for versions of OpenTofu providers that are available for
+// locations for versions of Bogform providers that are available for
 // automatic installation.
 //
 // This returns the standard provider install source that consults a number
 // of directories selected either automatically or via the CLI configuration.
-// Users may choose to override this during a "tofu init" command by
+// Users may choose to override this during a "bogform init" command by
 // specifying one or more -plugin-dir options, in which case the installation
 // process will construct its own source consulting only those directories
 // and use that instead.
@@ -164,7 +164,7 @@ func (m *Meta) providerDevOverrideInitWarnings() tfdiags.Diagnostics {
 	for addr, path := range m.ProviderDevOverrides {
 		fmt.Fprintf(&detailMsg, " - %s in %s\n", addr.ForDisplay(), path)
 	}
-	detailMsg.WriteString("\nSkip tofu init when using provider development overrides. It is not necessary and may error unexpectedly.")
+	detailMsg.WriteString("\nSkip bogform init when using provider development overrides. It is not necessary and may error unexpectedly.")
 	return tfdiags.Diagnostics{
 		tfdiags.Sourceless(
 			tfdiags.Warning,
@@ -231,7 +231,7 @@ func (m *Meta) providerFactories() (map[addrs.Provider]providers.Factory, error)
 	errs := make(map[addrs.Provider]error)
 
 	// For the providers from the lock file, we expect them to be already
-	// available in the provider cache because "tofu init" should already
+	// available in the provider cache because "bogform init" should already
 	// have put them there.
 	providerLocks := locks.AllProviders()
 	cacheDir := providercache.NewDir(m.WorkingDir.ProviderLocalCacheDir())
@@ -249,10 +249,10 @@ func (m *Meta) providerFactories() (map[addrs.Provider]providers.Factory, error)
 	// for manual testing of local development builds.
 	// - The Terraform SDK test harness (and possibly other callers in future)
 	// can ask that we use its own already-started provider servers, which we
-	// call "unmanaged" because OpenTofu isn't responsible for starting
+	// call "unmanaged" because Bogform isn't responsible for starting
 	// and stopping them. This is intended for automated testing where a
 	// calling harness is responsible both for starting the provider server
-	// and orchestrating one or more non-interactive OpenTofu runs that then
+	// and orchestrating one or more non-interactive Bogform runs that then
 	// exercise it.
 	// Unmanaged providers take precedence over overridden providers because
 	// overrides are typically a "session-level" setting while unmanaged
@@ -295,7 +295,7 @@ func (m *Meta) providerFactories() (map[addrs.Provider]providers.Factory, error)
 				}
 				if !matched {
 					return fmt.Errorf(
-						"the cached package for %s %s (in %s) does not match any of the checksums recorded in the dependency lock file, run tofu init to ensure all providers are correctly installed",
+						"the cached package for %s %s (in %s) does not match any of the checksums recorded in the dependency lock file, run bogform init to ensure all providers are correctly installed",
 						provider, version, cacheDir.BasePath(),
 					)
 				}

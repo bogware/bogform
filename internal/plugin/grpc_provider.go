@@ -57,7 +57,7 @@ func (p *GRPCProviderPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Serve
 
 // GRPCProvider handles the client, or core side of the plugin rpc connection.
 // The GRPCProvider methods are mostly a translation layer between the
-// tofu providers types and the grpc proto types, directly converting
+// bogform providers types and the grpc proto types, directly converting
 // between the two.
 type GRPCProvider struct {
 	// PluginClient provides a reference to the plugin.Client which controls the plugin process.
@@ -1198,7 +1198,7 @@ func (p *GRPCProvider) CallFunction(ctx context.Context, r providers.CallFunctio
 	return resp
 }
 
-// closing the grpc connection is final, and tofu will call it at the end of every phase.
+// closing the grpc connection is final, and bogform will call it at the end of every phase.
 func (p *GRPCProvider) Close(ctx context.Context) error {
 	logger.Trace("GRPCProvider: Close")
 
@@ -1242,7 +1242,7 @@ func decodeDynamicValue(v *proto.DynamicValue, ty cty.Type) (cty.Value, error) {
 // "ProviderMeta" fields in the underlying protocol, which describes a null
 // value meaning that provider metadata is not specified at all.
 //
-// This is a feature of the Terraform-team-managed protocol that OpenTofu
+// This is a feature of the Terraform-team-managed protocol that Bogform
 // intentionally does not include in its abstract provider protocol because it
 // is used only for module authors to collaborate with provider authors to
 // covertly track usage of their modules.

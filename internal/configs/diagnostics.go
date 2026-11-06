@@ -15,12 +15,12 @@ import (
 
 // incompatibleModuleDiagnosticExtra is the type used for a value in the
 // "ExtraInfo" field of a diagnostic to mark it as representing that a module
-// is somehow incompatible with the current version of OpenTofu.
+// is somehow incompatible with the current version of Bogform.
 //
 // When loading a module, if any of the diagnostics have a value of this type
 // in their extra info then we discard all other diagnostics because they are
 // possibly describing attempts to use language features that are not available
-// in the current version of OpenTofu.
+// in the current version of Bogform.
 //
 // There is only one value of this type, which is its zero value.
 type incompatibleModuleDiagnosticExtra struct{}
@@ -58,15 +58,15 @@ func isIncompatibleModuleDiagnostic(diag *hcl.Diagnostic) bool {
 
 // checkVersionRequirements does minimal parsing of the given body for
 // the different ways that module authors are allowed to specify which versions
-// of OpenTofu a module is compatible with, returning error diagnostics if
-// any declaration excludes the current version of OpenTofu.
+// of Bogform a module is compatible with, returning error diagnostics if
+// any declaration excludes the current version of Bogform.
 //
 // This is guaranteed to not return any error diagnostics if all of the
-// declarations it finds allow the current version of OpenTofu.
+// declarations it finds allow the current version of Bogform.
 //
 // This is intended to maximize the chance that we'll be able to read the
 // requirements (syntax errors notwithstanding) even if the config file contains
-// constructs that might've been added in future OpenTofu versions
+// constructs that might've been added in future Bogform versions
 //
 // This is a "best effort" sort of method which will check constraints it is
 // able to find, but might not succeed if the given body is too invalid to
@@ -78,7 +78,7 @@ func checkVersionRequirements(body hcl.Body, expectedVersion *hcVersion.Version)
 		return &hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Incompatible module",
-			Detail:   fmt.Sprintf("This module is not compatible with OpenTofu v%s.\n\nTo proceed, either choose another supported OpenTofu version or update this version constraint. Version constraints are normally set for good reason, so updating the constraint may lead to other errors or unexpected behavior.", expectedVersion.String()),
+			Detail:   fmt.Sprintf("This module is not compatible with Bogform v%s.\n\nTo proceed, either choose another supported Bogform version or update this version constraint. Version constraints are normally set for good reason, so updating the constraint may lead to other errors or unexpected behavior.", expectedVersion.String()),
 			Subject:  rng.Ptr(),
 			// This "Extra" is used by [finalizeModuleLoadDiagnostics] to
 			// discard all other diagnostics whenever at least one
@@ -92,17 +92,17 @@ func checkVersionRequirements(body hcl.Body, expectedVersion *hcVersion.Version)
 		case "language":
 			// New-style language block. In this case we're looking for nested
 			// blocks of type "compatible_with", which may or may not contain
-			// OpenTofu version constraints.
+			// Bogform version constraints.
 			content, _, blockDiags := block.Body.PartialContent(configFileModernVersionConstraintSniffSchema)
 			diags = append(diags, blockDiags...)
 			for _, nestedBlock := range content.Blocks {
 				if nestedBlock.Type != "compatible_with" {
 					continue
 				}
-				constraint, constraintDiags := decodeLanguageCompatibleWithOpenTofu(nestedBlock)
+				constraint, constraintDiags := decodeLanguageCompatibleWithBogform(nestedBlock)
 				diags = append(diags, constraintDiags...)
 				if constraint != nil {
-					validDiags := validateOpenTofuCoreVersionConstraint(*constraint)
+					validDiags := validateBogformCoreVersionConstraint(*constraint)
 					diags = append(diags, validDiags...)
 					if !validDiags.HasErrors() && !constraint.Required.Check(expectedVersion) {
 						diags = diags.Append(incompatibleDiag(constraint.DeclRange))
@@ -113,10 +113,10 @@ func checkVersionRequirements(body hcl.Body, expectedVersion *hcVersion.Version)
 		case "terraform":
 			// Legacy style of version constraint, using the required_version
 			// argument in a "terraform" block. We only pay attention to these
-			// in OpenTofu-specific files, because otherwise we assume they
+			// in Bogform-specific files, because otherwise we assume they
 			// are intended to constrain our predecessor instead.
 			if tofuFileExt(block.DefRange.Filename) == "" && bogFileExt(block.DefRange.Filename) == "" {
-				continue // not an OpenTofu-specific file
+				continue // not a Bogform-specific file
 			}
 
 			content, _, blockDiags := block.Body.PartialContent(configFileLegacyVersionConstraintSniffSchema)
@@ -130,7 +130,7 @@ func checkVersionRequirements(body hcl.Body, expectedVersion *hcVersion.Version)
 			constraint, constraintDiags := decodeVersionConstraint(attr)
 			diags = append(diags, constraintDiags...)
 			if !constraintDiags.HasErrors() {
-				validDiags := validateOpenTofuCoreVersionConstraint(constraint)
+				validDiags := validateBogformCoreVersionConstraint(constraint)
 				diags = append(diags, validDiags...)
 				if !validDiags.HasErrors() && !constraint.Required.Check(expectedVersion) {
 					diags = diags.Append(incompatibleDiag(constraint.DeclRange))

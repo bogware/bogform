@@ -105,7 +105,7 @@ func (p *provisionerManager) provisioner(typ string) (provisioners.Interface, er
 //
 // ProvisionerSchema memoizes results by provisioner type name, so it's fine
 // to repeatedly call this method with the same name if various different
-// parts of OpenTofu all need the same schema information.
+// parts of Bogform all need the same schema information.
 func (p *provisionerManager) ProvisionerSchema(typ string) (*configschema.Block, error) {
 	// Coarse lock only for ensuring that a valid entry exists
 	p.provisionerSchemasLock.Lock()

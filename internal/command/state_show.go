@@ -24,9 +24,9 @@ func StateShowCommander() Command {
 	cmd := Command{
 		Name:  "show",
 		Short: "Show a resource in the state",
-		Long: `Shows the attributes of a resource in the OpenTofu state.
+		Long: `Shows the attributes of a resource in the Bogform state.
 
-This command shows the attributes of a single resource in the OpenTofu state. The address argument must be used to specify a single resource. You can view the list of available resources with "tofu state list".`,
+This command shows the attributes of a single resource in the Bogform state. The address argument must be used to specify a single resource. You can view the list of available resources with "bogform state list".`,
 
 		DiagsWithNewline: true,
 	}

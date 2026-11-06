@@ -305,7 +305,7 @@ func ParseLegacyAbsProviderConfigStr(str string) (AbsProviderConfig, tfdiags.Dia
 //
 // We can encounter this kind of address in a historical state snapshot that
 // hasn't yet been upgraded by refreshing or applying a plan with
-// OpenTofu v0.13. Later versions of OpenTofu reject state snapshots using
+// OpenTofu v0.13. Later versions of Bogform reject state snapshots using
 // this format, and so users must follow the OpenTofu v0.13 upgrade guide
 // in that case.
 //

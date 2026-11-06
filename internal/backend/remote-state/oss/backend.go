@@ -408,7 +408,7 @@ func (b *Backend) configure(ctx context.Context) error {
 	if securityToken != "" {
 		options = append(options, oss.SecurityToken(securityToken))
 	}
-	options = append(options, oss.UserAgent(httpclient.OpenTofuUserAgent(TerraformVersion)))
+	options = append(options, oss.UserAgent(httpclient.BogformUserAgent(TerraformVersion)))
 
 	proxyUrl, err := getHttpProxyUrl(endpoint)
 	if err != nil {

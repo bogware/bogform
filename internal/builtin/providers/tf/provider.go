@@ -22,7 +22,7 @@ type Provider struct {
 	funcs map[string]providerFunc
 }
 
-// NewProvider returns a new tofu provider
+// NewProvider returns a new bogform provider
 func NewProvider() providers.Interface {
 	return &Provider{
 		funcs: getProviderFuncs(),
@@ -52,7 +52,7 @@ func (p *Provider) GetProviderSchema(_ context.Context) providers.GetProviderSch
 
 // ValidateProviderConfig is used to validate the configuration values.
 func (p *Provider) ValidateProviderConfig(_ context.Context, req providers.ValidateProviderConfigRequest) providers.ValidateProviderConfigResponse {
-	// At this moment there is nothing to configure for the tofu provider,
+	// At this moment there is nothing to configure for the bogform provider,
 	// so we will happily return without taking any action
 	var res providers.ValidateProviderConfigResponse
 	res.PreparedConfig = req.Config

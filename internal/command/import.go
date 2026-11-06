@@ -27,10 +27,10 @@ import (
 func ImportCommander() Command {
 	cmd := Command{
 		Name:  "import",
-		Short: "Associate existing infrastructure with a OpenTofu resource",
-		Long: `Import existing infrastructure into your OpenTofu state.
+		Short: "Associate existing infrastructure with a Bogform resource",
+		Long: `Import existing infrastructure into your Bogform state.
 
-This will find and import the specified resource into your OpenTofu state, allowing existing infrastructure to come under OpenTofu management without having to be initially created by OpenTofu. The ADDR specified is the address to import the resource to. Please see the documentation online for resource addresses. The ID is a resource-specific ID to identify that resource being imported. Please reference the documentation for the resource type you're importing to determine the ID syntax to use. It typically matches directly to the ID that the provider uses.
+This will find and import the specified resource into your Bogform state, allowing existing infrastructure to come under Bogform management without having to be initially created by Bogform. The ADDR specified is the address to import the resource to. Please see the documentation online for resource addresses. The ID is a resource-specific ID to identify that resource being imported. Please reference the documentation for the resource type you're importing to determine the ID syntax to use. It typically matches directly to the ID that the provider uses.
 
 This command will not modify your infrastructure, but it will make network requests to inspect parts of your infrastructure relevant to the resource being imported.`,
 
@@ -46,7 +46,7 @@ This command will not modify your infrastructure, but it will make network reque
 }
 
 // ImportCommand is a cli.Command implementation that imports resources
-// into the OpenTofu state.
+// into the Bogform state.
 type ImportCommand struct {
 	Meta
 }
@@ -108,9 +108,9 @@ func (c ImportCommand) Execute(args *arguments.Import, view views.Import) int {
 	if !c.configLoader().IsConfigDir(args.ConfigPath) {
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
-			Summary:  "No OpenTofu configuration files",
+			Summary:  "No Bogform configuration files",
 			Detail: fmt.Sprintf(
-				"The directory %s does not contain any OpenTofu configuration files (.tf or .tf.json). To specify a different configuration directory, use the -config=\"...\" command line option.",
+				"The directory %s does not contain any Bogform configuration files (.tf or .tf.json). To specify a different configuration directory, use the -config=\"...\" command line option.",
 				args.ConfigPath,
 			),
 		})
@@ -137,7 +137,7 @@ func (c ImportCommand) Execute(args *arguments.Import, view views.Import) int {
 
 	// Verify that the given address points to something that exists in config.
 	// This is to reduce the risk that a typo in the resource address will
-	// import something that OpenTofu will want to immediately destroy on
+	// import something that Bogform will want to immediately destroy on
 	// the next plan, and generally acts as a reassurance of user intent.
 	targetConfig := config.DescendentForInstance(addr.Module)
 	if targetConfig == nil {
@@ -234,7 +234,7 @@ func (c ImportCommand) Execute(args *arguments.Import, view views.Import) int {
 	}
 	opReq.View = view.Operation()
 
-	// Check remote OpenTofu version is compatible
+	// Check remote Bogform version is compatible
 	remoteVersionDiags := c.remoteVersionCheck(b, opReq.Workspace)
 	diags = diags.Append(remoteVersionDiags)
 	view.Diagnostics(diags)

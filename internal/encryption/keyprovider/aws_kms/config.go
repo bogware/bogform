@@ -139,7 +139,7 @@ func (c Config) asAWSBase() (*awsbase.Config, error) {
 
 	return &awsbase.Config{
 		AccessKey:               c.AccessKey,
-		CallerDocumentationURL:  "https://opentofu.org/docs/language/state/encryption/#aws-kms",
+		CallerDocumentationURL:  "https://bogware.github.io/bogform/docs/language/state/encryption/#aws-kms",
 		CallerName:              "KMS Key Provider",
 		IamEndpoint:             stringAttrEnvFallback(endpoints.IAM, "AWS_ENDPOINT_URL_IAM"),
 		MaxRetries:              c.MaxRetries,
@@ -163,7 +163,7 @@ func (c Config) asAWSBase() (*awsbase.Config, error) {
 		UseDualStackEndpoint: c.UseDualStackEndpoint,
 		UseFIPSEndpoint:      c.UseFIPSEndpoint,
 		APNInfo: &awsbase.APNInfo{
-			PartnerName: "OpenTofu-AWS-KMS",
+			PartnerName: "Bogform-AWS-KMS",
 			Products: []awsbase.UserAgentProduct{
 				{Name: httpclient.DefaultApplicationName, Version: version.String()},
 			},

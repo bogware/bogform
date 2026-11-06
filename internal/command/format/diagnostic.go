@@ -74,7 +74,7 @@ func DiagnosticFromJSON(diag *jsonentities.Diagnostic, color *colorstring.Colori
 		leftRuleEnd = color.Color("[yellow]╵[reset]")
 		leftRuleWidth = 2
 	default:
-		// Clear out any coloring that might be applied by OpenTofu's UI helper,
+		// Clear out any coloring that might be applied by Bogform's UI helper,
 		// so our result is not context-sensitive.
 		buf.WriteString(color.Color("\n[reset]"))
 	}
@@ -155,7 +155,7 @@ func appendDifferenceOutput(buf *bytes.Buffer, diag *jsonentities.Diagnostic, co
 // virtual terminal formatting sequences.
 //
 // It is intended for use in automation and other contexts in which diagnostic
-// messages are parsed from the OpenTofu output.
+// messages are parsed from the Bogform output.
 func DiagnosticPlain(diag tfdiags.Diagnostic, sources map[string]*hcl.File, width int) string {
 	return DiagnosticPlainFromJSON(jsonentities.NewDiagnostic(diag, sources), width)
 }

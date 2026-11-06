@@ -15,21 +15,21 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-// The tests in this file are for the "tofu providers mirror" command,
+// The tests in this file are for the "bogform providers mirror" command,
 // which is tested in an e2etest mode rather than a unit test mode because it
 // interacts directly with OpenTofu Registry and the full details of that are
 // tricky to mock. Such a mock is _possible_, but we're using e2etest as a
 // compromise for now to keep these tests relatively simple.
 
-func TestOpenTofuProvidersMirror(t *testing.T) {
-	testOpenTofuProvidersMirror(t, "tofu-providers-mirror")
+func TestBogformProvidersMirror(t *testing.T) {
+	testBogformProvidersMirror(t, "tofu-providers-mirror")
 }
 
-func TestOpenTofuProvidersMirrorWithLockFile(t *testing.T) {
-	testOpenTofuProvidersMirror(t, "tofu-providers-mirror-with-lock-file")
+func TestBogformProvidersMirrorWithLockFile(t *testing.T) {
+	testBogformProvidersMirror(t, "tofu-providers-mirror-with-lock-file")
 }
 
-func testOpenTofuProvidersMirror(t *testing.T, fixture string) {
+func testBogformProvidersMirror(t *testing.T, fixture string) {
 	// This test reaches out to registry.opentofu.org to download the
 	// template and null providers, so it can only run if network access is
 	// allowed.
@@ -85,8 +85,8 @@ func testOpenTofuProvidersMirror(t *testing.T, fixture string) {
 	}
 }
 
-// this test is based on testOpenTofuProvidersMirror above.
-func TestOpenTofuProvidersMirrorBadLockfile(t *testing.T) {
+// this test is based on testBogformProvidersMirror above.
+func TestBogformProvidersMirrorBadLockfile(t *testing.T) {
 	// This test reaches out to registry.opentofu.org to download the
 	// template and null providers, so it can only run if network access is
 	// allowed.

@@ -206,7 +206,7 @@ func (v *ApplyHuman) Backend() Backend {
 	}
 }
 
-const stateOutPathPostApply = "The state of your infrastructure has been saved to the path below. This state is required to modify and destroy your infrastructure, so keep it safe. To inspect the complete state use the `tofu show` command."
+const stateOutPathPostApply = "The state of your infrastructure has been saved to the path below. This state is required to modify and destroy your infrastructure, so keep it safe. To inspect the complete state use the `bogform show` command."
 
 // The ApplyJSON implementation renders streaming JSON logs, suitable for
 // integrating with other software.

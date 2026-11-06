@@ -7,7 +7,7 @@
 // proposal. It defines a hcl-base DSL for defining re-usable functions, types, and values
 // to be used as libraries.
 //
-// Although currently included within OpenTofu, this package is intentionally decoupled
+// Although currently included within Bogform, this package is intentionally decoupled
 // from the rest of the codebase to facilitate being factored out into it's own library for
 // use in other projects.
 

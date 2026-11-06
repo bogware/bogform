@@ -21,7 +21,7 @@ import (
 	"github.com/bogware/bogform/internal/tfdiags"
 )
 
-// DefaultParallelism is the limit OpenTofu places on total parallel
+// DefaultParallelism is the limit Bogform places on total parallel
 // operations as it walks the dependency graph.
 const DefaultParallelism = 10
 
@@ -36,7 +36,7 @@ const (
 	stateFlagAll = stateFlagLock | stateFlagStateIn | stateFlagStateOut | stateFlagBackup
 )
 
-// State describes arguments which are used to define how OpenTofu interacts
+// State describes arguments which are used to define how Bogform interacts
 // with state.
 type State struct {
 	// Lock controls whether or not the state manager is used to lock state
@@ -64,7 +64,7 @@ type State struct {
 	BackupPath string
 }
 
-// bind is the sole logic of registering the state related flags in OpenTofu.
+// bind is the sole logic of registering the state related flags in Bogform.
 func BindState(cli *CommandLine, mask stateFlag) *State {
 	var s State
 	cli.State = &s
@@ -94,7 +94,7 @@ func BindState(cli *CommandLine, mask stateFlag) *State {
 	return &s
 }
 
-// Operation describes arguments which are used to configure how a OpenTofu
+// Operation describes arguments which are used to configure how a Bogform
 // operation such as a plan or apply executes.
 type Operation struct {
 	// PlanMode selects one of the mutually-exclusive planning modes that
@@ -102,7 +102,7 @@ type Operation struct {
 	// only for an operation that produces a plan.
 	PlanMode plans.Mode
 
-	// Parallelism is the limit OpenTofu places on total parallel operations
+	// Parallelism is the limit Bogform places on total parallel operations
 	// as it walks the dependency graph.
 	Parallelism int
 
@@ -118,7 +118,7 @@ type Operation struct {
 	// than a set of excluded resource addresses and resources dependent on them.
 	Excludes []addrs.Targetable
 
-	// ForceReplace addresses cause OpenTofu to force a particular set of
+	// ForceReplace addresses cause Bogform to force a particular set of
 	// resource instances to generate "replace" actions in any plan where they
 	// would normally have generated "no-op" or "update" actions.
 	//
@@ -266,9 +266,9 @@ func BindOperation(cli *CommandLine) *Operation {
 		`Skip checking for external changes to remote objects while creating the plan. This can potentially make planning faster, but at the expense of possibly planning against a stale record of the remote system state.`,
 	).SetDisplay("=false")
 	cli.BoolVar(&destroyRaw, "destroy", false,
-		`Select the "destroy" planning mode, which creates a plan to destroy all objects currently managed by this OpenTofu configuration instead of the usual behavior.`)
+		`Select the "destroy" planning mode, which creates a plan to destroy all objects currently managed by this Bogform configuration instead of the usual behavior.`)
 	cli.BoolVar(&refreshOnlyRaw, "refresh-only", false,
-		`Select the "refresh only" planning mode, which checks whether remote objects still match the outcome of the most recent OpenTofu apply but does not propose any actions to undo any changes made outside of OpenTofu.`)
+		`Select the "refresh only" planning mode, which checks whether remote objects still match the outcome of the most recent Bogform apply but does not propose any actions to undo any changes made outside of Bogform.`)
 	cli.StringArrayVar(&targetsRaw, "target", nil,
 		`Limit the planning operation to only the given module, resource, or resource instance and all of its dependencies. You can use this option multiple times to include more than one object. This is for exceptional use only. Cannot be used alongside the -exclude option.`,
 	).SetDisplay("=resource")
@@ -282,7 +282,7 @@ func BindOperation(cli *CommandLine) *Operation {
 		`Similar to -exclude, but specifies zero or more resource addresses from a file.`,
 	).SetDisplay("=filename")
 	cli.StringArrayVar(&forceReplaceRaw, "replace", nil,
-		`Force replacement of a particular resource instance using its resource address. If the plan would've otherwise produced an update or no-op action for this instance, OpenTofu will plan to replace it instead. You can use this option multiple times to replace more than one object.`,
+		`Force replacement of a particular resource instance using its resource address. If the plan would've otherwise produced an update or no-op action for this instance, Bogform will plan to replace it instead. You can use this option multiple times to replace more than one object.`,
 	).SetDisplay("=resource")
 
 	// This processes the raw target flags into addrs.Targetable values, returning diagnostics if invalid.
@@ -343,7 +343,7 @@ func BindOperation(cli *CommandLine) *Operation {
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Incompatible refresh options",
-					"It doesn't make sense to use -refresh-only at the same time as -refresh=false, because OpenTofu would have nothing to do.",
+					"It doesn't make sense to use -refresh-only at the same time as -refresh=false, because Bogform would have nothing to do.",
 				))
 			}
 		default:

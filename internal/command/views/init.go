@@ -249,20 +249,20 @@ func (v *InitHuman) CopyFromModule(src string) {
 
 func (v *InitHuman) InitialisedFromEmptyDir() {
 	const outputInitEmpty = `
-[reset][bold]OpenTofu initialized in an empty directory![reset]
+[reset][bold]Bogform initialized in an empty directory![reset]
 
-The directory has no OpenTofu configuration files. You may begin working
-with OpenTofu immediately by creating OpenTofu configuration files.`
+The directory has no Bogform configuration files. You may begin working
+with Bogform immediately by creating Bogform configuration files.`
 	_, _ = v.view.streams.Println(strings.TrimSpace(v.view.colorize.Color(outputInitEmpty)))
 }
 
 func (v *InitHuman) ConfigError() {
 	const errInitConfigError = `
-[reset]OpenTofu encountered problems during initialization, including problems
+[reset]Bogform encountered problems during initialization, including problems
 with the configuration, described below.
 
-The OpenTofu configuration must be valid before initialization so that
-OpenTofu can determine which modules and providers need to be installed.`
+The Bogform configuration must be valid before initialization so that
+Bogform can determine which modules and providers need to be installed.`
 
 	_, _ = v.view.streams.Eprintln(v.view.colorize.Color(errInitConfigError))
 }
@@ -272,17 +272,17 @@ func (v *InitHuman) OutputNewline() {
 }
 
 func (v *InitHuman) InitSuccess() {
-	const outputInitSuccess = `[reset][bold][green]OpenTofu has been successfully initialized![reset][green]`
+	const outputInitSuccess = `[reset][bold][green]Bogform has been successfully initialized![reset][green]`
 	_, _ = v.view.streams.Println(v.view.colorize.Color(outputInitSuccess))
 }
 
 func (v *InitHuman) InitSuccessCLI() {
 	const outputInitSuccessCLI = `[reset][green]
-You may now begin working with OpenTofu. Try running "tofu plan" to see
-any changes that are required for your infrastructure. All OpenTofu commands
+You may now begin working with Bogform. Try running "bogform plan" to see
+any changes that are required for your infrastructure. All Bogform commands
 should now work.
 
-If you ever set or change modules or backend configuration for OpenTofu,
+If you ever set or change modules or backend configuration for Bogform,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.`
 	_, _ = v.view.streams.Println(v.view.colorize.Color(outputInitSuccessCLI))
@@ -309,7 +309,7 @@ func (v *InitHuman) ProviderAlreadyInstalled(provider string, version string, in
 }
 
 func (v *InitHuman) BuiltInProviderAvailable(provider string) {
-	_, _ = v.view.streams.Println(fmt.Sprintf("- %s is built in to OpenTofu", provider))
+	_, _ = v.view.streams.Println(fmt.Sprintf("- %s is built in to Bogform", provider))
 }
 
 func (v *InitHuman) ReusingLockFileVersion(provider string) {
@@ -354,7 +354,7 @@ func (v *InitHuman) WaitingForCacheLock(cacheDir string) {
 func (v *InitHuman) ProvidersSignedInfo() {
 	_, _ = v.view.streams.Println(fmt.Sprintf("\nProviders are signed by their developers.\n" +
 		"If you'd like to know more about provider signing, you can read about it here:\n" +
-		"https://opentofu.org/docs/cli/plugins/signing/"))
+		"https://bogware.github.io/bogform/docs/cli/plugins/signing/"))
 }
 
 func (v *InitHuman) ProviderUpgradeLockfileConflict() {
@@ -367,15 +367,15 @@ func (v *InitHuman) ProviderInstallationInterrupted() {
 
 func (v *InitHuman) LockFileCreated() {
 	_, _ = v.view.streams.Println(v.view.colorize.Color(`
-OpenTofu has created a lock file [bold].terraform.lock.hcl[reset] to record the provider
+Bogform has created a lock file [bold].terraform.lock.hcl[reset] to record the provider
 selections it made above. Include this file in your version control repository
-so that OpenTofu can guarantee to make the same selections by default when
-you run "tofu init" in the future.`))
+so that Bogform can guarantee to make the same selections by default when
+you run "bogform init" in the future.`))
 }
 
 func (v *InitHuman) LockFileChanged() {
 	_, _ = v.view.streams.Println(v.view.colorize.Color(`
-OpenTofu has made some changes to the provider dependency selections recorded
+Bogform has made some changes to the provider dependency selections recorded
 in the .terraform.lock.hcl file. Review those changes and commit them to your
 version control system if they represent changes you intended to make.`))
 }
@@ -408,12 +408,12 @@ func (v *InitJSON) CopyFromModule(src string) {
 }
 
 func (v *InitJSON) InitialisedFromEmptyDir() {
-	const outputInitEmpty = `OpenTofu initialized in an empty directory! The directory has no OpenTofu configuration files. You may begin working with OpenTofu immediately by creating OpenTofu configuration files.`
+	const outputInitEmpty = `Bogform initialized in an empty directory! The directory has no Bogform configuration files. You may begin working with Bogform immediately by creating Bogform configuration files.`
 	v.view.Info(outputInitEmpty)
 }
 
 func (v *InitJSON) ConfigError() {
-	const errInitConfigError = `OpenTofu encountered problems during initialization, including problems with the configuration, described below. The OpenTofu configuration must be valid before initialization so that OpenTofu can determine which modules and providers need to be installed.`
+	const errInitConfigError = `Bogform encountered problems during initialization, including problems with the configuration, described below. The Bogform configuration must be valid before initialization so that Bogform can determine which modules and providers need to be installed.`
 	v.view.Error(errInitConfigError)
 }
 
@@ -421,11 +421,11 @@ func (v *InitJSON) OutputNewline() {
 }
 
 func (v *InitJSON) InitSuccess() {
-	v.view.Info(`OpenTofu has been successfully initialized!`)
+	v.view.Info(`Bogform has been successfully initialized!`)
 }
 
 func (v *InitJSON) InitSuccessCLI() {
-	const outputInitSuccessCLI = `You may now begin working with OpenTofu. Try running "tofu plan" to see any changes that are required for your infrastructure. All OpenTofu commands should now work. If you ever set or change modules or backend configuration for OpenTofu, rerun this command to reinitialize your working directory. If you forget, other commands will detect it and remind you to do so if necessary.`
+	const outputInitSuccessCLI = `You may now begin working with Bogform. Try running "bogform plan" to see any changes that are required for your infrastructure. All Bogform commands should now work. If you ever set or change modules or backend configuration for Bogform, rerun this command to reinitialize your working directory. If you forget, other commands will detect it and remind you to do so if necessary.`
 	v.view.Info(outputInitSuccessCLI)
 }
 
@@ -450,7 +450,7 @@ func (v *InitJSON) ProviderAlreadyInstalled(provider string, version string, inC
 }
 
 func (v *InitJSON) BuiltInProviderAvailable(provider string) {
-	v.view.Info(fmt.Sprintf("%s is built in to OpenTofu", provider))
+	v.view.Info(fmt.Sprintf("%s is built in to Bogform", provider))
 }
 
 func (v *InitJSON) ReusingLockFileVersion(provider string) {
@@ -495,7 +495,7 @@ func (v *InitJSON) WaitingForCacheLock(cacheDir string) {
 func (v *InitJSON) ProvidersSignedInfo() {
 	v.view.Info("Providers are signed by their developers. " +
 		"If you'd like to know more about provider signing, you can read about it here: " +
-		"https://opentofu.org/docs/cli/plugins/signing/")
+		"https://bogware.github.io/bogform/docs/cli/plugins/signing/")
 }
 
 func (v *InitJSON) ProviderUpgradeLockfileConflict() {
@@ -507,14 +507,14 @@ func (v *InitJSON) ProviderInstallationInterrupted() {
 }
 
 func (v *InitJSON) LockFileCreated() {
-	v.view.Info("OpenTofu has created a lock file .terraform.lock.hcl to record the provider " +
+	v.view.Info("Bogform has created a lock file .terraform.lock.hcl to record the provider " +
 		"selections it made above. Include this file in your version control repository " +
-		"so that OpenTofu can guarantee to make the same selections by default when " +
-		"you run \"tofu init\" in the future.")
+		"so that Bogform can guarantee to make the same selections by default when " +
+		"you run \"bogform init\" in the future.")
 }
 
 func (v *InitJSON) LockFileChanged() {
-	v.view.Info("OpenTofu has made some changes to the provider dependency selections recorded " +
+	v.view.Info("Bogform has made some changes to the provider dependency selections recorded " +
 		"in the .terraform.lock.hcl file. Review those changes and commit them to your " +
 		"version control system if they represent changes you intended to make.")
 }

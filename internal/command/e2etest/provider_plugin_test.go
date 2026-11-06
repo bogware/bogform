@@ -18,7 +18,7 @@ import (
 	"github.com/bogware/bogform/internal/getproviders"
 )
 
-// TestProviderProtocols verifies that OpenTofu can execute provider plugins
+// TestProviderProtocols verifies that Bogform can execute provider plugins
 // with both supported protocol versions.
 func TestProviderProtocols(t *testing.T) {
 	if !canRunGoBuild {

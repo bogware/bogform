@@ -9,9 +9,9 @@ import (
 	regaddr "github.com/opentofu/registry-address/v2"
 )
 
-// A ModulePackage represents a physical location where OpenTofu can retrieve
+// A ModulePackage represents a physical location where Bogform can retrieve
 // a module package, which is an archive, repository, or other similar
-// container which delivers the source code for one or more OpenTofu modules.
+// container which delivers the source code for one or more Bogform modules.
 //
 // A ModulePackage is a string in go-getter's address syntax. By convention,
 // we use ModulePackage-typed values only for the result of successfully
@@ -39,7 +39,7 @@ func (p ModulePackage) String() string {
 }
 
 // ModuleRegistryPackage represents a module package that can be installed
-// using information from an OpenTofu module registry. The registry can then
+// using information from a Bogform module registry. The registry can then
 // either return a ModulePackage to install from indirectly, or directly
 // return an HTTP URL when the package is hosted directly in the registry
 // itself.

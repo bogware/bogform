@@ -132,7 +132,7 @@ func (c *compiler) Compile() (*CompiledGraph, tfdiags.Diagnostics) {
 			c.diags = c.diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Unsupported opcode in execution graph",
-				fmt.Sprintf("Execution graph includes %s, but the compiler doesn't know how to handle it. This is a bug in OpenTofu.", opDesc.opCode),
+				fmt.Sprintf("Execution graph includes %s, but the compiler doesn't know how to handle it. This is a bug in Bogform.", opDesc.opCode),
 			))
 			continue
 		}
@@ -257,7 +257,7 @@ func (c *compiler) compileResultRef(ref AnyResultRef) nodeExecuteRaw {
 			if err != nil {
 				// An error here always means that the workgraph library has
 				// detected a problem that might have caused a deadlock, which
-				// during the apply phase is always a bug in OpenTofu because
+				// during the apply phase is always a bug in Bogform because
 				// we should've detected any user-caused problems during the
 				// planning phase.
 				diags = diags.Append(grapheval.DiagnosticsForWorkgraphError(ctx, err))
@@ -297,7 +297,7 @@ func (c *compiler) compileResultRef(ref AnyResultRef) nodeExecuteRaw {
 		c.diags = append(c.diags, tfdiags.Sourceless(
 			tfdiags.Error,
 			errSummary,
-			fmt.Sprintf("The execution graph includes %#v, but the compiler doesn't know how to handle it. This is a bug in OpenTofu.", ref),
+			fmt.Sprintf("The execution graph includes %#v, but the compiler doesn't know how to handle it. This is a bug in Bogform.", ref),
 		))
 		return nil
 	}

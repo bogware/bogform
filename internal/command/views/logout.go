@@ -99,7 +99,7 @@ func (v *LogoutHuman) RemovingCredentialsFromFile(dispHostname, localFilename st
 }
 
 func (v *LogoutHuman) LogoutSuccess(dispHostname string) {
-	msg := fmt.Sprintf(v.view.colorize.Color("[green][bold]Success![reset] [bold]OpenTofu has removed the stored API token for %s.[reset]"), dispHostname)
+	msg := fmt.Sprintf(v.view.colorize.Color("[green][bold]Success![reset] [bold]Bogform has removed the stored API token for %s.[reset]"), dispHostname)
 	_, _ = v.view.streams.Println(msg + "\n")
 }
 
@@ -126,5 +126,5 @@ func (v *LogoutJSON) RemovingCredentialsFromFile(dispHostname, localFilename str
 }
 
 func (v *LogoutJSON) LogoutSuccess(dispHostname string) {
-	v.view.Info(fmt.Sprintf("Success! OpenTofu has removed the stored API token for %s", dispHostname))
+	v.view.Info(fmt.Sprintf("Success! Bogform has removed the stored API token for %s", dispHostname))
 }

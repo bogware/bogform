@@ -26,12 +26,12 @@ import (
 // will need to be updated to support the new variants.
 type PackageLocation interface {
 	// UILabel returns a label that can be used to concisely refer to this
-	// location in the OpenTofu UI, such as when reporting progress or
+	// location in the Bogform UI, such as when reporting progress or
 	// describing problems in error messages.
 	//
 	// The result is not necessarily a unique identifier for the location. It's
 	// just expected to be something a human reader could use to confirm whether
-	// OpenTofu is installing from somewhere reasonable and expected.
+	// Bogform is installing from somewhere reasonable and expected.
 	UILabel() string
 
 	// Subdir returns a path to a directory within the package that contains
@@ -69,7 +69,7 @@ type PackageLocationDirect struct {
 	// "tar" archive using either gz, xz, or bzip2 compression.
 	packageURL *url.URL
 
-	// useRegistryCredentials records whether the registry directed OpenTofu
+	// useRegistryCredentials records whether the registry directed Bogform
 	// to reuse the same credentials that were used to request this location
 	// (or, at least, functionally-equivalent credentials) when making a GET
 	// request to the URL given in archiveURL.

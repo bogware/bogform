@@ -22,7 +22,7 @@ import (
 // any diagnostics related to it.
 //
 // Note that this DOES NOT check whether the version constraints in the block
-// match the current version of OpenTofu. Instead that happens as part of
+// match the current version of Bogform. Instead that happens as part of
 // [checkVersionRequirements], which we run separately before other decoding
 // work to maximize the chance of us being able to report that the module is
 // declared incompatible instead of complaining about use of a language feature
@@ -31,7 +31,7 @@ import (
 // Currently we do not retain any of the information from a language block
 // after validating it. Instead, we interpret it just enough to generate useful
 // error messages if we encounter something that seems like how we expect these
-// language features might be used in future versions of OpenTofu.
+// language features might be used in future versions of Bogform.
 func validateLanguageBlock(block *hcl.Block, override bool) hcl.Diagnostics {
 	var diags hcl.Diagnostics
 
@@ -56,10 +56,10 @@ func validateLanguageBlock(block *hcl.Block, override bool) hcl.Diagnostics {
 	diags = append(diags, moreDiags...)
 
 	if attr, ok := content.Attributes["edition"]; ok {
-		// OpenTofu does not currently make any real use of language editions,
+		// Bogform does not currently make any real use of language editions,
 		// since there is only one "living" edition of the language right now.
 		// This is reserved just so that if we decide to introduce a new edition
-		// later then older versions of OpenTofu will return a more helpful
+		// later then older versions of Bogform will return a more helpful
 		// error message, rather than just returning a generic about the
 		// argument being unrecognized.
 		kw := hcl.ExprAsKeyword(attr.Expr)
@@ -71,31 +71,31 @@ func validateLanguageBlock(block *hcl.Block, override bool) hcl.Diagnostics {
 				Severity: hcl.DiagError,
 				Summary:  "Invalid language edition",
 				Detail: fmt.Sprintf(
-					"The \"edition\" argument expects a bare language edition keyword. OpenTofu %s supports only language edition %s, which is the default.",
+					"The \"edition\" argument expects a bare language edition keyword. Bogform %s supports only language edition %s, which is the default.",
 					currentVersion, firstEdition,
 				),
 				Subject: attr.Expr.Range().Ptr(),
 			})
 		case strings.HasPrefix(kw, "TF"):
-			// OpenTofu's predecessor was accepting "TF2021" as its single valid
+			// Bogform's predecessor was accepting "TF2021" as its single valid
 			// language edition keyword at the time we forked from it, so we'll
 			// use a specialized error message for this just in case someone
-			// found that in their documentation and tried to use it in OpenTofu.
+			// found that in their documentation and tried to use it in Bogform.
 			// Note that this would appear only if someone tried to use a
-			// keyword like this in the OpenTofu-defined "language" block, so
+			// keyword like this in the Bogform-defined "language" block, so
 			// it seems unlikely that anyone would actually see this in practice,
 			// but if it _does_ come up then it'd be weird to tell the operator
-			// that it requires "a different version of OpenTofu CLI".
+			// that it requires "a different version of Bogform CLI".
 			//
 			// The syntax that our predecessor would've used -- a "language"
 			// argument inside a "terraform" block -- is still accepted by
-			// OpenTofu, but now completely ignored because we can't predict
+			// Bogform, but now completely ignored because we can't predict
 			// how future versions of their language would use that.
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Unsupported language edition",
 				Detail: fmt.Sprintf(
-					"OpenTofu v%s does not support language edition %q. This module may be intended for use with other software.",
+					"Bogform v%s does not support language edition %q. This module may be intended for use with other software.",
 					currentVersion, firstEdition,
 				),
 				Subject: attr.Expr.Range().Ptr(),
@@ -109,7 +109,7 @@ func validateLanguageBlock(block *hcl.Block, override bool) hcl.Diagnostics {
 				Severity: hcl.DiagError,
 				Summary:  "Unsupported language edition",
 				Detail: fmt.Sprintf(
-					"OpenTofu v%s only supports language edition %s. This module requires a %s version of OpenTofu CLI.",
+					"Bogform v%s only supports language edition %s. This module requires a %s version of Bogform CLI.",
 					currentVersion, firstEdition, rel,
 				),
 				Subject: attr.Expr.Range().Ptr(),
@@ -117,52 +117,52 @@ func validateLanguageBlock(block *hcl.Block, override bool) hcl.Diagnostics {
 		}
 	}
 
-	var compatibleWithOpenTofu *VersionConstraint
+	var compatibleWithBogform *VersionConstraint
 	for _, nestedBlock := range content.Blocks {
 		switch nestedBlock.Type {
 		case "compatible_with":
 			// Note that we don't actually check whether the declared version
-			// constraint matches the current version of OpenTofu here, because
+			// constraint matches the current version of Bogform here, because
 			// that should have been checked by some earlier call to
 			// [checkVersionRequirements], which extracts the same information
 			// we're reading here in a cautious way that's more likely to
-			// succeed in a module intended for a later OpenTofu version.
+			// succeed in a module intended for a later Bogform version.
 			//
 			// The checks here are just about whether the declarations are
 			// valid regardless of which versions it allows.
-			if compatibleWithOpenTofu != nil {
+			if compatibleWithBogform != nil {
 				// Each language block should have at most one compatible_with
-				// block referring to OpenTofu, but we'll ignore blocks that
-				// don't mention OpenTofu at all.
+				// block referring to Bogform, but we'll ignore blocks that
+				// don't mention Bogform at all.
 				diags = diags.Append(&hcl.Diagnostic{
 					Severity: hcl.DiagError,
 					Summary:  "Duplicate compatible_with block",
 					Detail: fmt.Sprintf(
-						"Each language block may have at most one compatible_with block referring to OpenTofu. The OpenTofu version constraint was already declared at %s.",
-						compatibleWithOpenTofu.DeclRange,
+						"Each language block may have at most one compatible_with block referring to Bogform. The Bogform version constraint was already declared at %s.",
+						compatibleWithBogform.DeclRange,
 					),
 					Subject: block.DefRange.Ptr(),
 				})
 				continue
 			}
-			constraint, moreDiags := decodeLanguageCompatibleWithOpenTofu(nestedBlock)
+			constraint, moreDiags := decodeLanguageCompatibleWithBogform(nestedBlock)
 			diags = append(diags, moreDiags...)
 			if !moreDiags.HasErrors() {
 				if constraint.Required.Check(hcVersion.Must(hcVersion.NewVersion("1.11.0"))) {
 					// This language feature was added in OpenTofu v1.12, so it
 					// isn't suitable for describing compatibility with earlier
-					// versions of OpenTofu. We'll return a warning to help module
+					// versions of Bogform. We'll return a warning to help module
 					// authors notice that even if they are only testing with newer
-					// versions of OpenTofu.
+					// versions of Bogform.
 					diags = diags.Append(&hcl.Diagnostic{
 						Severity: hcl.DiagWarning,
 						Summary:  "Ineffective version constraint",
-						Detail:   "The compatible_with block was added in OpenTofu v1.12.0, so any constraint specified this way should exclude earlier versions of OpenTofu, such as by including \">= 0.12.0\".\n\nIf your module must be compatible with earlier versions of OpenTofu, use the required_version argument in a \"terraform\" block in a file named with the .tofu suffix, which is an older way to specify OpenTofu version constraints.",
+						Detail:   "The compatible_with block was added in OpenTofu v1.12.0, so any constraint specified this way should exclude earlier versions of Bogform, such as by including \">= 0.12.0\".\n\nIf your module must be compatible with earlier versions of Bogform, use the required_version argument in a \"terraform\" block in a file named with the .tofu suffix, which is an older way to specify Bogform version constraints.",
 						Subject:  constraint.DeclRange.Ptr(),
 					})
 				}
 			}
-			compatibleWithOpenTofu = constraint
+			compatibleWithBogform = constraint
 		default:
 			// It should not be possible to get here because HCL should've
 			// rejected any other block types as not being in the schema.
@@ -173,15 +173,15 @@ func validateLanguageBlock(block *hcl.Block, override bool) hcl.Diagnostics {
 	return diags
 }
 
-// decodeLanguageCompatibleWithOpenTofu takes a [hcl.Block] representing a
+// decodeLanguageCompatibleWithBogform takes a [hcl.Block] representing a
 // "compatible_with" block inside a "language" block and attempts to recognize
 // an "opentofu" argument within it, returning its associated version constraint
 // if present.
 //
 // This function intentionally silently ignores anything else appearing in that
 // block so that additional arguments can be used by other software that works
-// with OpenTofu modules.
-func decodeLanguageCompatibleWithOpenTofu(block *hcl.Block) (*VersionConstraint, hcl.Diagnostics) {
+// with Bogform modules.
+func decodeLanguageCompatibleWithBogform(block *hcl.Block) (*VersionConstraint, hcl.Diagnostics) {
 	var ret *VersionConstraint
 	content, _, diags := block.Body.PartialContent(languageCompatibleWithSchema)
 	if attr, ok := content.Attributes["opentofu"]; ok {
@@ -194,7 +194,7 @@ func decodeLanguageCompatibleWithOpenTofu(block *hcl.Block) (*VersionConstraint,
 	return ret, diags
 }
 
-func validateOpenTofuCoreVersionConstraint(constraint VersionConstraint) hcl.Diagnostics {
+func validateBogformCoreVersionConstraint(constraint VersionConstraint) hcl.Diagnostics {
 	var diags hcl.Diagnostics
 	// We don't permit writing prerelease versions in the version
 	// constraint arguments. We don't actually know why this rule is
@@ -206,7 +206,7 @@ func validateOpenTofuCoreVersionConstraint(constraint VersionConstraint) hcl.Dia
 				Severity: hcl.DiagError,
 				Summary:  "Invalid required_version constraint",
 				Detail: fmt.Sprintf(
-					"Prerelease version constraints are not supported: %s. Remove the prerelease information from the constraint. Prerelease versions of OpenTofu will match constraints using their version core only.",
+					"Prerelease version constraints are not supported: %s. Remove the prerelease information from the constraint. Prerelease versions of Bogform will match constraints using their version core only.",
 					required.String(),
 				),
 				Subject: constraint.DeclRange.Ptr(),
@@ -241,7 +241,7 @@ func sniffLanguageExperiments(body hcl.Body) (experiments.Set, hcl.Range, hcl.Di
 
 // decodeReservedExperimentsAttr decodes the "experiments" attribute in a
 // "language" block just enough to return error messages if it's being used
-// in ways we expect we might use it in future versions of OpenTofu.
+// in ways we expect we might use it in future versions of Bogform.
 func decodeReservedExperimentsAttr(attr *hcl.Attribute) (experiments.Set, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 	current := experiments.Set{}
@@ -317,7 +317,7 @@ var languageBlockSchema = &hcl.BodySchema{
 }
 
 var languageCompatibleWithSchema = &hcl.BodySchema{
-	// This describes only the subset that OpenTofu uses. This block should be
+	// This describes only the subset that Bogform uses. This block should be
 	// decoded using [hcl.Body.PartialContent] so as to ignore anything that's
 	// not included in this schema.
 	Attributes: []hcl.AttributeSchema{

@@ -17,7 +17,7 @@ import (
 )
 
 // CommandLine represents the information need to represent the cli options
-// available to a given OpenTofu command. It is used for both argument
+// available to a given Bogform command. It is used for both argument
 // handling and help text construction.
 type CommandLine struct {
 	// Flags represents all flags available to the command line.
@@ -277,7 +277,7 @@ func (c *CommandLine) BoolVar(p *bool, name string, value bool, usage string) *F
 //
 // This is a specialized variant of [CommandLine.BoolVar] for situations
 // where a boolean-only option has a single-character variant, such as
-// with "--version" and "-v". Note that OpenTofu intentionally does not offer
+// with "--version" and "-v". Note that Bogform intentionally does not offer
 // single-character aliases for most options, so most new options should not
 // use this function.
 func (c *CommandLine) BoolVarWithShortAlias(p *bool, name string, short rune, value bool, usage string) *Flag {

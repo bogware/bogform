@@ -88,7 +88,7 @@ func upgradeResourceStateTransform(args stateTransformArgs) (cty.Value, []byte, 
 	}
 	// If we get down here then we need to transform the state, with the
 	// provider's help.
-	// If this state was originally created by a version of OpenTofu prior to
+	// If this state was originally created by a version of Bogform prior to
 	// v0.12, this also includes translating from legacy flatmap to new-style
 	// representation, since only the provider has enough information to
 	// understand a flatmap built against an older schema.

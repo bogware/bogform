@@ -30,7 +30,7 @@ func BindWorkspaceSelect(cli *CommandLine) *WorkspaceSelect {
 		Vars: BindVars(cli),
 	}
 
-	cli.BoolVar(&ret.CreateIfMissing, "or-create", false, "Create the OpenTofu workspace if it doesn't exist.")
+	cli.BoolVar(&ret.CreateIfMissing, "or-create", false, "Create the Bogform workspace if it doesn't exist.")
 
 	cli.ArgHelp = "Expected a single argument: NAME."
 	cli.PositionalArg(&ret.WorkspaceName, "NAME", false)

@@ -185,7 +185,7 @@ func (p *PathMatcher) GetChildWithIndex(index int) Matcher {
 			continue
 		}
 
-		// OpenTofu actually allows user to provide strings into indexes as
+		// Bogform actually allows user to provide strings into indexes as
 		// long as the string can be interpreted into a number. For example, the
 		// following are equivalent and we need to support them.
 		//    - test_resource.resource.list[0].attribute

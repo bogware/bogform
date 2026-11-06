@@ -12,7 +12,7 @@ import (
 // TODO #2386 / 1.11: consider if the external method changes and unify protocol with the external key provider.
 
 // HeaderMagic is the magic string that needs to be present in the header to identify
-// the external program as an external keyprovider for OpenTofu.
+// the external program as an external keyprovider for Bogform.
 const HeaderMagic = "OpenTofu-External-Key-Provider"
 
 // Header describes the initial header the external program must output as a single line,

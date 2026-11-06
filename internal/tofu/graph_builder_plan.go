@@ -92,7 +92,7 @@ type PlanGraphBuilder struct {
 	// the state.
 	RemoveStatements []*refactoring.RemoveStatement
 
-	// GenerateConfig tells OpenTofu where to write and generated config for
+	// GenerateConfig tells Bogform where to write and generated config for
 	// any import targets that do not already have configuration.
 	//
 	// If empty, then config will not be generated.

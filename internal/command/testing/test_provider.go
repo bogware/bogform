@@ -245,7 +245,7 @@ func (provider *TestProvider) ApplyResourceChange(request providers.ApplyResourc
 		}
 
 		// Wait for a second to make sure the interrupts are processed by
-		// OpenTofu before the provider finishes. This is an attempt to ensure
+		// Bogform before the provider finishes. This is an attempt to ensure
 		// the output of any tests that rely on this behaviour is deterministic.
 		time.Sleep(time.Second)
 	}

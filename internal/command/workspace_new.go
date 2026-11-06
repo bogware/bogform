@@ -23,7 +23,7 @@ func WorkspaceNewCommander(legacyName bool) Command {
 	cmd := Command{
 		Name:  "new",
 		Short: "Create a new workspace",
-		Long:  `Create a new OpenTofu workspace.`,
+		Long:  `Create a new Bogform workspace.`,
 
 		DiagsWithNewline: true,
 	}

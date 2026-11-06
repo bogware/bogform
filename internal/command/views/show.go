@@ -24,13 +24,13 @@ import (
 )
 
 type Show interface {
-	// DisplayState renders the given state snapshot, returning a status code for "tofu show" to return.
+	// DisplayState renders the given state snapshot, returning a status code for "bogform show" to return.
 	DisplayState(ctx context.Context, stateFile *statefile.File, schemas *tofu.Schemas) int
 
-	// DisplayPlan renders the given plan, returning a status code for "tofu show" to return.
+	// DisplayPlan renders the given plan, returning a status code for "bogform show" to return.
 	DisplayPlan(ctx context.Context, plan *plans.Plan, config *configs.Config, priorStateFile *statefile.File, schemas *tofu.Schemas) int
 
-	// DisplayConfig renders the given configuration, returning a status code for "tofu show" to return.
+	// DisplayConfig renders the given configuration, returning a status code for "bogform show" to return.
 	DisplayConfig(config *configs.Config, schemas *tofu.Schemas) int
 
 	// DisplaySingleModule renders just one module, in a format that's a subset

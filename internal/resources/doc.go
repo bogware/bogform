@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // Package resources contains helpers that encapsulate the main interactions
-// OpenTofu has with resource instance objects, wrapping the raw provider client
+// Bogform has with resource instance objects, wrapping the raw provider client
 // calls with certain preprocessing, postprocessing, and validation logic that
-// ought to happen regardless of why OpenTofu is asking each of these questions.
+// ought to happen regardless of why Bogform is asking each of these questions.
 package resources

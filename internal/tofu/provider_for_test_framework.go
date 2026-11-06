@@ -23,7 +23,7 @@ var _ providers.Interface = &providerForTest{}
 
 // providerForTest is a wrapper around a real provider to allow a specific resource to be overridden
 // for the testing framework.  It is used by [NodeResourceAbstractInstance.getProvider] to fulfil the mocks
-// and overrides for that one specific resource instance, any other usage is a bug in OpenTofu and should
+// and overrides for that one specific resource instance, any other usage is a bug in Bogform and should
 // be corrected.
 type providerForTest struct {
 	// providers.Interface is not embedded to make it safer to extend
@@ -127,7 +127,7 @@ func (p providerForTest) RenewEphemeralResource(_ context.Context, _ providers.R
 	// TODO ephemeral testing support - implement me when adding testing support
 
 	// In order to fix the issue reported in https://github.com/opentofu/opentofu/issues/4251, OpenEphemeralResource and CloseEphemeralResource
-	// had their `panic` call removed and implemented properly to ensure that `tofu test` can be executed against a
+	// had their `panic` call removed and implemented properly to ensure that `bogform test` can be executed against a
 	// configuration containing `ephemeral` blocks. The fix provided just fixed the panic without implementing any
 	// testing functionality for ephemeral resources. Therefore, RenewEphemeralResource has no reason to be implemented
 	// because it cannot be reached as it relies on OpenEphemeralResource to return a specific value in the RenewAt to
@@ -147,7 +147,7 @@ func (p providerForTest) ValidateProviderConfig(_ context.Context, _ providers.V
 
 // GetProviderSchema is also used to perform additional validation outside of the provider
 // implementation. We are excluding parts of the schema related to provider since it is
-// irrelevant in the scope of mocking / overriding. When running `tofu test` configuration
+// irrelevant in the scope of mocking / overriding. When running `bogform test` configuration
 // is being transformed for testing framework and original provider configuration is not
 // accessible so it is safe to wipe metadata as well. See Config.transformProviderConfigsForTest
 // for more details.

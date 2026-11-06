@@ -16,11 +16,11 @@ import (
 	"github.com/hashicorp/go-multierror"
 )
 
-// Provisioner represents a resource provisioner in OpenTofu and properly
+// Provisioner represents a resource provisioner in Bogform and properly
 // implements all of the ResourceProvisioner API.
 //
 // This higher level structure makes it much easier to implement a new or
-// custom provisioner for OpenTofu.
+// custom provisioner for Bogform.
 //
 // The function callbacks for this structure are all passed a context object.
 // This context object has a number of pre-defined values that can be accessed

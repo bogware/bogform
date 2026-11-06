@@ -18,14 +18,14 @@ import (
 )
 
 func TestDualCustody(t *testing.T) {
-	// Note: the XOR provider is not available in final OpenTofu builds because its security constraints have not
-	// been properly evaluated. The code below doesn't work in OpenTofu and is for tests only.
+	// Note: the XOR provider is not available in final Bogform builds because its security constraints have not
+	// been properly evaluated. The code below doesn't work in Bogform and is for tests only.
 	t.Run("hcl", func(t *testing.T) {
 		sourceConfig := `key_provider "pbkdf2" "base1" {
 			passphrase = "Hello world! 123"
 		}
 		key_provider "pbkdf2" "base2" {
-			passphrase = "OpenTofu has Encryption"
+			passphrase = "Bogform has Encryption"
 		}
 		key_provider "xor" "dualcustody" {
 			a = key_provider.pbkdf2.base1
@@ -88,7 +88,7 @@ func TestDualCustody(t *testing.T) {
 			"passphrase": "Hello world! 123"
           },
           "base2": {
-			"passphrase": "OpenTofu has Encryption"
+			"passphrase": "Bogform has Encryption"
           }
         },
         "xor": {
@@ -162,7 +162,7 @@ func TestDualCustody(t *testing.T) {
 			"passphrase": "Hello world! 123"
           },
           "base2": {
-			"passphrase": "OpenTofu has Encryption"
+			"passphrase": "Bogform has Encryption"
           }
         },
         "xor": {

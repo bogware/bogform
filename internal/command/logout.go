@@ -80,7 +80,7 @@ func (c LogoutCommand) Execute(args *arguments.Logout, view views.Logout) int {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			fmt.Sprintf("Credentials for %s are manually configured", dispHostname),
-			"The \"tofu logout\" command cannot log out because credentials for this host are manually configured in a CLI configuration file.\n\nTo log out, revoke the existing credentials and remove that block from the CLI configuration.",
+			"The \"bogform logout\" command cannot log out because credentials for this host are manually configured in a CLI configuration file.\n\nTo log out, revoke the existing credentials and remove that block from the CLI configuration.",
 		))
 	}
 

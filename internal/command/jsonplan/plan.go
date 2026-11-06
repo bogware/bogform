@@ -311,7 +311,7 @@ func MarshalForLog(
 	return output, nil
 }
 
-// Marshal returns the json encoding of a tofu plan.
+// Marshal returns the json encoding of a bogform plan.
 func Marshal(
 	config *configs.Config,
 	p *plans.Plan,
@@ -408,7 +408,7 @@ func MarshalResourceChanges(resources []*plans.ResourceInstanceChangeSrc, schema
 
 		if addr.Resource.Resource.Mode == addrs.EphemeralResourceMode {
 			// We need to write ephemeral resources to the plan file to be able to build
-			// the apply graph on `tofu apply <planfile>`.
+			// the apply graph on `bogform apply <planfile>`.
 			// The DiffTransformer needs the changes from the plan to be able to generate
 			// executable resource instance graph nodes, so we are adding the ephemeral resources too.
 			// Even though we are writing these, the actual values of the ephemeral *must not*

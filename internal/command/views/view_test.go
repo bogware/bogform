@@ -454,7 +454,7 @@ func TestView_HelpPrompt(t *testing.T) {
 
 			stderr := output.Stderr()
 			if !strings.Contains(stderr, fmt.Sprintf("tofu %s -help", cmd)) {
-				t.Errorf("expected help prompt to contain 'tofu apply -help', got %q", stderr)
+				t.Errorf("expected help prompt to contain 'bogform apply -help', got %q", stderr)
 			}
 		})
 	}

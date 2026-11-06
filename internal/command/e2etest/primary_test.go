@@ -27,10 +27,10 @@ import (
 
 // The tests in this file are for the "primary workflow", which includes
 // variants of the following sequence, with different details:
-// tofu init
-// tofu plan
-// tofu apply
-// tofu destroy
+// bogform init
+// bogform plan
+// bogform apply
+// bogform destroy
 
 func TestPrimarySeparatePlan(t *testing.T) {
 	t.Parallel()
@@ -73,7 +73,7 @@ func TestPrimarySeparatePlan(t *testing.T) {
 	if !strings.Contains(stdout, "Saved the plan to: tfplan") {
 		t.Errorf("missing \"Saved the plan to...\" message in plan output\n%s", stdout)
 	}
-	if !strings.Contains(stdout, "tofu apply \"tfplan\"") {
+	if !strings.Contains(stdout, "bogform apply \"tfplan\"") {
 		t.Errorf("missing next-step instruction in plan output\n%s", stdout)
 	}
 
@@ -182,7 +182,7 @@ func TestPrimaryChdirOption(t *testing.T) {
 	if !strings.Contains(stdout, "Saved the plan to: tfplan") {
 		t.Errorf("missing \"Saved the plan to...\" message in plan output\n%s", stdout)
 	}
-	if !strings.Contains(stdout, "tofu apply \"tfplan\"") {
+	if !strings.Contains(stdout, "bogform apply \"tfplan\"") {
 		t.Errorf("missing next-step instruction in plan output\n%s", stdout)
 	}
 
@@ -246,7 +246,7 @@ func TestPrimaryChdirOption(t *testing.T) {
 // We want to validate that the plan file, state file and the output contain
 // only the things that are needed:
 //   - The plan file needs to contain **only** the stubs of the ephemeral resources
-//     and not the values that it generated. This is needed for `tofu apply planfile`
+//     and not the values that it generated. This is needed for `bogform apply planfile`
 //     to be able to generate the execution node graphs correctly.
 //   - The state file must not contain the ephemeral resources changes.
 //   - The output should contain no changes related to ephemeral resources, but only
@@ -273,12 +273,12 @@ func TestEphemeralWorkflowAndOutput(t *testing.T) {
 			if err != nil {
 				t.Fatalf("unexpected plan error: %s\nstderr:\n%s", err, stderr)
 			}
-			expectedChangesOutput := `OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+			expectedChangesOutput := `Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   + create
  <= read (data resources)
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # simple_resource.test_res will be created
   + resource "simple_resource" "test_res" {
@@ -386,7 +386,7 @@ Changes to Outputs:
 		}
 
 		{ // APPLY with no ephemeral variable value
-			expectedToContain := "╷ Error: No value for required variable    on main.tf line 15:   15: variable \"ephemeral_input\" {  Variable \"ephemeral_input\" is configured as ephemeral. This type of variables need to be given a value during `tofu plan` and also during `tofu apply`.╵"
+			expectedToContain := "╷ Error: No value for required variable    on main.tf line 15:   15: variable \"ephemeral_input\" {  Variable \"ephemeral_input\" is configured as ephemeral. This type of variables need to be given a value during `bogform plan` and also during `bogform apply`.╵"
 			expectedErr := fmt.Errorf("exit status 1")
 			_, stderr, err := tf.Run("apply", `-var=simple_input=plan_val`, "tfplan")
 			if err == nil {
@@ -1114,7 +1114,7 @@ removed {
 		t.Errorf("expected warning message 'Objects will be removed from state' in stdout. Output:\n%s", stdout)
 	}
 
-	if !strings.Contains(stdout, "After this plan is applied") || !strings.Contains(stdout, "will no longer be managed by OpenTofu") {
+	if !strings.Contains(stdout, "After this plan is applied") || !strings.Contains(stdout, "will no longer be managed by Bogform") {
 		t.Errorf("expected warning message detail in stdout. Output:\n%s", stdout)
 	}
 }

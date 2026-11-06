@@ -30,7 +30,7 @@ func BindProvidersSchema(cli *CommandLine) *ProvidersSchema {
 			return tfdiags.New(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Output only in json is allowed",
-				"The `tofu providers schema` command requires the `-json` flag.",
+				"The `bogform providers schema` command requires the `-json` flag.",
 			))
 		}
 

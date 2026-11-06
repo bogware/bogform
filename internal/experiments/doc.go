@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // Package experiments contains the models and logic for opt-in experiments
-// that can be activated for a particular OpenTofu module.
+// that can be activated for a particular Bogform module.
 //
 // We use experiments to get feedback on new configuration language features
 // in a way that permits breaking changes without waiting for a future minor

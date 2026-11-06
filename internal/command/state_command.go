@@ -15,7 +15,7 @@ func StateCommander() Command {
 		Short: "Advanced state management",
 		Long: `This command has subcommands for advanced state management.
 
-These subcommands can be used to slice and dice the OpenTofu state.
+These subcommands can be used to slice and dice the Bogform state.
 This is sometimes necessary in advanced cases. For your safety, all state management commands that modify the state create a timestamped backup of the state prior to making modifications.
 
 The structure and output of the commands is specifically tailored to work well with the common Unix utilities such as grep, awk, etc. We recommend using those tools to perform more advanced state tasks.`,
@@ -46,11 +46,11 @@ func (c *StateCommand) Run(_ []string) int {
 
 func (c *StateCommand) Help() string {
 	helpText := `
-Usage: tofu [global options] state <subcommand> [options] [args]
+Usage: bogform [global options] state <subcommand> [options] [args]
 
   This command has subcommands for advanced state management.
 
-  These subcommands can be used to slice and dice the OpenTofu state.
+  These subcommands can be used to slice and dice the Bogform state.
   This is sometimes necessary in advanced cases. For your safety, all
   state management commands that modify the state create a timestamped
   backup of the state prior to making modifications.

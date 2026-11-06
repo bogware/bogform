@@ -265,7 +265,7 @@ func (d *evaluationStateData) GetInputVariable(_ context.Context, addr addrs.Inp
 	// be complicated to accommodate all possible inputs, whereas returning
 	// unknown here allows for simpler patterns like using input values as
 	// guards to broadly enable/disable resources, avoid processing things
-	// that are disabled, etc. OpenTofu's static validation leans towards
+	// that are disabled, etc. Bogform's static validation leans towards
 	// being liberal in what it accepts because the subsequent plan walk has
 	// more information available and so can be more conservative.
 	if d.Operation == walkValidate {
@@ -303,7 +303,7 @@ func (d *evaluationStateData) GetInputVariable(_ context.Context, addr addrs.Inp
 			Severity: hcl.DiagError,
 			Summary:  `Reference to unresolved input variable`,
 			Detail: fmt.Sprintf(
-				`The final value for %s is missing in OpenTofu's evaluation context. This is a bug in OpenTofu; please report it!`,
+				`The final value for %s is missing in Bogform's evaluation context. This is a bug in Bogform; please report it!`,
 				addr.Absolute(d.ModulePath),
 			),
 			Subject: rng.ToHCL().Ptr(),
@@ -716,7 +716,7 @@ func (d *evaluationStateData) GetResource(ctx context.Context, addr addrs.Resour
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  `Missing resource type schema`,
-			Detail:   fmt.Sprintf("No schema is available for %s in %s. This is a bug in OpenTofu and should be reported.", addr, config.Provider),
+			Detail:   fmt.Sprintf("No schema is available for %s in %s. This is a bug in Bogform and should be reported.", addr, config.Provider),
 			Subject:  rng.ToHCL().Ptr(),
 		})
 		return cty.DynamicVal, diags
@@ -846,7 +846,7 @@ func (d *evaluationStateData) GetResource(ctx context.Context, addr addrs.Resour
 				diags = diags.Append(&hcl.Diagnostic{
 					Severity: hcl.DiagError,
 					Summary:  "Missing pending object in plan",
-					Detail:   fmt.Sprintf("Instance %s is marked as having a change pending but that change is not recorded in the plan. This is a bug in OpenTofu; please report it.", instAddr),
+					Detail:   fmt.Sprintf("Instance %s is marked as having a change pending but that change is not recorded in the plan. This is a bug in Bogform; please report it.", instAddr),
 					Subject:  &config.DeclRange,
 				})
 				continue
@@ -1082,7 +1082,7 @@ func (d *evaluationStateData) GetOutput(_ context.Context, addr addrs.OutputValu
 
 	// https://github.com/opentofu/opentofu/issues/257
 	// If the output is null - it does not serialize as part of the node_output state https://github.com/opentofu/opentofu/blob/4b623c56ffe9e6c1dc345e54470b71b0f261297a/internal/tofu/node_output.go#L592-L596
-	// In such a case, we should simply return a nil value because OpenTofu test crash to evaluate for invalid memory address or nil pointer dereference
+	// In such a case, we should simply return a nil value because Bogform test crash to evaluate for invalid memory address or nil pointer dereference
 	if output == nil {
 		return cty.NilVal, diags
 	} else {
@@ -1095,7 +1095,7 @@ func (d *evaluationStateData) GetOutput(_ context.Context, addr addrs.OutputValu
 		if output.Sensitive {
 			val = val.Mark(marks.Sensitive)
 		}
-		// TODO ephemeral testing support - this GetOutput is used only during `tofu test` against root module outputs.
+		// TODO ephemeral testing support - this GetOutput is used only during `bogform test` against root module outputs.
 		//  Therefore, since only the root module outputs can get in here, there is no reason to mark
 		//  values with ephemeral. Reanalyse this when implementing the testing support.
 		// if config.Ephemeral {
@@ -1120,7 +1120,7 @@ func (d *evaluationStateData) GetCheckBlock(_ context.Context, addr addrs.Check,
 	diags = diags.Append(&hcl.Diagnostic{
 		Severity: hcl.DiagError,
 		Summary:  "Reference to \"check\" in invalid context",
-		Detail:   "The \"check\" object can only be referenced from an \"expect_failures\" attribute within a OpenTofu testing \"run\" block.",
+		Detail:   "The \"check\" object can only be referenced from an \"expect_failures\" attribute within a Bogform testing \"run\" block.",
 		Subject:  rng.ToHCL().Ptr(),
 	})
 	return cty.NilVal, diags

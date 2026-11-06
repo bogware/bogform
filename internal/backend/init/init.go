@@ -29,13 +29,13 @@ import (
 	"github.com/bogware/bogform/internal/tfdiags"
 )
 
-// Backends are hardcoded into OpenTofu because the API for backends uses
+// Backends are hardcoded into Bogform because the API for backends uses
 // complex structures and supporting that over the plugin system is currently
 // prohibitively difficult. For those wanting to implement a custom backend,
 // they can do so with recompilation.
 
 // backends is the list of available backends. This is a global variable
-// because backends are currently hardcoded into OpenTofu and can't be
+// because backends are currently hardcoded into Bogform and can't be
 // modified without recompilation.
 //
 // To read an available backend, use the Backend function. This ensures
@@ -45,7 +45,7 @@ var backends map[string]backend.InitFn
 
 // backendAliases complements [backends] by allowing alternative names for some
 // backends. The keys are the alias names and the values are the canonical
-// names. OpenTofu always normalizes any use of an alias into its canonical
+// names. Bogform always normalizes any use of an alias into its canonical
 // name so that the two are effectively interchangable.
 //
 // [backendsLock] also covers access to backendAliases. Use the Backend function
@@ -113,7 +113,7 @@ func Init(services *disco.Disco) {
 // nil if none exists.
 //
 // The second return value is the canonical name for the selected backend,
-// if any, which should be used in the UI and in OpenTofu's records of which
+// if any, which should be used in the UI and in Bogform's records of which
 // backend is active in a particular working directory.
 func Backend(name string) (backend.InitFn, string) {
 	backendsLock.Lock()
@@ -129,7 +129,7 @@ func Backend(name string) (backend.InitFn, string) {
 // then it will be overwritten.
 //
 // This method sets this backend globally and care should be taken to do
-// this only before OpenTofu is executing to prevent odd behavior of backends
+// this only before Bogform is executing to prevent odd behavior of backends
 // changing mid-execution.
 //
 // NOTE: Underscore-prefixed named are reserved for unit testing use via

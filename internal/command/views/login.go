@@ -198,27 +198,27 @@ func (v *LoginHuman) MOTDMessage(msg string) {
 }
 
 func (v *LoginHuman) DefaultTFCLoginSuccess() {
-	const msg = "\n[green][bold]Success![reset] [bold]Logged in to cloud backend[reset]\n"
+	const msg = "\n[green][bold]Success![reset] [bold]Logged in[reset]\n"
 	_, _ = v.view.streams.Println(v.view.colorize.Color(msg))
 }
 
 func (v *LoginHuman) DefaultTFELoginSuccess(dispHostname string) {
-	const msg = "[green][bold]Success![reset] [bold]Logged in to the cloud backend (%s)[reset]\n"
+	const msg = "[green][bold]Success![reset] [bold]Logged in to %s[reset]\n"
 	colorisedMsg := fmt.Sprintf(v.view.colorize.Color(msg), dispHostname)
 	_, _ = v.view.streams.Println(colorisedMsg)
 }
 
 func (v *LoginHuman) TokenObtainedConfirmation(dispHostname string) {
-	const msg = `[green][bold]Success![reset] [bold]OpenTofu has obtained and saved an API token.[reset]
+	const msg = `[green][bold]Success![reset] [bold]Bogform has obtained and saved an API token.[reset]
 
-The new API token will be used for any future OpenTofu command that must make
+The new API token will be used for any future Bogform command that must make
 authenticated requests to %s.%s`
 	colorisedMsg := fmt.Sprintf(v.view.colorize.Color(msg), dispHostname, "\n")
 	_, _ = v.view.streams.Println(colorisedMsg)
 }
 
 func (v *LoginHuman) OpeningBrowserForOAuth(dispHostname, authCodeURL string) {
-	msg := fmt.Sprintf("OpenTofu must now open a web browser to the login page for %s.\n", dispHostname)
+	msg := fmt.Sprintf("Bogform must now open a web browser to the login page for %s.\n", dispHostname)
 	_, _ = v.view.streams.Println(msg)
 	msg2 := fmt.Sprintf("If a browser does not open this automatically, open the following URL to proceed:\n    %s\n", authCodeURL)
 	_, _ = v.view.streams.Println(msg2)
@@ -230,17 +230,17 @@ func (v *LoginHuman) ManualBrowserLaunch(dispHostname, authCodeURL string) {
 }
 
 func (v *LoginHuman) WaitingForHostSignal() {
-	msg := "OpenTofu will now wait for the host to signal that login was successful.\n"
+	msg := "Bogform will now wait for the host to signal that login was successful.\n"
 	_, _ = v.view.streams.Println(msg)
 }
 
 func (v *LoginHuman) PasswordRequestHeader() {
-	msg := "OpenTofu must temporarily use your password to request an API token.\nThis password will NOT be saved locally.\n"
+	msg := "Bogform must temporarily use your password to request an API token.\nThis password will NOT be saved locally.\n"
 	_, _ = v.view.streams.Println(msg)
 }
 
 func (v *LoginHuman) OpeningBrowserForTokens(dispHostname, tokensURL string) {
-	msg := fmt.Sprintf("OpenTofu must now open a web browser to the tokens page for %s.\n", dispHostname)
+	msg := fmt.Sprintf("Bogform must now open a web browser to the tokens page for %s.\n", dispHostname)
 	_, _ = v.view.streams.Println(msg)
 	msg2 := fmt.Sprintf("If a browser does not open this automatically, open the following URL to proceed:\n    %s\n", tokensURL)
 	_, _ = v.view.streams.Println(msg2)
@@ -257,12 +257,12 @@ func (v *LoginHuman) GenerateTokenInstruction() {
 }
 
 func (v *LoginHuman) TokenStorageInHelper(helperType string) {
-	msg := fmt.Sprintf("OpenTofu will store the token in the configured %q credentials helper\nfor use by subsequent commands.\n", helperType)
+	msg := fmt.Sprintf("Bogform will store the token in the configured %q credentials helper\nfor use by subsequent commands.\n", helperType)
 	_, _ = v.view.streams.Println(msg)
 }
 
 func (v *LoginHuman) TokenStorageInFile(localFilename string) {
-	msg := fmt.Sprintf("OpenTofu will store the token in plain text in the following file\nfor use by subsequent commands:\n    %s\n", localFilename)
+	msg := fmt.Sprintf("Bogform will store the token in plain text in the following file\nfor use by subsequent commands:\n    %s\n", localFilename)
 	_, _ = v.view.streams.Println(msg)
 }
 
@@ -272,7 +272,7 @@ func (v *LoginHuman) RetrievedTokenForUser(username string) {
 }
 
 func (v *LoginHuman) RequestAPITokenMessage(dispHostname, mechanism string) {
-	msg := fmt.Sprintf("OpenTofu will request an API token for %s using %s.\n", dispHostname, mechanism)
+	msg := fmt.Sprintf("Bogform will request an API token for %s using %s.\n", dispHostname, mechanism)
 	_, _ = v.view.streams.Println(msg)
 }
 
@@ -282,12 +282,12 @@ func (v *LoginHuman) BrowserBasedLoginInstruction() {
 }
 
 func (v *LoginHuman) StorageLocationConsentInHelper(helperType string) {
-	msg := fmt.Sprintf("If login is successful, OpenTofu will store the token in the configured\n%q credentials helper for use by subsequent commands.\n", helperType)
+	msg := fmt.Sprintf("If login is successful, Bogform will store the token in the configured\n%q credentials helper for use by subsequent commands.\n", helperType)
 	_, _ = v.view.streams.Println(msg)
 }
 
 func (v *LoginHuman) StorageLocationConsentInFile(localFilename string) {
-	msg := fmt.Sprintf("If login is successful, OpenTofu will store the token in plain text in\nthe following file for use by subsequent commands:\n    %s\n", localFilename)
+	msg := fmt.Sprintf("If login is successful, Bogform will store the token in plain text in\nthe following file for use by subsequent commands:\n    %s\n", localFilename)
 	_, _ = v.view.streams.Println(msg)
 }
 
@@ -309,16 +309,16 @@ func (v *LoginJSON) MOTDMessage(msg string) {
 }
 
 func (v *LoginJSON) DefaultTFCLoginSuccess() {
-	v.view.Info("Success! Logged in to cloud backend")
+	v.view.Info("Success! Logged in")
 }
 
 func (v *LoginJSON) DefaultTFELoginSuccess(dispHostname string) {
-	const msg = "Success! Logged in to the cloud backend (%s)"
+	const msg = "Success! Logged in to %s"
 	v.view.Info(fmt.Sprintf(msg, dispHostname))
 }
 
 func (v *LoginJSON) TokenObtainedConfirmation(dispHostname string) {
-	const msg = `Success! OpenTofu has obtained and saved an API token. The new API token will be used for any future OpenTofu command that must make authenticated requests to %s`
+	const msg = `Success! Bogform has obtained and saved an API token. The new API token will be used for any future Bogform command that must make authenticated requests to %s`
 	v.view.Info(fmt.Sprintf(msg, dispHostname))
 }
 
@@ -336,11 +336,11 @@ func (v *LoginJSON) WaitingForHostSignal() {
 }
 
 func (v *LoginJSON) PasswordRequestHeader() {
-	v.view.Info("OpenTofu must temporarily use your password to request an API token. This password will NOT be saved locally.")
+	v.view.Info("Bogform must temporarily use your password to request an API token. This password will NOT be saved locally.")
 }
 
 func (v *LoginJSON) OpeningBrowserForTokens(dispHostname, tokensURL string) {
-	msg := fmt.Sprintf("OpenTofu must now open a web browser to the login page for %[1]s: %[2]s. If a browser does not open this automatically, open the following URL to proceed: %[2]s", dispHostname, tokensURL)
+	msg := fmt.Sprintf("Bogform must now open a web browser to the login page for %[1]s: %[2]s. If a browser does not open this automatically, open the following URL to proceed: %[2]s", dispHostname, tokensURL)
 	v.view.Info(msg)
 }
 
@@ -353,11 +353,11 @@ func (v *LoginJSON) GenerateTokenInstruction() {
 }
 
 func (v *LoginJSON) TokenStorageInHelper(helperType string) {
-	v.view.Info(fmt.Sprintf("OpenTofu will store the token in the configured %q credentials helper for use by subsequent commands", helperType))
+	v.view.Info(fmt.Sprintf("Bogform will store the token in the configured %q credentials helper for use by subsequent commands", helperType))
 }
 
 func (v *LoginJSON) TokenStorageInFile(localFilename string) {
-	v.view.Info(fmt.Sprintf("OpenTofu will store the token in plain text in the following file for use by subsequent commands: %s", localFilename))
+	v.view.Info(fmt.Sprintf("Bogform will store the token in plain text in the following file for use by subsequent commands: %s", localFilename))
 }
 
 func (v *LoginJSON) RetrievedTokenForUser(username string) {
@@ -365,7 +365,7 @@ func (v *LoginJSON) RetrievedTokenForUser(username string) {
 }
 
 func (v *LoginJSON) RequestAPITokenMessage(dispHostname, mechanism string) {
-	v.view.Info(fmt.Sprintf("OpenTofu will request an API token for %s using %s", dispHostname, mechanism))
+	v.view.Info(fmt.Sprintf("Bogform will request an API token for %s using %s", dispHostname, mechanism))
 }
 
 func (v *LoginJSON) BrowserBasedLoginInstruction() {
@@ -373,9 +373,9 @@ func (v *LoginJSON) BrowserBasedLoginInstruction() {
 }
 
 func (v *LoginJSON) StorageLocationConsentInHelper(helperType string) {
-	v.view.Info(fmt.Sprintf("If login is successful, OpenTofu will store the token in the configured %q credentials helper for use by subsequent commands", helperType))
+	v.view.Info(fmt.Sprintf("If login is successful, Bogform will store the token in the configured %q credentials helper for use by subsequent commands", helperType))
 }
 
 func (v *LoginJSON) StorageLocationConsentInFile(localFilename string) {
-	v.view.Info(fmt.Sprintf("If login is successful, OpenTofu will store the token in plain text in the following file for use by subsequent commands: %s", localFilename))
+	v.view.Info(fmt.Sprintf("If login is successful, Bogform will store the token in plain text in the following file for use by subsequent commands: %s", localFilename))
 }

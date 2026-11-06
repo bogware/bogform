@@ -95,7 +95,7 @@ func TestEncryptionFlow(t *testing.T) {
 	fixturePath := filepath.Join("testdata", "encryption-flow")
 	tf := e2e.NewBinary(t, tofuBin, fixturePath)
 
-	// tofu init
+	// bogform init
 	_, stderr, err := tf.Run("init")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
@@ -179,7 +179,7 @@ func TestEncryptionFlow(t *testing.T) {
 
 		// Save an unencrypted plan
 		createPlan(unencryptedPlan, withVarArg("passphrase", correctPassphrase)).Success()
-		// Validate that OpenTofu does not allow different -var value for a variable between creation of the plan and its execution.
+		// Validate that Bogform does not allow different -var value for a variable between creation of the plan and its execution.
 		applyPlan(unencryptedPlan, withVarArg("passphrase", "different-value-than-the-one-saved-in-the-planfile")).
 			StderrContains(`Value saved in the plan file for variable "passphrase" is different from the one given to the current command`)
 		// Validate unencrypted plan

@@ -28,7 +28,7 @@ type modulePackageFetcherEnvironment struct {
 // OCIRepositoryStore implements getmodules.PackageFetcherEnvironment.
 func (m *modulePackageFetcherEnvironment) OCIRepositoryStore(ctx context.Context, registryDomainName string, repositoryPath string) (getmodules.OCIRepositoryStore, error) {
 	// We intentionally delay the finalization of the credentials policy until
-	// just before we need it because most OpenTofu commands don't install
+	// just before we need it because most Bogform commands don't install
 	// module packages at all, and even those that do only need to do this if
 	// using the "oci" source type, so we can avoid doing this work at all
 	// most of the time.

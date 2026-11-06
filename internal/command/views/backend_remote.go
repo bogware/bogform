@@ -100,13 +100,13 @@ func (v *BackendRemoteHuman) OperationNotCancelled() {
 }
 
 func (v *BackendRemoteHuman) PreRefresh() {
-	_, _ = v.view.streams.Println(v.view.colorize.Color(`[bold][yellow]Proceeding with 'tofu apply -refresh-only -auto-approve'.[reset]
+	_, _ = v.view.streams.Println(v.view.colorize.Color(`[bold][yellow]Proceeding with 'bogform apply -refresh-only -auto-approve'.[reset]
 `))
 }
 
 func (v *BackendRemoteHuman) InitialRetryError(isRemote bool) {
 	const initialRetryError = `[reset][yellow]There was an error connecting to the %s backend. Please do not exit
-OpenTofu to prevent data loss! Trying to restore the connection...
+Bogform to prevent data loss! Trying to restore the connection...
 [reset]`
 	_, _ = v.view.streams.Println(v.view.colorize.Color(fmt.Sprintf(initialRetryError, remoteBackendType(isRemote))))
 }
@@ -118,7 +118,7 @@ func (v *BackendRemoteHuman) RepeatedRetryError(elapsed time.Duration) {
 
 func (v *BackendRemoteHuman) UnavailableVersionInBackend(localVersion, usedVersion string) {
 	const unavailableTerraformVersion = `
-[reset][yellow]The local OpenTofu version (%s) is not available in the cloud backend, or your
+[reset][yellow]The local Bogform version (%s) is not available in the cloud backend, or your
 organization does not have access to it. The new workspace will use %s. You can
 change this later in the workspace settings.[reset]`
 	_, _ = v.view.streams.Println(v.view.colorize.Color(fmt.Sprintf(unavailableTerraformVersion, localVersion, usedVersion)))
@@ -143,7 +143,7 @@ func (v *BackendRemoteHuman) RemoteWorkspaceInRelativeDirectory(wd string, confi
 	const msg = `The remote workspace is configured to work with configuration at
 %s relative to the target repository.
 
-OpenTofu will upload the contents of the following directory,
+Bogform will upload the contents of the following directory,
 excluding files or directories as defined by a .terraformignore file
 at %s/.terraformignore (if it is present),
 in order to capture the filesystem context the remote workspace expects:

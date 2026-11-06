@@ -196,7 +196,7 @@ func (c *RemoteClient) Lock(ctx context.Context, info *statemgr.LockInfo) (strin
 
 		lockErr := &statemgr.LockError{
 			Info: currentLockInfo,
-			Err:  errors.New("the state is already locked by another tofu client"),
+			Err:  errors.New("the state is already locked by another Bogform client"),
 		}
 		return "", lockErr
 	}

@@ -21,20 +21,20 @@ import (
 // RegistryProtocolsConfig models the "registry_protocols" configuration block
 // and its associated environment variables.
 //
-// These settings are a little awkward in that they relate to OpenTofu's native
+// These settings are a little awkward in that they relate to Bogform's native
 // module and provider registry protocols, but not to any other module or
 // provider installation methods. The name of this block type assumes that
-// we'd extend these settings to any other OpenTofu-native registry protocols
+// we'd extend these settings to any other Bogform-native registry protocols
 // we might add in future, although at the time of writing this comment we have
 // no plans to introduce any, since we're preferring to use industry-standard
 // artifact distribution protocols like OCI Distribution.
 //
 // They also, due to a historical implementation mistake that we preserved for
-// backward-compatibility, also partially influence OpenTofu's native service
+// backward-compatibility, also partially influence Bogform's native service
 // discovery client regardless of which service protocol it's trying to perform
 // discovery for.
 type RegistryProtocolsConfig struct {
-	// RetryCount specifies the number of times OpenTofu should
+	// RetryCount specifies the number of times Bogform should
 	// retry making metadata requests to module or provider registries
 	// when it encounters a retryable error.
 	RetryCount    int

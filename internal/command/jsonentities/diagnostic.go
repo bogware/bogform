@@ -82,7 +82,7 @@ type DiagnosticSnippet struct {
 	// the resource block in which an expression causes an error.
 	Context *string `json:"context"`
 
-	// Code is a possibly-multi-line string of OpenTofu configuration, which
+	// Code is a possibly-multi-line string of Bogform configuration, which
 	// includes both the diagnostic source and any relevant context as defined
 	// by the diagnostic.
 	Code string `json:"code"`
@@ -264,7 +264,7 @@ func newDiagnosticSnippet(snippetRange, highlightRange *tfdiags.SourceRange, sou
 		// If we don't have the source code for the file that the snippet is supposed
 		// to come from then we can't produce a snippet. (This tends to happen when
 		// we're rendering a diagnostic from an unusual location that isn't actually
-		// a source file, like an expression entered into the "tofu console" prompt.)
+		// a source file, like an expression entered into the "bogform console" prompt.)
 		return nil
 	}
 	src := file.Bytes

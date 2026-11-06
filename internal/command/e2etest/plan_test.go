@@ -18,8 +18,8 @@ import (
 )
 
 // The tests in this file are for the following sequence:
-// tofu init
-// tofu plan
+// bogform init
+// bogform plan
 
 func TestPlanConsolidatedWarningsForDeprecatedMarks(t *testing.T) {
 	t.Parallel()

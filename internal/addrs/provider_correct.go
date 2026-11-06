@@ -16,7 +16,7 @@ import (
 //
 // The types without the "Correct" suffix are all a little confusing for
 // various historical reasons related to how providers are treated in special,
-// strange ways throughout OpenTofu.
+// strange ways throughout Bogform.
 //
 // The types in this file are currently used only by experimental new code in
 // packages like lang/eval. If you are working on the current code in

@@ -357,7 +357,7 @@ func (b *execGraphBuilder) managedResourceInstanceChangeInputs(
 	if plannedChange.Action != plans.Forget {
 		// The ManagedFinalPlanForget action doesn't take an expected value
 		// because it's always expected to be null and forgetting is implemented
-		// entirely inside OpenTofu anyway so we have no need to compare the
+		// entirely inside Bogform anyway so we have no need to compare the
 		// planned result with the final result as we would for a
 		// provider-driven change.
 		plannedValue = b.lower.ConstantValue(unmarkedAfter)

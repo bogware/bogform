@@ -52,7 +52,7 @@ type Meta struct {
 
 	// WorkingDir is an object representing the "working directory" where we're
 	// running commands. In the normal case this literally refers to the
-	// working directory of the OpenTofu process, though this can take on
+	// working directory of the Bogform process, though this can take on
 	// a more symbolic meaning when the user has overridden default behavior
 	// to specify a different working directory or to override the special
 	// data directory where we'll persist settings that must survive between
@@ -82,7 +82,7 @@ type Meta struct {
 	// This is an accommodation for those who currently essentially ignore the
 	// dependency lock file -- treating it only as transient working directory
 	// state -- and therefore don't care if the plugin cache dir causes the
-	// checksums inside to only be sufficient for the computer where OpenTofu
+	// checksums inside to only be sufficient for the computer where Bogform
 	// is currently running.
 	//
 	// We intend to remove this exception again (making the CLI configuration
@@ -139,12 +139,12 @@ type Meta struct {
 	ProviderDevOverrides map[addrs.Provider]getproviders.PackageLocalDir
 
 	// UnmanagedProviders are a set of providers that exist as processes
-	// predating OpenTofu, which OpenTofu should use but not worry about the
+	// predating Bogform, which Bogform should use but not worry about the
 	// lifecycle of.
 	//
 	// This is essentially a more extreme version of ProviderDevOverrides where
-	// OpenTofu doesn't even worry about how the provider server gets launched,
-	// just trusting that someone else did it before running OpenTofu.
+	// Bogform doesn't even worry about how the provider server gets launched,
+	// just trusting that someone else did it before running Bogform.
 	UnmanagedProviders map[addrs.Provider]*plugin.ReattachConfig
 
 	// ----------------------------------------------------------
@@ -197,7 +197,7 @@ type Meta struct {
 	rootModuleCallCache *configs.StaticModuleCall
 	inputVariableCache  map[string]backend.UnparsedVariableValue
 
-	// Since `tofu providers lock` and `tofu providers mirror` have their own
+	// Since `bogform providers lock` and `bogform providers mirror` have their own
 	// logic to create the source to fetch providers through, we had to
 	// plumb this configuration through the [Meta] type to reach that part too.
 	// In any other cases, this configuration is built and used directly in `realMain`
@@ -372,7 +372,7 @@ func (m *Meta) RunOperation(ctx context.Context, b backend.Enhanced, opReq *back
 	return op, diags
 }
 
-// contextOpts returns the options to use to initialize a OpenTofu
+// contextOpts returns the options to use to initialize a Bogform
 // context with the settings from this Meta.
 func (m *Meta) contextOpts(ctx context.Context) (*tofu.ContextOpts, error) {
 	workspace, err := m.Workspace(ctx)
@@ -450,11 +450,11 @@ func (m *Meta) confirm(opts *tofu.InputOpts) (bool, error) {
 }
 
 // WorkspaceNameEnvVar is the name of the environment variable that can be used
-// to set the name of the OpenTofu workspace, overriding the workspace chosen
-// by `tofu workspace select`.
+// to set the name of the Bogform workspace, overriding the workspace chosen
+// by `bogform workspace select`.
 //
-// Note that this environment variable is ignored by `tofu workspace new`
-// and `tofu workspace delete`.
+// Note that this environment variable is ignored by `bogform workspace new`
+// and `bogform workspace delete`.
 const WorkspaceNameEnvVar = "TF_WORKSPACE"
 
 var errInvalidWorkspaceNameEnvVar = fmt.Errorf("Invalid workspace name set using %s", WorkspaceNameEnvVar)
@@ -535,7 +535,7 @@ func (m *Meta) checkRequiredVersion(ctx context.Context) tfdiags.Diagnostics {
 		return diags
 	}
 
-	// If there were any OpenTofu-version-related errors then they would've
+	// If there were any Bogform-version-related errors then they would've
 	// already been detected by loader.LoadConfig above.
 	return nil
 }

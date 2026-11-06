@@ -227,8 +227,8 @@ Changes to Outputs:
   ~ sensitive_after  = (sensitive value)
   ~ sensitive_before = (sensitive value)
 
-You can apply this plan to save these new output values to the OpenTofu
-state, without changing any real infrastructure.
+You can apply this plan to save these new output values to the Bogform state,
+without changing any real infrastructure.
 `)
 
 	if output := done(t).Stdout(); !strings.Contains(output, expectedOutput) {
@@ -318,11 +318,11 @@ func TestLocal_planTainted(t *testing.T) {
 		t.Fatal("plan should not be empty")
 	}
 
-	expectedOutput := `OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+	expectedOutput := `Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
 -/+ destroy and then create replacement
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_instance.foo is tainted, so it must be replaced
 -/+ resource "test_instance" "foo" {
@@ -399,12 +399,12 @@ func TestLocal_planDeposedOnly(t *testing.T) {
 
 	// The deposed object and the current object are distinct, so our
 	// plan includes separate actions for each of them. This strange situation
-	// is not common: it should arise only if OpenTofu fails during
+	// is not common: it should arise only if Bogform fails during
 	// a create-before-destroy when the "create" hasn't completed yet but
 	// in a severe way that prevents the previous object from being restored
 	// as "current".
 	//
-	// However, that situation was more common in some earlier OpenTofu
+	// However, that situation was more common in some earlier Bogform
 	// versions where deposed objects were not managed properly, so this
 	// can arise when upgrading from an older version with deposed objects
 	// already in the state.
@@ -412,16 +412,16 @@ func TestLocal_planDeposedOnly(t *testing.T) {
 	// This is one of the few cases where we expose the idea of "deposed" in
 	// the UI, including the user-unfriendly "deposed key" (00000000 in this
 	// case) just so that users can correlate this with what they might
-	// see in `tofu show` and in the subsequent apply output, because
+	// see in `bogform show` and in the subsequent apply output, because
 	// it's also possible for there to be _multiple_ deposed objects, in the
 	// unlikely event that create_before_destroy _keeps_ crashing across
 	// subsequent runs.
-	expectedOutput := `OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+	expectedOutput := `Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   + create
   - destroy
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_instance.foo will be created
   + resource "test_instance" "foo" {
@@ -487,11 +487,11 @@ func TestLocal_planTainted_createBeforeDestroy(t *testing.T) {
 		t.Fatal("plan should not be empty")
 	}
 
-	expectedOutput := `OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+	expectedOutput := `Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
 +/- create replacement and then destroy
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_instance.foo is tainted, so it must be replaced
 +/- resource "test_instance" "foo" {
@@ -634,7 +634,7 @@ func TestLocal_planDestroy_withDataSources(t *testing.T) {
 	}
 
 	// Data source should not be rendered in the output
-	expectedOutput := `OpenTofu will perform the following actions:
+	expectedOutput := `Bogform will perform the following actions:
 
   # test_instance.foo[0] will be destroyed
   - resource "test_instance" "foo" {

@@ -4,14 +4,14 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // Package tofu2024 contains the "module compiler" implementation for the
-// first edition of the OpenTofu language, established with OpenTofu v1.6
+// first edition of the Bogform language, established with OpenTofu v1.6
 // in 2024 and then gradually evolved in backward-compatible ways.
 //
 // This package owns the responsibility of translating from [configs.Module]
 // to the language-edition-agnostic API used by packages eval configgraph.
 //
 // Conceptually then, this package decides the meaning of and relationships
-// between blocks and expressions in an OpenTofu module that is written for
+// between blocks and expressions in a Bogform module that is written for
 // this language edition, which is the default edition used when no other
 // edition is selected. (At the time of initially writing this doc there
 // are no other editions available, but this doc text is hedging in case
@@ -47,7 +47,7 @@ import (
 //   Therefore nothing in package configgraph should depend on anything from
 //   package configs, and configgraph should also only be using HCL directly for
 //   some ancillary concepts like diagnostics and traversals, and even those
-//   maybe we'll replace with some OpenTofu-specific wrapper types in future.
+//   maybe we'll replace with some Bogform-specific wrapper types in future.
 
 // Temporary note about possible future plans:
 //

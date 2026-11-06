@@ -287,7 +287,7 @@ func (m *Module) Finalize(l symlib.Table, call StaticModuleCall) hcl.Diagnostics
 	}
 
 	if m.StaticEvaluator != nil {
-		panic("applying Static Evaluation to a module twice, this is a critical bug in OpenTofu")
+		panic("applying Static Evaluation to a module twice, this is a critical bug in Bogform")
 	}
 
 	// Static evaluation to build a StaticContext now that module has all relevant Locals / Variables

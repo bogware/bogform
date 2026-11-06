@@ -71,11 +71,11 @@ func (m *Meta) lockedDependencies() (*depsfile.Locks, tfdiags.Diagnostics) {
 // [Meta.lockedDependencies] that adds some extra synthetic entries for any
 // existing lock entry that matches "registry.terraform.io/hashicorp/*", to
 // encourage the provider installer to select the same version of the
-// corresponding provider in OpenTofu's registry, to keep dependency selections
+// corresponding provider in Bogform's registry, to keep dependency selections
 // consistent as folks migrate over from our predecessor.
 //
 // This variant should be used only by commands that will perform provider
-// installation based on the result, such as the implementation "tofu init".
+// installation based on the result, such as the implementation "bogform init".
 // This is not appropriate to use when the result will be used to call
 // [Meta.providerFactories]; that function needs to be given exactly the
 // dependencies from the lock file, because it expects to find every listed
@@ -86,9 +86,9 @@ func (m *Meta) lockedDependenciesWithPredecessorRegistryShimmed() (*depsfile.Loc
 		return nil, diags
 	}
 
-	// If this is the first run after switching from OpenTofu's predecessor,
+	// If this is the first run after switching from Bogform's predecessor,
 	// the lock file might contain some entries from the predecessor's registry
-	// which we can translate into similar entries for OpenTofu's registry.
+	// which we can translate into similar entries for Bogform's registry.
 	changed := ret.UpgradeFromPredecessorProject()
 	if len(changed) != 0 {
 		oldAddrs := slices.Collect(maps.Keys(changed))
@@ -102,7 +102,7 @@ func (m *Meta) lockedDependenciesWithPredecessorRegistryShimmed() (*depsfile.Loc
 			}
 		})
 		var buf strings.Builder // strings.Builder writes cannot fail
-		_, _ = buf.WriteString("OpenTofu automatically rewrote some entries in your dependency lock file:\n")
+		_, _ = buf.WriteString("Bogform automatically rewrote some entries in your dependency lock file:\n")
 		for _, oldAddr := range oldAddrs {
 			newAddr := changed[oldAddr]
 			// We intentionally use String instead of ForDisplay here because
@@ -110,7 +110,7 @@ func (m *Meta) lockedDependenciesWithPredecessorRegistryShimmed() (*depsfile.Loc
 			// addresses with explicit registry hostnames.
 			_, _ = fmt.Fprintf(&buf, "  - %s => %s\n", oldAddr.String(), newAddr.String())
 		}
-		_, _ = buf.WriteString("\nThe version selections were preserved, but the hashes were not because the OpenTofu project's provider releases are not byte-for-byte identical.")
+		_, _ = buf.WriteString("\nThe version selections were preserved, but the hashes were not because the Bogform project's provider releases are not byte-for-byte identical.")
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Warning,
 			"Dependency lock file entries automatically updated",

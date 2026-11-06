@@ -76,7 +76,7 @@ func TestProvidersSchema_output(t *testing.T) {
 			view, done = testView(t)
 			m.View = view
 
-			// `tofu provider schemas` command
+			// `bogform provider schemas` command
 			code = RunCommander(t, ProvidersSchemaCommander(), m, []string{"-json"})
 			output = done(t)
 			if code != 0 {

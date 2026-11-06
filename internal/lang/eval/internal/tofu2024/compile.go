@@ -102,7 +102,7 @@ func CompileModuleInstance(
 	}
 
 	// We have some shims in here to deal with the unusual way the existing
-	// OpenTofu language deals with references to provider instances, since
+	// Bogform language deals with references to provider instances, since
 	// [configgraph] is designed to support treating them as "normal" values
 	// in future but we want to keep existing modules working for now.
 	ret.providerConfigNodes = compileModuleInstanceProviderConfigs(ctx,
@@ -117,7 +117,7 @@ func CompileModuleInstance(
 	providersFromParent := call.ProvidersFromParent
 	if providersFromParent == nil {
 		if !call.CalleeAddr.IsRoot() {
-			panic("OpenTofu Compilation Bug: Missing providers from parent in non-root module")
+			panic("Bogform Compilation Bug: Missing providers from parent in non-root module")
 		}
 		// Wrap providersFromParent to handle provider config refs that make it back to the root
 		// module without an explicitly declared provider. Store the providers discovered

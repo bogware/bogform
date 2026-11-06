@@ -17,7 +17,7 @@ import (
 // The symbols aliased in this file are defined in [evalglue] really just to
 // avoid a dependency between this package and the "compiler" packages
 // like ./internal/tofu2024, but we do still need them in our exported API
-// here so that other parts of OpenTofu can interact with the evaluator.
+// here so that other parts of Bogform can interact with the evaluator.
 
 type EvalContext = evalglue.EvalContext
 type Providers = evalglue.Providers

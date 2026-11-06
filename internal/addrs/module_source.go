@@ -56,7 +56,7 @@ var moduleSourceLocalPrefixes = []string{
 // For historical reasons this syntax is a bit overloaded, supporting three
 // different address types:
 //   - Local paths starting with either ./ or ../, which are special because
-//     OpenTofu considers them to belong to the same "package" as the caller.
+//     Bogform considers them to belong to the same "package" as the caller.
 //   - Module registry addresses, given as either NAMESPACE/NAME/SYSTEM or
 //     HOST/NAMESPACE/NAME/SYSTEM, in which case the remote registry serves
 //     as an indirection over the third address type that follows.
@@ -152,7 +152,7 @@ func parseModuleSourceLocal(raw string) (ModuleSourceLocal, error) {
 	// produces.
 
 	// Although using backslashes (Windows-style) is non-idiomatic, we do
-	// allow it and just normalize it away, so the rest of OpenTofu will
+	// allow it and just normalize it away, so the rest of Bogform will
 	// only see the forward-slash form.
 	if strings.Contains(raw, `\`) {
 		// Note: We use string replacement rather than filepath.ToSlash
@@ -202,12 +202,12 @@ func (s ModuleSourceLocal) ForDisplay() string {
 }
 
 // ModuleSourceRegistry is a ModuleSource representing a module listed in a
-// OpenTofu module registry.
+// Bogform module registry.
 //
 // A registry source isn't a direct source location but rather an indirection
 // over a ModuleSourceRemote. The job of a registry is to translate the
 // combination of a ModuleSourceRegistry and a module version number into
-// a concrete ModuleSourceRemote that OpenTofu will then download and
+// a concrete ModuleSourceRemote that Bogform will then download and
 // install.
 type ModuleSourceRegistry regaddr.Module
 

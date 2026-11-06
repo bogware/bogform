@@ -707,7 +707,7 @@ func TestMarshalResources(t *testing.T) {
 			},
 			testSchemas(),
 			nil,
-			`ephemeral resource "ephemeral.test_thing.bar" detected in the current state. This is an error in OpenTofu`,
+			`ephemeral resource "ephemeral.test_thing.bar" detected in the current state. This is an error in Bogform`,
 		},
 	}
 

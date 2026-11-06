@@ -513,7 +513,7 @@ func TestModuleFromTheFuture(t *testing.T) {
 		// The configuration fixture used here includes both a mismatching version
 		// constraint _and_ an unrecognized block type, but we should've reported
 		// only the mismatching version constraint because we assume the
-		// unrecognized block type became valid in a future version of OpenTofu.
+		// unrecognized block type became valid in a future version of Bogform.
 		"Incompatible module",
 	}
 

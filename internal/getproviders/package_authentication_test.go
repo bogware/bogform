@@ -604,7 +604,7 @@ func TestSignatureAuthentication_success(t *testing.T) {
 	// to test this process we hard-code only the data that is to be signed
 	// and then dynamically generate a signing key and associated signature
 	// on each test run. In realistic use the signature would be generated
-	// in the provider's release process and OpenTofu would have access only
+	// in the provider's release process and Bogform would have access only
 	// to the public part of the GPG key.
 	pgpEntity := pgpTestEntity(t, "TestSignatureAuthentication_success")
 	publicKeyArmor, keyID := pgpPublicKeyForTestEntity(t, pgpEntity)

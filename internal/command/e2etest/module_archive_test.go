@@ -31,7 +31,7 @@ func TestInitModuleArchive(t *testing.T) {
 		t.Errorf("unexpected stderr output:\n%s", stderr)
 	}
 
-	if !strings.Contains(stdout, "OpenTofu has been successfully initialized!") {
+	if !strings.Contains(stdout, "Bogform has been successfully initialized!") {
 		t.Errorf("success message is missing from output:\n%s", stdout)
 	}
 }

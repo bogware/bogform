@@ -74,15 +74,15 @@ func (m *Meta) backendMigrateState(ctx context.Context, opts *backendMigrateOpts
 	opts.destinationWorkspace = backend.DefaultStateName
 	opts.force = m.backendArgs.ForceInitCopy
 
-	// Disregard remote OpenTofu version for the state source backend, as we are
+	// Disregard remote Bogform version for the state source backend, as we are
 	// migrating away and will not break a remote workspace.
 	m.ignoreRemoteVersionConflict(opts.Source)
 
-	// Disregard remote OpenTofu version if instructed to do so via CLI flag.
+	// Disregard remote Bogform version if instructed to do so via CLI flag.
 	if m.backendArgs.IgnoreRemoteVersion {
 		m.ignoreRemoteVersionConflict(opts.Destination)
 	} else {
-		// Check the remote OpenTofu version for the state destination backend, to
+		// Check the remote Bogform version for the state destination backend, to
 		// ensure that we don't break the workspace by uploading an incompatible
 		// state file.
 		for _, workspace := range destinationWorkspaces {
@@ -537,9 +537,9 @@ const errMigrateLoadStates = `
 Error inspecting states in the %q backend:
     %w
 
-Prior to changing backends, OpenTofu inspects the source and destination
+Prior to changing backends, Bogform inspects the source and destination
 states to determine what kind of migration steps need to be taken, if any.
-OpenTofu failed to load the states. The data in both the source and the
+Bogform failed to load the states. The data in both the source and the
 destination remain unmodified. Please resolve the above error and try again.
 `
 
@@ -558,7 +558,7 @@ Error migrating the workspace %q from the previous %q backend
 to the newly configured %q backend:
     %w
 
-OpenTofu copies workspaces in alphabetical order. Any workspaces
+Bogform copies workspaces in alphabetical order. Any workspaces
 alphabetically earlier than this one have been copied. Any workspaces
 later than this haven't been modified in the destination. No workspaces
 in the source state have been modified.
@@ -607,24 +607,24 @@ configured %[2]q backend.
 const inputBackendMigrateMultiToSingle = `
 The existing %[1]q backend supports workspaces and you currently are
 using more than one. The newly configured %[2]q backend doesn't support
-workspaces. If you continue, OpenTofu will copy your current workspace %[3]q
+workspaces. If you continue, Bogform will copy your current workspace %[3]q
 to the default workspace in the new backend. Your existing workspaces in the
 source backend won't be modified. If you want to switch workspaces, back them
-up, or cancel altogether, answer "no" and OpenTofu will abort.
+up, or cancel altogether, answer "no" and Bogform will abort.
 `
 
 const inputBackendMigrateMultiToMulti = `
 Both the existing %[1]q backend and the newly configured %[2]q backend
-support workspaces. When migrating between backends, OpenTofu will copy
+support workspaces. When migrating between backends, Bogform will copy
 all workspaces (with the same names). THIS WILL OVERWRITE any conflicting
 states in the destination.
 
-OpenTofu initialization doesn't currently migrate only select workspaces.
+Bogform initialization doesn't currently migrate only select workspaces.
 If you want to migrate a select number of workspaces, you must manually
 pull and push those states.
 
-If you answer "yes", OpenTofu will migrate all states. If you answer
-"no", OpenTofu will abort.
+If you answer "yes", Bogform will migrate all states. If you answer
+"no", Bogform will abort.
 `
 
 const inputBackendNewWorkspaceName = `

@@ -108,10 +108,10 @@ type Resource struct {
 	// addresses relative to the containing module.
 	DependsOn []string `json:"depends_on,omitempty"`
 
-	// Tainted is true if the resource is tainted in tofu state.
+	// Tainted is true if the resource is tainted in bogform state.
 	Tainted bool `json:"tainted,omitempty"`
 
-	// Deposed is set if the resource is deposed in tofu state.
+	// Deposed is set if the resource is deposed in bogform state.
 	DeposedKey string `json:"deposed_key,omitempty"`
 
 	// Identity is the JSON representation of the resource's identity attributes,
@@ -201,7 +201,7 @@ func MarshalForLog(sf *statefile.File, schemas *plugins.Schemas) (*State, error)
 	return output, nil
 }
 
-// Marshal returns the json encoding of a tofu state.
+// Marshal returns the json encoding of a bogform state.
 func Marshal(sf *statefile.File, schemas *plugins.Schemas) ([]byte, error) {
 	output, err := MarshalForLog(sf, schemas)
 	if err != nil {
@@ -305,7 +305,7 @@ func marshalRootModule(s *states.State, schemas *plugins.Schemas) (Module, error
 }
 
 // marshalModules is an ungainly recursive function to build a module structure
-// out of tofu state.
+// out of bogform state.
 func marshalModules(
 	s *states.State,
 	schemas *plugins.Schemas,
@@ -395,7 +395,7 @@ func marshalResources(resources map[string]*states.Resource, module addrs.Module
 			case addrs.DataResourceMode:
 				current.Mode = DataResourceMode
 			case addrs.EphemeralResourceMode:
-				return ret, fmt.Errorf("ephemeral resource %q detected in the current state. This is an error in OpenTofu", resAddr.String())
+				return ret, fmt.Errorf("ephemeral resource %q detected in the current state. This is an error in Bogform", resAddr.String())
 			default:
 				return ret, fmt.Errorf("resource %s has an unsupported mode %s",
 					resAddr.String(),

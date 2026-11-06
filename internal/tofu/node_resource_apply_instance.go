@@ -146,7 +146,7 @@ func (n *NodeApplyableResourceInstance) Execute(ctx context.Context, evalCtx Eva
 			tfdiags.Error,
 			"Resource node has no configuration attached",
 			fmt.Sprintf(
-				"The graph node for %s has no configuration attached to it. This suggests a bug in OpenTofu's apply graph builder; please report it!",
+				"The graph node for %s has no configuration attached to it. This suggests a bug in Bogform's apply graph builder; please report it!",
 				addr,
 			),
 		))
@@ -229,7 +229,7 @@ func (n *NodeApplyableResourceInstance) dataResourceExecute(ctx context.Context,
 		return diags
 	}
 	if change.Action != plans.Read && change.Action != plans.NoOp {
-		diags = diags.Append(fmt.Errorf("nonsensical planned action %#v for %s; this is a bug in OpenTofu", change.Action, n.Addr))
+		diags = diags.Append(fmt.Errorf("nonsensical planned action %#v for %s; this is a bug in Bogform", change.Action, n.Addr))
 	}
 
 	// In this particular call to applyDataSource we include our planned
@@ -301,7 +301,7 @@ func (n *NodeApplyableResourceInstance) managedResourceExecute(ctx context.Conte
 		return diags
 	}
 	if diffApply.Action == plans.Read {
-		diags = diags.Append(fmt.Errorf("nonsensical planned action %#v for %s; this is a bug in OpenTofu", diffApply.Action, n.Addr))
+		diags = diags.Append(fmt.Errorf("nonsensical planned action %#v for %s; this is a bug in Bogform", diffApply.Action, n.Addr))
 	}
 
 	destroy := (diffApply.Action == plans.Delete || diffApply.Action.IsReplace())
@@ -413,7 +413,7 @@ func (n *NodeApplyableResourceInstance) managedResourceExecute(ctx context.Conte
 					tfdiags.Error,
 					"Attempt to restore non-existent deposed object",
 					fmt.Sprintf(
-						"OpenTofu has encountered a bug where it would need to restore a deposed object for %s without knowing a deposed object key for that object. This occurred during a %s action. This is a bug in OpenTofu; please report it!",
+						"Bogform has encountered a bug where it would need to restore a deposed object for %s without knowing a deposed object key for that object. This occurred during a %s action. This is a bug in Bogform; please report it!",
 						addr, diffApply.Action,
 					),
 				))
@@ -422,7 +422,7 @@ func (n *NodeApplyableResourceInstance) managedResourceExecute(ctx context.Conte
 					tfdiags.Error,
 					"Attempt to restore non-existent deposed object",
 					fmt.Sprintf(
-						"OpenTofu has encountered a bug where it would need to restore a deposed object for %s without knowing a deposed object key for that object. This is a bug in OpenTofu; please report it!",
+						"Bogform has encountered a bug where it would need to restore a deposed object for %s without knowing a deposed object key for that object. This is a bug in Bogform; please report it!",
 						addr,
 					),
 				))
@@ -463,7 +463,7 @@ func (n *NodeApplyableResourceInstance) managedResourcePostconditions(ctx contex
 //
 // Errors here are most often indicative of a bug in the provider, so our error
 // messages will report with that in mind. It's also possible that there's a bug
-// in OpenTofu's Core's own "proposed new value" code in EvalDiff.
+// in Bogform's Core's own "proposed new value" code in EvalDiff.
 func (n *NodeApplyableResourceInstance) checkPlannedChange(evalCtx EvalContext, plannedChange, actualChange *plans.ResourceInstanceChange, providerSchema providers.ProviderSchema) tfdiags.Diagnostics {
 	var diags tfdiags.Diagnostics
 	addr := n.ResourceInstanceAddr().Resource
@@ -496,9 +496,9 @@ func (n *NodeApplyableResourceInstance) checkPlannedChange(evalCtx EvalContext, 
 			// If the order of replacement changed, then that is a bug in tofu
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
-				"OpenTofu produced inconsistent final plan",
+				"Bogform produced inconsistent final plan",
 				fmt.Sprintf(
-					"When expanding the plan for %s to include new values learned so far during apply, the planned action changed from %s to %s.\n\nThis is a bug in OpenTofu and should be reported.",
+					"When expanding the plan for %s to include new values learned so far during apply, the planned action changed from %s to %s.\n\nThis is a bug in Bogform and should be reported.",
 					absAddr, plannedChange.Action, actualChange.Action,
 				),
 			))

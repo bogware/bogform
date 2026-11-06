@@ -19,7 +19,7 @@ import (
 )
 
 // newServiceDiscovery returns a newly-created [disco.Disco] object that is
-// configured appropriately for use elsewhere in OpenTofu.
+// configured appropriately for use elsewhere in Bogform.
 //
 // The credSrc argument represents the policy for how the service discovery
 // object should obtain authentication credentials for service discovery

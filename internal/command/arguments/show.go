@@ -26,7 +26,7 @@ type Show struct {
 }
 
 // ShowTargetType represents the type of object that is requested to be
-// shown by the "tofu show" command.
+// shown by the "bogform show" command.
 type ShowTargetType int
 
 //go:generate go tool golang.org/x/tools/cmd/stringer -type=ShowTargetType
@@ -119,7 +119,7 @@ func BindShow(cli *CommandLine) *Show {
 			case 1:
 				// This case is ambiguous: the argument could be either
 				// a saved plan file or a local state snapshot such as
-				// the output from "tofu state pull". The caller will need
+				// the output from "bogform state pull". The caller will need
 				// to probe TargetArg to decide which it is.
 				show.TargetType = ShowUnknownType
 				show.TargetArg = args[0]

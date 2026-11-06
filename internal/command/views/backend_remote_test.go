@@ -65,7 +65,7 @@ func TestBackendRemoteViews(t *testing.T) {
 			viewCall: func(view BackendRemote) {
 				view.PreRefresh()
 			},
-			wantStdout: `Proceeding with 'tofu apply -refresh-only -auto-approve'.
+			wantStdout: `Proceeding with 'bogform apply -refresh-only -auto-approve'.
 
 `,
 		},
@@ -74,7 +74,7 @@ func TestBackendRemoteViews(t *testing.T) {
 				view.InitialRetryError(true)
 			},
 			wantStdout: `There was an error connecting to the remote backend. Please do not exit
-OpenTofu to prevent data loss! Trying to restore the connection...
+Bogform to prevent data loss! Trying to restore the connection...
 
 `,
 		},
@@ -83,7 +83,7 @@ OpenTofu to prevent data loss! Trying to restore the connection...
 				view.InitialRetryError(false)
 			},
 			wantStdout: `There was an error connecting to the cloud backend. Please do not exit
-OpenTofu to prevent data loss! Trying to restore the connection...
+Bogform to prevent data loss! Trying to restore the connection...
 
 `,
 		},
@@ -99,7 +99,7 @@ OpenTofu to prevent data loss! Trying to restore the connection...
 				view.UnavailableVersionInBackend("1.0.0", "1.1.0")
 			},
 			wantStdout: `
-The local OpenTofu version (1.0.0) is not available in the cloud backend, or your
+The local Bogform version (1.0.0) is not available in the cloud backend, or your
 organization does not have access to it. The new workspace will use 1.1.0. You can
 change this later in the workspace settings.
 `,
@@ -130,7 +130,7 @@ Preparing the remote apply...
 			wantStdout: `The remote workspace is configured to work with configuration at
 ./configs relative to the target repository.
 
-OpenTofu will upload the contents of the following directory,
+Bogform will upload the contents of the following directory,
 excluding files or directories as defined by a .terraformignore file
 at /home/user/project/.terraformignore (if it is present),
 in order to capture the filesystem context the remote workspace expects:

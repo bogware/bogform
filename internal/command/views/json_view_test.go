@@ -34,7 +34,7 @@ func TestNewJSONView(t *testing.T) {
 	want := []map[string]any{
 		{
 			"@level":   "info",
-			"@message": fmt.Sprintf("OpenTofu %s", version),
+			"@message": fmt.Sprintf("Bogform %s", version),
 			"@module":  "tofu.ui",
 			"type":     "version",
 			"tofu":     version,

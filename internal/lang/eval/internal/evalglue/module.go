@@ -24,7 +24,7 @@ import (
 // actually compiling the module into a [CompiledModuleInstance].
 //
 // This interface abstracts over potentially multiple different implementations
-// representing different editions of the OpenTofu language, and so describes
+// representing different editions of the Bogform language, and so describes
 // the API that all editions should agree on to allow modules of different
 // editions to coexist and collaborate in a single configuration tree.
 type UncompiledModule interface {
@@ -92,7 +92,7 @@ type ModuleCall struct {
 
 	// DependencyMarks are additional marks that should be applied to the
 	// configuration values of anything that interacts with systems outside of
-	// OpenTofu (currently: resource instances and provider instances) to
+	// Bogform (currently: resource instances and provider instances) to
 	// represent "whole-module-call" dependencies.
 	//
 	// For example, package tofu2024 uses this to deal with the "depends_on"
@@ -124,6 +124,6 @@ type ModuleCall struct {
 	//
 	// This should typically just be passed on verbatim from an equivalent
 	// setting in the parent module, because EvalContext holds cross-cutting
-	// concerns from the environment in which OpenTofu is running.
+	// concerns from the environment in which Bogform is running.
 	EvalContext *EvalContext
 }

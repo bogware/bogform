@@ -36,7 +36,7 @@ func TestBuildConfig(t *testing.T) {
 			// For the sake of this test we're going to just treat our
 			// SourceAddr as a path relative to our fixture directory.
 			// A "real" implementation of ModuleWalker should accept the
-			// various different source address syntaxes OpenTofu supports.
+			// various different source address syntaxes Bogform supports.
 			sourcePath := filepath.Join("testdata/config-build", req.SourceAddr.String())
 
 			mod, modDiags := parser.LoadConfigDir(sourcePath)
@@ -92,7 +92,7 @@ func TestBuildConfigDiags(t *testing.T) {
 			// For the sake of this test we're going to just treat our
 			// SourceAddr as a path relative to our fixture directory.
 			// A "real" implementation of ModuleWalker should accept the
-			// various different source address syntaxes OpenTofu supports.
+			// various different source address syntaxes Bogform supports.
 			sourcePath := filepath.Join("testdata/nested-errors", req.SourceAddr.String())
 
 			mod, modDiags := parser.LoadConfigDir(sourcePath)
@@ -136,7 +136,7 @@ func TestBuildConfigChildModuleBackend(t *testing.T) {
 			// For the sake of this test we're going to just treat our
 			// SourceAddr as a path relative to our fixture directory.
 			// A "real" implementation of ModuleWalker should accept the
-			// various different source address syntaxes OpenTofu supports.
+			// various different source address syntaxes Bogform supports.
 			sourcePath := filepath.Join("testdata/nested-backend-warning", req.SourceAddr.String())
 
 			mod, modDiags := parser.LoadConfigDir(sourcePath)
@@ -388,7 +388,7 @@ func TestBuildConfig_WithTestModule(t *testing.T) {
 			// For the sake of this test we're going to just treat our
 			// SourceAddr as a path relative to our fixture directory.
 			// A "real" implementation of ModuleWalker should accept the
-			// various different source address syntaxes OpenTofu supports.
+			// various different source address syntaxes Bogform supports.
 			sourcePath := filepath.Join("testdata/valid-modules/with-tests-module", req.SourceAddr.String())
 
 			mod, modDiags := parser.LoadConfigDir(sourcePath)
@@ -455,7 +455,7 @@ func TestBuildConfig_UninitModuleAndProviderValidation(t *testing.T) {
 				// For the sake of this test we're going to just treat our
 				// SourceAddr as a path relative to our fixture directory.
 				// A "real" implementation of ModuleWalker should accept the
-				// various different source address syntaxes OpenTofu supports.
+				// various different source address syntaxes Bogform supports.
 				sourcePath := filepath.Join(fixtureDir, req.SourceAddr.String())
 				mod, diags := parser.LoadConfigDir(sourcePath)
 				return mod, nil, diags

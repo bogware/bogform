@@ -151,7 +151,7 @@ var checkRuleBlockSchema = &hcl.BodySchema{
 //
 // A check block contains 0-1 data blocks, and 0-n assert blocks. The check
 // block will load the data block, and execute the assert blocks as check rules
-// during the plan and apply OpenTofu operations.
+// during the plan and apply Bogform operations.
 type Check struct {
 	Name string
 

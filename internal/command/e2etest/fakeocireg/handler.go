@@ -48,7 +48,7 @@ func (r registryHandler) ServeHTTP(resp http.ResponseWriter, req *http.Request) 
 		// registries incorrectly require authentication for this endpoint, even for anonymous
 		// pulls.
 		//
-		// To prevent authentication problems, OpenTofu must not use this endpoint.
+		// To prevent authentication problems, Bogform must not use this endpoint.
 		// We intentionally fail this request to ensure that tests break if this
 		// endpoint is ever used, for example via `oras.Ping`.
 		log.Printf("[INFO] fakeocireg: protocol discovery succeeds")

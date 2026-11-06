@@ -430,7 +430,7 @@ func TestBase64TextEncode(t *testing.T) {
 			cty.StringVal("abc123!?$*&()'-=@~"),
 			cty.StringVal("NOT-EXISTS"),
 			cty.UnknownVal(cty.String).RefineNotNull(),
-			`"NOT-EXISTS" is not a supported IANA encoding name or alias in this OpenTofu version`,
+			`"NOT-EXISTS" is not a supported IANA encoding name or alias in this Bogform version`,
 		},
 		{
 			cty.StringVal("🤔"),
@@ -504,7 +504,7 @@ func TestBase64TextDecode(t *testing.T) {
 			cty.StringVal("doesn't matter"),
 			cty.StringVal("NOT-EXISTS"),
 			cty.UnknownVal(cty.String).RefineNotNull(),
-			`"NOT-EXISTS" is not a supported IANA encoding name or alias in this OpenTofu version`,
+			`"NOT-EXISTS" is not a supported IANA encoding name or alias in this Bogform version`,
 		},
 		{
 			cty.StringVal("<invalid base64>"),

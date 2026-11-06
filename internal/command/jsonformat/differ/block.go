@@ -164,8 +164,8 @@ func diffChildAttribute(attrChange structured.Change, attrSchema *jsonprovider.A
 	// values returned will be null.
 	childChange := ComputeDiffForAttribute(attrChange, attrSchema, currentAction)
 	if childChange.Action == plans.NoOp && attrChange.Before == nil && attrChange.After == nil {
-		// This validation is specifically added for `tofu show`.
-		// Since "current" will be NoOp during rendering the output for `tofu show`,
+		// This validation is specifically added for `bogform show`.
+		// Since "current" will be NoOp during rendering the output for `bogform show`,
 		// we need this validation to include the write-only attributes in the output.
 		if !attrSchema.WriteOnly {
 			// Don't record nil values at all in blocks.

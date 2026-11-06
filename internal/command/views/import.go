@@ -119,7 +119,7 @@ func (v *ImportHuman) Diagnostics(diags tfdiags.Diagnostics) {
 
 func (v *ImportHuman) InvalidAddressReference() {
 	const msg = `For information on valid syntax, see:
-https://opentofu.org/docs/cli/state/resource-addressing/`
+https://bogware.github.io/bogform/docs/cli/state/resource-addressing/`
 	_, _ = v.view.streams.Println(msg)
 }
 
@@ -150,7 +150,7 @@ func (v *ImportHuman) Success() {
 	const msg = `Import successful!
 
 The resources that were imported are shown above. These resources are now in
-your OpenTofu state and will henceforth be managed by OpenTofu.`
+your Bogform state and will henceforth be managed by Bogform.`
 
 	output := v.view.colorize.Color(fmt.Sprintf("\n[reset][green]%s\n", msg))
 	_, _ = v.view.streams.Println(output)
@@ -185,7 +185,7 @@ func (v *ImportJSON) Diagnostics(diags tfdiags.Diagnostics) {
 }
 
 func (v *ImportJSON) InvalidAddressReference() {
-	const msg = `For information on valid syntax, see: https://opentofu.org/docs/cli/state/resource-addressing/`
+	const msg = `For information on valid syntax, see: https://bogware.github.io/bogform/docs/cli/state/resource-addressing/`
 	v.view.Info(msg)
 }
 
@@ -195,7 +195,7 @@ func (v *ImportJSON) MissingResourceConfiguration(addr addrs.AbsResourceInstance
 }
 
 func (v *ImportJSON) Success() {
-	msg := "Import successful! The resources that were imported are shown above. These resources are now in your OpenTofu state and will henceforth be managed by OpenTofu"
+	msg := "Import successful! The resources that were imported are shown above. These resources are now in your Bogform state and will henceforth be managed by Bogform"
 	v.view.Info(msg)
 }
 

@@ -47,13 +47,13 @@ func BindStateReplaceProvider(cli *CommandLine) *StateReplaceProvider {
 		if ret.State.BackupPath == "" {
 			ret.State.BackupPath = "-"
 		}
-		// In OpenTofu, there is no way to run a command with `-json` flag and allow asking for user input in the same time.
+		// In Bogform, there is no way to run a command with `-json` flag and allow asking for user input in the same time.
 		// Therefore, the JSON view can used only when the `-auto-approve` is provided too.
 		if ret.View.ViewType == ViewJSON && !ret.AutoApprove {
 			return tfdiags.New(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Invalid usage",
-				"OpenTofu cannot ask user input when `-json` flag is used. Therefore, `-auto-approve` is required too",
+				"Bogform cannot ask user input when `-json` flag is used. Therefore, `-auto-approve` is required too",
 			))
 		}
 		return nil

@@ -21,8 +21,8 @@ var interestingDependencies = map[string]struct{}{
 }
 
 // InterestingDependencies returns the compiled-in module version info for
-// a small number of dependencies that OpenTofu uses broadly and which we
-// tend to upgrade relatively often as part of improvements to OpenTofu.
+// a small number of dependencies that Bogform uses broadly and which we
+// tend to upgrade relatively often as part of improvements to Bogform.
 //
 // The set of dependencies this reports might change over time if our
 // opinions change about what's "interesting". This is here only to create

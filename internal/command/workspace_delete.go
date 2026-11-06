@@ -22,7 +22,7 @@ func WorkspaceDeleteCommander(legacyName bool) Command {
 	cmd := Command{
 		Name:  "delete",
 		Short: "Delete a workspace",
-		Long:  `Delete a OpenTofu workspace`,
+		Long:  `Delete a Bogform workspace`,
 
 		DiagsWithNewline: true,
 	}
@@ -172,7 +172,7 @@ func (c WorkspaceDeleteCommand) Execute(args *arguments.WorkspaceDelete, view vi
 			tfdiags.Error,
 			"Workspace is not empty",
 			fmt.Sprintf(
-				"Workspace %q is currently tracking the following resource instances:%s\n\nDeleting this workspace would cause OpenTofu to lose track of any associated remote objects, which would then require you to delete them manually outside of OpenTofu. You should destroy these objects with OpenTofu before deleting the workspace.\n\nIf you want to delete this workspace anyway, and have OpenTofu forget about these managed objects, use the -force option to disable this safety check.",
+				"Workspace %q is currently tracking the following resource instances:%s\n\nDeleting this workspace would cause Bogform to lose track of any associated remote objects, which would then require you to delete them manually outside of Bogform. You should destroy these objects with Bogform before deleting the workspace.\n\nIf you want to delete this workspace anyway, and have Bogform forget about these managed objects, use the -force option to disable this safety check.",
 				workspace, buf.String(),
 			),
 		))

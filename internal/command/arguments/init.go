@@ -16,7 +16,7 @@ type Init struct {
 	FlagFromModule string
 	// Lockfile operation mode. Currently only "readonly" is valid.
 	FlagLockfile string
-	// Set the OpenTofu test directory. When set, the
+	// Set the Bogform test directory. When set, the
 	// test command will search for test files in the current directory and
 	// in the one specified by the flag.
 	TestsDirectory string
@@ -32,7 +32,7 @@ type Init struct {
 	// either a path to an HCL file with key/value assignments (same format as terraform.tfvars) or a
 	// 'key=value' format, and can be specified multiple times. The backend type must be in the configuration itself.
 	FlagConfigExtra flagspkg.RawFlags
-	// Disable backend or cloud backend initialization for this configuration and use what was previously
+	// Disable backend initialization for this configuration and use what was previously
 	// initialized instead. This and the FlagCloud cannot be toggled in the same time.
 	FlagBackend bool
 	FlagCloud   bool
@@ -65,7 +65,7 @@ func BindInit(cli *CommandLine) *Init {
 		FlagConfigExtra: flagspkg.NewRawFlags("-backend-config"),
 	}
 
-	backend := cli.BoolVar(&init.FlagBackend, "backend", true, "Disable backend or cloud backend initialization for this configuration and use what was previously initialized instead.").SetDisplay("=false")
+	backend := cli.BoolVar(&init.FlagBackend, "backend", true, "Disable backend initialization for this configuration and use what was previously initialized instead.").SetDisplay("=false")
 	cloud := cli.BoolVar(&init.FlagCloud, "cloud", true, "").SetHidden(true)
 	cli.RawFlags(init.FlagConfigExtra, "backend-config", "Configuration to be merged with what is in the configuration file's 'backend' block. This can be either a path to an HCL file with key/value assignments (same format as terraform.tfvars) or a 'key=value' format, and can be specified multiple times. The backend type must be in the configuration itself.").SetDisplay("=path")
 	cli.StringVar(&init.FlagFromModule, "from-module", "", "Copy the contents of the given module into the target directory before initialization.").SetDisplay("=SOURCE")
@@ -73,7 +73,7 @@ func BindInit(cli *CommandLine) *Init {
 	cli.BoolVar(&init.FlagUpgrade, "upgrade", false, "Install the latest module and provider versions allowed within configured constraints, overriding the default behavior of selecting exactly the version recorded in the dependency lockfile.")
 	cli.StringArrayVar(&init.FlagPluginPath, "plugin-dir", nil, "Directory containing plugin binaries. This overrides all default search paths for plugins, and prevents the automatic installation of plugins. This flag can be used multiple times.")
 	cli.StringVar(&init.FlagLockfile, "lockfile", "", `Set a dependency lockfile mode. Currently only "readonly" is valid.`).SetDisplay("=MODE")
-	cli.StringVar(&init.TestsDirectory, "test-directory", "tests", `Set the OpenTofu test directory, defaults to "tests". When set, the test command will search for test files in the current directory and in the one specified by the flag.`).SetDisplay("=path")
+	cli.StringVar(&init.TestsDirectory, "test-directory", "tests", `Set the Bogform test directory, defaults to "tests". When set, the test command will search for test files in the current directory and in the one specified by the flag.`).SetDisplay("=path")
 
 	cli.PreHook(func() tfdiags.Diagnostics {
 		init.BackendFlagSet = backend.IsSet()

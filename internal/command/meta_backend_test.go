@@ -718,7 +718,7 @@ func TestMetaBackend_configuredUnchangedWithStaticEvalVars(t *testing.T) {
 							"workspace_dir": {
 								Type:     cty.String,
 								Required: true,
-								// We'll treat this one as if it were set with the -backend-config option to "tofu init"
+								// We'll treat this one as if it were set with the -backend-config option to "bogform init"
 							},
 						},
 					}

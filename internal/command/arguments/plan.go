@@ -26,7 +26,7 @@ type Plan struct {
 	// OutPath contains an optional path to store the plan file
 	OutPath string
 
-	// GenerateConfigPath tells OpenTofu that config should be generated for
+	// GenerateConfigPath tells Bogform that config should be generated for
 	// unmatched import target paths and which path the generated file should
 	// be written to.
 	GenerateConfigPath string
@@ -53,8 +53,8 @@ func BindPlan(cli *CommandLine) *Plan {
 		`Write a plan file to the given path. This can be used as input to the "apply" command.`,
 	).SetDisplay("=path")
 	cli.StringVar(&plan.GenerateConfigPath, "generate-config-out", "",
-		`(Experimental) If import blocks are present in configuration, instructs OpenTofu to generate HCL for any imported resources not already present. The configuration is written to a new file at PATH, which must not already exist.
-OpenTofu may still attempt to write configuration if planning fails with an error.`,
+		`(Experimental) If import blocks are present in configuration, instructs Bogform to generate HCL for any imported resources not already present. The configuration is written to a new file at PATH, which must not already exist.
+Bogform may still attempt to write configuration if planning fails with an error.`,
 	).SetDisplay("=path")
 
 	// Special handling for flag groups!
@@ -64,7 +64,7 @@ OpenTofu may still attempt to write configuration if planning fails with an erro
 	cli.FlagGroups = []FlagGroup{{
 		ID:          "plan",
 		Title:       "Plan Customization Options:",
-		Description: `The following options customize how OpenTofu will produce its plan. You can also use these options when you run "tofu apply" without passing it a saved plan, in order to plan and apply in a single command.`,
+		Description: `The following options customize how Bogform will produce its plan. You can also use these options when you run "bogform apply" without passing it a saved plan, in order to plan and apply in a single command.`,
 	}, {
 		Title: "Other Options:",
 	}}

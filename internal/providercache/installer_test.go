@@ -1348,7 +1348,7 @@ func TestEnsureProviderVersions(t *testing.T) {
 							}{
 								"2.1.0",
 								fmt.Sprintf(
-									"the local package for %s 2.1.0 doesn't match any of the checksums previously recorded in the dependency lock file (this might be because the available checksums are for packages targeting different platforms); for more information: https://opentofu.org/docs/language/files/dependency-lock/#checksum-verification",
+									"the local package for %s 2.1.0 doesn't match any of the checksums previously recorded in the dependency lock file (this might be because the available checksums are for packages targeting different platforms); for more information: https://bogware.github.io/bogform/docs/language/files/dependency-lock/#checksum-verification",
 									beepProvider,
 								),
 							},
@@ -1750,7 +1750,7 @@ func TestEnsureProviderVersions(t *testing.T) {
 			Check: func(t *testing.T, dir *Dir, locks *depsfile.Locks) {
 				// Built-in providers are neither included in the cache
 				// directory nor mentioned in the lock file, because they
-				// are compiled directly into the OpenTofu executable.
+				// are compiled directly into the Bogform executable.
 				if allCached := dir.AllAvailablePackages(); len(allCached) != 0 {
 					t.Errorf("wrong number of cache directory entries; want none\n%s", spew.Sdump(allCached))
 				}
@@ -1927,7 +1927,7 @@ func TestEnsureProviderVersions(t *testing.T) {
 				terraformProvider: nil,
 			},
 			WantErr: `some providers could not be installed:
-- terraform.io/builtin/terraform: this OpenTofu release has no built-in provider named "terraform"`,
+- terraform.io/builtin/terraform: this Bogform release has no built-in provider named "terraform"`,
 			WantEvents: func(inst *Installer, dir *Dir) map[addrs.Provider][]*testInstallerEventLogItem {
 				return map[addrs.Provider][]*testInstallerEventLogItem{
 					noProvider: {
@@ -1942,7 +1942,7 @@ func TestEnsureProviderVersions(t *testing.T) {
 						{
 							Event:    "BuiltInProviderFailure",
 							Provider: terraformProvider,
-							Args:     `this OpenTofu release has no built-in provider named "terraform"`,
+							Args:     `this Bogform release has no built-in provider named "terraform"`,
 						},
 					},
 				}
@@ -2033,7 +2033,7 @@ func TestEnsureProviderVersions(t *testing.T) {
 				}
 			},
 			WantErr: `some providers could not be installed:
-- example.com/foo/beep: locked provider example.com/foo/beep 1.0.0 does not match configured version constraint >= 2.0.0; must use tofu init -upgrade to allow selection of new versions`,
+- example.com/foo/beep: locked provider example.com/foo/beep 1.0.0 does not match configured version constraint >= 2.0.0; must use bogform init -upgrade to allow selection of new versions`,
 			WantEvents: func(inst *Installer, dir *Dir) map[addrs.Provider][]*testInstallerEventLogItem {
 				return map[addrs.Provider][]*testInstallerEventLogItem{
 					noProvider: {
@@ -2056,7 +2056,7 @@ func TestEnsureProviderVersions(t *testing.T) {
 						{
 							Event:    "QueryPackagesFailure",
 							Provider: beepProvider,
-							Args:     `locked provider example.com/foo/beep 1.0.0 does not match configured version constraint >= 2.0.0; must use tofu init -upgrade to allow selection of new versions`,
+							Args:     `locked provider example.com/foo/beep 1.0.0 does not match configured version constraint >= 2.0.0; must use bogform init -upgrade to allow selection of new versions`,
 						},
 					},
 				}
@@ -2276,7 +2276,7 @@ func TestEnsureProviderVersions(t *testing.T) {
 				beepProvider: getproviders.MustParseVersionConstraints(">= 1.0.0"),
 			},
 			WantErr: `some providers could not be installed:
-- example.com/foo/beep: the local package for example.com/foo/beep 1.0.0 doesn't match any of the checksums previously recorded in the dependency lock file (this might be because the available checksums are for packages targeting different platforms); for more information: https://opentofu.org/docs/language/files/dependency-lock/#checksum-verification`,
+- example.com/foo/beep: the local package for example.com/foo/beep 1.0.0 doesn't match any of the checksums previously recorded in the dependency lock file (this might be because the available checksums are for packages targeting different platforms); for more information: https://bogware.github.io/bogform/docs/language/files/dependency-lock/#checksum-verification`,
 			WantEvents: func(inst *Installer, dir *Dir) map[addrs.Provider][]*testInstallerEventLogItem {
 				return map[addrs.Provider][]*testInstallerEventLogItem{
 					noProvider: {
@@ -2323,7 +2323,7 @@ func TestEnsureProviderVersions(t *testing.T) {
 								Error   string
 							}{
 								"1.0.0",
-								`the local package for example.com/foo/beep 1.0.0 doesn't match any of the checksums previously recorded in the dependency lock file (this might be because the available checksums are for packages targeting different platforms); for more information: https://opentofu.org/docs/language/files/dependency-lock/#checksum-verification`,
+								`the local package for example.com/foo/beep 1.0.0 doesn't match any of the checksums previously recorded in the dependency lock file (this might be because the available checksums are for packages targeting different platforms); for more information: https://bogware.github.io/bogform/docs/language/files/dependency-lock/#checksum-verification`,
 							},
 						},
 					},
@@ -2575,7 +2575,7 @@ func TestEnsureProviderVersions_local_source(t *testing.T) {
 			provider: "null",
 			version:  "0.0.0",
 			wantHash: getproviders.NilHash,
-			err:      "0.0.0 is not a valid provider version. \nIf the version 0.0.0 is intended to represent a non-published provider, consider using dev_overrides - https://opentofu.org/docs/cli/config/config-file/#development-overrides-for-provider-developers",
+			err:      "0.0.0 is not a valid provider version. \nIf the version 0.0.0 is intended to represent a non-published provider, consider using dev_overrides - https://bogware.github.io/bogform/docs/cli/config/config-file/#development-overrides-for-provider-developers",
 		},
 	}
 

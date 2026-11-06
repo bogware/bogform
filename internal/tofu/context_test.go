@@ -76,7 +76,7 @@ resource "implicit_thing" "b" {
 
 	// Validate and Plan are the two entry points where we explicitly verify
 	// the available plugins match what the configuration needs. For other
-	// operations we typically fail more deeply in OpenTofu Core, with
+	// operations we typically fail more deeply in Bogform Core, with
 	// potentially-less-helpful error messages, because getting there would
 	// require doing some pretty weird things that aren't common enough to
 	// be worth the complexity to check for them.
@@ -96,27 +96,27 @@ resource "implicit_thing" "b" {
 				tfdiags.Sourceless(
 					tfdiags.Error,
 					"Missing required provider",
-					"This configuration requires built-in provider terraform.io/builtin/nonexist, but that provider isn't available in this OpenTofu version.",
+					"This configuration requires built-in provider terraform.io/builtin/nonexist, but that provider isn't available in this Bogform version.",
 				),
 				tfdiags.Sourceless(
 					tfdiags.Error,
 					"Missing required provider",
-					"This configuration requires provider example.com/foo/beep, but that provider isn't available. You may be able to install it automatically by running:\n  tofu init",
+					"This configuration requires provider example.com/foo/beep, but that provider isn't available. You may be able to install it automatically by running:\n  bogform init",
 				),
 				tfdiags.Sourceless(
 					tfdiags.Error,
 					"Missing required provider",
-					"This configuration requires provider registry.opentofu.org/hashicorp/implicit, but that provider isn't available. You may be able to install it automatically by running:\n  tofu init",
+					"This configuration requires provider registry.opentofu.org/hashicorp/implicit, but that provider isn't available. You may be able to install it automatically by running:\n  bogform init",
 				),
 				tfdiags.Sourceless(
 					tfdiags.Error,
 					"Missing required provider",
-					"This configuration requires provider registry.opentofu.org/hashicorp/implicit2, but that provider isn't available. You may be able to install it automatically by running:\n  tofu init",
+					"This configuration requires provider registry.opentofu.org/hashicorp/implicit2, but that provider isn't available. You may be able to install it automatically by running:\n  bogform init",
 				),
 				tfdiags.Sourceless(
 					tfdiags.Error,
 					"Missing required provisioner plugin",
-					`This configuration requires provisioner plugin "nonexist", which isn't available. If you're intending to use an external provisioner plugin, you must install it manually into one of the plugin search directories before running OpenTofu.`,
+					`This configuration requires provisioner plugin "nonexist", which isn't available. If you're intending to use an external provisioner plugin, you must install it manually into one of the plugin search directories before running Bogform.`,
 				),
 			)
 			assertDiagnosticsMatch(t, gotDiags, wantDiags)

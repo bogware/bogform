@@ -49,12 +49,12 @@ type ContextOpts struct {
 
 // ContextMeta is metadata about the running context. This is information
 // that this package or structure cannot determine on its own but exposes
-// into OpenTofu in various ways. This must be provided by the Context
+// into Bogform in various ways. This must be provided by the Context
 // initializer.
 type ContextMeta struct {
 	Env string // Env is the state environment
 
-	// OriginalWorkingDir is the working directory where the OpenTofu CLI
+	// OriginalWorkingDir is the working directory where the Bogform CLI
 	// was run from, which may no longer actually be the current working
 	// directory if the user included the -chdir=... option.
 	//
@@ -68,7 +68,7 @@ type ContextMeta struct {
 	OriginalWorkingDir string
 }
 
-// Context represents all the context that OpenTofu needs in order to
+// Context represents all the context that Bogform needs in order to
 // perform operations on infrastructure. This structure is built using
 // NewContext.
 type Context struct {
@@ -288,13 +288,13 @@ func (c *Context) watchStop(walker *ContextGraphWalker) (chan struct{}, <-chan s
 
 		// We ignore the error for now since there isn't any reasonable
 		// action to take if there is an error here, since the stop is still
-		// advisory: OpenTofu will exit once the graph node completes.
+		// advisory: Bogform will exit once the graph node completes.
 		// The providers.Interface API contract requires that the
 		// context passed to Stop is never canceled and has no deadline.
 		_ = walker.Context.plugins.providers.StopAll(context.WithoutCancel(context.TODO()))
 		// We ignore the error for now since there isn't any reasonable
 		// action to take if there is an error here, since the stop is still
-		// advisory: OpenTofu will exit once the graph node completes.
+		// advisory: Bogform will exit once the graph node completes.
 		_ = walker.Context.plugins.provisioners.StopAll()
 	}()
 
@@ -304,7 +304,7 @@ func (c *Context) watchStop(walker *ContextGraphWalker) (chan struct{}, <-chan s
 // checkConfigDependencies checks whether the receiving context is able to
 // support the given configuration, returning error diagnostics if not.
 //
-// Currently this function checks whether the current OpenTofu CLI version
+// Currently this function checks whether the current Bogform CLI version
 // matches the version requirements of all of the modules, and whether our
 // plugin library contains all of the plugin names/addresses needed.
 //
@@ -336,18 +336,18 @@ func (c *Context) checkConfigDependencies(config *configs.Config) tfdiags.Diagno
 					tfdiags.Error,
 					"Missing required provider",
 					fmt.Sprintf(
-						"This configuration requires provider %s, but that provider isn't available. You may be able to install it automatically by running:\n  tofu init",
+						"This configuration requires provider %s, but that provider isn't available. You may be able to install it automatically by running:\n  bogform init",
 						providerAddr,
 					),
 				))
 			} else {
-				// Built-in providers can never be installed by "tofu init",
+				// Built-in providers can never be installed by "bogform init",
 				// so no point in confusing the user by suggesting that.
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Missing required provider",
 					fmt.Sprintf(
-						"This configuration requires built-in provider %s, but that provider isn't available in this OpenTofu version.",
+						"This configuration requires built-in provider %s, but that provider isn't available in this Bogform version.",
 						providerAddr,
 					),
 				))
@@ -378,7 +378,7 @@ func (c *Context) checkConfigDependencies(config *configs.Config) tfdiags.Diagno
 						tfdiags.Error,
 						"Missing required provisioner plugin",
 						fmt.Sprintf(
-							"This configuration requires provisioner plugin %q, which isn't available. If you're intending to use an external provisioner plugin, you must install it manually into one of the plugin search directories before running OpenTofu.",
+							"This configuration requires provisioner plugin %q, which isn't available. If you're intending to use an external provisioner plugin, you must install it manually into one of the plugin search directories before running Bogform.",
 							pc.Type,
 						),
 					))

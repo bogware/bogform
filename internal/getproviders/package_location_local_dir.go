@@ -19,7 +19,7 @@ import (
 // PackageLocalDir is the location of a directory containing an unpacked
 // provider distribution archive in the local filesystem. Its value is a local
 // filesystem path using the syntax understood by Go's standard path/filepath
-// package on the operating system where OpenTofu is running.
+// package on the operating system where Bogform is running.
 type PackageLocalDir string
 
 var _ PackageLocation = PackageLocalDir("")
@@ -89,7 +89,7 @@ func (p PackageLocalDir) InstallProviderPackage(_ context.Context, meta PackageM
 			)
 		} else if !matches {
 			return authResult, fmt.Errorf(
-				"the local package for %s %s doesn't match any of the checksums previously recorded in the dependency lock file (this might be because the available checksums are for packages targeting different platforms); for more information: https://opentofu.org/docs/language/files/dependency-lock/#checksum-verification",
+				"the local package for %s %s doesn't match any of the checksums previously recorded in the dependency lock file (this might be because the available checksums are for packages targeting different platforms); for more information: https://bogware.github.io/bogform/docs/language/files/dependency-lock/#checksum-verification",
 				meta.Provider, meta.Version,
 			)
 		}

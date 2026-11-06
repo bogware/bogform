@@ -136,11 +136,11 @@ func (n *NodePlanDeposedResourceInstanceObject) Execute(ctx context.Context, eva
 	// here is a bit overloaded.
 	if !n.skipRefresh && op != walkPlanDestroy {
 		// Refresh this object even though it is going to be destroyed, in
-		// case it's already been deleted outside OpenTofu. If this is a
+		// case it's already been deleted outside Bogform. If this is a
 		// normal plan, providers expect a Read request to remove missing
 		// resources from the plan before apply, and may not handle a missing
 		// resource during Delete correctly. If this is a simple refresh,
-		// OpenTofu is expected to remove the missing resource from the state
+		// Bogform is expected to remove the missing resource from the state
 		// entirely
 		refreshedState, refreshDiags := n.refresh(ctx, evalCtx, n.DeposedKey, state)
 		diags = diags.Append(refreshDiags)
@@ -370,7 +370,7 @@ func (n *NodeDestroyDeposedResourceInstanceObject) writeResourceInstanceState(ct
 
 	if key == states.NotDeposed {
 		// should never happen
-		return fmt.Errorf("can't save deposed object for %s without a deposed key; this is a bug in OpenTofu that should be reported", absAddr)
+		return fmt.Errorf("can't save deposed object for %s without a deposed key; this is a bug in Bogform that should be reported", absAddr)
 	}
 
 	if obj == nil {

@@ -29,7 +29,7 @@ var unzip = getter.ZipDecompressor{}
 // PackageLocalArchive is the location of a provider distribution archive file
 // in the local filesystem. Its value is a local filesystem path using the
 // syntax understood by Go's standard path/filepath package on the operating
-// system where OpenTofu is running.
+// system where Bogform is running.
 type PackageLocalArchive string
 
 var _ PackageLocation = PackageLocalArchive("")
@@ -58,7 +58,7 @@ func (p PackageLocalArchive) InstallProviderPackage(ctx context.Context, meta Pa
 			return authResult, err
 		} else if !matches {
 			err := fmt.Errorf(
-				"the current package for %s %s doesn't match any of the checksums previously recorded in the dependency lock file; for more information: https://opentofu.org/docs/language/files/dependency-lock/#checksum-verification",
+				"the current package for %s %s doesn't match any of the checksums previously recorded in the dependency lock file; for more information: https://bogware.github.io/bogform/docs/language/files/dependency-lock/#checksum-verification",
 				meta.Provider, meta.Version,
 			)
 			tracing.SetSpanError(span, err)

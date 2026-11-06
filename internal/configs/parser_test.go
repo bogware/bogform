@@ -118,7 +118,7 @@ func buildNestedModuleConfig(ctx context.Context, mod *Module, path string, pars
 			// For the sake of this test we're going to just treat our
 			// SourceAddr as a path relative to the calling module.
 			// A "real" implementation of ModuleWalker should accept the
-			// various different source address syntaxes OpenTofu supports.
+			// various different source address syntaxes Bogform supports.
 
 			// Build a full path by walking up the module tree, prepending each
 			// source address path until we hit the root

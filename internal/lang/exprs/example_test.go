@@ -29,13 +29,13 @@ import (
 // living in concrete implementations of [Scope], [SymbolTable] and [Valuer]
 // in other language-specific packages, but for testing purposes here we have a
 // contrived "mini-language" that is intentionally shaped like a subset of the
-// OpenTofu module language to prove that this design is sufficient to handle
+// Bogform module language to prove that this design is sufficient to handle
 // that and to act as a relatively-concise overview of how a "real" use of this
 // package might look.
 //
 // If a real implementation _were_ shaped like this then all of the types
 // defined below would belong to some other package that implements the
-// OpenTofu planning phase. Variations of this could also appear in a package
+// Bogform planning phase. Variations of this could also appear in a package
 // that implements the validation phase, but in that case it would deal only
 // in unexpanded modules and resources. In both cases the types implementing
 // [Scope] and [Valuer] would ideally also implement all of the other business
@@ -390,7 +390,7 @@ func (t *testResource) ValueSourceRange() *tfdiags.SourceRange {
 
 // exampleMustParseTfvars is a helper function just to make these contrived
 // examples a little more concise, which tries to interpret the given string
-// in a similar way to how OpenTofu would normally deal with a ".tfvars" file.
+// in a similar way to how Bogform would normally deal with a ".tfvars" file.
 func exampleMustParseTfvars(src string) map[string]variableDef {
 	f, hclDiags := hclsyntax.ParseConfig([]byte(src), "example.tfvars", hcl.InitialPos)
 	if hclDiags.HasErrors() {

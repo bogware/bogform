@@ -138,9 +138,9 @@ func TestConsole_tfvars(t *testing.T) {
 }
 
 func TestConsole_unsetRequiredVars(t *testing.T) {
-	// This test is verifying that it's possible to run "tofu console"
+	// This test is verifying that it's possible to run "bogform console"
 	// without providing values for all required variables, without
-	// "tofu console" producing an interactive prompt for those variables
+	// "bogform console" producing an interactive prompt for those variables
 	// or producing errors. Instead, it should allow evaluation in that
 	// partial context but see the unset variables values as being unknown.
 	//

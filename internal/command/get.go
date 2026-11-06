@@ -17,12 +17,12 @@ import (
 func GetCommander() Command {
 	cmd := Command{
 		Name:  "get",
-		Short: "Install or upgrade remote OpenTofu modules",
+		Short: "Install or upgrade remote Bogform modules",
 		Long: `Downloads and installs modules needed for the configuration in the current working directory.
 
 This recursively downloads all modules needed, such as modules imported by modules imported by the root and so on. If a module is already downloaded, it will not be redownloaded or checked for updates unless the -update flag is specified.
 
-Module installation also happens automatically by default as part of the "tofu init" command, so you should rarely need to run this command separately.`,
+Module installation also happens automatically by default as part of the "bogform init" command, so you should rarely need to run this command separately.`,
 
 		DiagsWithNewline: true,
 	}
@@ -35,7 +35,7 @@ Module installation also happens automatically by default as part of the "tofu i
 	return cmd
 }
 
-// GetCommand is a Command implementation that takes a OpenTofu
+// GetCommand is a Command implementation that takes a Bogform
 // configuration and downloads all the modules.
 type GetCommand struct {
 	Meta

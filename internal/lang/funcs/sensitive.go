@@ -12,7 +12,7 @@ import (
 )
 
 // SensitiveFunc returns a value identical to its argument except that
-// OpenTofu will consider it to be sensitive.
+// Bogform will consider it to be sensitive.
 var SensitiveFunc = function.New(&function.Spec{
 	Params: []function.Parameter{
 		{

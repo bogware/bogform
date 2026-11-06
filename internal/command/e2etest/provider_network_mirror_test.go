@@ -27,7 +27,7 @@ import (
 // the underlying implementation that talks with a remote network mirror source.
 func TestProviderNetworkMirrorRetries(t *testing.T) {
 	// Our typical rule for external service access in e2etests is that it's okay
-	// to access servers run by the OpenTofu project when TF_ACC=1 is set in the
+	// to access servers run by the Bogform project when TF_ACC=1 is set in the
 	// environment. However, this particular test is checking a network mirror source
 	// that needs to be configured with a TLS certificate and that certificate to be given
 	// in the `tofu` child process env vars to be used for talking with the server.
@@ -136,7 +136,7 @@ func TestProviderNetworkMirrorRetries(t *testing.T) {
 			}
 			_, stderr, err := tf.Run("init", "-backend=false")
 			if err == nil {
-				t.Fatalf("expected `tofu init` to fail but got no error")
+				t.Fatalf("expected `bogform init` to fail but got no error")
 			}
 			t.Logf("stderr:\n%s", stderr)
 			cleanStderr := SanitizeStderr(stderr)

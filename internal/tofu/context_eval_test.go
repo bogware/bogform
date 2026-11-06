@@ -68,7 +68,7 @@ func TestContextEval(t *testing.T) {
 		t.Fatalf("Eval errors: %s", diags.Err())
 	}
 
-	// Since we're testing 'eval' (used by tofu console), impure functions
+	// Since we're testing 'eval' (used by bogform console), impure functions
 	// should be allowed by the scope.
 	if scope.PureOnly == true {
 		t.Fatal("wrong result: eval should allow impure funcs")

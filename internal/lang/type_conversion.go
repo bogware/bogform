@@ -20,11 +20,11 @@ import (
 )
 
 // TypeConversionConstraint describes the intended result of a type conversion,
-// typically specified by an author using the OpenTofu language's type
+// typically specified by an author using the Bogform language's type
 // constraint syntax.
 //
 // To accept an object of this type from a parameter to a built-in function in
-// the OpenTofu language, declare the parameter as expecting
+// the Bogform language, declare the parameter as expecting
 // [TypeConversionType]. That capsule type has a custom decode implementation
 // that expects the expression syntax implemented by
 // [ParseTypeConversionConstraint].
@@ -60,7 +60,7 @@ func NewTypeConversionConstraint(convertTarget cty.Type, defaultAttrVals *typeex
 // interpret it as the target type constraint for a type conversion.
 //
 // This function implements the language used in the "type" argument of a
-// "variable" block in the OpenTofu language, and any other language feature
+// "variable" block in the Bogform language, and any other language feature
 // that performs type conversion to an author-specified type.
 func ParseTypeConversionConstraint(expr hcl.Expression, typeCtx *typeexpr.TypeContext) (TypeConversionConstraint, tfdiags.Diagnostics) {
 	var diags tfdiags.Diagnostics

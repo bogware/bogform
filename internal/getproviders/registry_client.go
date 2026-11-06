@@ -65,7 +65,7 @@ func (c *registryClient) ProviderVersions(ctx context.Context, addr addrs.Provid
 	ctx, span := tracing.Tracer().Start(ctx,
 		"List Versions",
 		tracing.SpanAttributes(
-			traceattrs.OpenTofuProviderAddress(addr.String()),
+			traceattrs.BogformProviderAddress(addr.String()),
 		),
 	)
 	defer span.End()
@@ -165,8 +165,8 @@ func (c *registryClient) PackageMeta(ctx context.Context, provider addrs.Provide
 	ctx, span := tracing.Tracer().Start(ctx,
 		"Fetch metadata",
 		tracing.SpanAttributes(
-			traceattrs.OpenTofuProviderAddress(provider.String()),
-			traceattrs.OpenTofuProviderVersion(version.String()),
+			traceattrs.BogformProviderAddress(provider.String()),
+			traceattrs.BogformProviderVersion(version.String()),
 		))
 	defer span.End()
 
@@ -253,7 +253,7 @@ func (c *registryClient) PackageMeta(ctx context.Context, provider addrs.Provide
 	}
 	protoVersions.Sort()
 
-	// Verify that this version of tofu supports the providers' protocol
+	// Verify that this version of bogform supports the providers' protocol
 	// version(s)
 	if len(protoVersions) > 0 {
 		supportedProtos := MeetingConstraints(SupportedPluginProtocols)

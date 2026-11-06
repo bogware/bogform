@@ -2566,7 +2566,7 @@ func TestContext2Validate_rangeOverZeroPlanTimestamp(t *testing.T) {
 }
 
 func TestContext2Validate_providerAliasesInRoot(t *testing.T) {
-	// This tests the scenario where a user is running tofu validate in a module, instead of the root
+	// This tests the scenario where a user is running bogform validate in a module, instead of the root
 	// It should allow configuration_aliases to function, even in the root, similar to how input
 	// variables function in validate.
 	m := testModuleInline(t, map[string]string{

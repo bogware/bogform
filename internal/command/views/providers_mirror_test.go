@@ -25,12 +25,12 @@ func TestProvidersMirrorView(t *testing.T) {
 			viewCall: func(v ProvidersMirror) {
 				v.ProviderSkipped("terraform.io/builtin/terraform")
 			},
-			wantStdout: withNewline("- Skipping terraform.io/builtin/terraform because it is built in to OpenTofu CLI"),
+			wantStdout: withNewline("- Skipping terraform.io/builtin/terraform because it is built in to Bogform CLI"),
 			wantStderr: "",
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Skipping terraform.io/builtin/terraform because it is built in to OpenTofu CLI",
+					"@message": "Skipping terraform.io/builtin/terraform because it is built in to Bogform CLI",
 					"@module":  "tofu.ui",
 				},
 			},

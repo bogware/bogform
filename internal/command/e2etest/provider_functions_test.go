@@ -21,7 +21,7 @@ func TestFunction_Simple(t *testing.T) {
 	fixturePath := filepath.Join("testdata", "functions")
 	tf := e2e.NewBinary(t, tofuBin, fixturePath)
 
-	// tofu init
+	// bogform init
 	_, stderr, err := tf.Run("init")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
@@ -61,7 +61,7 @@ func TestFunction_ProviderUnconfigured(t *testing.T) {
 	fixturePath := filepath.Join("testdata", "provider_unconfigured_functions")
 	tf := e2e.NewBinary(t, tofuBin, fixturePath)
 
-	// tofu init
+	// bogform init
 	_, stderr, err := tf.Run("init")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
@@ -101,7 +101,7 @@ func TestFunction_Error(t *testing.T) {
 	fixturePath := filepath.Join("testdata", "functions-error")
 	tf := e2e.NewBinary(t, tofuBin, fixturePath)
 
-	// tofu init
+	// bogform init
 	_, stderr, err := tf.Run("init")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
@@ -110,7 +110,7 @@ func TestFunction_Error(t *testing.T) {
 		t.Errorf("unexpected stderr output:\n%s", stderr)
 	}
 
-	// tofu plan -out=fnplan
+	// bogform plan -out=fnplan
 	_, stderr, err = tf.Run("plan", "-out=fnplan")
 	if err == nil {
 		t.Errorf("expected error: %s", err)

@@ -43,7 +43,7 @@ func TestStateViews(t *testing.T) {
 					"@message": "Error: No state file was found",
 					"@module":  "tofu.ui",
 					"diagnostic": map[string]any{
-						"detail":   "State management commands require a state file. Run this command in a directory where OpenTofu has been run or use the -state flag to point the command to a specific state location.",
+						"detail":   "State management commands require a state file. Run this command in a directory where Bogform has been run or use the -state flag to point the command to a specific state location.",
 						"severity": "error",
 						"summary":  "No state file was found",
 					},
@@ -54,7 +54,7 @@ func TestStateViews(t *testing.T) {
 Error: No state file was found
 
 State management commands require a state file. Run this command in a
-directory where OpenTofu has been run or use the -state flag to point the
+directory where Bogform has been run or use the -state flag to point the
 command to a specific state location.
 `,
 		},
@@ -68,7 +68,7 @@ command to a specific state location.
 					"@message": `Error: Error loading the state`,
 					"@module":  "tofu.ui",
 					"diagnostic": map[string]any{
-						"detail":   "Please ensure that your OpenTofu state exists and that you've configured it properly. You can use the \"-state\" flag to point OpenTofu at another state file.\n\nCause: failed to read state file",
+						"detail":   "Please ensure that your Bogform state exists and that you've configured it properly. You can use the \"-state\" flag to point Bogform at another state file.\n\nCause: failed to read state file",
 						"severity": "error",
 						"summary":  "Error loading the state",
 					},
@@ -78,8 +78,8 @@ command to a specific state location.
 			wantStderr: `
 Error: Error loading the state
 
-Please ensure that your OpenTofu state exists and that you've configured it
-properly. You can use the "-state" flag to point OpenTofu at another state
+Please ensure that your Bogform state exists and that you've configured it
+properly. You can use the "-state" flag to point Bogform at another state
 file.
 
 Cause: failed to read state file
@@ -235,7 +235,7 @@ persisted. Your existing states are untouched.
 			wantJson: []map[string]any{
 				{
 					"@level":   "error",
-					"@message": "printing the pulled state is not available in the JSON view. The `tofu state pull` should not be configured with the `-json` flag",
+					"@message": "printing the pulled state is not available in the JSON view. The `bogform state pull` should not be configured with the `-json` flag",
 					"@module":  "tofu.ui",
 				},
 			},
@@ -273,7 +273,7 @@ persisted. Your existing states are untouched.
 			wantJson: []map[string]any{
 				{
 					"@level":    "info",
-					"@message":  "OpenTofu will replace provider from registry1.org/ns/prov to registry2.org/ns/prov for 1 resources",
+					"@message":  "Bogform will replace provider from registry1.org/ns/prov to registry2.org/ns/prov for 1 resources",
 					"resources": []any{"res.foo"},
 					"@module":   "tofu.ui",
 					"type":      "replace_provider",
@@ -281,7 +281,7 @@ persisted. Your existing states are untouched.
 					"to":        "registry2.org/ns/prov",
 				},
 			},
-			wantStdout: `OpenTofu will perform the following actions:
+			wantStdout: `Bogform will perform the following actions:
 
   ~ Updating provider:
     - registry1.org/ns/prov
@@ -398,7 +398,7 @@ Changing 1 resources:
 					"@message": "Error: The configured backend doesn't support this operation",
 					"@module":  "tofu.ui",
 					"diagnostic": map[string]any{
-						"detail":   `The "backend" in OpenTofu defines how OpenTofu operates. The default backend performs all operations locally on your machine. Your configuration is configured to use a non-local backend. This backend doesn't support this operation.`,
+						"detail":   `The "backend" in Bogform defines how Bogform operates. The default backend performs all operations locally on your machine. Your configuration is configured to use a non-local backend. This backend doesn't support this operation.`,
 						"severity": "error",
 						"summary":  "The configured backend doesn't support this operation",
 					},
@@ -408,7 +408,7 @@ Changing 1 resources:
 			wantStderr: `
 Error: The configured backend doesn't support this operation
 
-The "backend" in OpenTofu defines how OpenTofu operates. The default backend
+The "backend" in Bogform defines how Bogform operates. The default backend
 performs all operations locally on your machine. Your configuration is
 configured to use a non-local backend. This backend doesn't support this
 operation.
@@ -424,7 +424,7 @@ operation.
 					"@message": "Error: Error parsing instance address \"aws_instance.example\"",
 					"@module":  "tofu.ui",
 					"diagnostic": map[string]any{
-						"detail":   `This command requires that the address references one specific instance. To view the available instances, use "tofu state list". Please modify the address to reference a specific instance.`,
+						"detail":   `This command requires that the address references one specific instance. To view the available instances, use "bogform state list". Please modify the address to reference a specific instance.`,
 						"severity": "error",
 						"summary":  `Error parsing instance address "aws_instance.example"`,
 					},
@@ -435,7 +435,7 @@ operation.
 Error: Error parsing instance address "aws_instance.example"
 
 This command requires that the address references one specific instance. To
-view the available instances, use "tofu state list". Please modify the
+view the available instances, use "bogform state list". Please modify the
 address to reference a specific instance.
 `,
 		},
@@ -449,7 +449,7 @@ address to reference a specific instance.
 					"@message": "Error: No instance found for the given address",
 					"@module":  "tofu.ui",
 					"diagnostic": map[string]any{
-						"detail":   `This command requires that the address references one specific instance. To view the available instances, use "tofu state list". Please modify the address to reference a specific instance.`,
+						"detail":   `This command requires that the address references one specific instance. To view the available instances, use "bogform state list". Please modify the address to reference a specific instance.`,
 						"severity": "error",
 						"summary":  "No instance found for the given address",
 					},
@@ -460,7 +460,7 @@ address to reference a specific instance.
 Error: No instance found for the given address
 
 This command requires that the address references one specific instance. To
-view the available instances, use "tofu state list". Please modify the
+view the available instances, use "bogform state list". Please modify the
 address to reference a specific instance.
 `,
 		},

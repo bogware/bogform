@@ -78,7 +78,7 @@ var TextEncodeBase64Func = function.New(&function.Spec{
 	Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
 		encoding, err := ianaindex.IANA.Encoding(args[1].AsString())
 		if err != nil || encoding == nil {
-			return cty.UnknownVal(cty.String), function.NewArgErrorf(1, "%q is not a supported IANA encoding name or alias in this OpenTofu version", args[1].AsString())
+			return cty.UnknownVal(cty.String), function.NewArgErrorf(1, "%q is not a supported IANA encoding name or alias in this Bogform version", args[1].AsString())
 		}
 
 		encName, err := ianaindex.IANA.Name(encoding)
@@ -122,7 +122,7 @@ var TextDecodeBase64Func = function.New(&function.Spec{
 	Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
 		encoding, err := ianaindex.IANA.Encoding(args[1].AsString())
 		if err != nil || encoding == nil {
-			return cty.UnknownVal(cty.String), function.NewArgErrorf(1, "%q is not a supported IANA encoding name or alias in this OpenTofu version", args[1].AsString())
+			return cty.UnknownVal(cty.String), function.NewArgErrorf(1, "%q is not a supported IANA encoding name or alias in this Bogform version", args[1].AsString())
 		}
 
 		encName, err := ianaindex.IANA.Name(encoding)
@@ -250,9 +250,9 @@ var URLDecodeFunc = function.New(&function.Spec{
 
 // Base64Decode decodes a string containing a base64 sequence.
 //
-// OpenTofu uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
+// Bogform uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
 //
-// Strings in the OpenTofu language are sequences of unicode characters rather
+// Strings in the Bogform language are sequences of unicode characters rather
 // than bytes, so this function will also interpret the resulting bytes as
 // UTF-8. If the bytes after Base64 decoding are _not_ valid UTF-8, this function
 // produces an error.
@@ -262,9 +262,9 @@ func Base64Decode(str cty.Value) (cty.Value, error) {
 
 // Base64Encode applies Base64 encoding to a string.
 //
-// OpenTofu uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
+// Bogform uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
 //
-// Strings in the OpenTofu language are sequences of unicode characters rather
+// Strings in the Bogform language are sequences of unicode characters rather
 // than bytes, so this function will first encode the characters from the string
 // as UTF-8, and then apply Base64 encoding to the result.
 func Base64Encode(str cty.Value) (cty.Value, error) {
@@ -274,9 +274,9 @@ func Base64Encode(str cty.Value) (cty.Value, error) {
 // Base64Gzip compresses a string with gzip and then encodes the result in
 // Base64 encoding.
 //
-// OpenTofu uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
+// Bogform uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
 //
-// Strings in the OpenTofu language are sequences of unicode characters rather
+// Strings in the Bogform language are sequences of unicode characters rather
 // than bytes, so this function will first encode the characters from the string
 // as UTF-8, then apply gzip compression, and then finally apply Base64 encoding.
 func Base64Gzip(str cty.Value) (cty.Value, error) {
@@ -314,10 +314,10 @@ func URLDecode(str cty.Value) (cty.Value, error) {
 
 // TextEncodeBase64 applies Base64 encoding to a string that was encoded before with a target encoding.
 //
-// OpenTofu uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
+// Bogform uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
 //
 // First step is to apply the target IANA encoding (e.g. UTF-16LE).
-// Strings in the OpenTofu language are sequences of unicode characters rather
+// Strings in the Bogform language are sequences of unicode characters rather
 // than bytes, so this function will first encode the characters from the string
 // as UTF-8, and then apply Base64 encoding to the result.
 func TextEncodeBase64(str, enc cty.Value) (cty.Value, error) {
@@ -326,9 +326,9 @@ func TextEncodeBase64(str, enc cty.Value) (cty.Value, error) {
 
 // TextDecodeBase64 decodes a string containing a base64 sequence whereas a specific encoding of the string is expected.
 //
-// OpenTofu uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
+// Bogform uses the "standard" Base64 alphabet as defined in RFC 4648 section 4.
 //
-// Strings in the OpenTofu language are sequences of unicode characters rather
+// Strings in the Bogform language are sequences of unicode characters rather
 // than bytes, so this function will also interpret the resulting bytes as
 // the target encoding.
 func TextDecodeBase64(str, enc cty.Value) (cty.Value, error) {

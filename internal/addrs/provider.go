@@ -26,12 +26,12 @@ const DefaultProviderRegistryHost = regaddr.DefaultProviderRegistryHost
 // to BuiltInProviderNamespace in order to be considered as built-in.
 //
 // Since we currently only have one built-in provider and it was inherited
-// from OpenTofu's predecessor, we currently exclusively use the "transitional"
+// from Bogform's predecessor, we currently exclusively use the "transitional"
 // builtin provider host that matches what the predecessor used, thereby
-// helping with cross-compatibility. If we introduce any OpenTofu-specific
+// helping with cross-compatibility. If we introduce any Bogform-specific
 // built-in providers in future then we should consider using
 // [regaddr.BuiltInProviderHost] for those ones instead, since that one
-// uses a hostname that belongs to the OpenTofu project.
+// uses a hostname that belongs to the Bogform project.
 const BuiltInProviderHost = regaddr.TransitionalBuiltInProviderHost
 
 // BuiltInProviderNamespace is the provider namespace used for "built-in"
@@ -78,14 +78,14 @@ func NewProvider(hostname svchost.Hostname, namespace, typeName string) Provider
 // As a special case, the string "terraform" maps to
 // "terraform.io/builtin/terraform" because that is the more likely user
 // intent than the now-unmaintained "registry.terraform.io/hashicorp/terraform"
-// which remains only for compatibility with older OpenTofu versions.
+// which remains only for compatibility with older Bogform versions.
 func ImpliedProviderForUnqualifiedType(typeName string) Provider {
 	switch typeName {
 	case "terraform":
 		// Note for future maintainers: any additional strings we add here
 		// as implied to be builtin must never also be use as provider names
 		// in the registry.terraform.io/hashicorp/... namespace, because
-		// otherwise older versions of OpenTofu could implicitly select
+		// otherwise older versions of Bogform could implicitly select
 		// the registry name instead of the internal one.
 		return NewBuiltInProvider(typeName)
 	default:

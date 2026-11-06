@@ -25,7 +25,7 @@ import (
 )
 
 // ociImageManifestArtifactType is the artifact type we expect for the image
-// manifest describing an OpenTofu module package.
+// manifest describing a Bogform module package.
 const ociIndexManifestArtifactType = "application/vnd.opentofu.modulepkg"
 
 // ociImageManifestSizeLimit is the maximum size of artifact manifest (aka "image
@@ -49,9 +49,9 @@ var ociBlobMediaTypePreference = []string{
 // ociDistributionGetter is an implementation of [getter.Getter] that
 // obtains module packages from OCI distribution registries.
 //
-// Because this implementation lives inside OpenTofu rather than upstream
+// Because this implementation lives inside Bogform rather than upstream
 // go-getter, it intentionally focuses only on the subset of go-getter
-// functionality that OpenTofu's module installer uses. If we do someday
+// functionality that Bogform's module installer uses. If we do someday
 // decide to submit this upstream it will need some further work to
 // support additional capabilities that other go-getter callers rely on.
 type ociDistributionGetter struct {
@@ -134,7 +134,7 @@ func (g *ociDistributionGetter) Get(destDir string, url *url.URL) error {
 
 // GetFile implements getter.Getter.
 func (g *ociDistributionGetter) GetFile(string, *url.URL) error {
-	// With how OpenTofu uses go-getter we can only get in here if
+	// With how Bogform uses go-getter we can only get in here if
 	// the source address string includes go-getter's special
 	// reserved "archive" query string argument, which causes
 	// go-getter itself to arrange for extracting the downloaded
@@ -155,7 +155,7 @@ func (g *ociDistributionGetter) ClientMode(*url.URL) (getter.ClientMode, error) 
 	// it populates a directory based on the content of the
 	// retrieved archive rather than _just_ retrieving the
 	// archive. In practice this isn't actually used in
-	// OpenTofu, because OpenTofu _always_ asks for
+	// Bogform, because Bogform _always_ asks for
 	// go-getter to populate a directory, but we're required
 	// to implement this method to satisfy the Getter interface.
 	return getter.ClientModeDir, nil
@@ -198,7 +198,7 @@ func (g *ociDistributionGetter) resolveRepositoryRef(url *url.URL) (*orasRegistr
 	// since most addresses do not use an explicit port number.
 	registryDomainName := url.Host
 
-	// The OpenTofu module installer has already stripped off any
+	// The Bogform module installer has already stripped off any
 	// "subdir" part of the path before calling us, so we can assume
 	// that the entire path is intended to be the repository name,
 	// except that the leading slash should not be included.
@@ -221,8 +221,8 @@ func (g *ociDistributionGetter) resolveManifestDescriptor(ctx context.Context, r
 	ctx, span := tracing.Tracer().Start(
 		ctx, "Resolve reference",
 		tracing.SpanAttributes(
-			traceattrs.OpenTofuOCIRegistryDomain(ref.Registry),
-			traceattrs.OpenTofuOCIRepositoryName(ref.Repository),
+			traceattrs.BogformOCIRegistryDomain(ref.Registry),
+			traceattrs.BogformOCIRepositoryName(ref.Repository),
 		),
 	)
 	defer span.End()
@@ -279,7 +279,7 @@ func (g *ociDistributionGetter) resolveManifestDescriptor(ctx context.Context, r
 		// If we're starting with a tag name then we need to query the
 		// repository to find out which digest is currently selected.
 		span.SetAttributes(
-			traceattrs.OpenTofuOCIReferenceTag(wantTag),
+			traceattrs.BogformOCIReferenceTag(wantTag),
 		)
 		desc, err = store.Resolve(ctx, wantTag)
 		if err != nil {
@@ -294,7 +294,7 @@ func (g *ociDistributionGetter) resolveManifestDescriptor(ctx context.Context, r
 		// and so we can't exercise this specific case from unit tests
 		// using in-memory or on-disk fakes. :(
 		span.SetAttributes(
-			traceattrs.OpenTofuOCIReferenceDigest(wantDigest.String()),
+			traceattrs.BogformOCIReferenceDigest(wantDigest.String()),
 		)
 		desc, err = store.Resolve(ctx, wantDigest.String())
 		if err != nil {
@@ -304,8 +304,8 @@ func (g *ociDistributionGetter) resolveManifestDescriptor(ctx context.Context, r
 
 	span.SetAttributes(
 		traceattrs.OCIManifestDigest(desc.Digest.String()),
-		traceattrs.OpenTofuOCIManifestMediaType(desc.MediaType),
-		traceattrs.OpenTofuOCIManifestSize(desc.Size),
+		traceattrs.BogformOCIManifestMediaType(desc.MediaType),
+		traceattrs.BogformOCIManifestSize(desc.Size),
 	)
 
 	// The initial request is only required to return a "plain" descriptor,
@@ -316,7 +316,7 @@ func (g *ociDistributionGetter) resolveManifestDescriptor(ctx context.Context, r
 		return ociv1.Descriptor{}, prepErr(fmt.Errorf("selected object is not an OCI image manifest"))
 	}
 
-	// We always expect ArtifactType to be set to our OpenTofu-specific type,
+	// We always expect ArtifactType to be set to our Bogform-specific type,
 	// so we can reject attempts to install other kinds of artifact.
 	desc.ArtifactType = ociIndexManifestArtifactType
 
@@ -328,7 +328,7 @@ func fetchOCIImageManifest(ctx context.Context, desc ociv1.Descriptor, store OCI
 		ctx, "Fetch manifest",
 		tracing.SpanAttributes(
 			traceattrs.OCIManifestDigest(desc.Digest.String()),
-			traceattrs.OpenTofuOCIManifestSize(desc.Size),
+			traceattrs.BogformOCIManifestSize(desc.Size),
 		),
 	)
 	defer span.End()
@@ -356,8 +356,8 @@ func fetchOCIImageManifest(ctx context.Context, desc ociv1.Descriptor, store OCI
 	}
 
 	span.SetAttributes(
-		traceattrs.OpenTofuOCIManifestMediaType(desc.MediaType),
-		traceattrs.OpenTofuOCIManifestArtifactType(desc.ArtifactType),
+		traceattrs.BogformOCIManifestMediaType(desc.MediaType),
+		traceattrs.BogformOCIManifestArtifactType(desc.ArtifactType),
 	)
 
 	// Now we'll make sure that what we decoded seems vaguely sensible before we
@@ -372,7 +372,7 @@ func fetchOCIImageManifest(ctx context.Context, desc ociv1.Descriptor, store OCI
 		return nil, prepErr(fmt.Errorf("unexpected artifact type %q", manifest.ArtifactType))
 	}
 	// We intentionally leave everything else loose so that we'll have flexibility
-	// to extend this format in backward-compatible ways in future OpenTofu versions.
+	// to extend this format in backward-compatible ways in future Bogform versions.
 	return &manifest, nil
 }
 
@@ -380,7 +380,7 @@ func fetchOCIManifestBlob(ctx context.Context, desc ociv1.Descriptor, store OCIR
 	// We impose a size limit on the manifest just to avoid an abusive remote registry
 	// occupuing unbounded memory when we read the manifest content into memory below.
 	if (desc.Size / 1024 / 1024) > ociImageManifestSizeLimitMiB {
-		return nil, fmt.Errorf("manifest size exceeds OpenTofu's size limit of %d MiB", ociImageManifestSizeLimitMiB)
+		return nil, fmt.Errorf("manifest size exceeds Bogform's size limit of %d MiB", ociImageManifestSizeLimitMiB)
 	}
 
 	readCloser, err := store.Fetch(ctx, desc)
@@ -420,7 +420,7 @@ func selectOCILayerBlob(descs []ociv1.Descriptor) (ociv1.Descriptor, error) {
 			foundBlobs[desc.MediaType] = desc
 		} else {
 			// We silently ignore any "layer" that doesn't use one of our
-			// supported media types so that future versions of OpenTofu
+			// supported media types so that future versions of Bogform
 			// can potentially support additional archive formats,
 			// but we do still count them so that we can hint about
 			// potential problems in an error message below.
@@ -429,9 +429,9 @@ func selectOCILayerBlob(descs []ociv1.Descriptor) (ociv1.Descriptor, error) {
 	}
 	if len(foundBlobs) == 0 {
 		if foundWrongMediaTypeBlobs > 0 {
-			return ociv1.Descriptor{}, fmt.Errorf("image manifest contains no layers of types supported as module packages by OpenTofu, but has other unsupported formats; this OCI artifact might be intended for a different version of OpenTofu")
+			return ociv1.Descriptor{}, fmt.Errorf("image manifest contains no layers of types supported as module packages by Bogform, but has other unsupported formats; this OCI artifact might be intended for a different version of Bogform")
 		}
-		return ociv1.Descriptor{}, fmt.Errorf("image manifest contains no layers of types supported as module packages by OpenTofu")
+		return ociv1.Descriptor{}, fmt.Errorf("image manifest contains no layers of types supported as module packages by Bogform")
 	}
 	for _, maybeType := range ociBlobMediaTypePreference {
 		ret, ok := foundBlobs[maybeType]
@@ -442,7 +442,7 @@ func selectOCILayerBlob(descs []ociv1.Descriptor) (ociv1.Descriptor, error) {
 	// We should not get here if goGetterDecompressorMediaTypes and
 	// ociBlobMediaTypePreference have been maintained consistently,
 	// but we'll return an error here anyway just to be robust.
-	return ociv1.Descriptor{}, fmt.Errorf("image manifest contains no layers of types supported as module packages by OpenTofu")
+	return ociv1.Descriptor{}, fmt.Errorf("image manifest contains no layers of types supported as module packages by Bogform")
 }
 
 // fetchOCIBlobToTemporaryFile uses the given ORAS fetcher to pull the content of the
@@ -455,9 +455,9 @@ func fetchOCIBlobToTemporaryFile(ctx context.Context, desc ociv1.Descriptor, sto
 	ctx, span := tracing.Tracer().Start(
 		ctx, "Fetch module package",
 		tracing.SpanAttributes(
-			traceattrs.OpenTofuOCIBlobDigest(desc.Digest.String()),
-			traceattrs.OpenTofuOCIBlobMediaType(desc.MediaType),
-			traceattrs.OpenTofuOCIBlobSize(desc.Size),
+			traceattrs.BogformOCIBlobDigest(desc.Digest.String()),
+			traceattrs.BogformOCIBlobMediaType(desc.MediaType),
+			traceattrs.BogformOCIBlobSize(desc.Size),
 		),
 	)
 	defer span.End()

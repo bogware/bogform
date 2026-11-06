@@ -61,7 +61,7 @@ func (c ProvidersCommand) Execute(args *arguments.Providers, view views.Provider
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Error validating configuration directory",
-			fmt.Sprintf("OpenTofu encountered an unexpected error while verifying that the given configuration directory is valid: %s.", err),
+			fmt.Sprintf("Bogform encountered an unexpected error while verifying that the given configuration directory is valid: %s.", err),
 		))
 		view.Diagnostics(diags)
 		return 1
@@ -74,7 +74,7 @@ func (c ProvidersCommand) Execute(args *arguments.Providers, view views.Provider
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"No configuration files",
-			fmt.Sprintf("The directory %s contains no OpenTofu configuration files.", absPath),
+			fmt.Sprintf("The directory %s contains no Bogform configuration files.", absPath),
 		))
 		view.Diagnostics(diags)
 		return 1

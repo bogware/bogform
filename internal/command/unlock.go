@@ -113,8 +113,8 @@ func (c UnlockCommand) Execute(args *arguments.Unlock, view views.Unlock) int {
 			return 1
 		}
 
-		desc := "OpenTofu will remove the lock on the remote state.\n" +
-			"This will allow local OpenTofu commands to modify this state, even though it\n" +
+		desc := "Bogform will remove the lock on the remote state.\n" +
+			"This will allow local Bogform commands to modify this state, even though it\n" +
 			"may still be in use. Only 'yes' will be accepted to confirm."
 
 		v, err := c.UIInput().Input(context.Background(), &tofu.InputOpts{

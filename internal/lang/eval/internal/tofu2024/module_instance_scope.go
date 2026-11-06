@@ -74,7 +74,7 @@ func (m *moduleInstanceScope) ResolveFunc(ctx context.Context, call *hcl.StaticC
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Call to unsupported function",
-				Detail:   fmt.Sprintf("There is no core function named %q in this version of OpenTofu.", call.Name),
+				Detail:   fmt.Sprintf("There is no core function named %q in this version of Bogform.", call.Name),
 				Subject:  &call.NameRange,
 			})
 			return function.Function{}, diags
@@ -628,7 +628,7 @@ func (i *instanceLocalSymbolTable) HandleInvalidStep(rng tfdiags.SourceRange) tf
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Invalid reference",
-			Detail:   "This reference is invalid, but we cannot explain why due to a bug in OpenTofu.",
+			Detail:   "This reference is invalid, but we cannot explain why due to a bug in Bogform.",
 			Subject:  rng.ToHCL().Ptr(),
 		})
 	}
@@ -661,7 +661,7 @@ func (i *instanceLocalSymbolTable) ResolveAttr(ref hcl.TraverseAttr) (exprs.Attr
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Invalid reference",
-			Detail:   "This reference is invalid, but we cannot explain why due to a bug in OpenTofu.",
+			Detail:   "This reference is invalid, but we cannot explain why due to a bug in Bogform.",
 			Subject:  &ref.SrcRange,
 		})
 		return nil, diags

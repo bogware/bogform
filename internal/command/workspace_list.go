@@ -17,7 +17,7 @@ func WorkspaceListCommander(legacyName bool) Command {
 	cmd := Command{
 		Name:  "list",
 		Short: "List Workspaces",
-		Long:  `List OpenTofu workspaces.`,
+		Long:  `List Bogform workspaces.`,
 
 		DiagsWithNewline: true,
 	}

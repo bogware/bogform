@@ -22,7 +22,7 @@ import (
 	"github.com/bogware/bogform/internal/tracing/traceattrs"
 )
 
-// ApplyOpts are the various options that affect the details of how OpenTofu
+// ApplyOpts are the various options that affect the details of how Bogform
 // will build a plan.
 //
 // This structure is created from the PlanOpts since wants some functionality
@@ -185,7 +185,7 @@ func (c *Context) Apply(ctx context.Context, plan *plans.Plan, config *configs.C
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Destroy was successful but left behind forgotten instances",
-					`As requested, OpenTofu has not deleted some remote objects that are no longer managed by this configuration. Those objects continue to exist in their remote system and so may continue to incur charges. Refer to the original plan for more information.
+					`As requested, Bogform has not deleted some remote objects that are no longer managed by this configuration. Those objects continue to exist in their remote system and so may continue to incur charges. Refer to the original plan for more information.
 To suppress this error for the future 'destroy' runs, you can add the CLI flag "-suppress-forget-errors".`,
 				))
 			}
@@ -197,9 +197,9 @@ To suppress this error for the future 'destroy' runs, you can add the CLI flag "
 			tfdiags.Warning,
 			"Applied changes may be incomplete",
 			`The plan was created with the -target or the -exclude option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
-    tofu plan
+    bogform plan
 	
-Note that the -target and -exclude options are not suitable for routine use, and are provided only for exceptional situations such as recovering from errors or mistakes, or when OpenTofu specifically suggests to use it as part of an error message.`,
+Note that the -target and -exclude options are not suitable for routine use, and are provided only for exceptional situations such as recovering from errors or mistakes, or when Bogform specifically suggests to use it as part of an error message.`,
 		))
 	}
 
@@ -265,12 +265,12 @@ func (c *Context) applyGraph(ctx context.Context, plan *plans.Plan, config *conf
 
 // ApplyGraphForUI is a last vestige of graphs in the public interface of
 // Context (as opposed to graphs as an implementation detail) intended only for
-// use by the "tofu graph" command when asked to render an apply-time
+// use by the "bogform graph" command when asked to render an apply-time
 // graph.
 //
 // The result of this is intended only for rendering to the user as a dot
 // graph, and so may change in future in order to make the result more useful
-// in that context, even if drifts away from the physical graph that OpenTofu
+// in that context, even if drifts away from the physical graph that Bogform
 // Core currently uses as an implementation detail of planning.
 func (c *Context) ApplyGraphForUI(plan *plans.Plan, config *configs.Config) (*Graph, tfdiags.Diagnostics) {
 	// For now though, this really is just the internal graph, confusing
@@ -288,7 +288,7 @@ func (c *Context) ApplyGraphForUI(plan *plans.Plan, config *configs.Config) (*Gr
 // # Context:
 // As requested in opentofu/opentofu#1922, we had to add the ability to specify variable's values
 // during the apply too, not only during the plan command.
-// Therefore, when a plan is created via `tofu plan -out <planfile>` and then applied with `tofu apply <planfile>`
+// Therefore, when a plan is created via `bogform plan -out <planfile>` and then applied with `bogform apply <planfile>`
 // we need to be able to specify -var/-var-file/etc to allow configuring the variables that are not kept in the
 // plan (encryption configuration, ephemeral variables).
 //
@@ -339,7 +339,7 @@ func (c *Context) mergePlanAndApplyVariables(config *configs.Config, plan *plans
 		// The plan.VariableValues field only records variables that were actually
 		// set by the caller in the PlanOpts, so we may need to provide
 		// placeholders for any other variables that the user didn't set, in
-		// which case OpenTofu will once again use the default value from the
+		// which case Bogform will once again use the default value from the
 		// configuration when we visit these variables during the graph walk.
 		variables[name] = &InputValue{
 			Value:      cty.NilVal,
@@ -380,8 +380,8 @@ func (c *Context) mergePlanAndApplyVariables(config *configs.Config, plan *plans
 
 		// If both are set, ensure they are identical.
 		// This is applicable only for non-ephemeral variables, ephemeral values can be only in one of the source at once:
-		// * Will be in the plan when `tofu apply` will be executed without a plan file
-		// * Will be in the applyOpts when `tofu apply` will be executed with a plan file
+		// * Will be in the plan when `bogform apply` will be executed without a plan file
+		// * Will be in the applyOpts when `bogform apply` will be executed with a plan file
 		if planOk && inputOk {
 			if inputValue.Equals(planValue).False() {
 				diags = diags.Append(tfdiags.Sourceless(
@@ -400,7 +400,7 @@ func (c *Context) mergePlanAndApplyVariables(config *configs.Config, plan *plans
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  `No value for required variable`,
-				Detail:   fmt.Sprintf("Variable %q is configured as ephemeral. This type of variables need to be given a value during `tofu plan` and also during `tofu apply`.", name),
+				Detail:   fmt.Sprintf("Variable %q is configured as ephemeral. This type of variables need to be given a value during `bogform plan` and also during `bogform apply`.", name),
 				Subject:  cfg.DeclRange.Ptr(),
 			})
 			continue

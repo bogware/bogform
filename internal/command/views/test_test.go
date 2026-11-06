@@ -620,11 +620,11 @@ something bad happened during this test
 			},
 			StdOut: `  run "run_block"... pass
 
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   + create
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.creating will be created
   + resource "test_resource" "creating" {
@@ -770,7 +770,7 @@ Warning: second warning
 
 some thing not very bad happened again
 `,
-			stderr: `OpenTofu encountered an error destroying resources created while executing
+			stderr: `Bogform encountered an error destroying resources created while executing
 main.tftest.hcl.
 
 Error: first error
@@ -785,7 +785,7 @@ this time it is very bad
 			run:   &moduletest.Run{Name: "run_block"},
 			file:  &moduletest.File{Name: "main.tftest.hcl"},
 			state: states.NewState(),
-			stderr: `OpenTofu encountered an error destroying resources created while executing
+			stderr: `Bogform encountered an error destroying resources created while executing
 main.tftest.hcl/run_block.
 
 Error: first error
@@ -851,7 +851,7 @@ Warning: second warning
 some thing not very bad happened again
 `,
 			stderr: `
-OpenTofu left the following resources in state after executing
+Bogform left the following resources in state after executing
 main.tftest.hcl, these left-over resources can be viewed by reading the
 statefile written to disk(errored_test.tfstate) and they need to be cleaned
 up manually:
@@ -918,14 +918,14 @@ Warning: second warning
 
 some thing not very bad happened again
 `,
-			stderr: `OpenTofu encountered an error destroying resources created while executing
+			stderr: `Bogform encountered an error destroying resources created while executing
 main.tftest.hcl.
 
 Error: first error
 
 this time it is very bad
 
-OpenTofu left the following resources in state after executing
+Bogform left the following resources in state after executing
 main.tftest.hcl, these left-over resources can be viewed by reading the
 statefile written to disk(errored_test.tfstate) and they need to be cleaned
 up manually:
@@ -989,14 +989,14 @@ Warning: second warning
 
 some thing not very bad happened again
 `,
-			stderr: `OpenTofu encountered an error destroying resources created while executing
+			stderr: `Bogform encountered an error destroying resources created while executing
 main.tftest.hcl.
 
 Error: first error
 
 this time it is very bad
 
-OpenTofu left the following resources in state after executing
+Bogform left the following resources in state after executing
 main.tftest.hcl, these left-over resources can be viewed by reading the
 statefile written to disk(errored_test.tfstate) and they need to be cleaned
 up manually:
@@ -1072,10 +1072,10 @@ func TestTestHuman_FatalInterruptSummary(t *testing.T) {
 				},
 			},
 			want: `
-OpenTofu was interrupted while executing main.tftest.hcl, and may not have
+Bogform was interrupted while executing main.tftest.hcl, and may not have
 performed the expected cleanup operations.
 
-OpenTofu was in the process of creating the following resources for
+Bogform was in the process of creating the following resources for
 "run_block" from the module under test, and they may not have been destroyed:
   - test_instance.one
   - test_instance.two
@@ -1115,10 +1115,10 @@ OpenTofu was in the process of creating the following resources for
 			},
 			created: nil,
 			want: `
-OpenTofu was interrupted while executing main.tftest.hcl, and may not have
+Bogform was interrupted while executing main.tftest.hcl, and may not have
 performed the expected cleanup operations.
 
-OpenTofu has already created the following resources from the module under
+Bogform has already created the following resources from the module under
 test:
   - test_instance.one
   - test_instance.two
@@ -1165,10 +1165,10 @@ test:
 			},
 			created: nil,
 			want: `
-OpenTofu was interrupted while executing main.tftest.hcl, and may not have
+Bogform was interrupted while executing main.tftest.hcl, and may not have
 performed the expected cleanup operations.
 
-OpenTofu has already created the following resources for "setup_block" from
+Bogform has already created the following resources for "setup_block" from
 "../setup":
   - test_instance.one
   - test_instance.two
@@ -1279,20 +1279,20 @@ OpenTofu has already created the following resources for "setup_block" from
 				Name:   "run_block",
 			},
 			want: `
-OpenTofu was interrupted while executing main.tftest.hcl, and may not have
+Bogform was interrupted while executing main.tftest.hcl, and may not have
 performed the expected cleanup operations.
 
-OpenTofu has already created the following resources from the module under
+Bogform has already created the following resources from the module under
 test:
   - test_instance.one
   - test_instance.two
 
-OpenTofu has already created the following resources for "setup_block" from
+Bogform has already created the following resources for "setup_block" from
 "../setup":
   - test_instance.setup_one
   - test_instance.setup_two
 
-OpenTofu was in the process of creating the following resources for
+Bogform was in the process of creating the following resources for
 "run_block" from the module under test, and they may not have been destroyed:
   - test_instance.new_one
   - test_instance.new_two
@@ -2026,7 +2026,7 @@ func TestTestJSON_DestroySummary(t *testing.T) {
 			want: []map[string]any{
 				{
 					"@level":    "error",
-					"@message":  "OpenTofu left some resources in state after executing main.tftest.hcl/run_block, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:",
+					"@message":  "Bogform left some resources in state after executing main.tftest.hcl/run_block, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:",
 					"@module":   "tofu.ui",
 					"@testfile": "main.tftest.hcl",
 					"@testrun":  "run_block",
@@ -2092,7 +2092,7 @@ func TestTestJSON_DestroySummary(t *testing.T) {
 			want: []map[string]any{
 				{
 					"@level":    "error",
-					"@message":  "OpenTofu left some resources in state after executing main.tftest.hcl, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:",
+					"@message":  "Bogform left some resources in state after executing main.tftest.hcl, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:",
 					"@module":   "tofu.ui",
 					"@testfile": "main.tftest.hcl",
 					"test_cleanup": map[string]any{
@@ -2189,7 +2189,7 @@ func TestTestJSON_DestroySummary(t *testing.T) {
 			want: []map[string]any{
 				{
 					"@level":    "error",
-					"@message":  "OpenTofu left some resources in state after executing main.tftest.hcl, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:",
+					"@message":  "Bogform left some resources in state after executing main.tftest.hcl, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:",
 					"@module":   "tofu.ui",
 					"@testfile": "main.tftest.hcl",
 					"test_cleanup": map[string]any{
@@ -2294,7 +2294,7 @@ func TestTestJSON_DestroySummary(t *testing.T) {
 			}), want: []map[string]any{
 				{
 					"@level":    "error",
-					"@message":  "OpenTofu left some resources in state after executing main.tftest.hcl, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:",
+					"@message":  "Bogform left some resources in state after executing main.tftest.hcl, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:",
 					"@module":   "tofu.ui",
 					"@testfile": "main.tftest.hcl",
 					"test_cleanup": map[string]any{
@@ -2993,7 +2993,7 @@ func TestTestJSON_FatalInterruptSummary(t *testing.T) {
 			want: []map[string]any{
 				{
 					"@level":    "error",
-					"@message":  "OpenTofu was interrupted during test execution, and may not have performed the expected cleanup operations.",
+					"@message":  "Bogform was interrupted during test execution, and may not have performed the expected cleanup operations.",
 					"@module":   "tofu.ui",
 					"@testfile": "main.tftest.hcl",
 					"test_interrupt": map[string]any{
@@ -3042,7 +3042,7 @@ func TestTestJSON_FatalInterruptSummary(t *testing.T) {
 			want: []map[string]any{
 				{
 					"@level":    "error",
-					"@message":  "OpenTofu was interrupted during test execution, and may not have performed the expected cleanup operations.",
+					"@message":  "Bogform was interrupted during test execution, and may not have performed the expected cleanup operations.",
 					"@module":   "tofu.ui",
 					"@testfile": "main.tftest.hcl",
 					"test_interrupt": map[string]any{
@@ -3095,7 +3095,7 @@ func TestTestJSON_FatalInterruptSummary(t *testing.T) {
 			want: []map[string]any{
 				{
 					"@level":    "error",
-					"@message":  "OpenTofu was interrupted during test execution, and may not have performed the expected cleanup operations.",
+					"@message":  "Bogform was interrupted during test execution, and may not have performed the expected cleanup operations.",
 					"@module":   "tofu.ui",
 					"@testfile": "main.tftest.hcl",
 					"test_interrupt": map[string]any{
@@ -3210,7 +3210,7 @@ func TestTestJSON_FatalInterruptSummary(t *testing.T) {
 			want: []map[string]any{
 				{
 					"@level":    "error",
-					"@message":  "OpenTofu was interrupted during test execution, and may not have performed the expected cleanup operations.",
+					"@message":  "Bogform was interrupted during test execution, and may not have performed the expected cleanup operations.",
 					"@module":   "tofu.ui",
 					"@testfile": "main.tftest.hcl",
 					"test_interrupt": map[string]any{

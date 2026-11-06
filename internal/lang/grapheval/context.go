@@ -58,7 +58,7 @@ func ContextWithRequestTracker(parent context.Context, tracker RequestTracker) c
 func RequestTrackerFromContext(ctx context.Context) RequestTracker {
 	tracker, ok := ctx.Value(trackerContextKey).(RequestTracker)
 	if !ok {
-		panic("RequestTracker not in Context, this is a bug in OpenTofu and should be reported")
+		panic("RequestTracker not in Context, this is a bug in Bogform and should be reported")
 	}
 	return tracker
 }

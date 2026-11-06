@@ -55,7 +55,7 @@ func TestEphemeralErrors_variables(t *testing.T) {
 			t.Errorf("unexpected err: %s;\nstderr:\n%s\nstdout:\n%s", err, serr, sout)
 		}
 		sanitized := SanitizeStderr(serr)
-		if !strings.Contains(sanitized, `The error expression used to explain this condition refers to ephemeral values. OpenTofu will not display the resulting message.  You can correct this by removing references to ephemeral values or by utilizing the builtin ephemeralasnull() function.`) {
+		if !strings.Contains(sanitized, `The error expression used to explain this condition refers to ephemeral values. Bogform will not display the resulting message.  You can correct this by removing references to ephemeral values or by utilizing the builtin ephemeralasnull() function.`) {
 			t.Errorf("unexpected stderr: %s;\nstderr:\n%s\nstdout:\n%s", err, serr, sout)
 			t.Logf("sanitized serr: %s", sanitized)
 		}
@@ -210,7 +210,7 @@ func TestEphemeralErrors_outputs(t *testing.T) {
 			t.Logf("sanitized serr: %s", sanitizedSerr)
 		}
 		if !strings.Contains(sanitizedSout, `Warning: Error message refers to ephemeral values    on `+filename) ||
-			!strings.Contains(sanitizedSout, `The error expression used to explain this condition refers to ephemeral values, so OpenTofu will not display the resulting message.  You can correct this by removing references to ephemeral values`) {
+			!strings.Contains(sanitizedSout, `The error expression used to explain this condition refers to ephemeral values, so Bogform will not display the resulting message.  You can correct this by removing references to ephemeral values`) {
 			t.Errorf("unexpected stdout: %s;\nstderr:\n%s\nstdout:\n%s", err, serr, sout)
 			t.Logf("sanitized sout: %s", sanitizedSerr)
 		}

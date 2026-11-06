@@ -32,7 +32,7 @@ type ConfigInstance struct {
 
 // ConfigCall describes a call to a root module that acts conceptually like
 // a "module" block but is instead implied by something outside of the
-// module language itself, such as running an OpenTofu CLI command.
+// module language itself, such as running a Bogform CLI command.
 type ConfigCall struct {
 	// RootModuleSource is the source address of the root module.
 	//
@@ -59,7 +59,7 @@ type ConfigCall struct {
 	// number of functions that produce different results each time they are
 	// called, such as "timestamp". This should be set to true only during
 	// the apply phase and in some more contrived situations such as in the
-	// "tofu console" command's REPL.
+	// "bogform console" command's REPL.
 	AllowImpureFunctions bool
 
 	// EvalContext describes the context where the call is being made, dealing
@@ -132,7 +132,7 @@ func (c *ConfigInstance) newRootModuleInstance(ctx context.Context, glue evalglu
 }
 
 // PrepareTofu2024Module wraps a module targeting the current HCL-based edition
-// of the OpenTofu language (which is called "tofu2024" in this set of packages)
+// of the Bogform language (which is called "tofu2024" in this set of packages)
 // in an [UncompiledModule] value to return from an [ExternalModules]
 // implementation.
 func PrepareTofu2024Module(sourceAddr addrs.ModuleSource, mod *configs.Module) UncompiledModule {

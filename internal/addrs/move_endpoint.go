@@ -20,8 +20,8 @@ import (
 // Its name reflects that its primary purpose is for the "from" and "to"
 // addresses in a "moved" statement in the configuration, but it's also
 // valid to use MoveEndpoint for other similar mechanisms that give
-// OpenTofu hints about historical configuration changes that might
-// prompt creating a different plan than OpenTofu would by default.
+// Bogform hints about historical configuration changes that might
+// prompt creating a different plan than Bogform would by default.
 //
 // To obtain a full address from a MoveEndpoint you must use
 // either the package function UnifyMoveEndpoints (to get an AbsMoveable) or
@@ -33,7 +33,7 @@ type MoveEndpoint struct {
 	SourceRange tfdiags.SourceRange
 
 	// Internally we (ab)use AbsMoveable as the representation of our
-	// relative address, even though everywhere else in OpenTofu
+	// relative address, even though everywhere else in Bogform
 	// AbsMoveable always represents a fully-absolute address.
 	// In practice, due to the implementation of ParseMoveEndpoint,
 	// this is always either a ModuleInstance or an AbsResourceInstance,

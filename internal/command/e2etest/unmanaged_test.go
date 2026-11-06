@@ -28,9 +28,9 @@ import (
 
 // The tests in this file are for the "unmanaged provider workflow", which
 // includes variants of the following sequence, with different details:
-// tofu init
-// tofu plan
-// tofu apply
+// bogform init
+// bogform plan
+// bogform apply
 //
 // These tests are run against an in-process server, and checked to make sure
 // they're not trying to control the lifecycle of the binary. They are not

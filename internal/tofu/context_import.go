@@ -65,7 +65,7 @@ func (i *ImportTarget) IsFromImportBlock() bool {
 	return i.Config != nil
 }
 
-// IsFromImportCommandLine checks whether the import target originates from a `tofu import` command
+// IsFromImportCommandLine checks whether the import target originates from a `bogform import` command
 // Currently, it should yield the opposite result of IsFromImportBlock, as those two are mutually-exclusive
 func (i *ImportTarget) IsFromImportCommandLine() bool {
 	return i.CommandLineImportTarget != nil
@@ -412,7 +412,7 @@ func (ri *ImportResolver) addCLIImportTarget(importTarget *ImportTarget) {
 }
 
 // Import takes already-created external resources and brings them
-// under OpenTofu management. Import requires the exact type, name, and ID
+// under Bogform management. Import requires the exact type, name, and ID
 // of the resources to import.
 //
 // This operation is idempotent. If the requested resource is already

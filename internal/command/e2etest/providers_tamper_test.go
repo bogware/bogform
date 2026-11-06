@@ -28,8 +28,8 @@ import (
 const providerTamperingFixtureNullProviderVersion = "3.3.1"
 
 // TestProviderTampering tests various ways that the provider plugins in the
-// local cache directory might be modified after an initial "tofu init",
-// which other OpenTofu commands which use those plugins should catch and
+// local cache directory might be modified after an initial "bogform init",
+// which other Bogform commands which use those plugins should catch and
 // report early.
 func TestProviderTampering(t *testing.T) {
 	// General setup: we'll do a one-off init of a test directory as our
@@ -89,7 +89,7 @@ func TestProviderTampering(t *testing.T) {
 		if want := `there is no package for registry.opentofu.org/hashicorp/null 3.3.1 cached in ` + providerCacheDir; !strings.Contains(SanitizeStderr(stderr), want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
-		if want := `tofu init`; !strings.Contains(stderr, want) {
+		if want := `bogform init`; !strings.Contains(stderr, want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
 
@@ -124,7 +124,7 @@ func TestProviderTampering(t *testing.T) {
 		if want := `Initial configuration of the requested backend "local"`; !strings.Contains(stderr, want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
-		if want := `tofu init`; !strings.Contains(stderr, want) {
+		if want := `bogform init`; !strings.Contains(stderr, want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
 
@@ -154,7 +154,7 @@ func TestProviderTampering(t *testing.T) {
 		if want := `the cached package for registry.opentofu.org/hashicorp/null 3.3.1 (in ` + providerCacheDir + `) does not match any of the checksums recorded in the dependency lock file`; !strings.Contains(SanitizeStderr(stderr), want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
-		if want := `tofu init`; !strings.Contains(stderr, want) {
+		if want := `bogform init`; !strings.Contains(stderr, want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
 	})
@@ -183,7 +183,7 @@ func TestProviderTampering(t *testing.T) {
 		if want := `provider registry.opentofu.org/hashicorp/null: locked version selection 3.3.1 doesn't match the updated version constraints "1.0.0"`; !strings.Contains(stderr, want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
-		if want := `tofu init -upgrade`; !strings.Contains(stderr, want) {
+		if want := `bogform init -upgrade`; !strings.Contains(stderr, want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
 	})
@@ -209,7 +209,7 @@ func TestProviderTampering(t *testing.T) {
 		if want := `provider registry.opentofu.org/hashicorp/null: required by this configuration but no version is selected`; !strings.Contains(stderr, want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
-		if want := `tofu init`; !strings.Contains(stderr, want) {
+		if want := `bogform init`; !strings.Contains(stderr, want) {
 			t.Errorf("missing expected error message\nwant substring: %s\ngot:\n%s", want, stderr)
 		}
 	})
@@ -293,7 +293,7 @@ func TestProviderTampering(t *testing.T) {
 //
 // One way we could get into this case is if someone has intentionally modified
 // something in the provider cache directory to quickly test something and then
-// ran "tofu init" again. We prefer to fail in that case to avoid silently
+// ran "bogform init" again. We prefer to fail in that case to avoid silently
 // clobbering whatever modification was made; operator should either delete
 // their modified directory or restore it to match the official package before
 // continuing.
@@ -352,7 +352,7 @@ func TestProviderCacheJunkDirectory(t *testing.T) {
 				}
 			}
 
-			// Now we run "tofu init" with the expectation that it should try to
+			// Now we run "bogform init" with the expectation that it should try to
 			// install "hashicorp/null" into the same location where we created
 			// the directory above. There's no dependency lock file to tell us
 			// that the existing directory might be enough to skip installation
@@ -383,7 +383,7 @@ func TestProviderCacheJunkDirectory(t *testing.T) {
 //
 // One way we could get into this case is if someone has intentionally created
 // a symlink in their cache directory for provider development or testing
-// purposes, and then later ran "tofu init" again. We prefer to fail in that
+// purposes, and then later ran "bogform init" again. We prefer to fail in that
 // case to avoid silently clobbering whatever modification was made; operator
 // should either delete their symlink or make sure it refers to a directory
 // that matches the expected package contents before continuing.
@@ -454,14 +454,14 @@ func TestProviderCacheJunkSymlink(t *testing.T) {
 				if runtime.GOOS == "windows" {
 					// By default Windows does not allow creation of symlinks, so
 					// we'll skip this test to avoid creating false-negative noise
-					// for anyone developing OpenTofu on Windows without their
+					// for anyone developing Bogform on Windows without their
 					// administrator having allowed symlink creation.
 					t.Skipf("can't create symlink on this Windows system: %s", err)
 				}
 				t.Fatalf("failed to make 'unexpected' symlink: %s", err)
 			}
 
-			// Now we run "tofu init" with the expectation that it should try to
+			// Now we run "bogform init" with the expectation that it should try to
 			// install "hashicorp/null" into the same location where we created
 			// the directory above. There's no dependency lock file to tell us
 			// that the existing directory might be enough to skip installation
@@ -481,17 +481,17 @@ func TestProviderCacheJunkSymlink(t *testing.T) {
 
 // TestProviderLocksFromPredecessorProject is an end-to-end test of our
 // special treatment of lock files that were originally created by the
-// project that OpenTofu was forked from, and so refer to providers from
-// that project's registry instead of OpenTofu's registry.
+// project that Bogform was forked from, and so refer to providers from
+// that project's registry instead of Bogform's registry.
 //
 // In that case we attempt to adjust the lock file so that we'll select
 // the same version of the equivalent provider in the OpenTofu registry,
-// even though normally OpenTofu would see the providers in two different
+// even though normally Bogform would see the providers in two different
 // registries as completely distinct.
 //
 // This special behavior applies only to providers that match
 // registry.terraform.io/hashicorp/*, since those are the ones that the
-// OpenTofu project rebuilds and republishes with equivalent releases under
+// Bogform project rebuilds and republishes with equivalent releases under
 // registry.opentofu.org/hashicorp/*.
 func TestProviderLocksFromPredecessorProject(t *testing.T) {
 	t.Parallel()
@@ -516,9 +516,9 @@ func TestProviderLocksFromPredecessorProject(t *testing.T) {
 	}
 
 	// The lock file should have been updated to include the selection for
-	// OpenTofu-flavored version of the provider along with the checksums
-	// of OpenTofu's release, and the original entry should've been pruned
-	// because as far as OpenTofu is concerned there's no dependency on
+	// Bogform-flavored version of the provider along with the checksums
+	// of Bogform's release, and the original entry should've been pruned
+	// because as far as Bogform is concerned there's no dependency on
 	// that provider in the current configuration.
 	newLocks, err := tf.ReadFile(".terraform.lock.hcl")
 	if err != nil {
@@ -543,7 +543,7 @@ func TestProviderLocksFromPredecessorProject(t *testing.T) {
 		// calculation and so we'll assume they should be consistent.
 		allHashes := lock.AllHashes()
 		wantHashes := []getproviders.Hash{
-			// These are the official hashes for OpenTofu's build of
+			// These are the official hashes for Bogform's build of
 			// hashicorp/null v3.2.0, as recorded in the registry.
 			getproviders.HashSchemeZip.New("11d576a7c9b9b5c3263fae11962216e8bce9e80ab9c5c7e2635a94f410d723f0"),
 			getproviders.HashSchemeZip.New("11e53de20574d5e449c2d4e4f4249644244bad2a365e9793267796b9b96befab"),
@@ -577,8 +577,8 @@ func TestProviderLocksFromPredecessorProject(t *testing.T) {
 // situation where the configuration contains a source address that explicitly
 // specifies our predecessor project's registry hostname.
 //
-// Using OpenTofu with such a configuration is problematic by default because
-// that registry's terms of service prohibit using it with OpenTofu, but it
+// Using Bogform with such a configuration is problematic by default because
+// that registry's terms of service prohibit using it with Bogform, but it
 // can potentially be okay (with some caveats, and THIS IS NOT LEGAL ADVICE)
 // if using a non-default installation method configuration that arranges for
 // that hostname to be handled by a mirror source rather than by direct
@@ -715,7 +715,7 @@ func TestProviderLocksFromPredecessorProjectWithAbsoluteSourceAddr(t *testing.T)
 	// cache directory: https://github.com/opentofu/opentofu/issues/2977 )
 	_, stderr, err = tf.Run("validate")
 	if err == nil {
-		t.Fatalf("unexpected success from tofu validate; want plugin execution error")
+		t.Fatalf("unexpected success from bogform validate; want plugin execution error")
 	}
 	gotErr := stderr
 	wantErr := `failed to instantiate provider "registry.terraform.io/hashicorp/null" to obtain schema`

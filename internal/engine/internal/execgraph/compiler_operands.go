@@ -102,7 +102,7 @@ func nextOperand[T any](operands *compilerOperands) nodeExecute[T] {
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Invalid execution graph compilation",
-				fmt.Sprintf("Operand %d was supposed to be %T, but its implementation produced %T. This is a bug in OpenTofu.", idx, result, resultRaw),
+				fmt.Sprintf("Operand %d was supposed to be %T, but its implementation produced %T. This is a bug in Bogform.", idx, result, resultRaw),
 			))
 			var zero T
 			return zero, false, diags
@@ -147,7 +147,7 @@ func (ops *compilerOperands) Finish() tfdiags.Diagnostics {
 		for _, problem := range problems {
 			fmt.Fprintf(&buf, " - %s\n", problem)
 		}
-		buf.WriteString("\nThis is a bug in OpenTofu.")
+		buf.WriteString("\nThis is a bug in Bogform.")
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Invalid operands for execution graph operation",

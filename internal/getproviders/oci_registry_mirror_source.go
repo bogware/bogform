@@ -25,36 +25,36 @@ import (
 )
 
 // ociIndexManifestArtifactType is the artifact type we expect for the top-level
-// index manifest for an OpenTofu provider version.
+// index manifest for a Bogform provider version.
 //
 // If a selected tag refers to a manifest that either lacks an artifact type
-// or has a different artifact type then OpenTofu will reject it with an
-// error indicating that it seems to be something other than an OpenTofu provider.
+// or has a different artifact type then Bogform will reject it with an
+// error indicating that it seems to be something other than a Bogform provider.
 const ociIndexManifestArtifactType = "application/vnd.opentofu.provider"
 
 // ociPackageManifestArtifactType is the artifact type we expect for each of the
 // individual manifests listed in a provider version's top-level index manifest.
 //
-// OpenTofu will silently ignore any listed descriptors that either lack an artifact
-// type or use a different one, both so that future versions of OpenTofu can
+// Bogform will silently ignore any listed descriptors that either lack an artifact
+// type or use a different one, both so that future versions of Bogform can
 // be sensitive to additional artifact types if needed and so that those creating
-// an artifact can choose to blend in other non-OpenTofu-related artifacts if
+// an artifact can choose to blend in other non-Bogform-related artifacts if
 // they have some reason to do that.
 //
 // All descriptors with this artifact type MUST include a "platform" object
 // with "os" and "architecture" set to match the platform that the individual
-// package is built for. OpenTofu and OCI both use Go's codenames for operating
+// package is built for. Bogform and OCI both use Go's codenames for operating
 // systems and CPU architectures, so these fields should exactly match the
 // names that would be used with this package's [Platform] type.
 //
-// OpenTofu does not currently make any use of the other properties defined for
+// Bogform does not currently make any use of the other properties defined for
 // a "platform" object, and so will silently ignore any descriptors that set
-// those properties. Future versions of OpenTofu might be able to use finer-grain
+// those properties. Future versions of Bogform might be able to use finer-grain
 // platform selection properties, in which case those versions should treat
 // a descriptor that uses those additional properties as higher precedence than
 // one that doesn't so that manifest authors can include both a specific descriptor
 // and a fallback descriptor with only os/architecture intended for use by
-// earlier OpenTofu versions.
+// earlier Bogform versions.
 const ociPackageManifestArtifactType = "application/vnd.opentofu.provider-target"
 
 // ociImageManifestSizeLimit is the maximum size of artifact manifest (aka "image
@@ -69,7 +69,7 @@ const ociImageManifestSizeLimitMiB = 4
 // provider mirror.
 //
 // This is conceptually similar to [HTTPMirrorSource], but whereas that one
-// acts as a client for the OpenTofu-specific "provider mirror protocol"
+// acts as a client for the Bogform-specific "provider mirror protocol"
 // this one instead relies on a user-configured template to map provider
 // source addresses onto OCI repository addresses and then uses tags in
 // the selected registry to discover the available versions, and OCI
@@ -81,7 +81,7 @@ const ociImageManifestSizeLimitMiB = 4
 //	https://github.com/opencontainers/distribution-spec/blob/v1.1.0/spec.md
 type OCIRegistryMirrorSource struct {
 	// resolveOCIRepositoryAddr represents this source's rule for mapping
-	// OpenTofu-style provider source addresses into OCI Distribution
+	// Bogform-style provider source addresses into OCI Distribution
 	// repository addresses, which include both the domain name (and
 	// optional port number) of the registry where the repository is
 	// hosted and the name of the repository within that registry.
@@ -92,7 +92,7 @@ type OCIRegistryMirrorSource struct {
 	// version.
 	//
 	// Implementers are responsible for somehow dealing with the fact
-	// that OpenTofu-style provider source addresses support a
+	// that Bogform-style provider source addresses support a
 	// considerably wider set of Unicode characters than OCI Distribution
 	// repository names do. That could mean either translating unsupported
 	// characters into a different representation, or as a last resort
@@ -162,7 +162,7 @@ func (o *OCIRegistryMirrorSource) AvailableVersions(ctx context.Context, provide
 	ctx, span := tracing.Tracer().Start(
 		ctx, "Get available versions from oci_mirror",
 		tracing.SpanAttributes(
-			traceattrs.OpenTofuProviderAddress(provider.String()),
+			traceattrs.BogformProviderAddress(provider.String()),
 		),
 	)
 	defer span.End()
@@ -277,9 +277,9 @@ func (o *OCIRegistryMirrorSource) PackageMeta(ctx context.Context, provider addr
 	ctx, span := tracing.Tracer().Start(
 		ctx, "Get metadata from oci_mirror",
 		tracing.SpanAttributes(
-			traceattrs.OpenTofuProviderAddress(provider.String()),
-			traceattrs.OpenTofuProviderVersion(version.String()),
-			traceattrs.OpenTofuTargetPlatform(target.String()),
+			traceattrs.BogformProviderAddress(provider.String()),
+			traceattrs.BogformProviderVersion(version.String()),
+			traceattrs.BogformTargetPlatform(target.String()),
 		),
 	)
 	defer span.End()
@@ -331,9 +331,9 @@ func (o *OCIRegistryMirrorSource) PackageMeta(ctx context.Context, provider addr
 	}
 
 	// The remainder of this is "step 5" from the overview above, adapting the information
-	// we fetched to suit OpenTofu's provider installer API.
+	// we fetched to suit Bogform's provider installer API.
 
-	// We'll announce the OpenTofu-style package hash that we're expecting as part of
+	// We'll announce the Bogform-style package hash that we're expecting as part of
 	// the metadata. This isn't strictly necessary since OCI blobs are content-addressed
 	// anyway and so we'll authenticate it using the same digest that identifies it
 	// during the subsequent fetch, but this makes this source consistent with
@@ -360,18 +360,18 @@ func (o *OCIRegistryMirrorSource) PackageMeta(ctx context.Context, provider addr
 		Authentication: authentication,
 
 		// "Filename" isn't really a meaningful concept in an OCI registry, but
-		// that's okay because we don't care very much about it in OpenTofu
+		// that's okay because we don't care very much about it in Bogform
 		// either and so we can just populate something plausible here. This
 		// matches the way the package would be named in a traditional
-		// OpenTofu provider network mirror.
+		// Bogform provider network mirror.
 		Filename: fmt.Sprintf("terraform-provider-%s_%s_%s_%s.zip", provider.Type, version, target.OS, target.Arch),
 
 		// TODO: Define an optional annotation that can announce which protocol
 		// versions are supported, so we can populate the ProtocolVersions
 		// field and can fail early if the provider clearly doesn't support
-		// any of the protocol versions that this OpenTofu version supports.
+		// any of the protocol versions that this Bogform version supports.
 		// Omitting this field is okay though, since some other mirror sources
-		// can't support it either: that just means that OpenTofu will discover
+		// can't support it either: that just means that Bogform will discover
 		// the compatibility problem only after executing the plugin, rather
 		// than when installing it.
 	}, nil
@@ -475,7 +475,7 @@ func fetchOCIDescriptorForVersion(ctx context.Context, version versions.Version,
 	ctx, span := tracing.Tracer().Start(
 		ctx, "Resolve reference",
 		tracing.SpanAttributes(
-			traceattrs.OpenTofuProviderVersion(version.String()),
+			traceattrs.BogformProviderVersion(version.String()),
 		),
 	)
 	defer span.End()
@@ -494,8 +494,8 @@ func fetchOCIDescriptorForVersion(ctx context.Context, version versions.Version,
 	}
 	span.SetAttributes(
 		traceattrs.OCIManifestDigest(desc.Digest.String()),
-		traceattrs.OpenTofuOCIReferenceTag(tagName),
-		traceattrs.OpenTofuOCIManifestMediaType(desc.MediaType),
+		traceattrs.BogformOCIReferenceTag(tagName),
+		traceattrs.BogformOCIManifestMediaType(desc.MediaType),
 	)
 	// Not all store implementations can return the manifest's artifact type as part
 	// of the tag-resolution response, so we'll check this early if we can, but
@@ -505,19 +505,19 @@ func fetchOCIDescriptorForVersion(ctx context.Context, version versions.Version,
 	// one way or another.)
 	if desc.ArtifactType != "" && desc.ArtifactType != ociIndexManifestArtifactType {
 		span.SetAttributes(
-			traceattrs.OpenTofuOCIManifestArtifactType(desc.ArtifactType),
+			traceattrs.BogformOCIManifestArtifactType(desc.ArtifactType),
 		)
 		switch desc.ArtifactType {
 		case "application/vnd.opentofu.provider-target":
 			// We'll get here for an incorrectly-constructed artifact layout where
 			// the tag refers directly to a specific platform's image manifest,
 			// rather than to the multi-platform index manifest.
-			return desc, prepErr(fmt.Errorf("tag refers directly to image manifest, but OpenTofu providers require an index manifest for multi-platform support"))
+			return desc, prepErr(fmt.Errorf("tag refers directly to image manifest, but Bogform providers require an index manifest for multi-platform support"))
 		case "application/vnd.opentofu.modulepkg":
 			// If this happens to be using our artifact type for module packages then
 			// we'll return a specialized error, since confusion between providers
-			// and modules is common for those new to OpenTofu terminology.
-			return desc, prepErr(fmt.Errorf("selected OCI artifact is an OpenTofu module package, not a provider package"))
+			// and modules is common for those new to Bogform terminology.
+			return desc, prepErr(fmt.Errorf("selected OCI artifact is a Bogform module package, not a provider package"))
 		default:
 			// For any other artifact type we'll just mention it in the error message
 			// and hope the reader can figure out what that artifact type represents.
@@ -546,7 +546,7 @@ func fetchOCIIndexManifest(ctx context.Context, desc ociv1.Descriptor, store OCI
 		ctx, "Fetch index manifest",
 		tracing.SpanAttributes(
 			traceattrs.OCIManifestDigest(desc.Digest.String()),
-			traceattrs.OpenTofuOCIManifestSize(desc.Size),
+			traceattrs.BogformOCIManifestSize(desc.Size),
 		),
 	)
 	defer span.End()
@@ -573,8 +573,8 @@ func fetchOCIIndexManifest(ctx context.Context, desc ociv1.Descriptor, store OCI
 		return nil, prepErr(fmt.Errorf("invalid manifest content: %w", err))
 	}
 	span.SetAttributes(
-		traceattrs.OpenTofuOCIManifestMediaType(manifest.MediaType),
-		traceattrs.OpenTofuOCIManifestArtifactType(manifest.ArtifactType),
+		traceattrs.BogformOCIManifestMediaType(manifest.MediaType),
+		traceattrs.BogformOCIManifestArtifactType(manifest.ArtifactType),
 	)
 
 	// Now we'll make sure that what we decoded seems vaguely sensible before we
@@ -589,7 +589,7 @@ func fetchOCIIndexManifest(ctx context.Context, desc ociv1.Descriptor, store OCI
 		return nil, prepErr(fmt.Errorf("unexpected artifact type %q", manifest.ArtifactType))
 	}
 	// We intentionally leave everything else loose so that we'll have flexibility
-	// to extend this format in backward-compatible ways in future OpenTofu versions.
+	// to extend this format in backward-compatible ways in future Bogform versions.
 	return &manifest, nil
 }
 
@@ -598,7 +598,7 @@ func fetchOCIImageManifest(ctx context.Context, desc ociv1.Descriptor, store OCI
 		ctx, "Fetch platform-specific manifest",
 		tracing.SpanAttributes(
 			traceattrs.OCIManifestDigest(desc.Digest.String()),
-			traceattrs.OpenTofuOCIManifestSize(desc.Size),
+			traceattrs.BogformOCIManifestSize(desc.Size),
 		),
 	)
 	defer span.End()
@@ -625,8 +625,8 @@ func fetchOCIImageManifest(ctx context.Context, desc ociv1.Descriptor, store OCI
 		return nil, prepErr(fmt.Errorf("invalid manifest content: %w", err))
 	}
 	span.SetAttributes(
-		traceattrs.OpenTofuOCIManifestMediaType(manifest.MediaType),
-		traceattrs.OpenTofuOCIManifestArtifactType(manifest.ArtifactType),
+		traceattrs.BogformOCIManifestMediaType(manifest.MediaType),
+		traceattrs.BogformOCIManifestArtifactType(manifest.ArtifactType),
 	)
 
 	// Now we'll make sure that what we decoded seems vaguely sensible before we
@@ -641,7 +641,7 @@ func fetchOCIImageManifest(ctx context.Context, desc ociv1.Descriptor, store OCI
 		return nil, prepErr(fmt.Errorf("unexpected artifact type %q", manifest.ArtifactType))
 	}
 	// We intentionally leave everything else loose so that we'll have flexibility
-	// to extend this format in backward-compatible ways in future OpenTofu versions.
+	// to extend this format in backward-compatible ways in future Bogform versions.
 	return &manifest, nil
 }
 
@@ -669,7 +669,7 @@ func selectOCIImageManifest(descs []ociv1.Descriptor, provider addrs.Provider, v
 			// We ignore manifests that aren't for the platform we're trying to match.
 			// We also ignore manifests that specify a specific OS version because we
 			// don't currently have any means to handle that, but we want to give
-			// future OpenTofu versions the option of treating that as a more specific
+			// future Bogform versions the option of treating that as a more specific
 			// match while leaving an OSVersion-free entry as a compatibility fallback.
 			foundWrongPlatform++
 			continue
@@ -705,7 +705,7 @@ func selectOCIImageManifest(descs []ociv1.Descriptor, provider addrs.Provider, v
 			// index manifest for a multi-platform container image, and so
 			// we'll bias toward that explanation in the error message but
 			// present it as a question to communicate that we're not sure.
-			return selected, fmt.Errorf("provider image manifest has unsupported artifact type; is this a container image, rather than an OpenTofu provider?")
+			return selected, fmt.Errorf("provider image manifest has unsupported artifact type; is this a container image, rather than a Bogform provider?")
 		}
 	}
 	if foundManifests > 1 {
@@ -722,9 +722,9 @@ func selectOCILayerBlob(descs []ociv1.Descriptor) (ociv1.Descriptor, error) {
 	for _, desc := range descs {
 		if desc.MediaType != ociPackageMediaType {
 			// We silently ignore any "layer" that doesn't have both our expected
-			// artifact type and media type so that future versions of OpenTofu
+			// artifact type and media type so that future versions of Bogform
 			// can potentially support additional archive formats, and so that
-			// artifact authors can include other non-OpenTofu-related layers
+			// artifact authors can include other non-Bogform-related layers
 			// in their manifests if needed... but we do still count them so that
 			// we can hint about it in an error message below.
 			foundWrongMediaTypeBlobs++
@@ -735,7 +735,7 @@ func selectOCILayerBlob(descs []ociv1.Descriptor) (ociv1.Descriptor, error) {
 	}
 	if foundBlobs == 0 {
 		if foundWrongMediaTypeBlobs > 0 {
-			return selected, fmt.Errorf("image manifest contains no layers of type %q, but has other unsupported formats; this OCI artifact might be intended for a different version of OpenTofu", ociPackageMediaType)
+			return selected, fmt.Errorf("image manifest contains no layers of type %q, but has other unsupported formats; this OCI artifact might be intended for a different version of Bogform", ociPackageMediaType)
 		}
 		return selected, fmt.Errorf("image manifest contains no layers of type %q", ociPackageMediaType)
 	}
@@ -750,7 +750,7 @@ func fetchOCIManifestBlob(ctx context.Context, desc ociv1.Descriptor, store OCIR
 	// We impose a size limit on the manifest just to avoid an abusive remote registry
 	// occupuing unbounded memory when we read the manifest content into memory below.
 	if (desc.Size / 1024 / 1024) > ociImageManifestSizeLimitMiB {
-		return nil, fmt.Errorf("manifest size exceeds OpenTofu's size limit of %d MiB", ociImageManifestSizeLimitMiB)
+		return nil, fmt.Errorf("manifest size exceeds Bogform's size limit of %d MiB", ociImageManifestSizeLimitMiB)
 	}
 
 	readCloser, err := store.Fetch(ctx, desc)

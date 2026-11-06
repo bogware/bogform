@@ -13,7 +13,7 @@ type Header struct {
 	Version int    `json:"version"`
 }
 
-// Input is the input data received from OpenTofu in response to the header as JSON.
+// Input is the input data received from Bogform in response to the header as JSON.
 type Input struct {
 	// Key is the encryption or decryption key, if present.
 	Key []byte `json:"key,omitempty"`

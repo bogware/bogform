@@ -127,13 +127,13 @@ func readState(src []byte) (*File, error) {
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				unsupportedFormat,
-				fmt.Sprintf("The state file uses format version %d, which is not supported by OpenTofu %s. This state file was created by OpenTofu %s.", version, thisVersion, creatingVersion),
+				fmt.Sprintf("The state file uses format version %d, which is not supported by Bogform %s. This state file was created by Bogform %s.", version, thisVersion, creatingVersion),
 			))
 		default:
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				unsupportedFormat,
-				fmt.Sprintf("The state file uses format version %d, which is not supported by OpenTofu %s. This state file may have been created by a newer version of OpenTofu.", version, thisVersion),
+				fmt.Sprintf("The state file uses format version %d, which is not supported by Bogform %s. This state file may have been created by a newer version of Bogform.", version, thisVersion),
 			))
 		}
 	}
@@ -205,7 +205,7 @@ func sniffJSONStateVersion(src []byte) (uint64, tfdiags.Diagnostics) {
 	return *sniff.Version, diags
 }
 
-// sniffJSONStateTerraformVersion attempts to sniff the OpenTofu version
+// sniffJSONStateTerraformVersion attempts to sniff the Bogform version
 // specification from the given state file source code. The result is either
 // a version string or an empty string if no version number could be extracted.
 //

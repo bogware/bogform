@@ -111,9 +111,9 @@ func BindView(cli *CommandLine, mask viewFlag) *View {
 
 	// SetGlobal here allows us to specify that the flag can be interspersed with positional arguments, something that the stdlib does *not* support.
 	cli.BoolVar(&v.NoColor, "no-color", false, "Disable virtual terminal escape sequences.").SetGlobal(true)
-	cli.BoolVar(&v.CompactWarnings, "compact-warnings", false, "If OpenTofu produces any warnings that are not accompanied by errors, shows them in a more compact form that includes only the summary messages.").SetGlobal(true)
-	cli.BoolVar(&v.ConsolidateWarnings, "consolidate-warnings", true, "If OpenTofu produces any warnings, no consolidation will be performed. All locations, for all warnings will be listed. Enabled by default.").SetDisplay("=false").SetGlobal(true)
-	cli.BoolVar(&v.ConsolidateErrors, "consolidate-errors", false, "If OpenTofu produces any errors, no consolidation will be performed. All locations, for all errors will be listed. Disabled by default.").SetGlobal(true)
+	cli.BoolVar(&v.CompactWarnings, "compact-warnings", false, "If Bogform produces any warnings that are not accompanied by errors, shows them in a more compact form that includes only the summary messages.").SetGlobal(true)
+	cli.BoolVar(&v.ConsolidateWarnings, "consolidate-warnings", true, "If Bogform produces any warnings, no consolidation will be performed. All locations, for all warnings will be listed. Enabled by default.").SetDisplay("=false").SetGlobal(true)
+	cli.BoolVar(&v.ConsolidateErrors, "consolidate-errors", false, "If Bogform produces any errors, no consolidation will be performed. All locations, for all errors will be listed. Disabled by default.").SetGlobal(true)
 	cli.BoolVar(&v.Concise, "concise", false, "Disable progress-related messages.").SetGlobal(true)
 
 	if mask&viewFlagSensitive != 0 {
@@ -121,7 +121,7 @@ func BindView(cli *CommandLine, mask viewFlag) *View {
 	}
 
 	var deprecation []string
-	cli.StringArrayVar(&deprecation, "deprecation", nil, `Specify what type of warnings are shown. Accepted values for "m": all, local, none. Default: all. When "all" is selected, OpenTofu will show the deprecation warnings for all modules. When "local" is selected, the warns will be shown only for the modules that are imported with a relative path. When "none" is selected, all the deprecation warnings will be dropped.`).SetDisplay("=module:m").SetGlobal(true)
+	cli.StringArrayVar(&deprecation, "deprecation", nil, `Specify what type of warnings are shown. Accepted values for "m": all, local, none. Default: all. When "all" is selected, Bogform will show the deprecation warnings for all modules. When "local" is selected, the warns will be shown only for the modules that are imported with a relative path. When "none" is selected, all the deprecation warnings will be dropped.`).SetDisplay("=module:m").SetGlobal(true)
 	var lint []string
 	if mask&viewFlagLint != 0 {
 		cli.StringArrayVar(&lint, "lint", nil, `Specify the linting rules to be executed. Wrongly formatted values are silently ignored.`).SetDisplay("=all").SetGlobal(true)

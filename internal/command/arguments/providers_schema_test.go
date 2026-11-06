@@ -34,7 +34,7 @@ func TestParseProvidersSchema_basicValidation(t *testing.T) {
 			wantDiags: true,
 			want:      providersSchemaArgsWithDefaults(nil),
 			wantContain: []string{
-				"The `tofu providers schema` command requires the `-json` flag.",
+				"The `bogform providers schema` command requires the `-json` flag.",
 			},
 		},
 		"one positional argument with json": {

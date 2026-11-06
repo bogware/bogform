@@ -119,29 +119,29 @@ func (v *BackendHuman) BackendTypeAlias(backendType, canonType string) {
 }
 
 func (v *BackendHuman) UnconfiguringBackendType(backendType string) {
-	_, _ = v.view.streams.Printf("OpenTofu has detected you're unconfiguring your previously set %q backend.\n", backendType)
+	_, _ = v.view.streams.Printf("Bogform has detected you're unconfiguring your previously set %q backend.\n", backendType)
 }
 
 func (v *BackendHuman) BackendTypeUnset(backendType string) {
-	msg := fmt.Sprintf("[reset][green]\n\nSuccessfully unset the backend %q. OpenTofu will now operate locally.", backendType)
+	msg := fmt.Sprintf("[reset][green]\n\nSuccessfully unset the backend %q. Bogform will now operate locally.", backendType)
 	_, _ = v.view.streams.Println(v.view.colorize.Color(msg))
 }
 
 func (v *BackendHuman) BackendTypeSet(backendType string) {
-	msg := fmt.Sprintf("[reset][green]\nSuccessfully configured the backend %q! OpenTofu will automatically\nuse this backend unless the backend configuration changes.", backendType)
+	msg := fmt.Sprintf("[reset][green]\nSuccessfully configured the backend %q! Bogform will automatically\nuse this backend unless the backend configuration changes.", backendType)
 	_, _ = v.view.streams.Println(v.view.colorize.Color(msg))
 }
 
 func (v *BackendHuman) BackendTypeChanged(oldBackendType string, newBackendType string) {
-	msg := fmt.Sprintf("[reset]\nOpenTofu detected that the backend type changed from %q to %q.", oldBackendType, newBackendType)
+	msg := fmt.Sprintf("[reset]\nBogform detected that the backend type changed from %q to %q.", oldBackendType, newBackendType)
 	_, _ = v.view.streams.Println(v.view.colorize.Color(msg))
 }
 
 func (v *BackendHuman) BackendReconfigured() {
 	const outputBackendReconfigure = `[reset][bold]Backend configuration changed![reset]
 
-OpenTofu has detected that the configuration specified for the backend
-has changed. OpenTofu will now check for existing state in the backends.`
+Bogform has detected that the configuration specified for the backend
+has changed. Bogform will now check for existing state in the backends.`
 	_, _ = v.view.streams.Println(v.view.colorize.Color(outputBackendReconfigure))
 }
 
@@ -177,25 +177,25 @@ func (v *BackendJSON) BackendTypeAlias(backendType, canonType string) {
 }
 
 func (v *BackendJSON) UnconfiguringBackendType(backendType string) {
-	v.view.Info(fmt.Sprintf("OpenTofu has detected you're unconfiguring your previously set %q backend", backendType))
+	v.view.Info(fmt.Sprintf("Bogform has detected you're unconfiguring your previously set %q backend", backendType))
 }
 
 func (v *BackendJSON) BackendTypeUnset(backendType string) {
-	v.view.Info(fmt.Sprintf("Successfully unset the backend %q. OpenTofu will now operate locally", backendType))
+	v.view.Info(fmt.Sprintf("Successfully unset the backend %q. Bogform will now operate locally", backendType))
 }
 
 func (v *BackendJSON) BackendTypeSet(backendType string) {
-	msg := fmt.Sprintf("Successfully configured the backend %q! OpenTofu will automatically use this backend unless the backend configuration changes", backendType)
+	msg := fmt.Sprintf("Successfully configured the backend %q! Bogform will automatically use this backend unless the backend configuration changes", backendType)
 	v.view.Info(msg)
 }
 
 func (v *BackendJSON) BackendTypeChanged(oldBackendType string, newBackendType string) {
-	msg := fmt.Sprintf("OpenTofu detected that the backend type changed from %q to %q.", oldBackendType, newBackendType)
+	msg := fmt.Sprintf("Bogform detected that the backend type changed from %q to %q.", oldBackendType, newBackendType)
 	v.view.Info(msg)
 }
 
 func (v *BackendJSON) BackendReconfigured() {
-	const msg = "Backend configuration changed! OpenTofu has detected that the configuration specified for the backend has changed. OpenTofu will now check for existing state in the backends"
+	const msg = "Backend configuration changed! Bogform has detected that the configuration specified for the backend has changed. Bogform will now check for existing state in the backends"
 	v.view.Info(msg)
 }
 

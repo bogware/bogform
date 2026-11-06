@@ -27,7 +27,7 @@ func BindProviders(cli *CommandLine) *Providers {
 		Vars: BindVars(cli),
 	}
 
-	cli.StringVar(&arguments.TestsDirectory, "test-directory", "tests", `Set the OpenTofu test directory, defaults to "tests". When set, the test command will search for test files in the current directory and in the one specified by the flag.`).SetDisplay("=path")
+	cli.StringVar(&arguments.TestsDirectory, "test-directory", "tests", `Set the Bogform test directory, defaults to "tests". When set, the test command will search for test files in the current directory and in the one specified by the flag.`).SetDisplay("=path")
 
 	return &arguments
 }

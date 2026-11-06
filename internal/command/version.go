@@ -24,8 +24,8 @@ import (
 func VersionCommander(version string, versionPrerelease string, platform getproviders.Platform) Command {
 	cmd := Command{
 		Name:  "version",
-		Short: "Show the current OpenTofu version",
-		Long:  `Displays the version of OpenTofu and all installed plugins`,
+		Short: "Show the current Bogform version",
+		Long:  `Displays the version of Bogform and all installed plugins`,
 
 		DiagsWithNewline: true,
 	}
@@ -55,11 +55,11 @@ type VersionCommand struct {
 func (c VersionCommand) Execute(view views.Version) int {
 	// We'll also attempt to print out the selected plugin versions. We do
 	// this based on the dependency lock file, and so the result might be
-	// empty or incomplete if the user hasn't successfully run "tofu init"
+	// empty or incomplete if the user hasn't successfully run "bogform init"
 	// since the most recent change to dependencies.
 	//
 	// Generally-speaking this is a best-effort thing that will give us a good
-	// result in the usual case where the user successfully ran "tofu init"
+	// result in the usual case where the user successfully ran "bogform init"
 	// and then hit a problem running _another_ command.
 	providerVersions := map[string]string{}
 	if locks, err := c.lockedDependencies(); err == nil {

@@ -47,7 +47,7 @@ func (t *OrphanResourceInstanceTransformer) Transform(_ context.Context, g *Grap
 		return nil
 	}
 	if t.Config == nil {
-		// Should never happen: we can't be doing any OpenTofu operations
+		// Should never happen: we can't be doing any Bogform operations
 		// without at least an empty configuration.
 		panic("OrphanResourceInstanceTransformer used without setting Config")
 	}

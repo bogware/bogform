@@ -39,7 +39,7 @@ func (p *planGlue) planDesiredDataResourceInstance(ctx context.Context, inst *ev
 		panic(fmt.Sprintf("no metadata available for desired object %s", inst.Addr))
 	}
 	// Data resource instances don't have meaningful prior state (we store it
-	// only for ancillary uses like the "tofu console" command) and so the
+	// only for ancillary uses like the "bogform console" command) and so the
 	// metadata is always exclusively from the configuration.
 	meta := exec.BuildResourceInstanceObjectMeta(inst.Addr.CurrentObject(), configMeta, (*states.ResourceInstanceObjectFullSrc)(nil))
 
@@ -82,7 +82,7 @@ func (p *planGlue) planDesiredDataResourceInstance(ctx context.Context, inst *ev
 
 	// The equivalent of "refreshing" a data resource is just to discard it
 	// completely, because we only retain the previous result in state snapshots
-	// to support unusual situations like "tofu console"; it's not expected that
+	// to support unusual situations like "bogform console"; it's not expected that
 	// data resource instances persist between rounds and they cannot because
 	// the protocol doesn't include any way to "upgrade" them if the provider
 	// schema has changed since previous round.
@@ -152,7 +152,7 @@ func (p *planGlue) planOrphanDataResourceInstance(_ context.Context, addr addrs.
 		Provider:           state.ProviderInstanceAddr.Config.Config.Provider,
 		PlaceholderValue:   cty.NullVal(cty.DynamicPseudoType),
 		// An orphan data object is always just discarded completely, because
-		// OpenTofu retains them only for esoteric uses like the "tofu console"
+		// Bogform retains them only for esoteric uses like the "bogform console"
 		// command: they are not actually expected to persist between rounds.
 		// Therefore upgrade and refresh state are not set
 	}, diags

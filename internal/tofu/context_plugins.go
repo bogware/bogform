@@ -80,7 +80,7 @@ func (cp *contextPlugins) ResourceTypeSchema(ctx context.Context, providerAddr a
 //
 // ProvisionerSchema memoizes results by provisioner type name, so it's fine
 // to repeatedly call this method with the same name if various different
-// parts of OpenTofu all need the same schema information.
+// parts of Bogform all need the same schema information.
 func (cp *contextPlugins) ProvisionerSchema(addr string) (*configschema.Block, error) {
 	return cp.provisioners.ProvisionerSchema(addr)
 }

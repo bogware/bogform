@@ -24,8 +24,8 @@ import (
 func ConsoleCommander() Command {
 	cmd := Command{
 		Name:  "console",
-		Short: "Try OpenTofu expressions at an interactive command prompt",
-		Long: `Starts an interactive console for experimenting with OpenTofu interpolations.
+		Short: "Try Bogform expressions at an interactive command prompt",
+		Long: `Starts an interactive console for experimenting with Bogform interpolations.
 
 This will open an interactive console that you can use to type interpolations into and inspect their values. This command loads the current state. This lets you explore and test interpolations before using them in future configurations.
 

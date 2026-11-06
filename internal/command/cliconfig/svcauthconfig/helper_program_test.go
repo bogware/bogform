@@ -21,7 +21,7 @@ func TestHelperProgramCredentialsSource(t *testing.T) {
 	// line and where bash is available. This is an assumption we inherited
 	// from our predecessor which we'd like to address someday, but for now
 	// we'll just skip this test unless we're on Linux or macOS since those
-	// are the two OSes most commonly used for OpenTofu development where
+	// are the two OSes most commonly used for Bogform development where
 	// we can expect this to work. (Other unixes could potentially work
 	// but we don't want to maintain a huge list here.)
 	if runtime.GOOS != "linux" && runtime.GOOS != "darwin" {

@@ -27,7 +27,7 @@ import (
 // We don't expose these marks outside of the "internal/lang/eval" family
 // of packages. The rest of the system only needs to know the relationships
 // between resource instances as a whole, because operations on entire
-// resource instances are our atomic unit of change as far as OpenTofu core
+// resource instances are our atomic unit of change as far as Bogform core
 // is concerned.
 
 // ResourceInstanceMark is a cty mark value used only internally within the
@@ -80,7 +80,7 @@ func ContributingResourceInstances(v cty.Value) iter.Seq[*ResourceInstance] {
 
 // PrepareOutgoingValue returns a modified version of the given value that
 // has been stripped of all of the marks we use internally to the evaluation
-// system, and so is ready to be sent to other parts of OpenTofu that aren't
+// system, and so is ready to be sent to other parts of Bogform that aren't
 // aware of these details.
 func PrepareOutgoingValue(v cty.Value) cty.Value {
 	// Currently our two kinds of special internal marks are this package's
@@ -117,7 +117,7 @@ func prepareResourceInstanceResult(resultVal cty.Value, thisRI *ResourceInstance
 // left intact.
 //
 // This MUST be used at any boundary between the eval system and the rest
-// of the OpenTofu codebase, because [ResourceInstanceMark] is an implementation
+// of the Bogform codebase, because [ResourceInstanceMark] is an implementation
 // detail of our evaluation strategy that the rest of the system does not
 // expect to encounter.
 func WithoutResourceInstanceMarks(v cty.Value) cty.Value {

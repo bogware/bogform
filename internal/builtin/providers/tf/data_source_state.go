@@ -59,7 +59,7 @@ func dataSourceRemoteStateGetSchema() providers.Schema {
 				},
 				"workspace": {
 					Type: cty.String,
-					Description: "The OpenTofu workspace to use, if " +
+					Description: "The Bogform workspace to use, if " +
 						"the backend supports workspaces.",
 					DescriptionKind: configschema.StringMarkdown,
 					Optional:        true,

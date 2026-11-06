@@ -187,7 +187,7 @@ func (r *Resource) PreventDestroy(ctx context.Context) (exprs.WithSourceRange[bo
 				Severity: hcl.DiagError,
 				Summary:  errSummary,
 				Detail: fmt.Sprintf(
-					"Resource instance %s has a sensitive value for its prevent_destroy argument, which is invalid because it would cause OpenTofu to disclose the sensitive value by whether deletion is blocked.\n\nIf you know this value is not sensitive in practice, consider using the nonsensitive function to declare that.",
+					"Resource instance %s has a sensitive value for its prevent_destroy argument, which is invalid because it would cause Bogform to disclose the sensitive value by whether deletion is blocked.\n\nIf you know this value is not sensitive in practice, consider using the nonsensitive function to declare that.",
 					r.Addr.String(),
 				),
 				Subject: rng.ToHCL().Ptr(),
@@ -214,7 +214,7 @@ func (r *Resource) PreventDestroy(ctx context.Context) (exprs.WithSourceRange[bo
 				Severity: hcl.DiagError,
 				Summary:  errSummary,
 				Detail: fmt.Sprintf(
-					"Resource instance %s has a prevent_destroy value derived from something that isn't allowed for deciding whether a resource instance may be destroyed (has internal mark %#v). The fact that OpenTofu cannot give more details about this is a bug, so please report it!",
+					"Resource instance %s has a prevent_destroy value derived from something that isn't allowed for deciding whether a resource instance may be destroyed (has internal mark %#v). The fact that Bogform cannot give more details about this is a bug, so please report it!",
 					r.Addr.String(), mark,
 				),
 				Subject: rng.ToHCL().Ptr(),
@@ -223,7 +223,7 @@ func (r *Resource) PreventDestroy(ctx context.Context) (exprs.WithSourceRange[bo
 	}
 	if preventDestroyVal.IsNull() {
 		// We could potentially treat null as equivalent to false here, matching
-		// how OpenTofu would behave if there were no expression present at all,
+		// how Bogform would behave if there were no expression present at all,
 		// but "false" is just as easy to specify as "null" in a conditional
 		// expression and doesn't require a reader to know what the default
 		// is, so we'll require that to make life easier for a future maintainer

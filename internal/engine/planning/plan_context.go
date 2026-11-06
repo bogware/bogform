@@ -221,8 +221,8 @@ func (p *planContext) managedResourceChangesBetweenUpgradeAndRefresh(ctx context
 		// We can detect three types of changes after refreshing state,
 		// only two of which are easily understood as "drift":
 		//
-		// - Resources which were deleted outside OpenTofu;
-		// - Resources where the object value has changed outside OpenTofu;
+		// - Resources which were deleted outside Bogform;
+		// - Resources where the object value has changed outside Bogform;
 		// - Resources which have been moved without other changes.
 		//
 		// All of these are returned as drift, to allow refresh-only plans

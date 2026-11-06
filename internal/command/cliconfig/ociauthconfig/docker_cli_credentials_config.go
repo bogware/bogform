@@ -90,7 +90,7 @@ func newDockerCLIStyleCredentialsConfig(src []byte, filename string) (Credential
 	// At this stage we just perform the JSON unmarshal step to confirm
 	// that the given file seems to be something sensible. We'll wait
 	// until we're actually asked a question before analyzing further,
-	// because most OpenTofu commands don't interact with OCI auth at
+	// because most Bogform commands don't interact with OCI auth at
 	// all so we'd be wasting our time if it isn't going to be used anyway.
 	ret := &dockerCLIStyleCredentialsConfig{
 		filename: filename,
@@ -197,7 +197,7 @@ type dockerCLIStyleAuth struct {
 // path prefix, preferring the most specific match. Docker-compatible configuration files can
 // therefore produce only either [NoCredentialsSpecificity] or [DomainCredentialsSpecificity] results.
 //
-// This is exported because OpenTofu's package cliconfig uses the same syntax and matching rules
+// This is exported because Bogform's package cliconfig uses the same syntax and matching rules
 // for its own "oci_credentials" blocks, implemented using this same function for consistency.
 func ContainersAuthPropertyNameMatch(authsPropertyName string, wantRegistryDomain, wantRepositoryPath string) CredentialsSpecificity {
 	if authsPropertyName == "" {
@@ -208,7 +208,7 @@ func ContainersAuthPropertyNameMatch(authsPropertyName string, wantRegistryDomai
 		var err error
 		gotDomain, gotRepositoryPath, err = ParseRepositoryAddressPrefix(authsPropertyName)
 		if err != nil {
-			// Since these Docker CLI-style config files are not exclusively for OpenTofu,
+			// Since these Docker CLI-style config files are not exclusively for Bogform,
 			// we just silently ignore a property whose name we can't make sense of
 			// in case a future version of this format adds something new that we
 			// don't yet support.

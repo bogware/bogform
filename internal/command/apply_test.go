@@ -583,7 +583,7 @@ result = foo
 	testStateOutput(t, statePath, expected)
 }
 
-// When only a partial set of the variables are set, OpenTofu
+// When only a partial set of the variables are set, Bogform
 // should still ask for the unset ones by default (with -input=true)
 func TestApply_inputPartial(t *testing.T) {
 	// Create a temporary working directory that is empty
@@ -1757,7 +1757,7 @@ output = default
 	testStateOutput(t, statePath, expected)
 }
 
-// Test that the OpenTofu env is passed through
+// Test that the Bogform env is passed through
 func TestApply_tofuWorkspace(t *testing.T) {
 	// Create a temporary working directory that is empty
 	td := t.TempDir()
@@ -1858,7 +1858,7 @@ output = test
 	testStateOutput(t, statePath, expected)
 }
 
-// Test that the OpenTofu env is passed through
+// Test that the Bogform env is passed through
 func TestApply_tofuWorkspaceNonDefault(t *testing.T) {
 	// Create a temporary working directory that is empty
 	td := t.TempDir()
@@ -2337,7 +2337,7 @@ func TestApply_warnings(t *testing.T) {
 		wantWarnings := []string{
 			"warning 1",
 			"warning 2",
-			"To see the full warning notes, run OpenTofu without -compact-warnings.",
+			"To see the full warning notes, run Bogform without -compact-warnings.",
 		}
 		for _, want := range wantWarnings {
 			if !strings.Contains(output.Stdout(), want) {
@@ -2509,7 +2509,7 @@ func applyFixtureSchema() *providers.GetProviderSchemaResponse {
 // operation with the configuration in testdata/apply. This mock has
 // GetSchemaResponse, PlanResourceChangeFn, and ApplyResourceChangeFn populated,
 // with the plan/apply steps just passing through the data determined by
-// OpenTofu Core.
+// Bogform Core.
 func applyFixtureProvider() *tofu.MockProvider {
 	p := testProvider()
 	p.GetProviderSchemaResponse = applyFixtureSchema()

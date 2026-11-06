@@ -55,7 +55,7 @@ func parseIPv4(s string) IP {
 		}
 		//
 		// NOTE: This correct check was added for go-1.17, but is a
-		// backwards-incompatible change for OpenTofu users, who might have
+		// backwards-incompatible change for Bogform users, who might have
 		// already written modules with leading zeroes.
 		//
 		//if c > 1 && s[0] == '0' {

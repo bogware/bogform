@@ -991,7 +991,7 @@ func TestRefresh_warnings(t *testing.T) {
 		wantWarnings := []string{
 			"warning 1",
 			"warning 2",
-			"To see the full warning notes, run OpenTofu without -compact-warnings.",
+			"To see the full warning notes, run Bogform without -compact-warnings.",
 		}
 		for _, want := range wantWarnings {
 			if !strings.Contains(output.Stdout(), want) {

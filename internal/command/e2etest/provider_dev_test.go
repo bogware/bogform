@@ -68,7 +68,7 @@ func TestProviderDevOverrides(t *testing.T) {
 		t.Errorf("configuration should depend on %s, but doesn't\n%s", want, got)
 	}
 
-	// NOTE: We're intentionally not running "tofu init" here, because
+	// NOTE: We're intentionally not running "bogform init" here, because
 	// dev overrides are always ready to use and don't need any special action
 	// to "install" them. This test is mimicking the a happy path of going
 	// directly from "go build" to validate/plan/apply without interacting

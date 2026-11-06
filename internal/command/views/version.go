@@ -73,7 +73,7 @@ func (v *VersionMixed) printJsonVersion(version string, versionPrerelease string
 }
 
 func (v *VersionMixed) printHumanVersion(version string, versionPrerelease string, platform string, fipsEnabled bool, providerVersions map[string]string, moduleVersions []ModuleVersion) bool {
-	formattedVersion := fmt.Sprintf("OpenTofu v%s", version)
+	formattedVersion := fmt.Sprintf("Bogform v%s", version)
 	if versionPrerelease != "" {
 		formattedVersion = fmt.Sprintf("%s-%s", formattedVersion, versionPrerelease)
 	}

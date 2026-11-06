@@ -92,7 +92,7 @@ func processSet(change structured.Change, process func(value structured.Change))
 		// we just treat all children of a relevant list or set as also
 		// relevant.
 		//
-		// Interestingly the tofu plan builder also agrees with this, and
+		// Interestingly the bogform plan builder also agrees with this, and
 		// never sets relevant attributes beneath lists or sets. We're just
 		// going to enforce this logic here as well. If the collection is
 		// relevant (decided elsewhere), then every element in the collection is

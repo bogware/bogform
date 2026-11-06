@@ -17,13 +17,13 @@ import (
 
 func TestVersion(t *testing.T) {
 	// Along with testing the "version" command in particular, this serves
-	// as a good smoke test for whether the OpenTofu binary can even be
+	// as a good smoke test for whether the Bogform binary can even be
 	// compiled and run, since it doesn't require any external network access
 	// to do its job.
 
 	t.Parallel()
 
-	// Although OpenTofu typically uses its own single quirky option style
+	// Although Bogform typically uses its own single quirky option style
 	// inherited from Go's "flag" package, for version in particular we have
 	// various aliases that resemble how other software tends to expose
 	// version information.
@@ -51,7 +51,7 @@ func TestVersion(t *testing.T) {
 				t.Errorf("unexpected stderr output:\n%s", stderr)
 			}
 
-			wantVersion := fmt.Sprintf("OpenTofu v%s", version.String())
+			wantVersion := fmt.Sprintf("Bogform v%s", version.String())
 			if !strings.Contains(stdout, wantVersion) {
 				t.Errorf("output does not contain our current version %q:\n%s", wantVersion, stdout)
 			}
@@ -84,7 +84,7 @@ func TestVersionWithProvider(t *testing.T) {
 			t.Errorf("unexpected stderr output:\n%s", stderr)
 		}
 
-		wantVersion := fmt.Sprintf("OpenTofu v%s", version.String())
+		wantVersion := fmt.Sprintf("Bogform v%s", version.String())
 		if !strings.Contains(stdout, wantVersion) {
 			t.Errorf("output does not contain our current version %q:\n%s", wantVersion, stdout)
 		}

@@ -31,7 +31,7 @@ func TestConsoleViews(t *testing.T) {
 					"@message": "Error: The configured backend doesn't support this operation",
 					"@module":  "tofu.ui",
 					"diagnostic": map[string]any{
-						"detail":   `The "backend" in OpenTofu defines how OpenTofu operates. The default backend performs all operations locally on your machine. Your configuration is configured to use a non-local backend. This backend doesn't support this operation.`,
+						"detail":   `The "backend" in Bogform defines how Bogform operates. The default backend performs all operations locally on your machine. Your configuration is configured to use a non-local backend. This backend doesn't support this operation.`,
 						"severity": "error",
 						"summary":  "The configured backend doesn't support this operation",
 					},
@@ -41,7 +41,7 @@ func TestConsoleViews(t *testing.T) {
 			wantStderr: `
 Error: The configured backend doesn't support this operation
 
-The "backend" in OpenTofu defines how OpenTofu operates. The default backend
+The "backend" in Bogform defines how Bogform operates. The default backend
 performs all operations locally on your machine. Your configuration is
 configured to use a non-local backend. This backend doesn't support this
 operation.

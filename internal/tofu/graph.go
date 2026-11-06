@@ -18,7 +18,7 @@ import (
 	"github.com/bogware/bogform/internal/tfdiags"
 )
 
-// Graph represents the graph that OpenTofu uses to represent resources
+// Graph represents the graph that Bogform uses to represent resources
 // and their dependencies.
 type Graph struct {
 	// Graph is the actual DAG. This is embedded so you can call the DAG
@@ -114,7 +114,7 @@ func (g *Graph) walk(ctx context.Context, walker GraphWalker, backupStateForPani
 					diags = diags.Append(tfdiags.Sourceless(
 						tfdiags.Error,
 						"Graph node has invalid dynamic subgraph",
-						fmt.Sprintf("The internal logic for %q generated an invalid dynamic subgraph: %s.\n\nThis is a bug in OpenTofu. Please report it!", dag.VertexName(v), err),
+						fmt.Sprintf("The internal logic for %q generated an invalid dynamic subgraph: %s.\n\nThis is a bug in Bogform. Please report it!", dag.VertexName(v), err),
 					))
 					return
 				}
@@ -125,7 +125,7 @@ func (g *Graph) walk(ctx context.Context, walker GraphWalker, backupStateForPani
 					diags = diags.Append(tfdiags.Sourceless(
 						tfdiags.Error,
 						"Graph node has invalid dynamic subgraph",
-						fmt.Sprintf("The internal logic for %q generated an invalid dynamic subgraph: the root node is %T, which is not a suitable root node type.\n\nThis is a bug in OpenTofu. Please report it!", dag.VertexName(v), n),
+						fmt.Sprintf("The internal logic for %q generated an invalid dynamic subgraph: the root node is %T, which is not a suitable root node type.\n\nThis is a bug in Bogform. Please report it!", dag.VertexName(v), n),
 					))
 					return
 				}

@@ -275,7 +275,7 @@ func (n *NodePlannableResourceInstance) managedResourceExecute(ctx context.Conte
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Import block target does not exist",
-				Detail:   "The target for the given import block does not exist. If you wish to automatically generate config for this resource, use the -generate-config-out option within tofu plan. Otherwise, make sure the target resource exists within your configuration. For example:\n\n  tofu plan -generate-config-out=generated.tf",
+				Detail:   "The target for the given import block does not exist. If you wish to automatically generate config for this resource, use the -generate-config-out option within bogform plan. Otherwise, make sure the target resource exists within your configuration. For example:\n\n  bogform plan -generate-config-out=generated.tf",
 				Subject:  n.importTarget.Config.DeclRange.Ptr(),
 			})
 		} else {
@@ -669,7 +669,7 @@ func (n *NodePlannableResourceInstance) importState(ctx context.Context, evalCtx
 					"the provider detected that no object exists with the given id or identity. "+
 					"Only pre-existing objects can be imported; check that the id or identity "+
 					"is correct and that it is associated with the provider's "+
-					"configured region or endpoint, or use \"tofu apply\" to "+
+					"configured region or endpoint, or use \"bogform apply\" to "+
 					"create a new remote object for this resource.",
 				n.Addr,
 			),

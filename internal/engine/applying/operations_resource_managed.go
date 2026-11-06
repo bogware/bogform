@@ -394,7 +394,7 @@ func (ops *execOperations) ManagedApply(
 					tfdiags.Error,
 					"Failed to restore deposed object",
 					fmt.Sprintf(
-						"Failed to restore %s deposed object %s as the current object after failing to create its replacement.\n\nThe next plan will propose to destroy this deposed object. This is a bug in OpenTofu.",
+						"Failed to restore %s deposed object %s as the current object after failing to create its replacement.\n\nThe next plan will propose to destroy this deposed object. This is a bug in Bogform.",
 						fallback.Addr.InstanceAddr, fallback.Addr.DeposedKey,
 					),
 				))
@@ -446,7 +446,7 @@ func (ops *execOperations) ManagedApply(
 						tfdiags.Error,
 						"Provider returned invalid result object after apply",
 						fmt.Sprintf(
-							"After the apply operation, the provider still indicated an unknown value for %s%s. All values must be known after apply, so this is always a bug in the provider and should be reported in the provider's own repository. OpenTofu will still save the other known object values in the state.",
+							"After the apply operation, the provider still indicated an unknown value for %s%s. All values must be known after apply, so this is always a bug in the provider and should be reported in the provider's own repository. Bogform will still save the other known object values in the state.",
 							plan.Addr, pathStr,
 						),
 					))
@@ -556,7 +556,7 @@ func (ops *execOperations) ManagedForget(
 			tfdiags.Error,
 			"Inconsistent request to forget object",
 			fmt.Sprintf(
-				"This plan calls for OpenTofu to \"forget\" %s, but also expects it to have a non-null final value. This is a bug in OpenTofu.",
+				"This plan calls for Bogform to \"forget\" %s, but also expects it to have a non-null final value. This is a bug in Bogform.",
 				plan.Addr,
 			),
 		))
@@ -603,7 +603,7 @@ func (ops *execOperations) ManagedForget(
 
 	ret := &exec.ResourceInstanceObject{
 		Addr:  plan.Addr,
-		State: nil, // because the object no longer exists as far as OpenTofu is concerned
+		State: nil, // because the object no longer exists as far as Bogform is concerned
 	}
 	return ret, diags
 }
@@ -622,7 +622,7 @@ func (ops *execOperations) ManagedPerformDepose(
 	if deletePlan == nil || deletePlan.Addr.IsCurrent() || !deletePlan.PlannedVal.IsNull() || !deletePlan.Addr.InstanceAddr.Equal(currentObj.Addr.InstanceAddr) {
 		// None of these situations should arise for a correct execution graph.
 		diags = diags.Append(fmt.Errorf(
-			"invalid delete plan for %s; this is a bug in OpenTofu",
+			"invalid delete plan for %s; this is a bug in Bogform",
 			currentObj.Addr.InstanceAddr,
 		))
 		return nil, diags
@@ -630,7 +630,7 @@ func (ops *execOperations) ManagedPerformDepose(
 	log.Printf("[TRACE] apply phase: ManagedPerformDepose %s as %s", currentObj.Addr, deletePlan.Addr.DeposedKey)
 	if currentObj.Addr.IsDeposed() {
 		diags = diags.Append(fmt.Errorf(
-			"attempting do depose %s when it's already deposed; this is a bug in OpenTofu",
+			"attempting do depose %s when it's already deposed; this is a bug in Bogform",
 			currentObj.Addr,
 		))
 		return nil, diags
@@ -687,7 +687,7 @@ func (ops *execOperations) ManagedChangeAddr(
 	// to destroy it.
 	if currentObj.Addr.IsDeposed() {
 		diags = diags.Append(fmt.Errorf(
-			"can't move %s to %s; this is a bug in OpenTofu",
+			"can't move %s to %s; this is a bug in Bogform",
 			currentObj.Addr, newAddr,
 		))
 		return nil, diags
@@ -700,7 +700,7 @@ func (ops *execOperations) ManagedChangeAddr(
 		// because currentObj being non-nil means that there should definitely
 		// be something to move.
 		diags = diags.Append(fmt.Errorf(
-			"failed to move %s to %s; this is a bug in OpenTofu",
+			"failed to move %s to %s; this is a bug in Bogform",
 			currentObj.Addr, newAddr,
 		))
 		return nil, diags

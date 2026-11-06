@@ -39,6 +39,6 @@ provider "registry.opentofu.org/-/null" { # ERROR: Invalid provider source addre
 }
 
 # Built-in providers are not allowed, because they are not versioned
-# independently of the OpenTofu CLI release they are embedded in.
+# independently of the Bogform CLI release they are embedded in.
 provider "terraform.io/builtin/foo" { # ERROR: Invalid provider source address
 }

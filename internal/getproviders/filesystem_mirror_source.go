@@ -64,7 +64,7 @@ func (s *FilesystemMirrorSource) AvailableVersions(ctx context.Context, provider
 	var warnings Warnings
 	if len(ret) > 0 && ret[0] == versions.Unspecified {
 		warning := fmt.Sprintf("Provider %s has an unspecified (0.0.0) version available in the filesystem mirror, source at %s. It will not be used. \n"+
-			"If the version 0.0.0 is intended to represent a non-published provider, consider using dev_overrides - https://opentofu.org/docs/cli/config/config-file/#development-overrides-for-provider-developers",
+			"If the version 0.0.0 is intended to represent a non-published provider, consider using dev_overrides - https://bogware.github.io/bogform/docs/cli/config/config-file/#development-overrides-for-provider-developers",
 			provider, s.baseDir)
 		warnings = append(warnings, warning)
 	}

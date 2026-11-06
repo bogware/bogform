@@ -55,11 +55,11 @@ Initializing the backend...
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu has detected you're unconfiguring your previously set \"s3\" backend",
+					"@message": "Bogform has detected you're unconfiguring your previously set \"s3\" backend",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: `OpenTofu has detected you're unconfiguring your previously set "s3" backend.
+			wantStdout: `Bogform has detected you're unconfiguring your previously set "s3" backend.
 `,
 		},
 		"backendTypeUnset": {
@@ -69,13 +69,13 @@ Initializing the backend...
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Successfully unset the backend \"s3\". OpenTofu will now operate locally",
+					"@message": "Successfully unset the backend \"s3\". Bogform will now operate locally",
 					"@module":  "tofu.ui",
 				},
 			},
 			wantStdout: `
 
-Successfully unset the backend "s3". OpenTofu will now operate locally.
+Successfully unset the backend "s3". Bogform will now operate locally.
 `,
 		},
 		"backendTypeSet": {
@@ -85,12 +85,12 @@ Successfully unset the backend "s3". OpenTofu will now operate locally.
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Successfully configured the backend \"s3\"! OpenTofu will automatically use this backend unless the backend configuration changes",
+					"@message": "Successfully configured the backend \"s3\"! Bogform will automatically use this backend unless the backend configuration changes",
 					"@module":  "tofu.ui",
 				},
 			},
 			wantStdout: `
-Successfully configured the backend "s3"! OpenTofu will automatically
+Successfully configured the backend "s3"! Bogform will automatically
 use this backend unless the backend configuration changes.
 `,
 		},
@@ -101,12 +101,12 @@ use this backend unless the backend configuration changes.
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu detected that the backend type changed from \"s3\" to \"gcs\".",
+					"@message": "Bogform detected that the backend type changed from \"s3\" to \"gcs\".",
 					"@module":  "tofu.ui",
 				},
 			},
 			wantStdout: `
-OpenTofu detected that the backend type changed from "s3" to "gcs".
+Bogform detected that the backend type changed from "s3" to "gcs".
 `,
 		},
 		"backendReconfigured": {
@@ -116,14 +116,14 @@ OpenTofu detected that the backend type changed from "s3" to "gcs".
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Backend configuration changed! OpenTofu has detected that the configuration specified for the backend has changed. OpenTofu will now check for existing state in the backends",
+					"@message": "Backend configuration changed! Bogform has detected that the configuration specified for the backend has changed. Bogform will now check for existing state in the backends",
 					"@module":  "tofu.ui",
 				},
 			},
 			wantStdout: `Backend configuration changed!
 
-OpenTofu has detected that the configuration specified for the backend
-has changed. OpenTofu will now check for existing state in the backends.
+Bogform has detected that the configuration specified for the backend
+has changed. Bogform will now check for existing state in the backends.
 `,
 		},
 		"migrationCompleted": {

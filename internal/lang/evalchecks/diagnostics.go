@@ -68,7 +68,7 @@ func commandLineArgumentsSuggestion(args []string, goos string) string {
 		// "WindowsArgvSplit" produces something that's compatible with
 		// the de-facto standard argument parsing implemented by Microsoft's
 		// Visual C++ runtime library, which the Go runtime mimics and
-		// is therefore the most likely to succeed for running OpenTofu.
+		// is therefore the most likely to succeed for running Bogform.
 		//
 		// Unfortunately running normal programs through PowerShell adds
 		// some additional quoting/escaping hazards which we don't attend

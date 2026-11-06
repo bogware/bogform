@@ -89,7 +89,7 @@ func (d *Diff) AddModule(path addrs.ModuleInstance) *ModuleDiff {
 	legacyPath := make([]string, len(path))
 	for i, step := range path {
 		if step.InstanceKey != addrs.NoKey {
-			// FIXME: Once the rest of OpenTofu is ready to use count and
+			// FIXME: Once the rest of Bogform is ready to use count and
 			// for_each, remove all of this and just write the addrs.ModuleInstance
 			// value itself into the ModuleState.
 			panic("diff cannot represent modules with count or for_each keys")
@@ -405,7 +405,7 @@ type InstanceDiff struct {
 	DestroyTainted bool
 
 	// Meta is a simple K/V map that is stored in a diff and persisted to
-	// plans but otherwise is completely ignored by OpenTofu core. It is
+	// plans but otherwise is completely ignored by Bogform core. It is
 	// meant to be used for additional data a resource may want to pass through.
 	// The value here must only contain Go primitives and collections.
 	Meta map[string]interface{}

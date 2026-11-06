@@ -28,7 +28,7 @@ resource "test_instance" "foo" {
 }
 
 module "child" {
-  # The single-module mode of "tofu show" is supposed to work without
+  # The single-module mode of "bogform show" is supposed to work without
   # installing any dependencies, so it's okay that this refers to
   # a fake location.
   source  = "example.com/not/actually/used"

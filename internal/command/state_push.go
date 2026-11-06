@@ -118,7 +118,7 @@ func (c StatePushCommand) Execute(args *arguments.StatePush, view views.State) i
 		return 1
 	}
 
-	// Check remote OpenTofu version is compatible
+	// Check remote Bogform version is compatible
 	remoteVersionDiags := c.remoteVersionCheck(b, workspace)
 	view.Diagnostics(remoteVersionDiags)
 	if remoteVersionDiags.HasErrors() {

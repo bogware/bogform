@@ -28,7 +28,7 @@ import (
 )
 
 // BuiltinEvalContext is an EvalContext implementation that is used by
-// OpenTofu by default.
+// Bogform by default.
 type BuiltinEvalContext struct {
 	// StopContext is the context used to track whether we're complete
 	StopContext context.Context

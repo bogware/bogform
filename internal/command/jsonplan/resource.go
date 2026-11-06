@@ -54,7 +54,7 @@ type Resource struct {
 	IdentitySchemaVersion *uint64 `json:"identity_schema_version,omitempty"`
 }
 
-// ResourceChange is a description of an individual change action that OpenTofu
+// ResourceChange is a description of an individual change action that Bogform
 // plans to use to move from the prior state to a new state matching the
 // configuration.
 type ResourceChange struct {

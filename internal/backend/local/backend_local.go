@@ -162,11 +162,11 @@ func (b *Local) localRunDirect(ctx context.Context, stopCtx context.Context, op 
 		case op.DependencyLocks == nil:
 			// If we get here then it suggests that there's a caller that we
 			// didn't yet update to populate DependencyLocks, which is a bug.
-			suggestion = "This run has no dependency lock information provided at all, which is a bug in OpenTofu; please report it!"
+			suggestion = "This run has no dependency lock information provided at all, which is a bug in Bogform; please report it!"
 		case op.DependencyLocks.Empty():
-			suggestion = "To make the initial dependency selections that will initialize the dependency lock file, run:\n  tofu init"
+			suggestion = "To make the initial dependency selections that will initialize the dependency lock file, run:\n  bogform init"
 		default:
-			suggestion = "To update the locked dependency selections to match a changed configuration, run:\n  tofu init -upgrade"
+			suggestion = "To update the locked dependency selections to match a changed configuration, run:\n  bogform init -upgrade"
 		}
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
@@ -418,7 +418,7 @@ func (b *Local) localRunForPlanFile(ctx context.Context, op *backend.Operation, 
 // additional elements as appropriate.
 //
 // Interactive prompting is a "best effort" thing for first-time user UX and
-// not something we expect folks to be relying on for routine use. OpenTofu
+// not something we expect folks to be relying on for routine use. Bogform
 // is primarily a non-interactive tool, and so we prefer to report in error
 // messages that variables are not set rather than reporting that input failed:
 // the primary resolution to missing variables is to provide them by some other
@@ -491,8 +491,8 @@ func (b *Local) interactiveCollectVariables(ctx context.Context, existing map[st
 //
 // This function should be used only in situations where variables values
 // will not be directly used and the variables map is being constructed only
-// to produce a complete OpenTofu context for some ancillary functionality
-// like "tofu console", "tofu state ...", etc.
+// to produce a complete Bogform context for some ancillary functionality
+// like "bogform console", "bogform state ...", etc.
 //
 // This function is guaranteed not to modify the given map, but it may return
 // the given map unchanged if no additions are required. If additions are

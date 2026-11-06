@@ -63,7 +63,7 @@ type moduleVersion struct {
 // "loader" is the configuration loader to use to traverse the module tree
 // of the configuration whose modules are being installed.
 //
-// "registryClient" is the client for the OpenTofu module registry protocol,
+// "registryClient" is the client for the Bogform module registry protocol,
 // used to fetch package metadata when installing remote modules indirectly
 // through a registry-style module source address. This may be nil only if
 // "remotePackageFetcher" is also nil, since registry source addresses are
@@ -72,7 +72,7 @@ type moduleVersion struct {
 // "remotePackageFetcher" is the client used for fetching actual module packages
 // from concrete physical source locations, which can be either specified
 // directly in the configuration or returned dynamically as part of the metadata
-// fetched from an OpenTofu module registry. This argument can be nil, in which
+// fetched from a Bogform module registry. This argument can be nil, in which
 // case no remote package sources are supported; this facility is included
 // primarily for unit testing where only local modules are needed.
 func NewModuleInstaller(modsDir string, loader configload.Loader, registryClient *registry.Client, remotePackageFetcher *getmodules.PackageFetcher) *ModuleInstaller {
@@ -88,7 +88,7 @@ func NewModuleInstaller(modsDir string, loader configload.Loader, registryClient
 
 // isSubDirNonExistent checks if the error is due to a non-existent subdirectory
 // within an otherwise valid module. This helps distinguish between a genuine
-// OpenTofu bug when failing to get the module and a user configuration error where they've specified a
+// Bogform bug when failing to get the module and a user configuration error where they've specified a
 // submodule path that doesn't exist.
 func isSubDirNonExistent(modDir string) (isNonExistent bool, missingDir string) {
 	modDir = filepath.Clean(modDir)
@@ -239,8 +239,8 @@ func (i *ModuleInstaller) moduleInstallWalker(_ context.Context, manifest modsdi
 			ctx, span := tracing.Tracer().Start(ctx,
 				fmt.Sprintf("Install Module %q", req.Name),
 				tracing.SpanAttributes(
-					traceattrs.OpenTofuModuleCallName(req.Name),
-					traceattrs.OpenTofuModuleSource(req.SourceAddr.String()),
+					traceattrs.BogformModuleCallName(req.Name),
+					traceattrs.BogformModuleSource(req.SourceAddr.String()),
 				),
 			)
 			defer func() {
@@ -304,7 +304,7 @@ func (i *ModuleInstaller) moduleInstallWalker(_ context.Context, manifest modsdi
 						Severity: hcl.DiagError,
 						Summary:  "Failed to remove local module cache",
 						Detail: fmt.Sprintf(
-							"OpenTofu tried to remove %s in order to reinstall this module, but encountered an error: %s",
+							"Bogform tried to remove %s in order to reinstall this module, but encountered an error: %s",
 							instPath, err,
 						),
 					})
@@ -422,8 +422,8 @@ func (i *ModuleInstaller) installLocalModule(ctx context.Context, req *configs.M
 	var diags hcl.Diagnostics
 
 	_, span := tracing.Tracer().Start(ctx, "Install Local Module", tracing.SpanAttributes(
-		traceattrs.OpenTofuModuleCallName(req.Name),
-		traceattrs.OpenTofuModuleSource(req.SourceAddr.String())),
+		traceattrs.BogformModuleCallName(req.Name),
+		traceattrs.BogformModuleSource(req.SourceAddr.String())),
 	)
 	defer span.End()
 
@@ -499,9 +499,9 @@ func (i *ModuleInstaller) installRegistryModule(ctx context.Context, req *config
 	var diags hcl.Diagnostics
 
 	ctx, span := tracing.Tracer().Start(ctx, "Install Registry Module", tracing.SpanAttributes(
-		traceattrs.OpenTofuModuleCallName(req.Name),
-		traceattrs.OpenTofuModuleSource(req.SourceAddr.String()),
-		traceattrs.OpenTofuModuleVersion(req.VersionConstraint.String()),
+		traceattrs.BogformModuleCallName(req.Name),
+		traceattrs.BogformModuleSource(req.SourceAddr.String()),
+		traceattrs.BogformModuleVersion(req.VersionConstraint.String()),
 	))
 	defer span.End()
 
@@ -579,7 +579,7 @@ func (i *ModuleInstaller) installRegistryModule(ctx context.Context, req *config
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Invalid response from remote module registry",
-			Detail:   fmt.Sprintf("The registry at %s returned an invalid response when OpenTofu requested available versions for module %q (%s:%d).", hostname, req.Name, req.CallRange.Filename, req.CallRange.Start.Line),
+			Detail:   fmt.Sprintf("The registry at %s returned an invalid response when Bogform requested available versions for module %q (%s:%d).", hostname, req.Name, req.CallRange.Filename, req.CallRange.Start.Line),
 			Subject:  req.CallRange.Ptr(),
 		})
 		return nil, nil, diags
@@ -598,7 +598,7 @@ func (i *ModuleInstaller) installRegistryModule(ctx context.Context, req *config
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagWarning,
 				Summary:  "Invalid response from remote module registry",
-				Detail:   fmt.Sprintf("The registry at %s returned an invalid version string %q for module %q (%s:%d), which OpenTofu ignored.", hostname, mv.Version, req.Name, req.CallRange.Filename, req.CallRange.Start.Line),
+				Detail:   fmt.Sprintf("The registry at %s returned an invalid version string %q for module %q (%s:%d), which Bogform ignored.", hostname, mv.Version, req.Name, req.CallRange.Filename, req.CallRange.Start.Line),
 				Subject:  req.CallRange.Ptr(),
 			})
 			continue
@@ -621,10 +621,10 @@ func (i *ModuleInstaller) installRegistryModule(ctx context.Context, req *config
 			//
 			// FIXME: Due to a historical implementation error, this is using the
 			// wrong version constraint parser: it's expecting npm/cargo-style
-			// syntax rather than the Ruby-style syntax OpenTofu otherwise
+			// syntax rather than the Ruby-style syntax Bogform otherwise
 			// uses. This should have been written to use
 			// versions.MeetingConstraintsStringRuby instead, but changing it
-			// now risks having OpenTofu select a prerelease in more situations
+			// now risks having Bogform select a prerelease in more situations
 			// than it did before, and so we need to understand the implications
 			// of that better before we improve this. For now that means that
 			// it's effectively disallowed to use anything other than a single
@@ -749,7 +749,7 @@ func (i *ModuleInstaller) installRegistryModule(ctx context.Context, req *config
 			tracing.SetSpanError(span, diags)
 			return nil, nil, diags
 		}
-		span.SetAttributes(traceattrs.OpenTofuModuleSource(packageLocation.UILabel()))
+		span.SetAttributes(traceattrs.BogformModuleSource(packageLocation.UILabel()))
 		i.registryPackageSources[moduleAddr] = packageLocation
 	}
 
@@ -781,7 +781,7 @@ func (i *ModuleInstaller) installRegistryModule(ctx context.Context, req *config
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Unsupported package location",
-			Detail:   fmt.Sprintf("Registry client returned a package location of type %T, which the module installer doesn't support. This is a bug in OpenTofu.", packageLocation),
+			Detail:   fmt.Sprintf("Registry client returned a package location of type %T, which the module installer doesn't support. This is a bug in Bogform.", packageLocation),
 		})
 		return nil, nil, diags
 	}
@@ -832,7 +832,7 @@ func (i *ModuleInstaller) installRegistryModule(ctx context.Context, req *config
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Unreadable module directory",
-				Detail:   fmt.Sprintf("The directory %s could not be read. This is a bug in OpenTofu and should be reported.", modDir),
+				Detail:   fmt.Sprintf("The directory %s could not be read. This is a bug in Bogform and should be reported.", modDir),
 			})
 		}
 	} else {
@@ -950,7 +950,7 @@ func (i *ModuleInstaller) installGoGetterModule(ctx context.Context, req *config
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Unreadable module directory",
-				Detail:   fmt.Sprintf("The directory %s could not be read. This is a bug in OpenTofu and should be reported.", modDir),
+				Detail:   fmt.Sprintf("The directory %s could not be read. This is a bug in Bogform and should be reported.", modDir),
 			})
 		}
 	} else {
@@ -1073,12 +1073,12 @@ func maybeImproveLocalInstallError(req *configs.ModuleRequest, diags hcl.Diagnos
 			// ...but we'll replace any errors with this more precise error.
 			var suggestion string
 			if strings.HasPrefix(packageAddr, "/") || filepath.VolumeName(packageAddr) != "" {
-				// It might be somewhat surprising that OpenTofu treats
+				// It might be somewhat surprising that Bogform treats
 				// absolute filesystem paths as "external" even though it
 				// treats relative paths as local, so if it seems like that's
 				// what the user was doing then we'll add an additional note
 				// about it.
-				suggestion = "\n\nOpenTofu treats absolute filesystem paths as external modules which establish a new module package. To treat this directory as part of the same package as its caller, use a local path starting with either \"./\" or \"../\"."
+				suggestion = "\n\nBogform treats absolute filesystem paths as external modules which establish a new module package. To treat this directory as part of the same package as its caller, use a local path starting with either \"./\" or \"../\"."
 			}
 			newDiags = newDiags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,

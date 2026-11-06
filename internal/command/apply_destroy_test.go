@@ -426,7 +426,7 @@ func TestApply_destroySkipInConfigAndState(t *testing.T) {
 		t.Fatalf("bad: %d\n\n%s", code, output.Stderr())
 	}
 
-	if !strings.Contains(output.Stderr(), "OpenTofu has not deleted some remote objects") {
+	if !strings.Contains(output.Stderr(), "Bogform has not deleted some remote objects") {
 		t.Fatalf("did not expect skip-destroy message in output:\n\n%s", output.Stderr())
 	}
 
@@ -635,7 +635,7 @@ func TestApply_destroySkipInStateOrphaned(t *testing.T) {
 		t.Fatalf("bad: %d\n\n%s", code, output.Stderr())
 	}
 
-	if !strings.Contains(output.Stderr(), "OpenTofu has not deleted some remote objects") {
+	if !strings.Contains(output.Stderr(), "Bogform has not deleted some remote objects") {
 		t.Fatalf("did not expect skip-destroy message in output:\n\n%s", output.Stderr())
 	}
 

@@ -7,7 +7,7 @@ package encryption
 
 import "context"
 
-// As early as possible, we store encryption in the context for use in obscure areas within OpenTofu
+// As early as possible, we store encryption in the context for use in obscure areas within Bogform
 
 type ctxEncryptionKey struct{}
 

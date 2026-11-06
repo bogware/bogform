@@ -892,7 +892,7 @@ func (t *ProviderConfigTransformer) transformSingle(g *Graph, c *configs.Config)
 			addNode("")
 
 			if t.Operation == walkValidate {
-				// Add a workaround for validating modules by running them as a root module in `tofu validate`
+				// Add a workaround for validating modules by running them as a root module in `bogform validate`
 				// See the discussion in https://github.com/opentofu/opentofu/issues/2862 for more details
 				for _, alias := range p.Aliases {
 					addNode(alias.Alias)

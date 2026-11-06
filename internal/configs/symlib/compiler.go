@@ -62,7 +62,7 @@ func onceValuer[V any](s scope, id ident, fn func(*workgraph.Worker) (V, hcl.Dia
 				// Copied from grapheval/diagnostics.go
 				reqDescs := make([]string, 0)
 				for _, reqID := range selfDep.RequestIDs {
-					desc := "<unknown object> (failing to report this is a bug in OpenTofu)"
+					desc := "<unknown object> (failing to report this is a bug in Bogform)"
 					if info, ok := s.getRequest(reqID); ok {
 						if info.src != nil {
 							desc = fmt.Sprintf("%s (%s)", info.name, info.src)

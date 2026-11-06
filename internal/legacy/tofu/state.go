@@ -50,7 +50,7 @@ var rootModulePath = []string{"root"}
 // have a redundant "root" label at the start of it) into an
 // addrs.ModuleInstance representing the same module.
 //
-// For legacy reasons, different parts of OpenTofu disagree about whether the
+// For legacy reasons, different parts of Bogform disagree about whether the
 // root module has the path []string{} or []string{"root"}, and so this
 // function accepts both and trims off the "root". An implication of this is
 // that it's not possible to actually have a module call in the root module
@@ -80,14 +80,14 @@ func normalizeModulePath(p []string) addrs.ModuleInstance {
 	return ret
 }
 
-// State keeps track of a snapshot state-of-the-world that OpenTofu
+// State keeps track of a snapshot state-of-the-world that Bogform
 // can use to keep track of what real world resources it is actually
 // managing.
 type State struct {
 	// Version is the state file protocol version.
 	Version int `json:"version"`
 
-	// TFVersion is the version of OpenTofu that wrote this state.
+	// TFVersion is the version of Bogform that wrote this state.
 	TFVersion string `json:"terraform_version,omitempty"`
 
 	// Serial is incremented on any operation that modifies
@@ -189,7 +189,7 @@ func (s *State) addModule(path addrs.ModuleInstance) *ModuleState {
 	legacyPath[0] = "root"
 	for i, step := range path {
 		if step.InstanceKey != addrs.NoKey {
-			// FIXME: Once the rest of OpenTofu is ready to use count and
+			// FIXME: Once the rest of Bogform is ready to use count and
 			// for_each, remove all of this and just write the addrs.ModuleInstance
 			// value itself into the ModuleState.
 			panic("state cannot represent modules with count or for_each keys")
@@ -284,8 +284,8 @@ func (s *State) IsRemote() bool {
 
 // Validate validates the integrity of this state file.
 //
-// Certain properties of the statefile are expected by OpenTofu in order
-// to behave properly. The core of OpenTofu will assume that once it
+// Certain properties of the statefile are expected by Bogform in order
+// to behave properly. The core of Bogform will assume that once it
 // receives a State structure that it has been validated. This validation
 // check should be called to ensure that.
 //
@@ -548,7 +548,7 @@ const (
 //
 // This is a simple check using the state's serial, and is thus only as
 // reliable as the serial itself. In the normal case, only one state
-// exists for a given combination of lineage/serial, but OpenTofu
+// exists for a given combination of lineage/serial, but Bogform
 // does not guarantee this and so the result of this method should be
 // used with care.
 //
@@ -618,7 +618,7 @@ func (s *State) DeepCopy() *State {
 	return copy.(*State)
 }
 
-// FromFutureTofu checks if this state was written by a OpenTofu
+// FromFutureTofu checks if this state was written by a Bogform
 // version from the future.
 func (s *State) FromFutureTofu() bool {
 	s.Lock()
@@ -986,12 +986,12 @@ type ModuleState struct {
 	// existing to remain intact. For example: an module may depend
 	// on a VPC ID given by an aws_vpc resource.
 	//
-	// OpenTofu uses this information to build valid destruction
+	// Bogform uses this information to build valid destruction
 	// orders and to warn the user if they're destroying a module that
 	// another resource depends on.
 	//
 	// Things can be put into this list that may not be managed by
-	// OpenTofu. If OpenTofu doesn't find a matching ID in the
+	// Bogform. If Bogform doesn't find a matching ID in the
 	// overall state, then it assumes it isn't managed and doesn't
 	// worry about it.
 	Dependencies []string `json:"depends_on"`
@@ -1431,7 +1431,7 @@ func ParseResourceStateKey(k string) (*ResourceStateKey, error) {
 // Extra is just extra data that a provider can return that we store
 // for later, but is not exposed in any way to the user.
 type ResourceState struct {
-	// This is filled in and managed by OpenTofu, and is the resource
+	// This is filled in and managed by Bogform, and is the resource
 	// type itself such as "mycloud_instance". If a resource provider sets
 	// this value, it won't be persisted.
 	Type string `json:"type"`
@@ -1441,12 +1441,12 @@ type ResourceState struct {
 	// depend on a subnet (which itself might depend on a VPC, and so
 	// on).
 	//
-	// OpenTofu uses this information to build valid destruction
+	// Bogform uses this information to build valid destruction
 	// orders and to warn the user if they're destroying a resource that
 	// another resource depends on.
 	//
 	// Things can be put into this list that may not be managed by
-	// OpenTofu. If OpenTofu doesn't find a matching ID in the
+	// Bogform. If Bogform doesn't find a matching ID in the
 	// overall state, then it assumes it isn't managed and doesn't
 	// worry about it.
 	Dependencies []string `json:"depends_on"`
@@ -1618,23 +1618,23 @@ func (s *ResourceState) String() string {
 // InstanceState is used to track the unique state information belonging
 // to a given instance.
 type InstanceState struct {
-	// A unique ID for this resource. This is opaque to OpenTofu
+	// A unique ID for this resource. This is opaque to Bogform
 	// and is only meant as a lookup mechanism for the providers.
 	ID string `json:"id"`
 
 	mu sync.Mutex
 	// Attributes are basic information about the resource. Any keys here
-	// are accessible in variable format within OpenTofu configurations:
+	// are accessible in variable format within Bogform configurations:
 	// ${resourcetype.name.attribute}.
 	Attributes map[string]string `json:"attributes"`
 
 	// Ephemeral is used to store any state associated with this instance
-	// that is necessary for the OpenTofu run to complete, but is not
+	// that is necessary for the Bogform run to complete, but is not
 	// persisted to a state file.
 	Ephemeral EphemeralState `json:"-"`
 
 	// Meta is a simple K/V map that is persisted to the State but otherwise
-	// ignored by OpenTofu core. It's meant to be used for accounting by
+	// ignored by Bogform core. It's meant to be used for accounting by
 	// external client code. The value here must only contain Go primitives
 	// and collections.
 	Meta map[string]interface{} `json:"meta"`
@@ -2012,7 +2012,7 @@ func ReadState(src io.Reader) (*State, error) {
 
 		result = v3State
 	default:
-		return nil, fmt.Errorf("OpenTofu %s does not support state version %d, please update.",
+		return nil, fmt.Errorf("Bogform %s does not support state version %d, please update.",
 			tfversion.SemVer.String(), versionIdentifier.Version)
 	}
 
@@ -2056,7 +2056,7 @@ func ReadStateV2(jsonBytes []byte) (*State, error) {
 	// Check the version, this to ensure we don't read a future
 	// version that we don't understand
 	if state.Version > StateVersion {
-		return nil, fmt.Errorf("OpenTofu %s does not support state version %d, please update.",
+		return nil, fmt.Errorf("Bogform %s does not support state version %d, please update.",
 			tfversion.SemVer.String(), state.Version)
 	}
 
@@ -2065,9 +2065,9 @@ func ReadStateV2(jsonBytes []byte) (*State, error) {
 		if _, err := version.NewVersion(state.TFVersion); err != nil {
 			return nil, fmt.Errorf(
 				"State contains invalid version: %s\n\n"+
-					"OpenTofu validates the version format prior to writing it. This\n"+
+					"Bogform validates the version format prior to writing it. This\n"+
 					"means that this is invalid of the state becoming corrupted through\n"+
-					"some external means. Please manually modify the OpenTofu version\n"+
+					"some external means. Please manually modify the Bogform version\n"+
 					"field to be a proper semantic version.",
 				state.TFVersion)
 		}
@@ -2091,7 +2091,7 @@ func ReadStateV3(jsonBytes []byte) (*State, error) {
 	// Check the version, this to ensure we don't read a future
 	// version that we don't understand
 	if state.Version > StateVersion {
-		return nil, fmt.Errorf("OpenTofu %s does not support state version %d, please update.",
+		return nil, fmt.Errorf("Bogform %s does not support state version %d, please update.",
 			tfversion.SemVer.String(), state.Version)
 	}
 
@@ -2100,9 +2100,9 @@ func ReadStateV3(jsonBytes []byte) (*State, error) {
 		if _, err := version.NewVersion(state.TFVersion); err != nil {
 			return nil, fmt.Errorf(
 				"State contains invalid version: %s\n\n"+
-					"OpenTofu validates the version format prior to writing it. This\n"+
+					"Bogform validates the version format prior to writing it. This\n"+
 					"means that this is invalid of the state becoming corrupted through\n"+
-					"some external means. Please manually modify the OpenTofu version\n"+
+					"some external means. Please manually modify the Bogform version\n"+
 					"field to be a proper semantic version.",
 				state.TFVersion)
 		}
@@ -2154,7 +2154,7 @@ func WriteState(d *State, dst io.Writer) error {
 		if _, err := version.NewVersion(d.TFVersion); err != nil {
 			return fmt.Errorf(
 				"Error writing state, invalid version: %s\n\n"+
-					"The OpenTofu version when writing the state must be a semantic\n"+
+					"The Bogform version when writing the state must be a semantic\n"+
 					"version.",
 				d.TFVersion)
 		}
@@ -2252,7 +2252,7 @@ const stateValidateErrMultiModule = `
 Multiple modules with the same path: %s
 
 This means that there are multiple entries in the "modules" field
-in your state file that point to the same module. This will cause OpenTofu
+in your state file that point to the same module. This will cause Bogform
 to behave in unexpected and error prone ways and is invalid. Please back up
 and modify your state file manually to resolve this.
 `

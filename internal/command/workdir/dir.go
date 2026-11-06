@@ -22,7 +22,7 @@ const (
 	modulesDir = "modules"
 )
 
-// Dir represents a single OpenTofu working directory.
+// Dir represents a single Bogform working directory.
 //
 // "Working directory" is unfortunately a slight misnomer, because non-default
 // options can potentially stretch the definition such that multiple working
@@ -49,13 +49,13 @@ const (
 type Dir struct {
 	// mainDir is the path to the directory that we present as the
 	// "working directory" in the user model, which is typically the
-	// current working directory when running OpenTofu CLI, or the
+	// current working directory when running Bogform CLI, or the
 	// directory explicitly chosen by the user using the -chdir=...
 	// global option.
 	mainDir string
 
 	// originalDir is the path to the working directory that was
-	// selected when creating the OpenTofu CLI process, regardless of
+	// selected when creating the Bogform CLI process, regardless of
 	// -chdir=... being set. This is only for very limited purposes
 	// related to backward compatibility; most functionality should
 	// use mainDir instead.
@@ -75,7 +75,7 @@ type Dir struct {
 // NewWorkdir returns a [*Dir] instance configured with the following:
 //   - mainDir that is the current working directory or the directory indicated by -chdir flag.
 //   - originalDir that is the directory that the program was executed from. If no -chdir value provided, this equals mainDir.
-//   - dataDir is the directory where tofu stores it's per-run-configuration, generally .terraform. This can be configured
+//   - dataDir is the directory where bogform stores it's per-run-configuration, generally .terraform. This can be configured
 //     by using the TF_DATA_DIR env var.
 //
 // It gets the args that the program has been executed with, extracts the -chdir flag from it and applies it if
@@ -149,7 +149,7 @@ func NewDir(mainPath string) *Dir {
 // OverrideOriginalWorkingDir records a different path as the
 // "original working directory" for the receiver.
 //
-// Use this only to record the original working directory when OpenTofu is run
+// Use this only to record the original working directory when Bogform is run
 // with the -chdir=... global option. In that case, the directory given in
 // -chdir=... is the "main path" to pass in to NewDir, while the original
 // working directory should be sent to this method.
@@ -184,10 +184,10 @@ func (d *Dir) RootModuleDir() string {
 }
 
 // OriginalWorkingDir returns the true, operating-system-originated working
-// directory that the current OpenTofu process was launched from.
+// directory that the current Bogform process was launched from.
 //
 // This is usually the same as the main working directory, but differs in the
-// special case where the user ran OpenTofu with the global -chdir=...
+// special case where the user ran Bogform with the global -chdir=...
 // option. This is here only for a few backward compatibility affordances
 // from before we had the -chdir=... option, so should typically not be used
 // for anything new.
@@ -218,7 +218,7 @@ func (d *Dir) ModulesDir() string {
 //
 // For directories that already exist ensureDataDir will preserve their
 // permissions, while it'll create any new directories to be owned by the user
-// running OpenTofu, readable and writable by that user, and readable by
+// running Bogform, readable and writable by that user, and readable by
 // all other users, or some approximation of that on non-Unix platforms which
 // have a different permissions model.
 func (d *Dir) ensureDataDir() error {

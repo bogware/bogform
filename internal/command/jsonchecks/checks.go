@@ -72,7 +72,7 @@ func MarshalCheckStates(results *states.CheckResults) []byte {
 // checkResultStatic is the container for the static, configuration-driven
 // idea of "checkable object" -- a resource block with conditions, for example --
 // which ensures that we can always say _something_ about each checkable
-// object in the configuration even if OpenTofu Core encountered an error
+// object in the configuration even if Bogform Core encountered an error
 // before being able to determine the dynamic instances of the checkable object.
 type checkResultStatic struct {
 	// Address is the address of the checkable object this result relates to.
@@ -88,7 +88,7 @@ type checkResultStatic struct {
 }
 
 // checkResultDynamic describes the check result for a dynamic object, which
-// results from OpenTofu Core evaluating the "expansion" (e.g. count or for_each)
+// results from Bogform Core evaluating the "expansion" (e.g. count or for_each)
 // of the containing object or its own containing module(s).
 type checkResultDynamic struct {
 	// Address augments the Address of the containing checkResultStatic with
@@ -101,7 +101,7 @@ type checkResultDynamic struct {
 	// Problems describes some optional details associated with a failure
 	// status, describing what fails.
 	//
-	// This does not include the errors for status "error", because OpenTofu
+	// This does not include the errors for status "error", because Bogform
 	// Core emits those separately as normal diagnostics. However, if a
 	// particular object has a mixture of conditions that failed and conditions
 	// that were invalid then status can be "error" while simultaneously

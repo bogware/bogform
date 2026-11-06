@@ -20,7 +20,7 @@ type Validate struct {
 	// Path.
 	TestDirectory string
 
-	// NoTests indicates that OpenTofu should not validate any test files
+	// NoTests indicates that Bogform should not validate any test files
 	// included with the module.
 	NoTests bool
 
@@ -37,8 +37,8 @@ func BindValidate(cli *CommandLine) *Validate {
 		Vars: BindVars(cli),
 	}
 
-	cli.StringVar(&validate.TestDirectory, "test-directory", "tests", `Set the OpenTofu test directory, defaults to "tests". When set, the test command will search for test files in the current directory and in the one specified by the flag.`).SetDisplay("=path")
-	cli.BoolVar(&validate.NoTests, "no-tests", false, "If specified, OpenTofu will not validate test files.")
+	cli.StringVar(&validate.TestDirectory, "test-directory", "tests", `Set the Bogform test directory, defaults to "tests". When set, the test command will search for test files in the current directory and in the one specified by the flag.`).SetDisplay("=path")
+	cli.BoolVar(&validate.NoTests, "no-tests", false, "If specified, Bogform will not validate test files.")
 
 	validate.Path = "."
 	cli.PositionalArg(&validate.Path, "path", true)

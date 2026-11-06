@@ -18,7 +18,7 @@ type Header struct {
 	Version int `json:"version"`
 }
 
-// InputV1 is an encryption/decryption request from OpenTofu to the external method. OpenTofu writes this message
+// InputV1 is an encryption/decryption request from Bogform to the external method. Bogform writes this message
 // to the standard input of the external method as a JSON message.
 type InputV1 struct {
 	// Key is the encryption or decryption key for this operation. On the wire, this is base64-encoded. If no key is

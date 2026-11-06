@@ -14,7 +14,7 @@ import (
 	"github.com/bogware/bogform/internal/e2e"
 )
 
-func TestOpenTofuProviderData(t *testing.T) {
+func TestBogformProviderData(t *testing.T) {
 
 	fixturePath := filepath.Join("testdata", "tofu-managed-data")
 	tf := e2e.NewBinary(t, tofuBin, fixturePath)

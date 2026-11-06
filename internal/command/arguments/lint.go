@@ -23,7 +23,7 @@ import (
 // which will translate to "include rule1 and rule2" and "exclude rule3 and rule4".
 //
 // Any parsing failure will be only logged. Due to the nature of the linting feature, we want to be
-// permissive in this layer since migrating from one OpenTofu version to another some rules might be
+// permissive in this layer since migrating from one Bogform version to another some rules might be
 // changed or removed which should not break the existing operators configuration.
 //
 // This function allows for the same rule to be included and excluded but will warn about it. Due to the

@@ -740,7 +740,7 @@ func (b *Backend) Configure(ctx context.Context, obj cty.Value) tfdiags.Diagnost
 
 	cfg := &awsbase.Config{
 		AccessKey:               stringAttr(obj, "access_key"),
-		CallerDocumentationURL:  "https://opentofu.org/docs/language/settings/backends/s3",
+		CallerDocumentationURL:  "https://bogware.github.io/bogform/docs/language/settings/backends/s3",
 		CallerName:              "S3 Backend",
 		IamEndpoint:             customEndpoints["iam"].String(obj),
 		MaxRetries:              intAttrDefault(obj, "max_retries", 5),
@@ -764,7 +764,7 @@ func (b *Backend) Configure(ctx context.Context, obj cty.Value) tfdiags.Diagnost
 		UseDualStackEndpoint: boolAttr(obj, "use_dualstack_endpoint"),
 		UseFIPSEndpoint:      boolAttr(obj, "use_fips_endpoint"),
 		APNInfo: &awsbase.APNInfo{
-			PartnerName: "OpenTofu-S3-Backend",
+			PartnerName: "Bogform-S3-Backend",
 			Products: []awsbase.UserAgentProduct{
 				{Name: httpclient.DefaultApplicationName, Version: version.String()},
 			},

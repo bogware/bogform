@@ -1,4 +1,4 @@
-# This file is maintained automatically by "tofu init".
+# This file is maintained automatically by "bogform init".
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/hashicorp/tfcoremocka" {

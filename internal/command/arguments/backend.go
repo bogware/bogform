@@ -11,7 +11,7 @@ import (
 
 type Backend struct {
 	// IgnoreRemoteVersion is used with commands which write state to allow users to write remote
-	// state even if the remote and local OpenTofu versions don't match.
+	// state even if the remote and local Bogform versions don't match.
 	IgnoreRemoteVersion bool
 	// ForceInitCopy suppresses confirmation for copying state data during init.
 	ForceInitCopy bool
@@ -24,7 +24,7 @@ type Backend struct {
 func BindBackend(cli *CommandLine) *Backend {
 	var b Backend
 	cli.Backend = &b
-	cli.BoolVar(&b.IgnoreRemoteVersion, "ignore-remote-version", false, "A rare option used for the remote backend only. See the remote backend documentation for more information.")
+	cli.BoolVar(&b.IgnoreRemoteVersion, "ignore-remote-version", false, "Accepted for compatibility. This option has no effect.")
 	return &b
 }
 

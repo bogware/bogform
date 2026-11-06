@@ -99,13 +99,13 @@ func commandMain(
 			config.RegistryProtocols,
 			services,
 			config.OCICredentialsPolicy,
-			wd.RootModuleDir(), // this has to be the directory that tofu has been executed from, not the one after -chdir
+			wd.RootModuleDir(), // this has to be the directory that bogform has been executed from, not the one after -chdir
 		)
 		if len(diags) > 0 {
 			rv.Error("There are some problems with the provider_installation configuration:")
 			rv.Diagnostics(diags)
 			if diags.HasErrors() {
-				rv.Error("As a result of the above problems, OpenTofu's provider installer may not behave as intended.\n\n")
+				rv.Error("As a result of the above problems, Bogform's provider installer may not behave as intended.\n\n")
 				// We continue to run anyway, because most commands don't do provider installation.
 			}
 		}
@@ -190,7 +190,7 @@ func commandToCli(namespace string, cmd command.Command, meta func() (command.Me
 			if suggestion != "" {
 				suggestion = fmt.Sprintf(" Did you mean %q?", suggestion)
 			}
-			fmt.Fprintf(os.Stderr, "OpenTofu has no command named %q.%s\n\nTo see all of OpenTofu's top-level commands, run:\n  tofu -help\n\n", given, suggestion)
+			fmt.Fprintf(os.Stderr, "Bogform has no command named %q.%s\n\nTo see all of Bogform's top-level commands, run:\n  bogform -help\n\n", given, suggestion)
 			os.Exit(1)
 		}
 

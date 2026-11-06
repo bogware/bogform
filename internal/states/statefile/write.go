@@ -15,7 +15,7 @@ import (
 // Write writes the given state to the given writer in the current state
 // serialization format.
 func Write(s *File, w io.Writer, enc encryption.StateEncryption) error {
-	// Always record the current tofu version in the state.
+	// Always record the current bogform version in the state.
 	s.TerraformVersion = tfversion.SemVer
 
 	diags := writeStateV4(s, w, enc, false)
@@ -23,7 +23,7 @@ func Write(s *File, w io.Writer, enc encryption.StateEncryption) error {
 }
 
 func WriteIndent(s *File, w io.Writer, enc encryption.StateEncryption) error {
-	// Always record the current tofu version in the state.
+	// Always record the current bogform version in the state.
 	s.TerraformVersion = tfversion.SemVer
 
 	diags := writeStateV4(s, w, enc, true)
@@ -31,7 +31,7 @@ func WriteIndent(s *File, w io.Writer, enc encryption.StateEncryption) error {
 }
 
 // WriteForTest writes the given state to the given writer in the current state
-// serialization format without recording the current tofu version. This is
+// serialization format without recording the current bogform version. This is
 // intended for use in tests that need to override the current tofu
 // version.
 func WriteForTest(s *File, w io.Writer) error {

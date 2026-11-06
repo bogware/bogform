@@ -40,7 +40,7 @@ type ProviderInstallation struct {
 	// This is _not_ intended for "production" use because it bypasses the
 	// usual version selection and checksum verification mechanisms for
 	// the providers in question. To make that intent/effect clearer, some
-	// OpenTofu commands emit warnings when overrides are present. Local
+	// Bogform commands emit warnings when overrides are present. Local
 	// mirror directories are a better way to distribute "released"
 	// providers, because they are still subject to version constraints and
 	// checksum verification.
@@ -645,10 +645,10 @@ func (i ProviderInstallationNetworkMirror) GoString() string {
 // provider network mirror.
 //
 // This is conceptualy similar to [ProviderInstallationNetworkMirror], but
-// this on uses the OCI Distribution protocol instead of the OpenTofu-specific
+// this on uses the OCI Distribution protocol instead of the Bogform-specific
 // Provider Mirror Protocol.
 type ProviderInstallationOCIMirror struct {
-	// RepositoryMapping is a function that translates from an OpenTofu-style
+	// RepositoryMapping is a function that translates from a Bogform-style
 	// logical provider source address to a physical OCI repository address.
 	//
 	// For a valid OCI mirror source this function encapsulates the details

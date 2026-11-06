@@ -13,7 +13,7 @@ import (
 	"github.com/bogware/bogform/internal/states"
 )
 
-// Changes describes various actions that OpenTofu will attempt to take if
+// Changes describes various actions that Bogform will attempt to take if
 // the corresponding plan is applied.
 //
 // A Changes object can be rendered into a visual diff (by the caller, using
@@ -265,7 +265,7 @@ type ResourceInstanceChange struct {
 	RequiredReplace cty.PathSet
 
 	// Private allows a provider to stash any extra data that is opaque to
-	// OpenTofu that relates to this change. OpenTofu will save this
+	// Bogform that relates to this change. Bogform will save this
 	// byte-for-byte and return it to the provider in the apply call.
 	Private []byte
 }
@@ -302,7 +302,7 @@ func (rc *ResourceInstanceChange) Moved() bool {
 
 // Simplify will, where possible, produce a change with a simpler action than
 // the receiver given a flag indicating whether the caller is dealing with
-// a normal apply or a destroy. This flag deals with the fact that OpenTofu
+// a normal apply or a destroy. This flag deals with the fact that Bogform
 // Core uses a specialized graph node type for destroying; only that
 // specialized node should set "destroying" to true.
 //

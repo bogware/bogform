@@ -202,7 +202,7 @@ func (ri *ResourceInstance) ReplaceOrder(ctx context.Context) (exprs.FromValue[r
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  errSummary,
-			Detail:   "The create_before_destroy value must not be derived from a sensitive value, because otherwise OpenTofu's proposed changes could imply the sensitive value.\n\nIf you're certain that this result cannot disclose sensitive information, consider using the \"nonsensitive\" function to explicitly allow it.",
+			Detail:   "The create_before_destroy value must not be derived from a sensitive value, because otherwise Bogform's proposed changes could imply the sensitive value.\n\nIf you're certain that this result cannot disclose sensitive information, consider using the \"nonsensitive\" function to explicitly allow it.",
 			Subject:  rng.ToHCL().Ptr(),
 		})
 	}

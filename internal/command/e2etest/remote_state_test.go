@@ -12,8 +12,8 @@ import (
 	"github.com/bogware/bogform/internal/e2e"
 )
 
-func TestOpenTofuProviderRead(t *testing.T) {
-	// Ensure the tofu provider can correctly read a remote state
+func TestBogformProviderRead(t *testing.T) {
+	// Ensure the bogform provider can correctly read a remote state
 
 	t.Parallel()
 	fixturePath := filepath.Join("testdata", "tf-provider")

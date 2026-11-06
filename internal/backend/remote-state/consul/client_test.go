@@ -326,7 +326,7 @@ func TestConsul_destroyLock(t *testing.T) {
 			testLock(clientA, lockPath)
 
 			// The release the lock from a second client to test the
-			// `tofu force-unlock <lock_id>` functionality
+			// `bogform force-unlock <lock_id>` functionality
 			s, err = b.StateMgr(t.Context(), backend.DefaultStateName)
 			if err != nil {
 				t.Fatalf("err: %s", err)

@@ -87,7 +87,7 @@ func TestOCIRegistryMirrorSource(t *testing.T) {
 	// One additional tag that intentionally doesn't conform to the version
 	// number pattern so that we can make sure it gets silently ignored when
 	// enumerating versions, rather than causing an error. The content of
-	// this one is irrelevant because OpenTofu can't interact with it.
+	// this one is irrelevant because Bogform can't interact with it.
 	pushOCIBlob(t, ociv1.DescriptorEmptyJSON.MediaType, ociv1.DescriptorEmptyJSON.ArtifactType, ociv1.DescriptorEmptyJSON.Data, store)
 	createOCITag(t, "latest", ociv1.DescriptorEmptyJSON, store)
 	// We also have a separate store that contains OCI content that
@@ -128,7 +128,7 @@ func TestOCIRegistryMirrorSource(t *testing.T) {
 				return store, nil
 			case "not_provider":
 				// example.com/not/provider is our repository containing an assortment
-				// of not-actually-OpenTofu-provider artifacts.
+				// of not-actually-Bogform-provider artifacts.
 				return wrongStore, nil
 			default:
 				// All other addresses represent repositories that don't exist at all.
@@ -175,7 +175,7 @@ func TestOCIRegistryMirrorSource(t *testing.T) {
 			t.Errorf("wrong platform\ngot:  %s\nwant: %s", got, want)
 		}
 		if got, want := meta.Filename, "terraform-provider-bar_1.0.1_amigaos_m86k.zip"; got != want {
-			// NOTE: This field doesn't actually really matter; OpenTofu doesn't
+			// NOTE: This field doesn't actually really matter; Bogform doesn't
 			// do anything significant with it so we're just populating it with
 			// a plausible name to stay consistent with the other sources.
 			t.Errorf("wrong filename\ngot:  %s\nwant: %s", got, want)
@@ -260,7 +260,7 @@ func TestOCIRegistryMirrorSource(t *testing.T) {
 		if err == nil {
 			t.Fatal("unexpected success; want error")
 		}
-		if got, want := err.Error(), `selected OCI artifact is an OpenTofu module package, not a provider package`; got != want {
+		if got, want := err.Error(), `selected OCI artifact is a Bogform module package, not a provider package`; got != want {
 			t.Errorf("wrong error\ngot:  %s\nwant: %s", got, want)
 		}
 	})
@@ -304,7 +304,7 @@ func TestOCIRegistryMirrorSource(t *testing.T) {
 		if err == nil {
 			t.Fatal("unexpected success; want error")
 		}
-		if got, want := err.Error(), `tag refers directly to image manifest, but OpenTofu providers require an index manifest for multi-platform support`; got != want {
+		if got, want := err.Error(), `tag refers directly to image manifest, but Bogform providers require an index manifest for multi-platform support`; got != want {
 			t.Errorf("wrong error\ngot:  %s\nwant: %s", got, want)
 		}
 	})
@@ -314,7 +314,7 @@ func TestOCIRegistryMirrorSource(t *testing.T) {
 		if err == nil {
 			t.Fatal("unexpected success; want error")
 		}
-		if got, want := err.Error(), `image manifest contains no layers of type "archive/zip", but has other unsupported formats; this OCI artifact might be intended for a different version of OpenTofu`; got != want {
+		if got, want := err.Error(), `image manifest contains no layers of type "archive/zip", but has other unsupported formats; this OCI artifact might be intended for a different version of Bogform`; got != want {
 			t.Errorf("wrong error\ngot:  %s\nwant: %s", got, want)
 		}
 	})
@@ -390,10 +390,10 @@ func makeFakeOCIRepositoryWithNonProviderContent(t *testing.T) (OCIRepositorySto
 	}
 
 	// This particular repository contains an assortment of odd manifests
-	// that don't match OpenTofu's provider package manifest layout, so that
+	// that don't match Bogform's provider package manifest layout, so that
 	// we can test that we generate plausible feedback when someone mistakenly
 	// tries to use such things as providers. Some of these are based on
-	// formats used by other OpenTofu features, some on other software that
+	// formats used by other Bogform features, some on other software that
 	// makes use of OCI repositories, and some that's just strange garbage
 	// that no software is likely to accept.
 	//
@@ -418,7 +418,7 @@ func makeFakeOCIRepositoryWithNonProviderContent(t *testing.T) (OCIRepositorySto
 	// segregated for each case to avoid any risk of getting things mixed up
 	// under future maintenence.
 	{
-		// a manifest that follows our conventions for OpenTofu module packages, rather
+		// a manifest that follows our conventions for Bogform module packages, rather
 		// than for provider packages.
 		archiveDesc := blobDesc // shallow copy
 		archiveDesc.ArtifactType = "application/vnd.opentofu.modulepkg"

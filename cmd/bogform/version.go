@@ -61,7 +61,7 @@ func logGodebugUsage() {
 		metrics.Read(samples[:])
 		if count := samples[0].Value.Uint64(); count != 0 {
 			name := metric.Name[len(godebugMetricPrefix) : len(metric.Name)-len(godebugMetricSuffix)]
-			log.Printf("[DEBUG] Relied on GODEBUG %q %d times during this execution; behavior might change in future OpenTofu versions", name, count)
+			log.Printf("[DEBUG] Relied on GODEBUG %q %d times during this execution; behavior might change in future Bogform versions", name, count)
 		}
 	}
 }

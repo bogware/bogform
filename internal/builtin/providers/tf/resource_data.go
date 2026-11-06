@@ -175,7 +175,7 @@ func applyDataStoreResourceChange(req providers.ApplyResourceChangeRequest) (res
 
 	if !req.PlannedState.GetAttr("id").IsKnown() {
 		idString, err := uuid.GenerateUUID()
-		// OpenTofu would probably never get this far without a good random
+		// Bogform would probably never get this far without a good random
 		// source, but catch the error anyway.
 		if err != nil {
 			diag := tfdiags.AttributeValue(

@@ -32,7 +32,7 @@ func BindMetadataFunctions(cli *CommandLine) *MetadataFunctions {
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Invalid arguments",
-				"The `tofu metadata functions` command requires the `-json` flag.",
+				"The `bogform metadata functions` command requires the `-json` flag.",
 			))
 		}
 		arguments.View.ViewType = ViewHuman

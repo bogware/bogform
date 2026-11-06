@@ -107,9 +107,9 @@ func (v *UnlockHuman) ForceUnlockCancelled() {
 }
 
 func (v *UnlockHuman) ForceUnlockSucceeded() {
-	const outputUnlockSuccess = `[reset][bold][green]OpenTofu state has been successfully unlocked![reset][green]
+	const outputUnlockSuccess = `[reset][bold][green]Bogform state has been successfully unlocked![reset][green]
 
-The state has been unlocked, and OpenTofu commands should now be able to
+The state has been unlocked, and Bogform commands should now be able to
 obtain a new lock on the remote state.`
 	_, _ = v.view.streams.Println(v.view.colorize.Color(outputUnlockSuccess))
 }
@@ -143,7 +143,7 @@ func (v *UnlockJSON) ForceUnlockCancelled() {
 }
 
 func (v *UnlockJSON) ForceUnlockSucceeded() {
-	v.view.Info("The state has been unlocked, and OpenTofu commands should now be able to obtain a new lock on the remote state.")
+	v.view.Info("The state has been unlocked, and Bogform commands should now be able to obtain a new lock on the remote state.")
 }
 
 func (v *UnlockJSON) Backend() Backend {

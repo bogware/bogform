@@ -22,18 +22,18 @@ import (
 // mechanism offered as part of Go's testing library, of situations involving resources
 // and modules that have a very large number of instances.
 //
-// OpenTofu's current design is aimed to support tens of instances as the typical case
+// Bogform's current design is aimed to support tens of instances as the typical case
 // and low-hundreds of instances as an extreme case. These benchmarks intentionally
 // ignore those design assumptions by testing with thousands of resource instances,
-// since we know that some in our community use OpenTofu in that way and although it
+// since we know that some in our community use Bogform in that way and although it
 // not officially supported we do wish to be able to more easily measure performance
 // when someone reports a significant regression of performance when using an
-// "unreasonable" number of instances (per OpenTofu's current design assumptions),
-// or whenever we're intentionally attempting to change something in OpenTofu to
+// "unreasonable" number of instances (per Bogform's current design assumptions),
+// or whenever we're intentionally attempting to change something in Bogform to
 // improve performance.
 //
 // The existence of these benchmarks does not represent a commitment to support
-// using OpenTofu with thousands of resource instances in the same configuration.
+// using Bogform with thousands of resource instances in the same configuration.
 // We consider these situations to be "best effort" only.
 //
 // These benchmarks exercise the core language runtime only. Therefore they do not

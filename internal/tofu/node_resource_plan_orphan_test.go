@@ -380,7 +380,7 @@ func TestNodeResourcePlanOrphanExecute_ephemeral(t *testing.T) {
 	}
 	diags := node.Execute(t.Context(), nil, walkPlan)
 	got := diags.Err().Error()
-	want := `An ephemeral resource registered as orphan: Ephemeral resource "ephemeral.test_object.foo" registered as orphan. This is an OpenTofu error. Please report this.`
+	want := `An ephemeral resource registered as orphan: Ephemeral resource "ephemeral.test_object.foo" registered as orphan. This is a Bogform error. Please report this.`
 	if got != want {
 		t.Fatalf("unexpected error returned.\ngot: %s\nwant:%s", got, want)
 	}

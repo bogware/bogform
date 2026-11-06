@@ -188,8 +188,8 @@ func (n *graphNodeImportState) DynamicExpand(evalCtx EvalContext) (*Graph, error
 		if existing != nil {
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
-				"Resource already managed by OpenTofu",
-				fmt.Sprintf("OpenTofu is already managing a remote object for %s. To import to this address you must first remove the existing object from the state.", addr),
+				"Resource already managed by Bogform",
+				fmt.Sprintf("Bogform is already managing a remote object for %s. To import to this address you must first remove the existing object from the state.", addr),
 			))
 			continue
 		}
@@ -283,7 +283,7 @@ func (n *graphNodeImportStateSub) Execute(ctx context.Context, evalCtx EvalConte
 					"the provider detected that no object exists with the given id or identity. "+
 					"Only pre-existing objects can be imported; check that the id or identity "+
 					"is correct and that it is associated with the provider's "+
-					"configured region or endpoint, or use \"tofu apply\" to "+
+					"configured region or endpoint, or use \"bogform apply\" to "+
 					"create a new remote object for this resource.",
 				n.TargetAddr,
 			),

@@ -29,30 +29,30 @@ type State interface {
 	StateLoadingFailure(baseError string)
 	StateSavingError(baseError string)
 
-	// `tofu state list` specific
+	// `bogform state list` specific
 	StateListAddr(resAddr addrs.AbsResourceInstance)
 
-	// `tofu state mv` specific
+	// `bogform state mv` specific
 	ErrorMovingToAlreadyExistingDst()
 	ResourceMoveStatus(dryRun bool, src, dest string)
 	DryRunMovedStatus(moved int)
 	MoveFinalStatus(moved int)
 
-	// `tofu state pull` specific
+	// `bogform state pull` specific
 	PrintPulledState(state string)
 
-	// `tofu state replace-provider` specific
+	// `bogform state replace-provider` specific
 	NoMatchingResourcesForProviderReplacement()
 	ReplaceProviderOverview(from, to addrs.Provider, willReplace []*states.Resource)
 	ReplaceProviderCancelled()
 	ProviderReplaced(forResources int)
 
-	// `tofu state rm` specific
+	// `bogform state rm` specific
 	ResourceRemoveStatus(dryRun bool, target string)
 	DryRunRemovedStatus(removed int)
 	RemoveFinalStatus(count int)
 
-	// `tofu state show` specific
+	// `bogform state show` specific
 	UnsupportedLocalOp()
 	AddressParsingError(resAddr string)
 	NoInstanceFoundError()
@@ -292,7 +292,7 @@ func (v *StateHuman) NoMatchingResourcesForProviderReplacement() {
 func (v *StateHuman) ReplaceProviderOverview(from, to addrs.Provider, willReplace []*states.Resource) {
 	colorize := v.view.colorize.Color
 	printer := func(args ...any) { _, _ = v.view.streams.Println(args...) }
-	printer("OpenTofu will perform the following actions:\n")
+	printer("Bogform will perform the following actions:\n")
 	printer(colorize("  [yellow]~[reset] Updating provider:"))
 	printer(colorize(fmt.Sprintf("    [red]-[reset] %s", from)))
 	printer(colorize(fmt.Sprintf("    [green]+[reset] %s\n", to)))
@@ -452,7 +452,7 @@ func (v *StateJSON) MoveFinalStatus(moved int) {
 }
 
 func (v *StateJSON) PrintPulledState(_ string) {
-	v.view.Error("printing the pulled state is not available in the JSON view. The `tofu state pull` should not be configured with the `-json` flag")
+	v.view.Error("printing the pulled state is not available in the JSON view. The `bogform state pull` should not be configured with the `-json` flag")
 }
 
 func (v *StateJSON) NoMatchingResourcesForProviderReplacement() {
@@ -464,7 +464,7 @@ func (v *StateJSON) ReplaceProviderOverview(from, to addrs.Provider, willReplace
 	for i, resource := range willReplace {
 		replacedResources[i] = resource.Addr.String()
 	}
-	msg := fmt.Sprintf("OpenTofu will replace provider from %s to %s for %d resources", from, to, len(willReplace))
+	msg := fmt.Sprintf("Bogform will replace provider from %s to %s for %d resources", from, to, len(willReplace))
 	v.view.log.Info(msg, "resources", replacedResources, "type", "replace_provider", "from", from.String(), "to", to.String())
 }
 
@@ -543,7 +543,7 @@ var (
 	diagErrStateNotFound = tfdiags.Sourceless(
 		tfdiags.Error,
 		"No state file was found",
-		`State management commands require a state file. Run this command in a directory where OpenTofu has been run or use the -state flag to point the command to a specific state location.`,
+		`State management commands require a state file. Run this command in a directory where Bogform has been run or use the -state flag to point the command to a specific state location.`,
 	)
 	diagErrStateMvDstExists = tfdiags.Sourceless(
 		tfdiags.Error,
@@ -553,13 +553,13 @@ var (
 	diagErrNoInstanceFound = tfdiags.Sourceless(
 		tfdiags.Error,
 		"No instance found for the given address",
-		`This command requires that the address references one specific instance. To view the available instances, use "tofu state list". Please modify the address to reference a specific instance.`,
+		`This command requires that the address references one specific instance. To view the available instances, use "bogform state list". Please modify the address to reference a specific instance.`,
 	)
 )
 
 const (
 	errStateLoadingStateSummary     = "Error loading the state"
-	errStateLoadingStateDescription = `Please ensure that your OpenTofu state exists and that you've configured it properly. You can use the "-state" flag to point OpenTofu at another state file.
+	errStateLoadingStateDescription = `Please ensure that your Bogform state exists and that you've configured it properly. You can use the "-state" flag to point Bogform at another state file.
 
 Cause: %s`
 )
@@ -573,5 +573,5 @@ Cause: %s`
 
 const (
 	errParsingAddressHeader      = `Error parsing instance address %q`
-	errParsingAddressDescription = `This command requires that the address references one specific instance. To view the available instances, use "tofu state list". Please modify the address to reference a specific instance.`
+	errParsingAddressDescription = `This command requires that the address references one specific instance. To view the available instances, use "bogform state list". Please modify the address to reference a specific instance.`
 )

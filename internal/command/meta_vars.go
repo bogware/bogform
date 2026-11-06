@@ -124,7 +124,7 @@ func (m *Meta) collectVariableValues() (map[string]backend.UnparsedVariableValue
 		default:
 			// Should never happen; always a bug in the code that built up
 			// the contents of m.variableArgs.
-			diags = diags.Append(fmt.Errorf("unsupported variable option name %q (this is a bug in OpenTofu)", rawFlag.Name))
+			diags = diags.Append(fmt.Errorf("unsupported variable option name %q (this is a bug in Bogform)", rawFlag.Name))
 		}
 	}
 	m.inputVariableCache = ret

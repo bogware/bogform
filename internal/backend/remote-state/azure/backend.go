@@ -187,7 +187,7 @@ func New(enc encryption.StateEncryption) backend.Backend {
 				Optional:    true,
 				Description: "The Managed Service Identity Endpoint.",
 				DefaultFunc: schema.EnvDefaultFunc("ARM_MSI_ENDPOINT", nil),
-				Deprecated:  "This configuration is now managed in a dependent library, not directly by OpenTofu. Please use the `MSI_ENDPOINT` environment variable to set the Managed Service Identity endpoint.",
+				Deprecated:  "This configuration is now managed in a dependent library, not directly by Bogform. Please use the `MSI_ENDPOINT` environment variable to set the Managed Service Identity endpoint.",
 			},
 
 			// OIDC auth specific fields
@@ -242,7 +242,7 @@ func New(enc encryption.StateEncryption) backend.Backend {
 			"use_azuread_auth": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "Should OpenTofu use AzureAD Authentication to access the Blob?",
+				Description: "Should Bogform use AzureAD Authentication to access the Blob?",
 				DefaultFunc: schema.EnvDefaultFunc("ARM_USE_AZUREAD", false),
 			},
 

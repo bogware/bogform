@@ -84,12 +84,12 @@ func (s service) decryptData(ctx context.Context, keyName string, ciphertext []b
 func retrievePlaintext(s *openbao.Secret) ([]byte, error) {
 	base64Plaintext, ok := s.Data["plaintext"].(string)
 	if !ok {
-		return nil, errors.New("failed to deserialize 'plaintext' (it's either OpenTofu bug or incompatible OpenBao version)")
+		return nil, errors.New("failed to deserialize 'plaintext' (it's either Bogform bug or incompatible OpenBao version)")
 	}
 
 	plaintext, err := base64.StdEncoding.DecodeString(base64Plaintext)
 	if err != nil {
-		return nil, fmt.Errorf("base64 decoding 'plaintext' (it's either OpenTofu bug or incompatible OpenBao version): %w", err)
+		return nil, fmt.Errorf("base64 decoding 'plaintext' (it's either Bogform bug or incompatible OpenBao version): %w", err)
 	}
 
 	return plaintext, nil
@@ -98,7 +98,7 @@ func retrievePlaintext(s *openbao.Secret) ([]byte, error) {
 func retrieveCiphertext(s *openbao.Secret) ([]byte, error) {
 	ciphertext, ok := s.Data["ciphertext"].(string)
 	if !ok {
-		return nil, errors.New("failed to deserialize 'ciphertext' (it's either OpenTofu bug or incompatible OpenBao version)")
+		return nil, errors.New("failed to deserialize 'ciphertext' (it's either Bogform bug or incompatible OpenBao version)")
 	}
 
 	return []byte(ciphertext), nil

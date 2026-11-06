@@ -157,7 +157,7 @@ func TestImpliedMoveStatements(t *testing.T) {
 		// this state would be to remove "count = 1" and then have the
 		// provider fail to destroy the zero-key instance even though we
 		// already created the no-key instance. Users can also get here
-		// by using "tofu state mv" in weird ways.
+		// by using "bogform state mv" in weird ways.
 		s.SetResourceInstanceCurrent(
 			resourceAddr("ambiguous").Instance(addrs.NoKey),
 			instObjState(),

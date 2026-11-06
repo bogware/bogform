@@ -33,10 +33,10 @@ func (s *Scope) Functions() map[string]function.Function {
 	if s.funcs == nil {
 		s.funcs = makeBaseFunctionTable(s.BaseDir, new(s.SymbolTable.TypeContext()))
 		if s.ConsoleMode {
-			// The type function is only available in OpenTofu console.
+			// The type function is only available in Bogform console.
 			s.funcs["type"] = funcs.TypeFunc
 		} else {
-			// The plantimestamp function doesn't make sense in the OpenTofu
+			// The plantimestamp function doesn't make sense in the Bogform
 			// console.
 			s.funcs["plantimestamp"] = funcs.MakeStaticTimestampFunc(s.PlanTimestamp)
 		}

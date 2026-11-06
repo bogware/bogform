@@ -7,7 +7,7 @@ package main
 
 // e2eTestingFeatures can be set to any non-empty string using Go linker
 // arguments in order to enable the use of e2e test features for a
-// particular OpenTofu build:
+// particular Bogform build:
 //
 //	go install -ldflags="-X 'main.e2eTestingFeatures=yes'" ./cmd/bogform
 //

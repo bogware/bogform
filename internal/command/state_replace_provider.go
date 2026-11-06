@@ -22,7 +22,7 @@ func StateReplaceProviderCommander() Command {
 	cmd := Command{
 		Name:  "replace-provider",
 		Short: "Replace provider in the state",
-		Long:  `Replace provider for resources in the OpenTofu state.`,
+		Long:  `Replace provider for resources in the Bogform state.`,
 
 		DiagsWithNewline: true,
 	}

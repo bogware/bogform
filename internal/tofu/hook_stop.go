@@ -17,7 +17,7 @@ import (
 	"github.com/bogware/bogform/internal/states"
 )
 
-// stopHook is a private Hook implementation that OpenTofu uses to
+// stopHook is a private Hook implementation that Bogform uses to
 // signal when to stop or cancel actions.
 type stopHook struct {
 	stop uint32

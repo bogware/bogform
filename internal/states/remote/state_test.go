@@ -339,7 +339,7 @@ func TestStatePersist(t *testing.T) {
 		encryption.StateEncryptionDisabled(),
 	)
 
-	// In normal use (during a OpenTofu operation) we always refresh and read
+	// In normal use (during a Bogform operation) we always refresh and read
 	// before any writes would happen, so we'll mimic that here for realism.
 	// NB This causes a GET to be logged so the first item in the test cases
 	// must account for this
@@ -525,7 +525,7 @@ func TestWriteStateForMigration(t *testing.T) {
 		},
 	}
 
-	// In normal use (during a OpenTofu operation) we always refresh and read
+	// In normal use (during a Bogform operation) we always refresh and read
 	// before any writes would happen, so we'll mimic that here for realism.
 	// NB This causes a GET to be logged so the first item in the test cases
 	// must account for this
@@ -686,7 +686,7 @@ func TestWriteStateForMigrationWithForcePushClient(t *testing.T) {
 		},
 	}
 
-	// In normal use (during a OpenTofu operation) we always refresh and read
+	// In normal use (during a Bogform operation) we always refresh and read
 	// before any writes would happen, so we'll mimic that here for realism.
 	// NB This causes a GET to be logged so the first item in the test cases
 	// must account for this

@@ -200,7 +200,7 @@ func (c *Config) DescendentForInstance(path addrs.ModuleInstance) *Config {
 // directly via a remote source address or indirectly via a registry source
 // address.
 //
-// Other behaviors in OpenTofu may treat package crossings as a special
+// Other behaviors in Bogform may treat package crossings as a special
 // situation, because that indicates that the caller and callee can change
 // independently of one another and thus we should disallow using any features
 // where the caller assumes anything about the callee other than its input
@@ -222,11 +222,11 @@ func (c *Config) EntersNewPackage() bool {
 // multiple inconsistencies then it will attempt to describe as many of them
 // as possible, rather than stopping at the first problem.
 //
-// It's typically the responsibility of "tofu init" to change the locked
+// It's typically the responsibility of "bogform init" to change the locked
 // dependencies to conform with the configuration, and so
 // VerifyDependencySelections is intended for other commands to check whether
 // it did so correctly and to catch if anything has changed in configuration
-// since the last "tofu init" which requires re-initialization. However,
+// since the last "bogform init" which requires re-initialization. However,
 // it's up to the caller to decide how to advise users recover from these
 // errors, because the advise can vary depending on what operation the user
 // is attempting.
@@ -481,7 +481,7 @@ func (c *Config) addProviderRequirements(reqs getproviders.Requirements, qualifs
 				if i.ProviderConfigRef.Name != target.ProviderConfigRef.Name || i.ProviderConfigRef.Alias != target.ProviderConfigRef.Alias {
 					// This means we have a provider specified in both the
 					// import block and the resource block, and they disagree.
-					// This is bad as OpenTofu now has different instructions
+					// This is bad as Bogform now has different instructions
 					// about which provider to use.
 					//
 					// The general guidance is that only the resource should be
@@ -540,7 +540,7 @@ func (c *Config) addProviderRequirements(reqs getproviders.Requirements, qualifs
 
 // collectImplicitProviders is checking the provider configuration of each resource.
 // For the resources whose required provider is not explicitly configured, an implicit one is collected.
-// This is mainly used for enabling warnings when OpenTofu fails to resolve the implicitly generated provider.
+// This is mainly used for enabling warnings when Bogform fails to resolve the implicitly generated provider.
 func (c *Config) collectImplicitProviders(resources map[string]*Resource, reqs getproviders.Requirements, qualifs *getproviders.ProvidersQualification) {
 	for _, rc := range resources {
 		fqn := rc.Provider
@@ -908,7 +908,7 @@ func (c *Config) getProviderConfigTransformForTest(evalCtx *hcl.EvalContext) tes
 		//
 		// We can have a set of providers defined within the config, we can also
 		// have a set of providers defined within the test file. Then the run can
-		// also specify a set of overrides that tell OpenTofu exactly which
+		// also specify a set of overrides that tell Bogform exactly which
 		// providers from the test file to apply into the config.
 		//
 		// The process here is as follows:

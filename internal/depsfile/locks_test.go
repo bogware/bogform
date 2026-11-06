@@ -369,7 +369,7 @@ func TestLocksUpgradeFromPredecessorProject(t *testing.T) {
 			},
 		},
 
-		// ...but we now have this new one that describes the OpenTofu equivalent
+		// ...but we now have this new one that describes the Bogform equivalent
 		// of it, with the same version but not yet any hashes. The hashes
 		// must be determined by a subsequent installation step.
 		addrs.MustParseProviderSourceString("registry.opentofu.org/hashicorp/a"): {
@@ -381,7 +381,7 @@ func TestLocksUpgradeFromPredecessorProject(t *testing.T) {
 		},
 
 		// This one does not get any special treatment because it's not in
-		// the namespace where the OpenTofu project maintains
+		// the namespace where the Bogform project maintains
 		// directly-corresponding releases.
 		addrs.MustParseProviderSourceString("registry.terraform.io/anything-else/b"): {
 			addr:    addrs.MustParseProviderSourceString("registry.terraform.io/anything-else/b"),

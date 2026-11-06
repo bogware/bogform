@@ -7,7 +7,7 @@
 // and helpers for discovering such settings from container engine configuration
 // files as described in https://github.com/containers/image/blob/main/docs/containers-auth.json.5.md .
 //
-// The rest of OpenTofu should make use of this package only indirectly through
+// The rest of Bogform should make use of this package only indirectly through
 // package cliconfig, which is responsible for making the policy decisions about
 // which sources of authentication credentials we will use.
 //

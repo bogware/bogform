@@ -43,11 +43,11 @@ func TestInitViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu initialized in an empty directory! The directory has no OpenTofu configuration files. You may begin working with OpenTofu immediately by creating OpenTofu configuration files.",
+					"@message": "Bogform initialized in an empty directory! The directory has no Bogform configuration files. You may begin working with Bogform immediately by creating Bogform configuration files.",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: withNewline("OpenTofu initialized in an empty directory!\n\nThe directory has no OpenTofu configuration files. You may begin working\nwith OpenTofu immediately by creating OpenTofu configuration files."),
+			wantStdout: withNewline("Bogform initialized in an empty directory!\n\nThe directory has no Bogform configuration files. You may begin working\nwith Bogform immediately by creating Bogform configuration files."),
 		},
 		"outputNewline": {
 			viewCall: func(init Init) {
@@ -64,11 +64,11 @@ func TestInitViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu has been successfully initialized!",
+					"@message": "Bogform has been successfully initialized!",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: withNewline("OpenTofu has been successfully initialized!"),
+			wantStdout: withNewline("Bogform has been successfully initialized!"),
 		},
 		"initSuccessCLI": {
 			viewCall: func(init Init) {
@@ -77,11 +77,11 @@ func TestInitViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "You may now begin working with OpenTofu. Try running \"tofu plan\" to see any changes that are required for your infrastructure. All OpenTofu commands should now work. If you ever set or change modules or backend configuration for OpenTofu, rerun this command to reinitialize your working directory. If you forget, other commands will detect it and remind you to do so if necessary.",
+					"@message": "You may now begin working with Bogform. Try running \"bogform plan\" to see any changes that are required for your infrastructure. All Bogform commands should now work. If you ever set or change modules or backend configuration for Bogform, rerun this command to reinitialize your working directory. If you forget, other commands will detect it and remind you to do so if necessary.",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: withNewline("\nYou may now begin working with OpenTofu. Try running \"tofu plan\" to see\nany changes that are required for your infrastructure. All OpenTofu commands\nshould now work.\n\nIf you ever set or change modules or backend configuration for OpenTofu,\nrerun this command to reinitialize your working directory. If you forget, other\ncommands will detect it and remind you to do so if necessary."),
+			wantStdout: withNewline("\nYou may now begin working with Bogform. Try running \"bogform plan\" to see\nany changes that are required for your infrastructure. All Bogform commands\nshould now work.\n\nIf you ever set or change modules or backend configuration for Bogform,\nrerun this command to reinitialize your working directory. If you forget, other\ncommands will detect it and remind you to do so if necessary."),
 		},
 		"initializingModules_upgrade": {
 			viewCall: func(init Init) {
@@ -155,11 +155,11 @@ func TestInitViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "terraform is built in to OpenTofu",
+					"@message": "terraform is built in to Bogform",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: withNewline("- terraform is built in to OpenTofu"),
+			wantStdout: withNewline("- terraform is built in to Bogform"),
 		},
 		"reusingLockFileVersion": {
 			viewCall: func(init Init) {
@@ -285,11 +285,11 @@ func TestInitViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Providers are signed by their developers. If you'd like to know more about provider signing, you can read about it here: https://opentofu.org/docs/cli/plugins/signing/",
+					"@message": "Providers are signed by their developers. If you'd like to know more about provider signing, you can read about it here: https://bogware.github.io/bogform/docs/cli/plugins/signing/",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: withNewline("\nProviders are signed by their developers.\nIf you'd like to know more about provider signing, you can read about it here:\nhttps://opentofu.org/docs/cli/plugins/signing/"),
+			wantStdout: withNewline("\nProviders are signed by their developers.\nIf you'd like to know more about provider signing, you can read about it here:\nhttps://bogware.github.io/bogform/docs/cli/plugins/signing/"),
 		},
 		"lockFileCreated": {
 			viewCall: func(init Init) {
@@ -298,11 +298,11 @@ func TestInitViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu has created a lock file .terraform.lock.hcl to record the provider selections it made above. Include this file in your version control repository so that OpenTofu can guarantee to make the same selections by default when you run \"tofu init\" in the future.",
+					"@message": "Bogform has created a lock file .terraform.lock.hcl to record the provider selections it made above. Include this file in your version control repository so that Bogform can guarantee to make the same selections by default when you run \"bogform init\" in the future.",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: withNewline("\nOpenTofu has created a lock file .terraform.lock.hcl to record the provider\nselections it made above. Include this file in your version control repository\nso that OpenTofu can guarantee to make the same selections by default when\nyou run \"tofu init\" in the future."),
+			wantStdout: withNewline("\nBogform has created a lock file .terraform.lock.hcl to record the provider\nselections it made above. Include this file in your version control repository\nso that Bogform can guarantee to make the same selections by default when\nyou run \"bogform init\" in the future."),
 		},
 		"lockFileChanged": {
 			viewCall: func(init Init) {
@@ -311,11 +311,11 @@ func TestInitViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu has made some changes to the provider dependency selections recorded in the .terraform.lock.hcl file. Review those changes and commit them to your version control system if they represent changes you intended to make.",
+					"@message": "Bogform has made some changes to the provider dependency selections recorded in the .terraform.lock.hcl file. Review those changes and commit them to your version control system if they represent changes you intended to make.",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: withNewline("\nOpenTofu has made some changes to the provider dependency selections recorded\nin the .terraform.lock.hcl file. Review those changes and commit them to your\nversion control system if they represent changes you intended to make."),
+			wantStdout: withNewline("\nBogform has made some changes to the provider dependency selections recorded\nin the .terraform.lock.hcl file. Review those changes and commit them to your\nversion control system if they represent changes you intended to make."),
 		},
 		// to stderr
 		"configError": {
@@ -325,12 +325,12 @@ func TestInitViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "error",
-					"@message": "OpenTofu encountered problems during initialization, including problems with the configuration, described below. The OpenTofu configuration must be valid before initialization so that OpenTofu can determine which modules and providers need to be installed.",
+					"@message": "Bogform encountered problems during initialization, including problems with the configuration, described below. The Bogform configuration must be valid before initialization so that Bogform can determine which modules and providers need to be installed.",
 					"@module":  "tofu.ui",
 				},
 			},
 			wantStdout: "",
-			wantStderr: withNewline("\nOpenTofu encountered problems during initialization, including problems\nwith the configuration, described below.\n\nThe OpenTofu configuration must be valid before initialization so that\nOpenTofu can determine which modules and providers need to be installed."),
+			wantStderr: withNewline("\nBogform encountered problems during initialization, including problems\nwith the configuration, described below.\n\nThe Bogform configuration must be valid before initialization so that\nBogform can determine which modules and providers need to be installed."),
 		},
 		"providerInstalledSkippedSignature": {
 			viewCall: func(init Init) {

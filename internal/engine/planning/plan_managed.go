@@ -231,8 +231,8 @@ func (p *planGlue) planDesiredManagedResourceInstance(
 			// CLI import statement conflict
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
-				"Resource already managed by OpenTofu",
-				fmt.Sprintf("OpenTofu is already managing a remote object for %s. To import to this address you must first remove the existing object from the state.", inst.Addr),
+				"Resource already managed by Bogform",
+				fmt.Sprintf("Bogform is already managing a remote object for %s. To import to this address you must first remove the existing object from the state.", inst.Addr),
 			))
 			return ret, diags
 		}
@@ -340,7 +340,7 @@ func (p *planGlue) planDesiredManagedResourceInstance(
 						"the provider detected that no object exists with the given id or identity. "+
 						"Only pre-existing objects can be imported; check that the id or identity "+
 						"is correct and that it is associated with the provider's "+
-						"configured region or endpoint, or use \"tofu apply\" to "+
+						"configured region or endpoint, or use \"bogform apply\" to "+
 						"create a new remote object for this resource.",
 					inst.Addr,
 				),
@@ -699,7 +699,7 @@ func (p *planGlue) planUnwantedManagedResourceInstanceObject(
 
 	if prevState.Value.IsNull() {
 		// The orphan object seems to have already been deleted outside of
-		// OpenTofu, so we've got nothing more to do here.
+		// Bogform, so we've got nothing more to do here.
 		return ret, diags
 	}
 
@@ -1000,7 +1000,7 @@ func checkPreventDestroy(ctx context.Context, meta *exec.ResourceInstanceObjectM
 			Severity: hcl.DiagError,
 			Summary:  "Invalid value for prevent_destroy",
 			Detail: fmt.Sprintf(
-				"Resource instance %s has a prevent_destroy argument but its value will not be known until the apply step, so OpenTofu can't predict whether destroying this is acceptable.\n\nTo proceed, exclude instances of this resource from this round using:\n    -exclude=%q",
+				"Resource instance %s has a prevent_destroy argument but its value will not be known until the apply step, so Bogform can't predict whether destroying this is acceptable.\n\nTo proceed, exclude instances of this resource from this round using:\n    -exclude=%q",
 				change.Addr.String(), change.Addr.ContainingResource().String(),
 			),
 			Subject: rng.ToHCL().Ptr(),

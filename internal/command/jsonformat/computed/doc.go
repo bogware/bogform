@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // Package computed contains types that represent the computed diffs for
-// OpenTofu blocks, attributes, and outputs.
+// Bogform blocks, attributes, and outputs.
 //
 // Each Diff struct is made up of a renderer, an action, and a boolean
 // describing the diff. The renderer internally holds child diffs or concrete

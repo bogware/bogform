@@ -26,7 +26,7 @@ import (
 type ExternalModules interface {
 	// ModuleConfig finds and loads a module meeting the given constraints.
 	//
-	// OpenTofu allows each module call to have a different version constraint
+	// Bogform allows each module call to have a different version constraint
 	// and selected module version, and so this signature also includes the
 	// address of the module call the request is made on behalf of so that
 	// the implementation can potentially use a lock file to determine which

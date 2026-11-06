@@ -87,12 +87,12 @@ Local state cannot be unlocked by another process.
 			viewCall: func(v Unlock) {
 				v.ForceUnlockSucceeded()
 			},
-			wantStdout: withNewline("OpenTofu state has been successfully unlocked!\n\nThe state has been unlocked, and OpenTofu commands should now be able to\nobtain a new lock on the remote state."),
+			wantStdout: withNewline("Bogform state has been successfully unlocked!\n\nThe state has been unlocked, and Bogform commands should now be able to\nobtain a new lock on the remote state."),
 			wantStderr: "",
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "The state has been unlocked, and OpenTofu commands should now be able to obtain a new lock on the remote state.",
+					"@message": "The state has been unlocked, and Bogform commands should now be able to obtain a new lock on the remote state.",
 					"@module":  "tofu.ui",
 				},
 			},

@@ -19,7 +19,7 @@ type Import struct {
 	// ConfigPath is the path to the directory where the configuration containing the ResourceAddress is
 	// accessible.
 	ConfigPath string
-	// Parallelism is the limit of concurrent operation as OpenTofu walks the graph
+	// Parallelism is the limit of concurrent operation as Bogform walks the graph
 	Parallelism int
 
 	// View represents the global view options
@@ -40,7 +40,7 @@ func BindImport(cli *CommandLine) *Import {
 	}
 
 	cli.IntVar(&ret.Parallelism, "parallelism", DefaultParallelism, `Limit the number of parallel resource operations. Defaults to 10.`).SetDisplay("=n")
-	cli.StringVar(&ret.ConfigPath, "config", "", "Path to a directory of OpenTofu configuration files to use to configure the provider. Defaults to pwd. If no config files are present, they must be provided via the input prompts or env vars.").SetDisplay("=path")
+	cli.StringVar(&ret.ConfigPath, "config", "", "Path to a directory of Bogform configuration files to use to configure the provider. Defaults to pwd. If no config files are present, they must be provided via the input prompts or env vars.").SetDisplay("=path")
 
 	cli.ArgHelp = "The import command expects two arguments"
 	cli.PositionalArg(&ret.ResourceAddress, "ADDR", false)

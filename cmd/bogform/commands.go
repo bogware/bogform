@@ -29,7 +29,7 @@ import (
 
 // runningInAutomationEnvName gives the name of an environment variable that
 // can be set to any non-empty value in order to suppress certain messages
-// that assume that OpenTofu is being run from a command prompt.
+// that assume that Bogform is being run from a command prompt.
 const runningInAutomationEnvName = "TF_IN_AUTOMATION"
 
 func makeMeta(
@@ -98,7 +98,7 @@ func makeMeta(
 		OCICredentialsPolicyBuilder: config.OCICredentialsPolicy,
 
 		// ProviderSourceLocationConfig is used for some commands that do not make
-		// use of the OpenTofu configuration files. Therefore, there is no way to configure
+		// use of the Bogform configuration files. Therefore, there is no way to configure
 		// the retries from other places than env vars.
 		ProviderSourceLocationConfig: providerSourceLocationConfigFromEnv(),
 	}

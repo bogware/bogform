@@ -157,7 +157,7 @@ func decodeModuleBlock(block *hcl.Block, override bool) (*ModuleCall, hcl.Diagno
 			diags = append(diags, &hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Reserved block type name in module block",
-				Detail:   fmt.Sprintf("The block type name %q is reserved for use by OpenTofu in a future version.", block.Type),
+				Detail:   fmt.Sprintf("The block type name %q is reserved for use by Bogform in a future version.", block.Type),
 				Subject:  &block.TypeRange,
 			})
 		}
@@ -235,7 +235,7 @@ func decodeSourceAddrRaw(blockName string, sourceAddrRaw string, hasVersion bool
 				Severity: hcl.DiagError,
 				Summary:  fmt.Sprintf("Invalid %s source address", blockName),
 				Detail: fmt.Sprintf(
-					"OpenTofu failed to determine your intended installation method for remote %s package %q.\n\nIf you intended this as a path relative to the current module, use \"./%s\" instead. The \"./\" prefix indicates that the address is a relative filesystem path.",
+					"Bogform failed to determine your intended installation method for remote %s package %q.\n\nIf you intended this as a path relative to the current module, use \"./%s\" instead. The \"./\" prefix indicates that the address is a relative filesystem path.",
 					blockName, pathErr.Addr, pathErr.Addr,
 				),
 				Subject: rng.Ptr(),
@@ -248,7 +248,7 @@ func decodeSourceAddrRaw(blockName string, sourceAddrRaw string, hasVersion bool
 				diags = append(diags, &hcl.Diagnostic{
 					Severity: hcl.DiagError,
 					Summary:  fmt.Sprintf("Invalid registry %s source address", blockName),
-					Detail:   fmt.Sprintf("Failed to parse %s registry address: %s.\n\nOpenTofu assumed that you intended a %s registry source address because you also set the argument \"version\", which applies only to registry %s.", blockName, err, blockName, blockName),
+					Detail:   fmt.Sprintf("Failed to parse %s registry address: %s.\n\nBogform assumed that you intended a %s registry source address because you also set the argument \"version\", which applies only to registry %s.", blockName, err, blockName, blockName),
 					Subject:  rng.Ptr(),
 				})
 			} else {
@@ -321,7 +321,7 @@ func (mc *ModuleCall) decodeStaticVariables(ctx context.Context, eval *StaticEva
 // directly via a remote source address or indirectly via a registry source
 // address.
 //
-// Other behaviors in OpenTofu may treat package crossings as a special
+// Other behaviors in Bogform may treat package crossings as a special
 // situation, because that indicates that the caller and callee can change
 // independently of one another and thus we should disallow using any features
 // where the caller assumes anything about the callee other than its input

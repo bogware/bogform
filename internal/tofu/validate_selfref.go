@@ -35,21 +35,21 @@ func validateSelfRef(addr addrs.Referenceable, config hcl.Body, providerSchema p
 	case addrs.Resource:
 		sc, _ := providerSchema.SchemaForResourceAddr(tAddr)
 		if sc == nil {
-			diags = diags.Append(fmt.Errorf("no schema available for %s to validate for self-references; this is a bug in OpenTofu and should be reported", addr))
+			diags = diags.Append(fmt.Errorf("no schema available for %s to validate for self-references; this is a bug in Bogform and should be reported", addr))
 			return diags
 		}
 		schema = sc.Block
 	case addrs.ResourceInstance:
 		sc, _ := providerSchema.SchemaForResourceAddr(tAddr.ContainingResource())
 		if sc == nil {
-			diags = diags.Append(fmt.Errorf("no schema available for %s to validate for self-references; this is a bug in OpenTofu and should be reported", addr))
+			diags = diags.Append(fmt.Errorf("no schema available for %s to validate for self-references; this is a bug in Bogform and should be reported", addr))
 			return diags
 		}
 		schema = sc.Block
 	}
 
 	if schema == nil {
-		diags = diags.Append(fmt.Errorf("no schema available for %s to validate for self-references; this is a bug in OpenTofu and should be reported", addr))
+		diags = diags.Append(fmt.Errorf("no schema available for %s to validate for self-references; this is a bug in Bogform and should be reported", addr))
 		return diags
 	}
 

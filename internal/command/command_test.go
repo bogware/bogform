@@ -676,7 +676,7 @@ func testInputMap(t *testing.T, answers map[string]string) func() {
 //
 // If such a block isn't present, or if it isn't empty, then an error will
 // be returned about the backend configuration having changed and that
-// "tofu init" must be run, since the test backend config cache created
+// "bogform init" must be run, since the test backend config cache created
 // by this function contains the hash for an empty configuration.
 func testBackendState(t *testing.T, s *states.State, c int) (*clistate.CLIState, *httptest.Server) {
 	t.Helper()
@@ -1092,11 +1092,11 @@ func checkGoldenReference(t *testing.T, output *terminal.TestOutput, fixturePath
 
 	// Verify that the log starts with a version message
 	type versionMessage struct {
-		Level    string `json:"@level"`
-		Message  string `json:"@message"`
-		Type     string `json:"type"`
-		OpenTofu string `json:"tofu"`
-		UI       string `json:"ui"`
+		Level   string `json:"@level"`
+		Message string `json:"@message"`
+		Type    string `json:"type"`
+		Bogform string `json:"tofu"`
+		UI      string `json:"ui"`
 	}
 	var gotVersion versionMessage
 	if err := json.Unmarshal([]byte(gotLines[0]), &gotVersion); err != nil {
@@ -1104,7 +1104,7 @@ func checkGoldenReference(t *testing.T, output *terminal.TestOutput, fixturePath
 	}
 	wantVersion := versionMessage{
 		"info",
-		fmt.Sprintf("OpenTofu %s", version.String()),
+		fmt.Sprintf("Bogform %s", version.String()),
 		"version",
 		version.String(),
 		views.JSON_UI_VERSION,

@@ -207,7 +207,7 @@ func TestLoadConfig_registryProtocols(t *testing.T) {
 		},
 		"invalid-syntax-env-both": {
 			// The environment variable settings still work even when the
-			// config file is invalid, because OpenTofu still makes a best
+			// config file is invalid, because Bogform still makes a best
 			// effort to proceed even when the CLI configuration has errors.
 			"registry-protocols-invalid-syntax",
 			map[string]string{

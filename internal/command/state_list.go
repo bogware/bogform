@@ -22,9 +22,9 @@ func StateListCommander() Command {
 		Name:    "list",
 		Aliases: []string{"ls"},
 		Short:   "List resources in the state",
-		Long: `List resources in the OpenTofu state.
+		Long: `List resources in the Bogform state.
 
-This command lists resource instances in the OpenTofu state. The address argument can be used to filter the instances by resource or module. If no pattern is given, all resource instances are listed.
+This command lists resource instances in the Bogform state. The address argument can be used to filter the instances by resource or module. If no pattern is given, all resource instances are listed.
 
 The addresses must either be module addresses or absolute resource addresses, such as:
     aws_instance.example

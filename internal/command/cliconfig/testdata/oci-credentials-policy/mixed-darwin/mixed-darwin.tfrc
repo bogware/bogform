@@ -4,7 +4,7 @@
 
 oci_default_credentials {
   # This global credentials helper should override the one configured
-  # in the Docker-style config file, because OpenTofu CLI configuration
+  # in the Docker-style config file, because Bogform CLI configuration
   # always takes priority.
   docker_credentials_helper = "fake"
 }

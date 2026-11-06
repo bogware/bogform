@@ -194,7 +194,7 @@ func (p *providerManager) NewConfiguredProvider(ctx context.Context, addr addrs.
 	configResp := provider.ConfigureProvider(ctx, providers.ConfigureProviderRequest{
 		// We aren't actually Terraform, so we'll just pretend to be a
 		// Terraform version that has roughly the same functionality that
-		// OpenTofu currently has, since providers are permitted to use this to
+		// Bogform currently has, since providers are permitted to use this to
 		// adapt their behavior for older versions of Terraform.
 		TerraformVersion: version.VersionToImpersonateForProviders,
 		Config:           unmarkedConfigVal,

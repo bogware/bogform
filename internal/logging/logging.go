@@ -34,7 +34,7 @@ const (
 )
 
 var (
-	// ValidLevels are the log level names that OpenTofu recognizes.
+	// ValidLevels are the log level names that Bogform recognizes.
 	ValidLevels = []string{"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "OFF"}
 
 	// logger is the global hclog logger

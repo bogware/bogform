@@ -27,7 +27,7 @@ type OutputValue struct {
 	// Addr is the absolute address of this output value.
 	Addr addrs.AbsOutputValue
 
-	// Preconditions are user-defined checks that must succeed before OpenTofu
+	// Preconditions are user-defined checks that must succeed before Bogform
 	// will evaluate the output value's expression.
 	//
 	// Unlike some other uses of [CheckRule], output value preconditions don't

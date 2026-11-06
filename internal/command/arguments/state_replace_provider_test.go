@@ -119,7 +119,7 @@ func TestParseReplaceProvider_basicValidation(t *testing.T) {
 				srp.RawSrcAddr = "source"
 				srp.RawDestAddr = "dest"
 			}),
-			wantErrText: "Invalid usage: OpenTofu cannot ask user input when `-json` flag is used. Therefore, `-auto-approve` is required too",
+			wantErrText: "Invalid usage: Bogform cannot ask user input when `-json` flag is used. Therefore, `-auto-approve` is required too",
 		},
 		"json with auto-approve": {
 			args: []string{"-json", "-auto-approve", "source", "dest"},

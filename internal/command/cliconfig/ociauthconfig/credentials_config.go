@@ -16,8 +16,8 @@ import (
 // This package has its own implementaion of this interface in terms of a
 // Docker CLI-style credentials configuration file, accessible through
 // [FindDockerCLIStyleCredentialsConfigs] and [FixedDockerCLIStyleCredentialsConfigs],
-// but package cliconfig also implements this separately for OpenTofu's own
-// OCI credentials config language included as part of the OpenTofu CLI
+// but package cliconfig also implements this separately for Bogform's own
+// OCI credentials config language included as part of the Bogform CLI
 // configuration.
 type CredentialsConfig interface {
 	CredentialsSourcesForRepository(ctx context.Context, registryDomain string, repositoryPath string) iter.Seq2[CredentialsSource, error]

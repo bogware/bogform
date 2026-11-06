@@ -73,7 +73,7 @@ type ResourceInstanceChangeSrc struct {
 	RequiredReplace cty.PathSet
 
 	// Private allows a provider to stash any extra data that is opaque to
-	// OpenTofu that relates to this change. OpenTofu will save this
+	// Bogform that relates to this change. Bogform will save this
 	// byte-for-byte and return it to the provider in the apply call.
 	Private []byte
 }

@@ -16,7 +16,7 @@ func WorkspaceCommander(legacyName bool) Command {
 	cmd := Command{
 		Name:  "workspace",
 		Short: "Workspace management",
-		Long:  `new, list, show, select and delete OpenTofu workspaces.`,
+		Long:  `new, list, show, select and delete Bogform workspaces.`,
 
 		Commands: []Command{
 			WorkspaceListCommander(legacyName),

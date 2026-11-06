@@ -161,7 +161,7 @@ func compileModuleInstanceResource(
 						diags = diags.Append(&hcl.Diagnostic{
 							Severity: hcl.DiagWarning,
 							Summary:  "Redundant ignore_changes element",
-							Detail:   fmt.Sprintf("Adding an attribute name to ignore_changes tells OpenTofu to ignore future changes to the argument in configuration after the object has been created, retaining the value originally configured.\n\nThe attribute %s is decided by the provider alone and therefore there can be no configured value to compare with. Including this attribute in ignore_changes has no effect. Remove the attribute from ignore_changes to quiet this warning.", attrDisplayPath),
+							Detail:   fmt.Sprintf("Adding an attribute name to ignore_changes tells Bogform to ignore future changes to the argument in configuration after the object has been created, retaining the value originally configured.\n\nThe attribute %s is decided by the provider alone and therefore there can be no configured value to compare with. Including this attribute in ignore_changes has no effect. Remove the attribute from ignore_changes to quiet this warning.", attrDisplayPath),
 							Subject:  &config.TypeRange,
 						})
 					}

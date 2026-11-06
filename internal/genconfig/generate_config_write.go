@@ -23,7 +23,7 @@ func ValidateTargetFile(out string) (diags tfdiags.Diagnostics) {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Target generated file already exists",
-			"OpenTofu can only write generated config into a new file. Either choose a different target location or move all existing configuration out of the target file, delete it and try again."))
+			"Bogform can only write generated config into a new file. Either choose a different target location or move all existing configuration out of the target file, delete it and try again."))
 
 	}
 	return diags
@@ -47,26 +47,26 @@ func (c *Change) MaybeWriteConfig(writer io.Writer, out string) (io.Writer, bool
 					diags = diags.Append(tfdiags.Sourceless(
 						tfdiags.Error,
 						"Failed to create target generated file",
-						fmt.Sprintf("OpenTofu did not have permission to create the generated file (%s) in the target directory. Please modify permissions over the target directory, and try again.", out)))
+						fmt.Sprintf("Bogform did not have permission to create the generated file (%s) in the target directory. Please modify permissions over the target directory, and try again.", out)))
 					return nil, false, diags
 				}
 
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Failed to create target generated file",
-					fmt.Sprintf("OpenTofu could not create the generated file (%s) in the target directory: %v. Depending on the error message, this may be a bug in OpenTofu itself. If so, please report it!", out, err)))
+					fmt.Sprintf("Bogform could not create the generated file (%s) in the target directory: %v. Depending on the error message, this may be a bug in Bogform itself. If so, please report it!", out, err)))
 				return nil, false, diags
 			} else {
 				writer = w
 			}
 
-			header := "# __generated__ by OpenTofu\n# Please review these resources and move them into your main configuration files.\n"
+			header := "# __generated__ by Bogform\n# Please review these resources and move them into your main configuration files.\n"
 			// Missing the header from the file, isn't the end of the world
 			// so if this did return an error, then we will just ignore it.
 			_, _ = writer.Write([]byte(header))
 		}
 
-		header := "\n# __generated__ by OpenTofu"
+		header := "\n# __generated__ by Bogform"
 		if len(c.ImportID) > 0 {
 			header += fmt.Sprintf(" from %q", c.ImportID)
 		}
@@ -75,7 +75,7 @@ func (c *Change) MaybeWriteConfig(writer io.Writer, out string) (io.Writer, bool
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Warning,
 				"Failed to save generated config",
-				fmt.Sprintf("OpenTofu encountered an error while writing generated config: %v. The config for %s must be created manually before applying. Depending on the error message, this may be a bug in OpenTofu itself. If so, please report it!", err, c.Addr)))
+				fmt.Sprintf("Bogform encountered an error while writing generated config: %v. The config for %s must be created manually before applying. Depending on the error message, this may be a bug in Bogform itself. If so, please report it!", err, c.Addr)))
 		}
 		wroteConfig = true
 	}

@@ -158,7 +158,7 @@ func TestRenderHuman_Imports(t *testing.T) {
 				},
 			},
 			output: `
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.resource will be imported
   # (imported from "1D5F5E9E-F2E5-401B-9ED5-692A215AC67E")
@@ -199,7 +199,7 @@ Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 				},
 			},
 			output: `
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.resource will be imported
   # imported using resource identity: {
@@ -249,7 +249,7 @@ Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 				},
 			},
 			output: `
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.resource will be imported
   # imported using resource identity: {
@@ -303,7 +303,7 @@ Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 				},
 			},
 			output: `
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.resource will be imported
   # (config will be generated)
@@ -344,7 +344,7 @@ Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 				},
 			},
 			output: `
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.before has moved to test_resource.after
   # (imported from "1D5F5E9E-F2E5-401B-9ED5-692A215AC67E")
@@ -384,11 +384,11 @@ Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 				},
 			},
 			output: `
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   ~ update in-place (current -> planned)
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.after will be updated in-place
   # (moved from test_resource.before)
@@ -428,11 +428,11 @@ Plan: 1 to import, 0 to add, 1 to change, 0 to destroy.
 				},
 			},
 			output: `
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   ~ update in-place (current -> planned)
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.resource will be updated in-place
   # (imported from "1D5F5E9E-F2E5-401B-9ED5-692A215AC67E")
@@ -469,11 +469,11 @@ Plan: 1 to import, 0 to add, 1 to change, 0 to destroy.
 				},
 			},
 			output: `
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   ~ update in-place (current -> planned)
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.resource will be updated in-place
   # (will be imported first)
@@ -514,11 +514,11 @@ Plan: 1 to import, 0 to add, 1 to change, 0 to destroy.
 				},
 			},
 			output: `
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   ~ update in-place (current -> planned)
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.resource will be updated in-place
   # imported using resource identity: {
@@ -561,11 +561,11 @@ Plan: 1 to import, 0 to add, 1 to change, 0 to destroy.
 				},
 			},
 			output: `
-OpenTofu used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
+Bogform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
 +/- create replacement and then destroy
 
-OpenTofu will perform the following actions:
+Bogform will perform the following actions:
 
   # test_resource.resource must be replaced
   # (imported from "1D5F5E9E-F2E5-401B-9ED5-692A215AC67E")
@@ -757,7 +757,7 @@ func TestResourceChange_primitiveTypes(t *testing.T) {
 				},
 			},
 			RequiredReplace: cty.NewPathSet(),
-			ExpectedOutput: `  # test_instance.example will be removed from the OpenTofu state but will not be destroyed
+			ExpectedOutput: `  # test_instance.example will be removed from the Bogform state but will not be destroyed
   . resource "test_instance" "example" {
     id = "i-02ae66f368e8518a9"
 }`,
@@ -776,7 +776,7 @@ func TestResourceChange_primitiveTypes(t *testing.T) {
 				},
 			},
 			RequiredReplace: cty.NewPathSet(),
-			ExpectedOutput: `  # test_instance.example (deposed object byebye) will be removed from the OpenTofu state but will not be destroyed
+			ExpectedOutput: `  # test_instance.example (deposed object byebye) will be removed from the Bogform state but will not be destroyed
   # (left over from a partially-failed replacement of this instance)
   . resource "test_instance" "example" {
     id = "i-02ae66f368e8518a9"
@@ -6433,7 +6433,7 @@ func TestResourceChange_actionReason(t *testing.T) {
 			After:           nullVal,
 			Schema:          emptySchema,
 			RequiredReplace: cty.NewPathSet(),
-			ExpectedOutput: `  # test_instance.example will be removed from the OpenTofu state but will not be destroyed
+			ExpectedOutput: `  # test_instance.example will be removed from the Bogform state but will not be destroyed
   . resource "test_instance" "example" {}`,
 		},
 		"forget because no resource configuration": {
@@ -6445,7 +6445,7 @@ func TestResourceChange_actionReason(t *testing.T) {
 			After:           nullVal,
 			Schema:          emptySchema,
 			RequiredReplace: cty.NewPathSet(),
-			ExpectedOutput: `  # module.foo.test_instance.example will be removed from the OpenTofu state but will not be destroyed
+			ExpectedOutput: `  # module.foo.test_instance.example will be removed from the Bogform state but will not be destroyed
   . resource "test_instance" "example" {}`,
 		},
 		"forget because no module": {
@@ -6457,7 +6457,7 @@ func TestResourceChange_actionReason(t *testing.T) {
 			After:           nullVal,
 			Schema:          emptySchema,
 			RequiredReplace: cty.NewPathSet(),
-			ExpectedOutput: `  # module.foo[1].test_instance.example will be removed from the OpenTofu state but will not be destroyed
+			ExpectedOutput: `  # module.foo[1].test_instance.example will be removed from the Bogform state but will not be destroyed
   . resource "test_instance" "example" {}`,
 		},
 	}
@@ -7335,7 +7335,7 @@ func TestResourceChange_sensitiveVariable(t *testing.T) {
 					},
 				},
 			},
-			ExpectedOutput: `  # test_instance.example will be removed from the OpenTofu state but will not be destroyed
+			ExpectedOutput: `  # test_instance.example will be removed from the Bogform state but will not be destroyed
   . resource "test_instance" "example" {
     ami        = (sensitive value)
     id         = "i-02ae66f368e8518a9"
@@ -7591,7 +7591,7 @@ func TestResourceChange_moved(t *testing.T) {
 				},
 			},
 			RequiredReplace: cty.NewPathSet(),
-			ExpectedOutput: `  # test_instance.example will be removed from the OpenTofu state but will not be destroyed
+			ExpectedOutput: `  # test_instance.example will be removed from the Bogform state but will not be destroyed
   # (moved from test_instance.previous)
   . resource "test_instance" "example" {
     id = "12345"

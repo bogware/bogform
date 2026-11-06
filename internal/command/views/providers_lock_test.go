@@ -109,12 +109,12 @@ func TestProvidersLockView(t *testing.T) {
 			viewCall: func(v ProvidersLock) {
 				v.UpdatedSuccessfully(true)
 			},
-			wantStdout: withNewline("\nSuccess! OpenTofu has updated the lock file.\n\nReview the changes in .terraform.lock.hcl and then commit to your\nversion control system to retain the new checksums.\n"),
+			wantStdout: withNewline("\nSuccess! Bogform has updated the lock file.\n\nReview the changes in .terraform.lock.hcl and then commit to your\nversion control system to retain the new checksums.\n"),
 			wantStderr: "",
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Success! OpenTofu has updated the lock file. Review the changes in .terraform.lock.hcl and then commit to your version control system to retain the new checksums",
+					"@message": "Success! Bogform has updated the lock file. Review the changes in .terraform.lock.hcl and then commit to your version control system to retain the new checksums",
 					"@module":  "tofu.ui",
 				},
 			},
@@ -123,12 +123,12 @@ func TestProvidersLockView(t *testing.T) {
 			viewCall: func(v ProvidersLock) {
 				v.UpdatedSuccessfully(false)
 			},
-			wantStdout: withNewline("\nSuccess! OpenTofu has validated the lock file and found no need for changes."),
+			wantStdout: withNewline("\nSuccess! Bogform has validated the lock file and found no need for changes."),
 			wantStderr: "",
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Success! OpenTofu has validated the lock file and found no need for changes.",
+					"@message": "Success! Bogform has validated the lock file and found no need for changes.",
 					"@module":  "tofu.ui",
 				},
 			},

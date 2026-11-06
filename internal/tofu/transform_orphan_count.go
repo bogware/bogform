@@ -37,7 +37,7 @@ func (t *OrphanResourceInstanceCountTransformer) Transform(_ context.Context, g 
 
 	// This is an O(n*m) analysis, which we accept for now because the
 	// number of instances of a single resource ought to always be small in any
-	// reasonable OpenTofu configuration.
+	// reasonable Bogform configuration.
 Have:
 	for key, inst := range rs.Instances {
 		// Instances which have no current objects (only one or more

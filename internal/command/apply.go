@@ -22,9 +22,9 @@ func ApplyCommander() Command {
 	cmd := Command{
 		Name:  "apply",
 		Short: "Create or update infrastructure",
-		Long: `Creates or updates infrastructure according to OpenTofu configuration files in the current directory.
+		Long: `Creates or updates infrastructure according to Bogform configuration files in the current directory.
 
-By default, OpenTofu will generate a new plan and present it for your approval before taking any action. You can optionally provide a plan file created by a previous call to "tofu plan", in which case OpenTofu will take the actions described in that plan without any confirmation prompt.`,
+By default, Bogform will generate a new plan and present it for your approval before taking any action. You can optionally provide a plan file created by a previous call to "bogform plan", in which case Bogform will take the actions described in that plan without any confirmation prompt.`,
 
 		GroupID: MainCommandGroup.ID,
 	}
@@ -41,10 +41,10 @@ func DestroyCommander() Command {
 	cmd := Command{
 		Name:  "destroy",
 		Short: "Destroy previously-created infrastructure",
-		Long: `Destroy OpenTofu-managed infrastructure.
+		Long: `Destroy Bogform-managed infrastructure.
 
 This command is a convenience alias for:
-    tofu apply -destroy`,
+    bogform apply -destroy`,
 
 		GroupID: MainCommandGroup.ID,
 	}
@@ -57,7 +57,7 @@ This command is a convenience alias for:
 	return cmd
 }
 
-// ApplyCommand is a Command implementation that applies a OpenTofu
+// ApplyCommand is a Command implementation that applies a Bogform
 // configuration and actually builds or changes infrastructure.
 type ApplyCommand struct {
 	Meta
@@ -131,7 +131,7 @@ func (c ApplyCommand) Execute(args *arguments.Apply, view views.Apply) int {
 	}
 
 	// Render the resource count and outputs, unless those counts are being
-	// rendered already in a remote OpenTofu process.
+	// rendered already in a remote Bogform process.
 	if rb, isRemoteBackend := be.(BackendWithRemoteTerraformVersion); !isRemoteBackend || rb.IsLocalOperations() {
 		view.ResourceCount(args.State.StateOutPath)
 		if !c.Destroy && op.State != nil {
@@ -183,7 +183,7 @@ func (c *ApplyCommand) LoadPlanFile(path string, enc encryption.Encryption) (*pl
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Destroy can't be called with a plan file",
-				fmt.Sprintf("If this plan was created using plan -destroy, apply it using:\n  tofu apply %q", path),
+				fmt.Sprintf("If this plan was created using plan -destroy, apply it using:\n  bogform apply %q", path),
 			))
 			return nil, diags
 		}
@@ -213,7 +213,7 @@ func (c *ApplyCommand) PrepareBackend(ctx context.Context, planFile *planfile.Wr
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Failed to read plan from plan file",
-				"The given plan file does not have a valid backend configuration. This is a bug in the OpenTofu command that generated this plan file.",
+				"The given plan file does not have a valid backend configuration. This is a bug in the Bogform command that generated this plan file.",
 			))
 			return nil, diags
 		}

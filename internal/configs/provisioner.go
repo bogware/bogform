@@ -41,7 +41,7 @@ func decodeProvisionerBlock(block *hcl.Block) (*Provisioner, hcl.Diagnostics) {
 		diags = append(diags, &hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  fmt.Sprintf("The \"%s\" provisioner has been removed", pv.Type),
-			Detail:   fmt.Sprintf("The \"%s\" provisioner is deprecated and has been removed from OpenTofu.", pv.Type),
+			Detail:   fmt.Sprintf("The \"%s\" provisioner is deprecated and has been removed from Bogform.", pv.Type),
 			Subject:  &pv.TypeRange,
 		})
 		return nil, diags
@@ -142,7 +142,7 @@ func decodeProvisionerBlock(block *hcl.Block) (*Provisioner, hcl.Diagnostics) {
 			diags = append(diags, &hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Reserved block type name in provisioner block",
-				Detail:   fmt.Sprintf("The block type name %q is reserved for use by OpenTofu in a future version.", block.Type),
+				Detail:   fmt.Sprintf("The block type name %q is reserved for use by Bogform in a future version.", block.Type),
 				Subject:  &block.TypeRange,
 			})
 		}

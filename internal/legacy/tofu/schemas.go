@@ -18,7 +18,7 @@ import (
 	"github.com/bogware/bogform/internal/tfdiags"
 )
 
-// Schemas is a container for various kinds of schema that OpenTofu needs
+// Schemas is a container for various kinds of schema that Bogform needs
 // during processing.
 type Schemas struct {
 	Providers    map[addrs.Provider]*ProviderSchema

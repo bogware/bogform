@@ -56,7 +56,7 @@ func LoadLocksFromFile(filename string) (*Locks, tfdiags.Diagnostics) {
 // a plan file, in which case the given filename will typically be a
 // placeholder that will only be seen in the unusual case that the plan file
 // contains an invalid lock file, which should only be possible if the user
-// edited it directly (OpenTofu bugs notwithstanding).
+// edited it directly (Bogform bugs notwithstanding).
 func LoadLocksFromBytes(src []byte, filename string) (*Locks, tfdiags.Diagnostics) {
 	return loadLocks(func(parser *hclparse.Parser) (*hcl.File, hcl.Diagnostics) {
 		return parser.ParseHCL(src, filename)
@@ -130,7 +130,7 @@ func SaveLocksToBytes(locks *Locks) ([]byte, tfdiags.Diagnostics) {
 	// In other uses of the "hclwrite" package we typically try to make
 	// surgical updates to the author's existing files, preserving their
 	// block ordering, comments, etc. We intentionally don't do that here
-	// to reinforce the fact that this file primarily belongs to OpenTofu,
+	// to reinforce the fact that this file primarily belongs to Bogform,
 	// and to help ensure that VCS diffs of the file primarily reflect
 	// changes that actually affect functionality rather than just cosmetic
 	// changes, by maintaining it in a highly-normalized form.
@@ -140,12 +140,12 @@ func SaveLocksToBytes(locks *Locks) ([]byte, tfdiags.Diagnostics) {
 
 	// End-users _may_ edit the lock file in exceptional situations, like
 	// working around potential dependency selection bugs, but we intend it
-	// to be primarily maintained automatically by the "tofu init"
+	// to be primarily maintained automatically by the "bogform init"
 	// command.
 	rootBody.AppendUnstructuredTokens(hclwrite.Tokens{
 		{
 			Type:  hclsyntax.TokenComment,
-			Bytes: []byte("# This file is maintained automatically by \"tofu init\".\n"),
+			Bytes: []byte("# This file is maintained automatically by \"bogform init\".\n"),
 		},
 		{
 			Type:  hclsyntax.TokenComment,
@@ -192,7 +192,7 @@ func decodeLocksFromHCL(locks *Locks, body hcl.Body) tfdiags.Diagnostics {
 			// "module" is just a placeholder for future enhancement, so we
 			// can mostly-ignore the this block type we intend to add in
 			// future, but warn in case someone tries to use one e.g. if they
-			// downgraded to an earlier version of OpenTofu.
+			// downgraded to an earlier version of Bogform.
 			{
 				Type:       "module",
 				LabelNames: []string{"path"},
@@ -233,7 +233,7 @@ func decodeLocksFromHCL(locks *Locks, body hcl.Body) tfdiags.Diagnostics {
 				diags = diags.Append(&hcl.Diagnostic{
 					Severity: hcl.DiagWarning,
 					Summary:  "Dependency locks for modules are not yet supported",
-					Detail:   fmt.Sprintf("OpenTofu v%s only supports dependency locks for providers, not for modules. This configuration may be intended for a later version of OpenTofu that also supports dependency locks for modules.", currentVersion),
+					Detail:   fmt.Sprintf("Bogform v%s only supports dependency locks for providers, not for modules. This configuration may be intended for a later version of Bogform that also supports dependency locks for modules.", currentVersion),
 					Subject:  block.TypeRange.Ptr(),
 				})
 				seenModule = true
@@ -277,7 +277,7 @@ func decodeProviderLockFromHCL(block *hcl.Block) (*ProviderLock, tfdiags.Diagnos
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Invalid provider source address",
-				Detail:   fmt.Sprintf("Cannot lock a version for built-in provider %s. Built-in providers are bundled inside OpenTofu itself, so you can't select a version for them independently of the OpenTofu release you are currently running.", addr),
+				Detail:   fmt.Sprintf("Cannot lock a version for built-in provider %s. Built-in providers are bundled inside Bogform itself, so you can't select a version for them independently of the Bogform release you are currently running.", addr),
 				Subject:  block.LabelRanges[0].Ptr(),
 			})
 			return nil, diags

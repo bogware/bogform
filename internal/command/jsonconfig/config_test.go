@@ -411,7 +411,7 @@ func TestMarshalModule(t *testing.T) {
 		},
 		// TODO: More test cases covering things other than input variables.
 		// (For now the other details are mainly tested in package command,
-		// as part of the tests for "tofu show".)
+		// as part of the tests for "bogform show".)
 	}
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {

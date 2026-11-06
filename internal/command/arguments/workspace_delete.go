@@ -14,7 +14,7 @@ type WorkspaceDelete struct {
 	WorkspaceName string
 
 	// Force allows the user to forcefully delete a workspace removing the still existing resources
-	// from the OpenTofu's management.
+	// from the Bogform's management.
 	Force bool
 
 	// View represents the global view options
@@ -33,7 +33,7 @@ func BindWorkspaceDelete(cli *CommandLine) *WorkspaceDelete {
 		State: BindState(cli, stateFlagLock),
 	}
 
-	cli.BoolVar(&ret.Force, "force", false, "Remove a workspace even if it is managing resources. OpenTofu can no longer track or manage the workspace's infrastructure.")
+	cli.BoolVar(&ret.Force, "force", false, "Remove a workspace even if it is managing resources. Bogform can no longer track or manage the workspace's infrastructure.")
 
 	cli.ArgHelp = "Expected a single argument: NAME."
 	cli.PositionalArg(&ret.WorkspaceName, "NAME", false)

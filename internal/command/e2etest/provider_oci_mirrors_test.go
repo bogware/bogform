@@ -33,18 +33,18 @@ import (
 // more end-to-end tests here, because end-to-end tests are harder to maintain and
 // harder to debug when they fail.
 
-// TestProviderOCIMirrors is an end-to-end test that runs "tofu init" with the CLI
+// TestProviderOCIMirrors is an end-to-end test that runs "bogform init" with the CLI
 // configuration specifying an oci_mirror installation source, which should therefore
 // successfully install some providers from a fake OCI registry that runs inside this
 // test program.
 //
 // (This is therefore not quite as "end-to-end" as most of our tests in this package,
-// but it does at least test the part of the behavior that lives inside OpenTofu
+// but it does at least test the part of the behavior that lives inside Bogform
 // end-to-end, even though the OCI registry server is faked out.)
 func TestProviderOCIMirrors(t *testing.T) {
 	// Our typical rule for external service access in e2etests is that it's okay
-	// to access servers run by the OpenTofu project when TF_ACC=1 is set in the
-	// environment. However, the OpenTofu project does not currently run an
+	// to access servers run by the Bogform project when TF_ACC=1 is set in the
+	// environment. However, the Bogform project does not currently run an
 	// OCI registry and we don't want to rely on anything we can't influence the
 	// reliability of, so for this test we rely on a local fake registry implementation
 	// based on some OCI layouts provided as test fixtures.
@@ -103,8 +103,8 @@ func TestProviderOCIMirrors(t *testing.T) {
 	tf.AddEnv("TF_DATA_DIR=" + dataDir)
 	_, stderr, err := tf.Run("init", "-backend=false")
 	if err != nil {
-		t.Logf("tofu init stderr:\n%s", stderr)
-		t.Fatalf("failed to run tofu init: %s", err)
+		t.Logf("bogform init stderr:\n%s", stderr)
+		t.Fatalf("failed to run bogform init: %s", err)
 	}
 
 	// If installation succeeded then we should now be able to successfully interact

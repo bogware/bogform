@@ -595,8 +595,8 @@ func TestPlan_refreshTrue(t *testing.T) {
 }
 
 // A consumer relies on the fact that running
-// tofu plan -refresh=false -refresh=true gives the same result as
-// tofu plan -refresh=true.
+// bogform plan -refresh=false -refresh=true gives the same result as
+// bogform plan -refresh=true.
 // While the flag logic itself is handled by the stdlib flags package (and code
 // in main() that is tested elsewhere), we verify the overall plan command
 // behaviour here in case we accidentally break this with additional logic.
@@ -996,11 +996,11 @@ func TestPlan_resource_variable_inputs(t *testing.T) {
 }
 
 // This test deals with a particularly-narrow bad interaction between different
-// components in OpenTofu:
+// components in Bogform:
 //
 //   - The main language runtime uses static references in the configuration as
 //     part of a heuristic to produce a set of "relevant attributes", whose
-//     changes outside of OpenTofu (if any) might be interesting to call out
+//     changes outside of Bogform (if any) might be interesting to call out
 //     in the plan diff UI.
 //   - The "try" and "can" functions allow there to be references to resources
 //     with attribute paths that aren't actually correct for the resource
@@ -1009,7 +1009,7 @@ func TestPlan_resource_variable_inputs(t *testing.T) {
 //   - The human-oriented plan renderer tries to correlate changes described in
 //     the "resource drift" part of the plan with paths appearing in
 //     "relevant attributes" to limit the rendering of "Changes outside of
-//     OpenTofu" only to changes that seem like they might have contributed to
+//     Bogform" only to changes that seem like they might have contributed to
 //     the set of planned changes. Because of the previous two points, the
 //     "relevant attributes" attribute path data cannot be trusted to
 //     definitely conform to the schema of the indicated resource type and so
@@ -1055,7 +1055,7 @@ func TestPlan_withInvalidReferencesInTry(t *testing.T) {
 		ReadResourceFn: func(req providers.ReadResourceRequest) providers.ReadResourceResponse {
 			// The following intentionally changes the "phase" attribute of
 			// the values map, if present, to create a situation that the
-			// language runtime would recognize as "changes outside of OpenTofu",
+			// language runtime would recognize as "changes outside of Bogform",
 			// reported as "resource_drift" in the plan JSON.
 			//
 			// Because test.b.values is derived from test.a.values, that "drift"
@@ -1203,7 +1203,7 @@ func TestPlan_withInvalidReferencesInTry(t *testing.T) {
 	}
 }
 
-// Test that tofu properly merges provider configuration that's split
+// Test that bogform properly merges provider configuration that's split
 // between config files and interactive input variables.
 // https://github.com/hashicorp/terraform/issues/28956
 func TestPlan_providerConfigMerge(t *testing.T) {
@@ -1563,7 +1563,7 @@ func TestPlan_init_required(t *testing.T) {
 		t.Fatalf("expected error, got success")
 	}
 	got := output.Stderr()
-	if !strings.Contains(got, "tofu init") || !strings.Contains(got, "provider registry.opentofu.org/hashicorp/test: required by this configuration but no version is selected") {
+	if !strings.Contains(got, "bogform init") || !strings.Contains(got, "provider registry.opentofu.org/hashicorp/test: required by this configuration but no version is selected") {
 		t.Fatal("wrong error message in output:", got)
 	}
 }
@@ -1951,7 +1951,7 @@ func TestPlan_warnings(t *testing.T) {
 			"warning 1",
 			"warning 2",
 			"warning 3",
-			"To see the full warning notes, run OpenTofu without -compact-warnings.",
+			"To see the full warning notes, run Bogform without -compact-warnings.",
 		}
 		for _, want := range wantWarnings {
 			if !strings.Contains(output.Stdout(), want) {
@@ -2116,7 +2116,7 @@ func TestPlan_concise(t *testing.T) {
 // planFixtureProvider returns a mock provider that is configured for basic
 // operation with the configuration in testdata/plan. This mock has
 // GetSchemaResponse and PlanResourceChangeFn populated, with the plan
-// step just passing through the new object proposed by OpenTofu Core.
+// step just passing through the new object proposed by Bogform Core.
 func planFixtureProvider() *tofu.MockProvider {
 	p := testProvider()
 	p.GetProviderSchemaResponse = planFixtureSchema()
@@ -2157,7 +2157,7 @@ func planVarsFixtureSchema() *providers.GetProviderSchemaResponse {
 // planVarsFixtureProvider returns a mock provider that is configured for basic
 // operation with the configuration in testdata/plan-vars. This mock has
 // GetSchemaResponse and PlanResourceChangeFn populated, with the plan
-// step just passing through the new object proposed by OpenTofu Core.
+// step just passing through the new object proposed by Bogform Core.
 func planVarsFixtureProvider() *tofu.MockProvider {
 	p := testProvider()
 	p.GetProviderSchemaResponse = planVarsFixtureSchema()

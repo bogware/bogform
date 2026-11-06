@@ -19,7 +19,7 @@ import (
 // then later making use of them to fully enumerate all of the instances
 // of an object.
 //
-// The two repeatable object types in OpenTofu are modules and resources.
+// The two repeatable object types in Bogform are modules and resources.
 // Because resources belong to modules and modules can nest inside other
 // modules, module expansion in particular has a recursive effect that can
 // cause deep objects to expand exponentially. Expander assumes that all

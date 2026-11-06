@@ -20,15 +20,15 @@ import (
 // InputValue should represent as directly as possible what the user set the
 // variable to, without any attempt to convert the value to the variable's
 // type constraint or substitute the configured default values for variables
-// that wasn't set. Those adjustments will be handled by OpenTofu Core itself
+// that wasn't set. Those adjustments will be handled by Bogform Core itself
 // as part of performing the requested operation.
 //
-// A OpenTofu Core caller must provide an InputValue object for each of the
+// A Bogform Core caller must provide an InputValue object for each of the
 // variables declared in the root module, even if the end user didn't provide
 // an explicit value for some of them. See the Value field documentation for
 // how to handle that situation.
 //
-// OpenTofu Core also internally uses InputValue to represent the raw value
+// Bogform Core also internally uses InputValue to represent the raw value
 // provided for a variable in a child module call, following the same
 // conventions. However, that's an implementation detail not visible to
 // outside callers.
@@ -52,7 +52,7 @@ type InputValue struct {
 	Value cty.Value
 
 	// SourceType is a high-level category for where the value of Value
-	// came from, which OpenTofu Core uses to tailor some of its error
+	// came from, which Bogform Core uses to tailor some of its error
 	// messages to be more helpful to the user.
 	//
 	// Some SourceType values should be accompanied by a populated SourceRange
@@ -296,7 +296,7 @@ func checkInputVariables(vcs map[string]*configs.Variable, vs InputValues) tfdia
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Unassigned variable",
-				fmt.Sprintf("The input variable %q has not been assigned a value. This is a bug in OpenTofu; please report it in a GitHub issue.", name),
+				fmt.Sprintf("The input variable %q has not been assigned a value. This is a bug in Bogform; please report it in a GitHub issue.", name),
 			))
 			continue
 		}

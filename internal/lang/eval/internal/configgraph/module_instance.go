@@ -42,8 +42,8 @@ type ModuleInstance struct {
 	// results.
 	//
 	// This is left as nil for module instances that are created implicitly,
-	// such as a root module which is being "called" directly from OpenTofu CLI
-	// in a command like "tofu plan".
+	// such as a root module which is being "called" directly from Bogform CLI
+	// in a command like "bogform plan".
 	CallDeclRange *tfdiags.SourceRange
 }
 

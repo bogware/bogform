@@ -185,7 +185,7 @@ func (k DeposedKey) GoString() string {
 // [ResourceInstanceObjectGeneration].
 //
 // The older type comes from a time where things were modeled in a more
-// complicated way, but in today's OpenTofu it's just a more expensive way to
+// complicated way, but in today's Bogform it's just a more expensive way to
 // represent the same information that [DeposedKey] can represent, and so it
 // should not be used in new code. Instead, just use [DeposedKey] directly and
 // use [NotDeposed] to represent the "current" object for a resource instance.

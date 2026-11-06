@@ -67,11 +67,11 @@ func TestLogoutViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Success! OpenTofu has removed the stored API token for app.example.com",
+					"@message": "Success! Bogform has removed the stored API token for app.example.com",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "Success! OpenTofu has removed the stored API token for app.example.com.\n\n",
+			wantStdout: "Success! Bogform has removed the stored API token for app.example.com.\n\n",
 		},
 		// Diagnostics
 		"warning": {

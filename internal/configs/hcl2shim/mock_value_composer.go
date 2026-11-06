@@ -110,7 +110,7 @@ func (mvc MockValueComposer) composeMockValueForAttributes(attrs map[string]*con
 		k, attr := kv.k, kv.v
 
 		if attr.NestedType != nil && attr.NestedType.Nesting == configschema.NestingGroup {
-			// This should not be possible to hit.  Neither tofu or the provider framework will allow
+			// This should not be possible to hit.  Neither bogform or the provider framework will allow
 			// NestingGroup in here.  However, this could change at some point and we want to be prepared for it.
 			diags = diags.Append(tfdiags.WholeContainingBody(
 				tfdiags.Error,
@@ -326,7 +326,7 @@ func (mvc MockValueComposer) getMockValueForBlock(targetType cty.Type, configVal
 		return cty.NilVal, diags.Append(tfdiags.WholeContainingBody(
 			tfdiags.Error,
 			fmt.Sprintf("Unexpected block type: %v", targetType.FriendlyName()),
-			"Failed to generate mock value for this block type. Please, report it as an issue at OpenTofu repository, since it's not expected.",
+			"Failed to generate mock value for this block type. Please, report it as an issue at Bogform repository, since it's not expected.",
 		))
 	}
 }

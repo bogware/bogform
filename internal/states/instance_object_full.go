@@ -119,7 +119,7 @@ func (s *SyncState) ResourceInstanceObjectFull(addr addrs.AbsResourceInstanceObj
 			// We're assuming here that we'll never encounter a legacy state
 			// snapshot that uses AttrsFlat, because that form hasn't been
 			// used since Terraform v0.11 and we don't support upgrading
-			// to OpenTofu directly from such an old version of Terraform.
+			// to Bogform directly from such an old version of Terraform.
 			ValueJSON: slices.Clone(srcObj.AttrsJSON),
 			SensitivePaths: slices.Collect(func(yield func(cty.Path) bool) {
 				for _, pvm := range srcObj.AttrSensitivePaths {
@@ -252,11 +252,11 @@ type ValueOrJSONEquivalent interface {
 // on, since they vary only by the type of the Value field.
 type ResourceInstanceObjectRepr[V ValueOrJSONEquivalent] struct {
 	// Value is the object-typed value representing the remote object within
-	// OpenTofu.
+	// Bogform.
 	Value V
 
 	// Private is an opaque value set by the provider when this object was
-	// last created or updated. OpenTofu Core does not use this value in
+	// last created or updated. Bogform Core does not use this value in
 	// any way and it is not exposed anywhere in the user interface, so
 	// a provider can use it for retaining any necessary private state.
 	Private []byte
@@ -298,7 +298,7 @@ type ResourceInstanceObjectRepr[V ValueOrJSONEquivalent] struct {
 	// along with some spurious extras that we match due to the lossiness
 	// of this representation.
 	//
-	// This exists to keep compatibility with older versions of OpenTofu
+	// This exists to keep compatibility with older versions of Bogform
 	// not yet using is more precise runtime and will only be used
 	// if Dependencies is not present.
 	ConfigDependencies []addrs.ConfigResource

@@ -72,7 +72,7 @@ type Config struct {
 	// ModulesDir is a path to a directory where descendent modules are
 	// (or should be) installed. (This is usually the
 	// .terraform/modules directory, in the common case where this package
-	// is being loaded from the main OpenTofu CLI package.)
+	// is being loaded from the main Bogform CLI package.)
 	ModulesDir string
 
 	// AllowLanguageExperiments specifies whether subsequent Loader.LoadConfig (and
@@ -86,7 +86,7 @@ type Config struct {
 	//
 	// We don't currently have any support for language experiments. We'll
 	// add support here later if we decide to make use of language experiments
-	// in future versions of OpenTofu.
+	// in future versions of Bogform.
 	// This is the reason why this attribute is not used.
 	AllowLanguageExperiments bool
 }
@@ -149,7 +149,7 @@ func (l *loader) Sources() map[string]*hcl.File {
 }
 
 // IsConfigDir returns true if and only if the given directory contains at
-// least one OpenTofu configuration file. This is a wrapper around calling
+// least one Bogform configuration file. This is a wrapper around calling
 // the same method name on the loader's parser.
 func (l *loader) IsConfigDir(path string) bool {
 	return l.parser.IsConfigDir(path)

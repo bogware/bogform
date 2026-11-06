@@ -89,7 +89,7 @@ func TestGet_update(t *testing.T) {
 }
 
 func TestGet_cancel(t *testing.T) {
-	// This test runs `tofu get` against a server that stalls indefinitely
+	// This test runs `bogform get` against a server that stalls indefinitely
 	// instead of responding, and then requests shutdown in the same way
 	// as package main would in response to SIGINT (or similar on other
 	// platforms). This ensures that slow requests can be interrupted.

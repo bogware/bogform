@@ -134,7 +134,7 @@ func TestEvaluateEnabledExpression_errors(t *testing.T) {
 			[]WantedError{
 				{
 					"Invalid enabled argument",
-					`The given "enabled" argument value is derived from a value that won't be known until the apply phase, so OpenTofu cannot determine whether an instance of this object is declared or not.`,
+					`The given "enabled" argument value is derived from a value that won't be known until the apply phase, so Bogform cannot determine whether an instance of this object is declared or not.`,
 				},
 			},
 		},

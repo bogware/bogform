@@ -22,24 +22,24 @@ type Workspace interface {
 	WorkspaceCreated(name string)
 	WarnWhenUsedAsEnvCmd(usedAsEnvCmd bool)
 
-	// `tofu workspace new` specific
+	// `bogform workspace new` specific
 	WorkspaceAlreadyExists(name string)
 	WorkspaceIsOverriddenNewError()
 
-	// `tofu workspace list` specific
+	// `bogform workspace list` specific
 	ListWorkspaces(workspaces []string, current string)
 	WorkspaceOverwrittenByEnvVarWarn()
 
-	// `tofu workspace select` specific
+	// `bogform workspace select` specific
 	WorkspaceChanged(name string)
 	WorkspaceIsOverriddenSelectError()
 
-	// `tofu workspace delete` specific
+	// `bogform workspace delete` specific
 	WorkspaceDeleted(name string)
 	DeletedWorkspaceNotEmpty(name string)
 	CannotDeleteCurrentWorkspace(name string)
 
-	// `tofu workspace show` specific
+	// `bogform workspace show` specific
 	WorkspaceShow(name string)
 
 	// Backend returns the non-command view that contains methods to provide
@@ -182,7 +182,7 @@ func (v *WorkspaceHuman) WorkspaceAlreadyExists(name string) {
 		tfdiags.Error,
 		fmt.Sprintf("Workspace %q already exists", name),
 		fmt.Sprintf(`A workspace having the given name already exists.
-Use "tofu workspace select %s" to switch to it.`, name),
+Use "bogform workspace select %s" to switch to it.`, name),
 	)})
 }
 
@@ -221,7 +221,7 @@ func (v *WorkspaceHuman) WorkspaceCreated(name string) {
 	const msg = `[reset][green][bold]Created and switched to workspace %q![reset][green]
 
 You're now on a new, empty workspace. Workspaces isolate their state,
-so if you run "tofu plan" OpenTofu will not see any existing state
+so if you run "bogform plan" Bogform will not see any existing state
 for this configuration.`
 	colorisedMsg := fmt.Sprintf(v.view.colorize.Color(msg), name)
 	_, _ = v.view.streams.Println(colorisedMsg)
@@ -259,7 +259,7 @@ func (v *WorkspaceHuman) DeletedWorkspaceNotEmpty(name string) {
 	v.Diagnostics(tfdiags.Diagnostics{tfdiags.Sourceless(
 		tfdiags.Warning,
 		fmt.Sprintf("%q was non-empty", name),
-		`The resources managed by the deleted workspace may still exist, but are no longer manageable by OpenTofu since the state has been deleted.`,
+		`The resources managed by the deleted workspace may still exist, but are no longer manageable by Bogform since the state has been deleted.`,
 	)})
 }
 
@@ -281,10 +281,10 @@ func (v *WorkspaceHuman) WarnWhenUsedAsEnvCmd(usedAsEnvCmd bool) {
 	}
 	v.Diagnostics(tfdiags.Diagnostics{tfdiags.Sourceless(
 		tfdiags.Warning,
-		`The "tofu env" family of commands is deprecated`,
-		`"Workspace" is now the preferred term for what earlier OpenTofu versions called "environment", to reduce ambiguity caused by the latter term colliding with other concepts.
+		`The "bogform env" family of commands is deprecated`,
+		`"Workspace" is now the preferred term for what earlier Bogform versions called "environment", to reduce ambiguity caused by the latter term colliding with other concepts.
 
-The "tofu workspace" commands should be used instead. "tofu env" will be removed in a future OpenTofu version.`,
+The "bogform workspace" commands should be used instead. "bogform env" will be removed in a future Bogform version.`,
 	)})
 }
 
@@ -305,7 +305,7 @@ func (v *WorkspaceJSON) Diagnostics(diags tfdiags.Diagnostics) {
 }
 
 func (v *WorkspaceJSON) WorkspaceAlreadyExists(name string) {
-	v.view.Error(fmt.Sprintf("Workspace %q already exists. Use \"tofu workspace select %s\" to switch to it", name, name))
+	v.view.Error(fmt.Sprintf("Workspace %q already exists. Use \"bogform workspace select %s\" to switch to it", name, name))
 }
 
 func (v *WorkspaceJSON) WorkspaceDoesNotExist(name string) {
@@ -325,7 +325,7 @@ func (v *WorkspaceJSON) WorkspaceOverwrittenByEnvVarWarn() {
 }
 
 func (v *WorkspaceJSON) WorkspaceCreated(name string) {
-	v.view.Info(fmt.Sprintf("Created and switched to workspace %q. You're now on a new, empty workspace. Workspaces isolate their state, so if you run \"tofu plan\" OpenTofu will not see any existing state for this configuration", name))
+	v.view.Info(fmt.Sprintf("Created and switched to workspace %q. You're now on a new, empty workspace. Workspaces isolate their state, so if you run \"bogform plan\" Bogform will not see any existing state for this configuration", name))
 }
 
 func (v *WorkspaceJSON) WorkspaceChanged(name string) {
@@ -345,7 +345,7 @@ func (v *WorkspaceJSON) WorkspaceDeleted(name string) {
 }
 
 func (v *WorkspaceJSON) DeletedWorkspaceNotEmpty(name string) {
-	v.view.Warn(fmt.Sprintf("%q was non-empty. The resources managed by the deleted workspace may still exist, but are no longer manageable by OpenTofu since the state has been deleted", name))
+	v.view.Warn(fmt.Sprintf("%q was non-empty. The resources managed by the deleted workspace may still exist, but are no longer manageable by Bogform since the state has been deleted", name))
 }
 
 func (v *WorkspaceJSON) CannotDeleteCurrentWorkspace(name string) {
@@ -360,7 +360,7 @@ func (v *WorkspaceJSON) WarnWhenUsedAsEnvCmd(usedAsEnvCmd bool) {
 	if !usedAsEnvCmd {
 		return
 	}
-	v.view.Warn("The \"tofu env\" family of commands is deprecated. Use \"tofu workspace\" instead")
+	v.view.Warn("The \"bogform env\" family of commands is deprecated. Use \"bogform workspace\" instead")
 }
 
 func (v *WorkspaceJSON) Backend() Backend {

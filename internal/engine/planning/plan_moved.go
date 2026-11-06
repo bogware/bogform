@@ -538,12 +538,12 @@ func (p *planGlue) validateMoves(ctx context.Context) tfdiags.Diagnostics {
 			var msg string
 			if isTargeting {
 				msg = fmt.Sprintf(
-					"Resource instances in your current state have moved to new addresses in the latest configuration. OpenTofu must include those resource instances while planning in order to ensure a correct result, but your -target=... options do not fully cover all of those resource instances.\n\nTo create a valid plan, either remove your -target=... options altogether or add the following additional target options:%s\n\nNote that adding these options may include further additional resource instances in your plan, in order to respect object dependencies.",
+					"Resource instances in your current state have moved to new addresses in the latest configuration. Bogform must include those resource instances while planning in order to ensure a correct result, but your -target=... options do not fully cover all of those resource instances.\n\nTo create a valid plan, either remove your -target=... options altogether or add the following additional target options:%s\n\nNote that adding these options may include further additional resource instances in your plan, in order to respect object dependencies.",
 					listBuf.String(),
 				)
 			} else {
 				msg = fmt.Sprintf(
-					"Resource instances in your current state have moved to new addresses in the latest configuration. OpenTofu must include those resource instances while planning in order to ensure a correct result, but your -exclude=... options exclude some of those resource instances.\n\nTo create a valid plan, either remove your -exclude=... options altogether or just specifically remove the following options:%s\n\nNote that removing these options may include further additional resource instances in your plan, in order to respect object dependencies.",
+					"Resource instances in your current state have moved to new addresses in the latest configuration. Bogform must include those resource instances while planning in order to ensure a correct result, but your -exclude=... options exclude some of those resource instances.\n\nTo create a valid plan, either remove your -exclude=... options altogether or just specifically remove the following options:%s\n\nNote that removing these options may include further additional resource instances in your plan, in order to respect object dependencies.",
 					listBuf.String(),
 				)
 			}
@@ -569,7 +569,7 @@ func (p *planGlue) validateMoves(ctx context.Context) tfdiags.Diagnostics {
 			tfdiags.Warning,
 			"Unresolved resource instance address changes",
 			fmt.Sprintf(
-				"OpenTofu tried to adjust resource instance addresses in the prior state based on change information recorded in the configuration, but some adjustments did not succeed due to existing objects already at the intended addresses:%s\n\nOpenTofu has planned to destroy these objects. If OpenTofu's proposed changes aren't appropriate, you must first resolve the conflicts using the \"tofu state\" subcommands and then create a new plan.",
+				"Bogform tried to adjust resource instance addresses in the prior state based on change information recorded in the configuration, but some adjustments did not succeed due to existing objects already at the intended addresses:%s\n\nBogform has planned to destroy these objects. If Bogform's proposed changes aren't appropriate, you must first resolve the conflicts using the \"bogform state\" subcommands and then create a new plan.",
 				itemsBuf.String(),
 			),
 		))

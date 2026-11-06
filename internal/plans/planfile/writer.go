@@ -72,7 +72,7 @@ type CreateArgs struct {
 // file that might already exist there.
 //
 // A plan file contains both a snapshot of the configuration and of the latest
-// state file in addition to the plan itself, so that OpenTofu can detect
+// state file in addition to the plan itself, so that Bogform can detect
 // if the world has changed since the plan was created and thus refuse to
 // apply it.
 func Create(filename string, args CreateArgs, enc encryption.PlanEncryption) error {
@@ -172,7 +172,7 @@ func writeDependencyLocksEntry(zw *zip.Writer, locks *depsfile.Locks) error {
 func writeSchemasEntry(zw *zip.Writer, args CreateArgs) error {
 	trimmed := prepareSchemasForWrite(args.Plan, args.Config, args.Schemas)
 	if len(trimmed) == 0 {
-		log.Printf("[TRACE] planfile: no schemas embedded in plan file; tofu show will need to fetch schemas from providers instead")
+		log.Printf("[TRACE] planfile: no schemas embedded in plan file; bogform show will need to fetch schemas from providers instead")
 		return nil
 	}
 	log.Printf("[TRACE] planfile: embedding trimmed schemas for %d provider(s) in plan file", len(trimmed))

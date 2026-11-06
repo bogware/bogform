@@ -1132,7 +1132,7 @@ func TestPrepareFinalInputVariableValue(t *testing.T) {
 
 // These tests cover the JSON syntax configuration edge case handling,
 // the background of which is described in detail in comments in the
-// evalVariableValidations function. Future versions of OpenTofu may
+// evalVariableValidations function. Future versions of Bogform may
 // be able to remove this behaviour altogether.
 func TestEvalVariableValidations_jsonErrorMessageEdgeCase(t *testing.T) {
 	cfgSrc := `{

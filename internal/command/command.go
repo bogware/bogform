@@ -32,7 +32,7 @@ const PluginPathFile = "plugin_path"
 const pluginMachineName = runtime.GOOS + "_" + runtime.GOARCH
 
 // DefaultPluginVendorDir is the location in the config directory to look for
-// user-added plugin binaries. OpenTofu only reads from this path if it
+// user-added plugin binaries. Bogform only reads from this path if it
 // exists, it is never created by tofu.
 const DefaultPluginVendorDir = "terraform.d/plugins/" + pluginMachineName
 
@@ -53,7 +53,7 @@ const DefaultParallelism = 10
 // that require a backend.Local.
 const ErrUnsupportedLocalOp = `The configured backend doesn't support this operation.
 
-The "backend" in OpenTofu defines how OpenTofu operates. The default
+The "backend" in Bogform defines how Bogform operates. The default
 backend performs all operations locally on your machine. Your configuration
 is configured to use a non-local backend. This backend doesn't support this
 operation.
@@ -260,7 +260,7 @@ func CommandUsage(namespace string, cmd Command, w io.Writer) {
 				fmt.Fprintf(&positionalArgs, " <%s>", name)
 			}
 		}
-		printHeader(fmt.Sprintf("Usage: tofu [global options] %s [options]%s\n", namespace+cmd.Name, positionalArgs.String()))
+		printHeader(fmt.Sprintf("Usage: bogform [global options] %s [options]%s\n", namespace+cmd.Name, positionalArgs.String()))
 	}
 
 	if cmd.Long != "" {
@@ -350,7 +350,7 @@ func RunCli(namespace string, cmd Command, meta Meta, diags tfdiags.Diagnostics)
 	}
 	if cmd.CommandLine.Operation != nil {
 		// FIXME: the -parallelism flag is used to control the concurrency of
-		// OpenTofu operations. At the moment, this value is used both to
+		// Bogform operations. At the moment, this value is used both to
 		// initialize the backend via the ContextOpts field inside CLIOpts, and to
 		// set a largely unused field on the Operation request. Again, there is no
 		// clear path to pass this value down, so we continue to mutate the Meta
@@ -404,7 +404,7 @@ func RootCommander(help *bool, ver *bool, chdir *string) Command {
 		Groups: []Group{MainCommandGroup, OtherCommandGroup},
 
 		UsageOverride: UsageOverride{
-			Usage:       "tofu [global options] <subcommand> [args]",
+			Usage:       "bogform [global options] <subcommand> [args]",
 			SingleSpace: true,
 		},
 	}

@@ -30,9 +30,9 @@ It is safe to run this command automatically, for example as a post-save check i
 system.
 
 Validation requires an initialized working directory with any referenced plugins and modules installed. To initialize a working directory for validation without accessing any configured remote backend, use:
-    tofu init -backend=false
+    bogform init -backend=false
 
-To verify configuration in the context of a particular run (a particular target workspace, input variable values, etc), use the 'tofu plan' command instead, which includes an implied validation check.`,
+To verify configuration in the context of a particular run (a particular target workspace, input variable values, etc), use the 'bogform plan' command instead, which includes an implied validation check.`,
 
 		GroupID: MainCommandGroup.ID,
 	}
@@ -79,7 +79,7 @@ func (c ValidateCommand) Execute(args *arguments.Validate, view views.Validate) 
 
 	// Validating with dev overrides in effect means that the result might
 	// not be valid for a stable release, so we'll warn about that in case
-	// the user is trying to use "tofu validate" as a sort of pre-flight
+	// the user is trying to use "bogform validate" as a sort of pre-flight
 	// check before submitting a change.
 	diags = diags.Append(c.providerDevOverrideRuntimeWarnings())
 
@@ -125,8 +125,8 @@ func (c *ValidateCommand) validate(ctx context.Context, dir, testDir string, noT
 
 	validatedModules := make(map[string]bool)
 
-	// We'll also do a quick validation of the OpenTofu test files. These live
-	// outside the OpenTofu graph so we have to do this separately.
+	// We'll also do a quick validation of the Bogform test files. These live
+	// outside the Bogform graph so we have to do this separately.
 	for _, file := range cfg.Module.Tests {
 
 		diags = diags.Append(file.Validate())
@@ -140,7 +140,7 @@ func (c *ValidateCommand) validate(ctx context.Context, dir, testDir string, noT
 				// Basically, local testing modules are something the user can
 				// reasonably go and fix. If it's a module being downloaded from
 				// the registry, the expectation is that the author of the
-				// module should have ran `tofu validate` themselves.
+				// module should have ran `bogform validate` themselves.
 				if _, ok := run.Module.Source.(addrs.ModuleSourceLocal); ok {
 
 					if validated := validatedModules[run.Module.Source.String()]; !validated {

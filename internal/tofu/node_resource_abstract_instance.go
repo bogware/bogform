@@ -456,7 +456,7 @@ func (n *NodeAbstractResourceInstance) checkPreventDestroy(ctx context.Context, 
 				Severity: hcl.DiagError,
 				Summary:  "Invalid reference in prevent_destroy",
 				Detail: fmt.Sprintf(
-					"A prevent_destroy argument cannot refer to %s, because OpenTofu needs to evaluate this argument for instances that have already been removed from the configuration and so whose per-instance data is no longer available.",
+					"A prevent_destroy argument cannot refer to %s, because Bogform needs to evaluate this argument for instances that have already been removed from the configuration and so whose per-instance data is no longer available.",
 					addr.String(),
 				),
 				Subject: ref.SourceRange.ToHCL().Ptr(),
@@ -507,7 +507,7 @@ func (n *NodeAbstractResourceInstance) checkPreventDestroy(ctx context.Context, 
 				Severity: hcl.DiagError,
 				Summary:  errSummary,
 				Detail: fmt.Sprintf(
-					"Resource instance %s has a sensitive value for its prevent_destroy argument, which is invalid because it would cause OpenTofu to disclose the sensitive value by whether deletion is blocked.\n\nIf you know this value is not sensitive in practice, consider using the nonsensitive function to declare that.",
+					"Resource instance %s has a sensitive value for its prevent_destroy argument, which is invalid because it would cause Bogform to disclose the sensitive value by whether deletion is blocked.\n\nIf you know this value is not sensitive in practice, consider using the nonsensitive function to declare that.",
 					n.Addr.String(),
 				),
 				Subject:     preventDestroyExpr.Range().Ptr(),
@@ -538,7 +538,7 @@ func (n *NodeAbstractResourceInstance) checkPreventDestroy(ctx context.Context, 
 				Severity: hcl.DiagError,
 				Summary:  errSummary,
 				Detail: fmt.Sprintf(
-					"Resource instance %s has a prevent_destroy value derived from something that isn't allowed for deciding whether a resource instance may be destroyed (has internal mark %#v). The fact that OpenTofu cannot give more details about this is a bug, so please report it!",
+					"Resource instance %s has a prevent_destroy value derived from something that isn't allowed for deciding whether a resource instance may be destroyed (has internal mark %#v). The fact that Bogform cannot give more details about this is a bug, so please report it!",
 					n.Addr.String(), mark,
 				),
 				Subject:     preventDestroyExpr.Range().Ptr(),
@@ -568,7 +568,7 @@ func (n *NodeAbstractResourceInstance) checkPreventDestroy(ctx context.Context, 
 			Severity: hcl.DiagError,
 			Summary:  errSummary,
 			Detail: fmt.Sprintf(
-				"Resource instance %s has a prevent_destroy argument but its value will not be known until the apply step, so OpenTofu can't predict whether destroying this is acceptable.\n\nTo proceed, exclude instances of this resource from this round using:\n    -exclude=%q",
+				"Resource instance %s has a prevent_destroy argument but its value will not be known until the apply step, so Bogform can't predict whether destroying this is acceptable.\n\nTo proceed, exclude instances of this resource from this round using:\n    -exclude=%q",
 				n.Addr.String(), n.Addr.ContainingResource().String(),
 			),
 			Subject:     preventDestroyExpr.Range().Ptr(),
@@ -579,7 +579,7 @@ func (n *NodeAbstractResourceInstance) checkPreventDestroy(ctx context.Context, 
 	}
 	if preventDestroyVal.IsNull() {
 		// We could potentially treat null as equivalent to false here, matching
-		// how OpenTofu would behave if there were no expression present at all,
+		// how Bogform would behave if there were no expression present at all,
 		// but "false" is just as easy to specify as "null" in a conditional
 		// expression and doesn't require a reader to know what the default
 		// is, so we'll require that to make life easier for a future maintainer
@@ -727,7 +727,7 @@ func (n *NodeAbstractResourceInstance) writeResourceInstanceStateImpl(ctx contex
 		// (We can also get in here for unit tests which are using
 		// EvalContextMock but not populating PrevRunStateState with
 		// a suitable state object.)
-		return fmt.Errorf("state of type %s is not applicable to the current operation; this is a bug in OpenTofu", targetState)
+		return fmt.Errorf("state of type %s is not applicable to the current operation; this is a bug in Bogform", targetState)
 	}
 
 	// In spite of the name, this function also handles the non-deposed case
@@ -1125,14 +1125,14 @@ func (n *NodeAbstractResourceInstance) plan(
 	// If we're importing and generating config, generate it now.
 	if n.Config == nil {
 		// This shouldn't happen. A node that isn't generating config should
-		// have embedded config, and the rest of OpenTofu should enforce this.
+		// have embedded config, and the rest of Bogform should enforce this.
 		// If, however, we didn't do things correctly the next line will panic,
 		// so let's not do that and return an error message with more context.
 
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Resource has no configuration",
-			fmt.Sprintf("OpenTofu attempted to process a resource at %s that has no configuration. This is a bug in OpenTofu; please report it!", n.Addr.String())))
+			fmt.Sprintf("Bogform attempted to process a resource at %s that has no configuration. This is a bug in Bogform; please report it!", n.Addr.String())))
 		return nil, nil, keyData, diags
 	}
 
@@ -2249,7 +2249,7 @@ func (n *NodeAbstractResourceInstance) planDataSource(ctx context.Context, evalC
 	var plannedNewState *states.ResourceInstanceObject
 
 	// If we are a nested block, then we want to create a plannedChange that
-	// tells OpenTofu to reload the data block during the apply stage even if
+	// tells Bogform to reload the data block during the apply stage even if
 	// we managed to get the data now.
 	// Another consideration is that if we failed to load the data, we need to
 	// disguise that for a nested block. Nested blocks will report the overall
@@ -2407,7 +2407,7 @@ func (n *NodeAbstractResourceInstance) applyDataSource(ctx context.Context, eval
 		// If any other action gets in here then that's always a bug; this
 		// EvalNode only deals with reading.
 		diags = diags.Append(fmt.Errorf(
-			"invalid action %s for %s: only Read is supported (this is a bug in OpenTofu; please report it!)",
+			"invalid action %s for %s: only Read is supported (this is a bug in Bogform; please report it!)",
 			planned.Action, n.Addr,
 		))
 		return nil, keyData, diags
@@ -2838,7 +2838,7 @@ func (n *NodeAbstractResourceInstance) apply(
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Configuration contains unknown value",
-			fmt.Sprintf("configuration for %s still contains unknown values during apply (this is a bug in OpenTofu; please report it!)\n"+
+			fmt.Sprintf("configuration for %s still contains unknown values during apply (this is a bug in Bogform; please report it!)\n"+
 				"The following paths in the resource configuration are unknown:\n%s",
 				n.Addr,
 				strings.Join(unknownPaths, "\n"),
@@ -2938,7 +2938,7 @@ func (n *NodeAbstractResourceInstance) apply(
 			tfdiags.Error,
 			"Provider produced invalid object",
 			fmt.Sprintf(
-				"Provider %q produced an invalid value after apply for %s. The result cannot not be saved in the OpenTofu state.\n\nThis is a bug in the provider, which should be reported in the provider's own issue tracker.",
+				"Provider %q produced an invalid value after apply for %s. The result cannot not be saved in the Bogform state.\n\nThis is a bug in the provider, which should be reported in the provider's own issue tracker.",
 				n.ResolvedProvider.ProviderConfig.InstanceString(n.ResolvedProviderKey), tfdiags.FormatErrorPrefixed(err, n.Addr.String()),
 			),
 		))
@@ -2975,7 +2975,7 @@ func (n *NodeAbstractResourceInstance) apply(
 					tfdiags.Error,
 					"Provider returned invalid result object after apply",
 					fmt.Sprintf(
-						"After the apply operation, the provider still indicated an unknown value for %s%s. All values must be known after apply, so this is always a bug in the provider and should be reported in the provider's own repository. OpenTofu will still save the other known object values in the state.",
+						"After the apply operation, the provider still indicated an unknown value for %s%s. All values must be known after apply, so this is always a bug in the provider and should be reported in the provider's own repository. Bogform will still save the other known object values in the state.",
 						n.Addr, pathStr,
 					),
 				))
@@ -3044,7 +3044,7 @@ func (n *NodeAbstractResourceInstance) apply(
 
 	// If a provider returns a null or non-null object at the wrong time then
 	// we still want to save that but it often causes some confusing behaviors
-	// where it seems like OpenTofu is failing to take any action at all,
+	// where it seems like Bogform is failing to take any action at all,
 	// so we'll generate some errors to draw attention to it.
 	if !diags.HasErrors() {
 		if change.Action == plans.Delete && !newVal.IsNull() {
@@ -3052,7 +3052,7 @@ func (n *NodeAbstractResourceInstance) apply(
 				tfdiags.Error,
 				"Provider returned invalid result object after apply",
 				fmt.Sprintf(
-					"After applying a %s plan, the provider returned a non-null object for %s. Destroying should always produce a null value, so this is always a bug in the provider and should be reported in the provider's own repository. OpenTofu will still save this errant object in the state for debugging and recovery.",
+					"After applying a %s plan, the provider returned a non-null object for %s. Destroying should always produce a null value, so this is always a bug in the provider and should be reported in the provider's own repository. Bogform will still save this errant object in the state for debugging and recovery.",
 					change.Action, n.Addr,
 				),
 			))

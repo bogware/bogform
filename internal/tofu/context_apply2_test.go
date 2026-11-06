@@ -618,7 +618,7 @@ output "out" {
 	}
 }
 
-// TestContext2Apply_sensitiveInsideUnknown verifies that OpenTofu uses
+// TestContext2Apply_sensitiveInsideUnknown verifies that Bogform uses
 // sensitive value information from provider schema when deciding what to
 // mark as sensitive in the final state after apply, even if the values in
 // question were not yet available during the planning phase.
@@ -1079,7 +1079,7 @@ resource "test_object" "b" {
 
 	// This test tries to create a synthetic failure by tampering with the
 	// plan's prior state in a way that cannot occur in normal usage of
-	// OpenTofu, and then expecting the old-style apply graph builder to choke
+	// Bogform, and then expecting the old-style apply graph builder to choke
 	// on it. That can't work for the new runtime because the equivalent of
 	// the apply graph (the execution graph) is constructed during the planning
 	// phase instead.
@@ -1584,7 +1584,7 @@ func TestContext2Apply_resourceConditionApplyTimeFail(t *testing.T) {
 	// a change in a resource other than the one the condition is attached to,
 	// and the condition result is unknown during planning.
 	//
-	// This edge case is a tricky one because it relies on OpenTofu still
+	// This edge case is a tricky one because it relies on Bogform still
 	// visiting test_resource.b (in the configuration below) to evaluate
 	// its conditions even though there aren't any changes directly planned
 	// for it, so that we can consider whether changes to test_resource.a
@@ -2944,7 +2944,7 @@ func TestContext2Apply_providerExpandWithTargetOrExclude(t *testing.T) {
 	// This test is covering a potentially-tricky interaction between the
 	// logic that updates the provider instance references for resource
 	// instances in state snapshots, and the -target/-exclude features which
-	// cause OpenTofu to skip visiting certain objects.
+	// cause Bogform to skip visiting certain objects.
 	//
 	// The main priority is that we never leave the final state snapshot
 	// in a form that would cause errors or incorrect behavior on a future
@@ -2973,7 +2973,7 @@ func TestContext2Apply_providerExpandWithTargetOrExclude(t *testing.T) {
 	// We use the same test sequence for both -target and -exclude, with
 	// makeStep2PlanOpts providing whichever filter is appropriate for
 	// each test.
-	// For correct operation the plan options must cause OpenTofu to
+	// For correct operation the plan options must cause Bogform to
 	// skip both instances of mock.second and visit at least one instance
 	// of mock.first.
 	runTest := func(t *testing.T, makeStep2PlanOpts func(plans.Mode) *PlanOpts) {
@@ -3006,7 +3006,7 @@ func TestContext2Apply_providerExpandWithTargetOrExclude(t *testing.T) {
 
 		// For this particular test we'll also save state snapshots in JSON format,
 		// so that we're exercising the state snapshot writer and reader in similar way
-		// to how OpenTofu CLI would do it, in case its normalization rules and
+		// to how Bogform CLI would do it, in case its normalization rules and
 		// consistency checks cause any problems that we can't notice when we're just
 		// passing pointers to the live data structure.
 		var stateJSON []byte
@@ -5905,7 +5905,7 @@ module "check_module" {
 		"check-module/main.tf": `
 check "http_check" {
   data "http" "tofu" {
-    url = "https://opentofu.org/"
+    url = "https://bogware.github.io/bogform/"
   }
 
   assert {
@@ -5994,7 +5994,7 @@ module "check_module" {
 		"sub-module/check-module/main.tf": `
 check "http_check" {
   data "http" "tofu" {
-    url = "https://opentofu.org/"
+    url = "https://bogware.github.io/bogform/"
   }
 
   assert {
@@ -6077,7 +6077,7 @@ module "check_module" {
 		"check-module/main.tf": `
 check "http_check" {
   data "http" "tofu" {
-    url = "https://opentofu.org/"
+    url = "https://bogware.github.io/bogform/"
   }
 
   assert {
@@ -6326,15 +6326,15 @@ output "regular_optional" {
 	cases := map[string]struct {
 		planSetVariables InputValues
 		applyOpts        *ApplyOpts
-		// Set this to "true" to test a flow similar with the one ran when running `tofu plan -out <planfile>` followed by `tofu apply <planfile>`.
-		// "False" it means that it will run the test like running directly `tofu apply -auto-approve`
+		// Set this to "true" to test a flow similar with the one ran when running `bogform plan -out <planfile>` followed by `bogform apply <planfile>`.
+		// "False" it means that it will run the test like running directly `bogform apply -auto-approve`
 		simulatePlanRoundtrip bool
 
 		expectedApplyErrors []string
 		expectedOutputs     map[string]*states.OutputValue
 	}{
 		// //////// The tests in this section check real life scenarios, where a plan is written and
-		// then read from the file during `tofu apply <planfile>`. This is the only way for the
+		// then read from the file during `bogform apply <planfile>`. This is the only way for the
 		// ApplyOpts to be passed into the context.Apply()
 		"mutate plan to be similar with the one loaded from file and apply without any opts": {
 			planSetVariables: map[string]*InputValue{
@@ -6345,7 +6345,7 @@ output "regular_optional" {
 			},
 			simulatePlanRoundtrip: true,
 			applyOpts:             nil,
-			expectedApplyErrors:   []string{"No value for required variable - Variable \"ephemeral_required\" is configured as ephemeral. This type of variables need to be given a value during `tofu plan` and also during `tofu apply`."},
+			expectedApplyErrors:   []string{"No value for required variable - Variable \"ephemeral_required\" is configured as ephemeral. This type of variables need to be given a value during `bogform plan` and also during `bogform apply`."},
 		},
 		"mutate plan to be similar with the one loaded from file and apply with opts containing the ephemeral_required": {
 			planSetVariables: map[string]*InputValue{
@@ -6359,7 +6359,7 @@ output "regular_optional" {
 			expectedApplyErrors:   nil,
 		},
 		// //////// The tests below are not actually reproducible IRL, they just test the defensive implementation of mergePlanAndApplyVariables.
-		// These are not reproducible IRL because in a direct `tofu apply` command, the ApplyOpts and PlanOpts will not exist together.
+		// These are not reproducible IRL because in a direct `bogform apply` command, the ApplyOpts and PlanOpts will not exist together.
 
 		// Validates that even when the optional variables have null values during plan creation, the applyOpts do not override the null values.
 		"apply configuration directly where planOpts satisfies completely the variables therefore applyOpts don't get used": {
@@ -6639,7 +6639,7 @@ func TestMergePlanAndApplyVariables(t *testing.T) {
 			[]tfdiags.Description{
 				{
 					Summary: "No value for required variable",
-					Detail:  "Variable \"var1\" is configured as ephemeral. This type of variables need to be given a value during `tofu plan` and also during `tofu apply`.",
+					Detail:  "Variable \"var1\" is configured as ephemeral. This type of variables need to be given a value during `bogform plan` and also during `bogform apply`.",
 				},
 			},
 		},

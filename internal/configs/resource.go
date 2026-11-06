@@ -363,7 +363,7 @@ func decodeResourceBlock(block *hcl.Block, override bool) (*Resource, hcl.Diagno
 			diags = append(diags, &hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Reserved block type name in resource block",
-				Detail:   fmt.Sprintf("The block type name %q is reserved for use by OpenTofu in a future version.", block.Type),
+				Detail:   fmt.Sprintf("The block type name %q is reserved for use by Bogform in a future version.", block.Type),
 				Subject:  &block.TypeRange,
 			})
 		}
@@ -579,7 +579,7 @@ func decodeDataBlock(block *hcl.Block, override, nested bool) (*Resource, hcl.Di
 			diags = append(diags, &hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Reserved block type name in data block",
-				Detail:   fmt.Sprintf("The block type name %q is reserved for use by OpenTofu in a future version.", block.Type),
+				Detail:   fmt.Sprintf("The block type name %q is reserved for use by Bogform in a future version.", block.Type),
 				Subject:  block.TypeRange.Ptr(),
 			})
 		}
@@ -766,7 +766,7 @@ func decodeEphemeralBlock(block *hcl.Block, override bool) (*Resource, hcl.Diagn
 			diags = append(diags, &hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "Reserved block type name in ephemeral block",
-				Detail:   fmt.Sprintf("The block type name %q is reserved for use by OpenTofu in a future version.", block.Type),
+				Detail:   fmt.Sprintf("The block type name %q is reserved for use by Bogform in a future version.", block.Type),
 				Subject:  &block.TypeRange,
 			})
 		}
@@ -1108,7 +1108,7 @@ var commonResourceAttributes = []hcl.AttributeSchema{
 }
 
 // ResourceBlockSchema is the schema for a resource or data resource type within
-// OpenTofu.
+// Bogform.
 //
 // This schema is public as it is required elsewhere in order to validate and
 // use generated config.

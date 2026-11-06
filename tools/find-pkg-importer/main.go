@@ -6,7 +6,7 @@
 // find-pkg-importer is a utility for finding which packages in our dependency
 // graph import a given package path.
 //
-// Run this from the root of your work tree for the OpenTofu repository so
+// Run this from the root of your work tree for the Bogform repository so
 // that it can find the project's "go.mod" file in the current working
 // directory. For example, to find which packages import "html/template":
 //

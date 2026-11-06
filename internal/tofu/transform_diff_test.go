@@ -288,7 +288,7 @@ func TestDiffTransformerEphemeralChanges(t *testing.T) {
 	}
 	diags := v.Execute(t.Context(), nil, walkApply)
 	got := diags.Err().Error()
-	want := "Destroy invoked for an ephemeral resource: A destroy operation has been invoked for the ephemeral resource \"ephemeral.aws_secretmanager_secret.foo\". This is an OpenTofu error. Please report this."
+	want := "Destroy invoked for an ephemeral resource: A destroy operation has been invoked for the ephemeral resource \"ephemeral.aws_secretmanager_secret.foo\". This is a Bogform error. Please report this."
 	if got != want {
 		t.Fatalf("unexpected error returned.\ngot: %s\nwant:%s", got, want)
 	}

@@ -26,7 +26,7 @@ type ModuleInstanceCall struct {
 	//
 	// This should be nil for calls that are caused by something other than
 	// configuration, such as a top-level call to a root module caused by
-	// running an OpenTofu CLI command.
+	// running a Bogform CLI command.
 	DeclRange *tfdiags.SourceRange
 
 	// InputValues describes how to build the values for the input variables
@@ -58,7 +58,7 @@ type ModuleInstanceCall struct {
 
 	// DependencyMarks are additional marks that should be applied to the
 	// configuration values of anything that interacts with systems outside of
-	// OpenTofu (currently: resource instances and provider instances) to
+	// Bogform (currently: resource instances and provider instances) to
 	// represent "whole-module-call" dependencies.
 	//
 	// For example, package tofu2024 uses this to deal with the "depends_on"
@@ -76,7 +76,7 @@ type ModuleInstanceCall struct {
 	// number of functions that produce different results each time they are
 	// called, such as "timestamp". This should be set to true only during
 	// the apply phase and in some more contrived situations such as in the
-	// "tofu console" command's REPL.
+	// "bogform console" command's REPL.
 	//
 	// This setting should typically be propagated verbatim to any child
 	// module instances because there's little reason for one module to

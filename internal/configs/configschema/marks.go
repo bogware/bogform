@@ -217,7 +217,7 @@ func (o *Object) ValueMarks(val cty.Value, path cty.Path, subject *addrs.AbsReso
 // Write-only arguments are the only managed resource's attribute type
 // that can reference ephemeral values.
 // Also, the provider framework sdk is responsible with nullify these attributes
-// before returning back to OpenTofu.
+// before returning back to Bogform.
 //
 // Therefore, before writing the changes/state of a managed resource to its store,
 // we want to be sure that the nil value of the attribute is not marked as ephemeral

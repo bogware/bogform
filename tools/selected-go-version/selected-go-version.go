@@ -48,7 +48,7 @@ func main() {
 	// Toolchain is described in https://go.dev/doc/toolchain .
 	if toolchain, ok := strings.CutPrefix(meta.Toolchain, "go"); ok {
 		// Note that this doesn't do any special handling of "custom toolchains"
-		// because the OpenTofu project does not currently use those. If we
+		// because the Bogform project does not currently use those. If we
 		// do decide to use custom toolchains in future then we'll need to
 		// decide what that means for this program: should it return the base
 		// version of the custom toolchain, or the full custom toolchain name?

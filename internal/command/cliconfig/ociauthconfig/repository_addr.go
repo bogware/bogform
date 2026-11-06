@@ -17,7 +17,7 @@ import (
 // and repository path parts if it's valid.
 //
 // This function is intended for the repository address prefix syntax used for
-// specifying "auths" in the Docker CLI-style config format, and for OpenTofu's
+// specifying "auths" in the Docker CLI-style config format, and for Bogform's
 // own oci_credentials CLI configuration blocks that follow the same syntax.
 //
 // The registry-domain portion can optionally include a port number delimited

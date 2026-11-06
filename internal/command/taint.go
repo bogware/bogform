@@ -21,19 +21,19 @@ func TaintCommander() Command {
 	cmd := Command{
 		Name:  "taint",
 		Short: "Mark a resource instance as not fully functional",
-		Long: `OpenTofu uses the term "tainted" to describe a resource instance which may not be fully functional, either because its creation partially failed or because you've manually marked it as such using
+		Long: `Bogform uses the term "tainted" to describe a resource instance which may not be fully functional, either because its creation partially failed or because you've manually marked it as such using
 this command.
 
-This will not modify your infrastructure directly, but subsequent OpenTofu plans will include actions to destroy the remote object and create a new object to replace it.
+This will not modify your infrastructure directly, but subsequent Bogform plans will include actions to destroy the remote object and create a new object to replace it.
 
-You can remove the "taint" state from a resource instance using the "tofu untaint" command.
+You can remove the "taint" state from a resource instance using the "bogform untaint" command.
 
 The address is in the usual resource address syntax, such as:
   aws_instance.foo
   aws_instance.bar[1]
   module.foo.module.bar.aws_instance.baz
 
-Use your shell's quoting or escaping syntax to ensure that the address will reach OpenTofu correctly, without any special interpretation.`,
+Use your shell's quoting or escaping syntax to ensure that the address will reach Bogform correctly, without any special interpretation.`,
 
 		DiagsWithNewline: true,
 	}
@@ -90,7 +90,7 @@ func (c TaintCommand) Execute(args *arguments.Taint, view views.Taint) int {
 		return 1
 	}
 
-	// Check remote OpenTofu version is compatible
+	// Check remote Bogform version is compatible
 	remoteVersionDiags := c.remoteVersionCheck(b, workspace)
 	diags = diags.Append(remoteVersionDiags)
 	view.Diagnostics(diags)
@@ -162,7 +162,7 @@ func (c TaintCommand) Execute(args *arguments.Taint, view views.Taint) int {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"No such resource instance",
-			fmt.Sprintf("There is no resource instance in the state with the address %s. If the resource configuration has just been added, you must run \"tofu apply\" once to create the corresponding instance(s) before they can be tainted.", addr),
+			fmt.Sprintf("There is no resource instance in the state with the address %s. If the resource configuration has just been added, you must run \"bogform apply\" once to create the corresponding instance(s) before they can be tainted.", addr),
 		))
 		view.Diagnostics(diags)
 		return 1
@@ -174,7 +174,7 @@ func (c TaintCommand) Execute(args *arguments.Taint, view views.Taint) int {
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"No such resource instance",
-				fmt.Sprintf("Resource instance %s is currently part-way through a create_before_destroy replacement action. Run \"tofu apply\" to complete its replacement before tainting it.", addr),
+				fmt.Sprintf("Resource instance %s is currently part-way through a create_before_destroy replacement action. Run \"bogform apply\" to complete its replacement before tainting it.", addr),
 			))
 		} else {
 			// Don't know why we're here, but we'll produce a generic error message anyway.

@@ -102,7 +102,7 @@ func (s *checkStartTransformer) Transform(_ context.Context, graph *Graph) error
 			}
 
 			// Otherwise, it's just a normal data source. From a check block we
-			// don't really care when OpenTofu is loading non-nested data
+			// don't really care when Bogform is loading non-nested data
 			// sources so we'll just forget about it and move on.
 		}
 	}

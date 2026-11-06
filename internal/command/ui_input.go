@@ -67,7 +67,7 @@ func (i *UIInput) Input(ctx context.Context, opts *tofu.InputOpts) (string, erro
 		w = os.Stdout
 	}
 
-	// Make sure we only ask for input once at a time. OpenTofu
+	// Make sure we only ask for input once at a time. Bogform
 	// should enforce this, but it doesn't hurt to verify.
 	i.l.Lock()
 	defer i.l.Unlock()

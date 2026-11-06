@@ -17,7 +17,7 @@ import (
 )
 
 // New returns the DefaultPooledClient from the cleanhttp
-// package that will also send a OpenTofu User-Agent string.
+// package that will also send a Bogform User-Agent string.
 //
 // If the given context has an active OpenTelemetry trace span associated with
 // it then the returned client is also configured to collect traces for
@@ -30,14 +30,14 @@ import (
 func New(ctx context.Context) *http.Client {
 	cli := cleanhttp.DefaultPooledClient()
 	cli.Transport = &userAgentRoundTripper{
-		userAgent: OpenTofuUserAgent(version.Version),
+		userAgent: BogformUserAgent(version.Version),
 		inner:     cli.Transport,
 	}
 
 	if span := tracing.SpanFromContext(ctx); span != nil && span.IsRecording() {
 		// We consider the presence of an active span -- that is, one whose
 		// presence is going to be reported to a trace collector outside of
-		// the OpenTofu process -- as sufficient signal that generating
+		// the Bogform process -- as sufficient signal that generating
 		// spans for requests made with the returned client will be useful.
 		//
 		// The following has two important implications:

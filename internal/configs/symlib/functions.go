@@ -183,7 +183,7 @@ func (f functionWithStack) ForInternalCaller(w *workgraph.Worker, stack []string
 // ForExternalCaller produces a function for use outside of the scope that it resides in. This is helpful
 // when exposing symlib to callers that may be calling the same function from multiple go-routines.
 //
-// Future Note: We may want OpenTofu's new runtime to share it's current worker with the symlib function it's
+// Future Note: We may want Bogform's new runtime to share it's current worker with the symlib function it's
 // calling, though the benefits of that are still to be debated.
 func (f functionWithStack) ForExternalCaller() function.Function {
 	return f(func() *workgraph.Worker { return workgraph.NewWorker() }, nil)

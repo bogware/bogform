@@ -18,7 +18,7 @@ import (
 // and also carries a client for interacting with that provider.
 //
 // Most methods of this type relate to managed-resource-related operations in
-// the underlying provider protocol, but also include additional OpenTofu-level
+// the underlying provider protocol, but also include additional Bogform-level
 // logic such as verifying that the provider is correctly implementing the
 // protocol's constraints on how objects are allowed to change.
 type ManagedResourceType struct {

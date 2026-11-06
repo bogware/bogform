@@ -21,20 +21,20 @@ type ErrHostNoProviders struct {
 
 	// HasOtherVersion is set to true if the discovery process detected
 	// declarations of services named "providers" whose version numbers did not
-	// match any version supported by the current version of OpenTofu.
+	// match any version supported by the current version of Bogform.
 	//
 	// If this is set, it's helpful to hint to the user in an error message
 	// that the provider host may be expecting an older or a newer version
-	// of OpenTofu, rather than that it isn't a provider registry host at all.
+	// of Bogform, rather than that it isn't a provider registry host at all.
 	HasOtherVersion bool
 }
 
 func (err ErrHostNoProviders) Error() string {
 	switch {
 	case err.HasOtherVersion:
-		return fmt.Sprintf("host %s does not support the provider registry protocol required by this OpenTofu version, but may be compatible with a different OpenTofu version", err.Hostname.ForDisplay())
+		return fmt.Sprintf("host %s does not support the provider registry protocol required by this Bogform version, but may be compatible with a different Bogform version", err.Hostname.ForDisplay())
 	default:
-		return fmt.Sprintf("host %s does not offer a OpenTofu provider registry", err.Hostname.ForDisplay())
+		return fmt.Sprintf("host %s does not offer a Bogform provider registry", err.Hostname.ForDisplay())
 	}
 }
 
@@ -156,7 +156,7 @@ func (err ErrPlatformNotSupported) Error() string {
 }
 
 // ErrProtocolNotSupported is an error type used to indicate that a particular
-// version of a provider is not supported by the current version of OpenTofu.
+// version of a provider is not supported by the current version of Bogform.
 //
 // Specifically, this is returned when the version's plugin protocol is not supported.
 //
@@ -170,7 +170,7 @@ type ErrProtocolNotSupported struct {
 
 func (err ErrProtocolNotSupported) Error() string {
 	return fmt.Sprintf(
-		"provider %s %s is not supported by this version of OpenTofu",
+		"provider %s %s is not supported by this version of Bogform",
 		err.Provider,
 		err.Version,
 	)

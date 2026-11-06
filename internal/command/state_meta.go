@@ -50,11 +50,11 @@ func (c *StateMeta) State(ctx context.Context, enc encryption.Encryption, view v
 			return nil, err
 		}
 
-		// Check remote OpenTofu version is compatible
+		// Check remote Bogform version is compatible
 		remoteVersionDiags := c.remoteVersionCheck(b, workspace)
 		view.Diagnostics(remoteVersionDiags)
 		if remoteVersionDiags.HasErrors() {
-			return nil, fmt.Errorf("Error checking remote OpenTofu version")
+			return nil, fmt.Errorf("Error checking remote Bogform version")
 		}
 
 		// Get the state
@@ -133,7 +133,7 @@ func (c *StateMeta) lookupResourceInstanceAddr(state *states.State, allowMissing
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Unknown module",
-				fmt.Sprintf(`The current state contains no module at %s. If you've just added this module to the configuration, you must run "tofu apply" first to create the module's entry in the state.`, addr),
+				fmt.Sprintf(`The current state contains no module at %s. If you've just added this module to the configuration, you must run "bogform apply" first to create the module's entry in the state.`, addr),
 			))
 		}
 
@@ -145,7 +145,7 @@ func (c *StateMeta) lookupResourceInstanceAddr(state *states.State, allowMissing
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Unknown resource",
-					fmt.Sprintf(`The current state contains no resource %s. If you've just added this resource to the configuration, you must run "tofu apply" first to create the resource's entry in the state.`, addr),
+					fmt.Sprintf(`The current state contains no resource %s. If you've just added this resource to the configuration, you must run "bogform apply" first to create the resource's entry in the state.`, addr),
 				))
 			}
 			break
@@ -158,7 +158,7 @@ func (c *StateMeta) lookupResourceInstanceAddr(state *states.State, allowMissing
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Unknown resource instance",
-					fmt.Sprintf(`The current state contains no resource instance %s. If you've just added its resource to the configuration or have changed the count or for_each arguments, you must run "tofu apply" first to update the resource's entry in the state.`, addr),
+					fmt.Sprintf(`The current state contains no resource instance %s. If you've just added its resource to the configuration or have changed the count or for_each arguments, you must run "bogform apply" first to update the resource's entry in the state.`, addr),
 				))
 			}
 			break

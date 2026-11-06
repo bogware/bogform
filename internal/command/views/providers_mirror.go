@@ -52,7 +52,7 @@ func (v *ProvidersMirrorHuman) Diagnostics(diags tfdiags.Diagnostics) {
 }
 
 func (v *ProvidersMirrorHuman) ProviderSkipped(provider string) {
-	_, _ = v.view.streams.Println(fmt.Sprintf("- Skipping %s because it is built in to OpenTofu CLI", provider))
+	_, _ = v.view.streams.Println(fmt.Sprintf("- Skipping %s because it is built in to Bogform CLI", provider))
 }
 
 func (v *ProvidersMirrorHuman) MirroringProvider(provider string) {
@@ -142,7 +142,7 @@ func (v *ProvidersMirrorJSON) Diagnostics(diags tfdiags.Diagnostics) {
 }
 
 func (v *ProvidersMirrorJSON) ProviderSkipped(provider string) {
-	v.view.Info(fmt.Sprintf("Skipping %s because it is built in to OpenTofu CLI", provider))
+	v.view.Info(fmt.Sprintf("Skipping %s because it is built in to Bogform CLI", provider))
 }
 
 func (v *ProvidersMirrorJSON) MirroringProvider(provider string) {

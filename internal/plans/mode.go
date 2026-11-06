@@ -21,8 +21,8 @@ const (
 	// prior state, even if the configuration for those instances is still
 	// present.
 	//
-	// This mode corresponds with the "-destroy" option to "tofu plan",
-	// and with the plan created by the "tofu destroy" command.
+	// This mode corresponds with the "-destroy" option to "bogform plan",
+	// and with the plan created by the "bogform destroy" command.
 	DestroyMode Mode = 'D'
 
 	// RefreshOnlyMode is a special planning mode which only performs the
@@ -31,7 +31,7 @@ const (
 	// the configuration has changed relative to the state.
 	//
 	// This mode corresponds with the "-refresh-only" option to
-	// "tofu plan".
+	// "bogform plan".
 	RefreshOnlyMode Mode = 'R'
 )
 

@@ -187,7 +187,7 @@ func (n *NodeValidatableResource) validateProvisioner(ctx context.Context, evalC
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagWarning,
 			Summary:  "WinRM connection type is deprecated",
-			Detail:   "The winrm connection type is deprecated and will be removed in a future version of OpenTofu.\n\nModern Windows systems support SSH natively. Migrate your provisioners to use SSH instead.\n\nTo get started with OpenSSH on Windows, refer to https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse",
+			Detail:   "The winrm connection type is deprecated and will be removed in a future version of Bogform.\n\nModern Windows systems support SSH natively. Migrate your provisioners to use SSH instead.\n\nTo get started with OpenSSH on Windows, refer to https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse",
 			Subject:  subject,
 			Context:  hcl.RangeBetween(p.Connection.DeclRange, p.Connection.Config.MissingItemRange()).Ptr(),
 		})
@@ -293,7 +293,7 @@ func (n *NodeValidatableResource) validateResource(ctx context.Context, evalCtx 
 						diags = diags.Append(&hcl.Diagnostic{
 							Severity: hcl.DiagWarning,
 							Summary:  "Redundant ignore_changes element",
-							Detail:   fmt.Sprintf("Adding an attribute name to ignore_changes tells OpenTofu to ignore future changes to the argument in configuration after the object has been created, retaining the value originally configured.\n\nThe attribute %s is decided by the provider alone and therefore there can be no configured value to compare with. Including this attribute in ignore_changes has no effect. Remove the attribute from ignore_changes to quiet this warning.", attrDisplayPath),
+							Detail:   fmt.Sprintf("Adding an attribute name to ignore_changes tells Bogform to ignore future changes to the argument in configuration after the object has been created, retaining the value originally configured.\n\nThe attribute %s is decided by the provider alone and therefore there can be no configured value to compare with. Including this attribute in ignore_changes has no effect. Remove the attribute from ignore_changes to quiet this warning.", attrDisplayPath),
 							Subject:  &n.Config.TypeRange,
 						})
 					}

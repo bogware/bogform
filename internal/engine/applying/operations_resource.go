@@ -24,7 +24,7 @@ const resourceDependencyMissingDetail = `The value of resource %s was requested 
 This may be caused by one of the following options:
   - Ephemeral values requiring different dependencies between plan and apply (unsupported)
   - An edge case of -target or -exclude
-  - A bug in OpenTofu
+  - A bug in Bogform
 
 Please inspect your configuration and open a bug report if nessesary.`
 

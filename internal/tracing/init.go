@@ -45,13 +45,13 @@ better based on experience with this experiment.
 
 // OTELExporterEnvVar is the env var that should be used to instruct opentofu which
 // exporter to use
-// If this environment variable is set to "otlp" when running OpenTofu CLI
+// If this environment variable is set to "otlp" when running Bogform CLI
 // then we'll enable an experimental OTLP trace exporter.
 const OTELExporterEnvVar = "OTEL_TRACES_EXPORTER"
 
 // traceParentEnvVar is the env var that should be used to instruct opentofu which
 // trace parent to use.
-// If this environment variable is set when running OpenTofu CLI
+// If this environment variable is set when running Bogform CLI
 // then we'll extract the traceparent from the environment and add it to the context.
 // This ensures that all opentofu traces are linked to the trace that invoked
 // this command.
@@ -62,18 +62,18 @@ const traceParentEnvVar = "TRACEPARENT"
 const traceStateEnvVar = "TRACESTATE"
 
 // DefaultServiceName is the default service name to use if not specified in the environment
-const DefaultServiceName = "OpenTofu CLI"
+const DefaultServiceName = "Bogform CLI"
 
 // isTracingEnabled is true if OpenTelemetry is enabled.
 var isTracingEnabled bool
 
 // OpenTelemetryInit initializes the optional OpenTelemetry exporter.
 //
-// By default, we don't export telemetry information at all, since OpenTofu is
+// By default, we don't export telemetry information at all, since Bogform is
 // a CLI tool, and so we don't assume we're running in an environment with
 // a telemetry collector available.
 //
-// However, for those running OpenTofu in automation we allow setting
+// However, for those running Bogform in automation we allow setting
 // the standard OpenTelemetry environment variable OTEL_TRACES_EXPORTER=otlp
 // to enable an OTLP exporter, which is in turn configured by all the
 // standard OTLP exporter environment variables:
@@ -83,7 +83,7 @@ var isTracingEnabled bool
 // We don't currently support any other telemetry export protocols, because
 // OTLP has emerged as a de-facto standard and each other exporter we support
 // means another relatively-heavy external dependency. OTLP happens to use
-// protocol buffers and gRPC, which OpenTofu would depend on for other reasons
+// protocol buffers and gRPC, which Bogform would depend on for other reasons
 // anyway.
 //
 // Returns the context with trace context extracted from environment variables
@@ -101,7 +101,7 @@ func OpenTelemetryInit(ctx context.Context) (context.Context, error) {
 
 	isTracingEnabled = true
 
-	// Wire OTel SDK internal logging through OpenTofu's global logger
+	// Wire OTel SDK internal logging through Bogform's global logger
 	// before initializing the tracer provider, so any SDK startup
 	// diagnostics are captured.
 	otel.SetLogger(logr.New(&otelLogSink{}))
@@ -159,7 +159,7 @@ func OpenTelemetryInit(ctx context.Context) (context.Context, error) {
 }
 
 // otelLogSink implements logr.LogSink to route OTel SDK internal logs
-// through OpenTofu's standard library log package (redirected to hclog)
+// through Bogform's standard library log package (redirected to hclog)
 // with prefix-based log levels for compatibility with TF_LOG filtering.
 type otelLogSink struct {
 	name   string

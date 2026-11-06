@@ -12,7 +12,7 @@ import (
 
 // ResourceProvisioner is an interface that must be implemented by any
 // resource provisioner: the thing that initializes resources in
-// a OpenTofu configuration.
+// a Bogform configuration.
 type ResourceProvisioner interface {
 	// GetConfigSchema returns the schema for the provisioner type's main
 	// configuration block. This is called prior to Validate to enable some
@@ -40,15 +40,15 @@ type ResourceProvisioner interface {
 
 	// Stop is called when the provisioner should halt any in-flight actions.
 	//
-	// This can be used to make a nicer Ctrl-C experience for OpenTofu.
+	// This can be used to make a nicer Ctrl-C experience for Bogform.
 	// Even if this isn't implemented to do anything (just returns nil),
-	// OpenTofu will still cleanly stop after the currently executing
+	// Bogform will still cleanly stop after the currently executing
 	// graph node is complete. However, this API can be used to make more
 	// efficient halts.
 	//
 	// Stop doesn't have to and shouldn't block waiting for in-flight actions
 	// to complete. It should take any action it wants and return immediately
-	// acknowledging it has received the stop request. OpenTofu core will
+	// acknowledging it has received the stop request. Bogform core will
 	// automatically not make any further API calls to the provider soon
 	// after Stop is called (technically exactly once the currently executing
 	// graph nodes are complete).

@@ -230,7 +230,7 @@ func (t *TestHuman) Run(run *moduletest.Run, file *moduletest.File) {
 				run.Diagnostics = run.Diagnostics.Append(tfdiags.Sourceless(
 					tfdiags.Warning,
 					"Failed to render test state",
-					fmt.Sprintf("OpenTofu could not marshal the state for display: %v", err)))
+					fmt.Sprintf("Bogform could not marshal the state for display: %v", err)))
 			} else {
 				state := jsonformat.State{
 					StateFormatVersion:    jsonstate.FormatVersion,
@@ -249,7 +249,7 @@ func (t *TestHuman) Run(run *moduletest.Run, file *moduletest.File) {
 				run.Diagnostics = run.Diagnostics.Append(tfdiags.Sourceless(
 					tfdiags.Warning,
 					"Failed to render test plan",
-					fmt.Sprintf("OpenTofu could not marshal the plan for display: %v", err)))
+					fmt.Sprintf("Bogform could not marshal the plan for display: %v", err)))
 			} else {
 				plan := jsonformat.Plan{
 					PlanFormatVersion:     jsonplan.FormatVersion,
@@ -285,12 +285,12 @@ func (t *TestHuman) DestroySummary(diags tfdiags.Diagnostics, run *moduletest.Ru
 	}
 
 	if diags.HasErrors() {
-		t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("OpenTofu encountered an error destroying resources created while executing %s.\n", identifier), t.view.errorColumns()))
+		t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("Bogform encountered an error destroying resources created while executing %s.\n", identifier), t.view.errorColumns()))
 	}
 	t.Diagnostics(run, file, diags)
 
 	if state.HasManagedResourceInstanceObjects() {
-		t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("\nOpenTofu left the following resources in state after executing %s, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:\n", identifier), t.view.errorColumns()))
+		t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("\nBogform left the following resources in state after executing %s, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:\n", identifier), t.view.errorColumns()))
 		for _, resource := range state.AllResourceInstanceObjectAddrs() {
 			if resource.DeposedKey != states.NotDeposed {
 				t.view.streams.Eprintf("  - %s (%s)\n", resource.Instance, resource.DeposedKey)
@@ -314,12 +314,12 @@ func (t *TestHuman) FatalInterrupt() {
 }
 
 func (t *TestHuman) FatalInterruptSummary(run *moduletest.Run, file *moduletest.File, existingStates map[*moduletest.Run]*states.State, created []*plans.ResourceInstanceChangeSrc) {
-	t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("\nOpenTofu was interrupted while executing %s, and may not have performed the expected cleanup operations.\n", file.Name), t.view.errorColumns()))
+	t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("\nBogform was interrupted while executing %s, and may not have performed the expected cleanup operations.\n", file.Name), t.view.errorColumns()))
 
 	// Print out the main state first, this is the state that isn't associated
 	// with a run block.
 	if state, exists := existingStates[nil]; exists && !state.Empty() {
-		t.view.streams.Eprint(format.WordWrap("\nOpenTofu has already created the following resources from the module under test:\n", t.view.errorColumns()))
+		t.view.streams.Eprint(format.WordWrap("\nBogform has already created the following resources from the module under test:\n", t.view.errorColumns()))
 		for _, resource := range state.AllResourceInstanceObjectAddrs() {
 			if resource.DeposedKey != states.NotDeposed {
 				t.view.streams.Eprintf("  - %s (%s)\n", resource.Instance, resource.DeposedKey)
@@ -336,7 +336,7 @@ func (t *TestHuman) FatalInterruptSummary(run *moduletest.Run, file *moduletest.
 			continue
 		}
 
-		t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("\nOpenTofu has already created the following resources for %q from %q:\n", run.Name, run.Config.Module.Source), t.view.errorColumns()))
+		t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("\nBogform has already created the following resources for %q from %q:\n", run.Name, run.Config.Module.Source), t.view.errorColumns()))
 		for _, resource := range state.AllResourceInstanceObjectAddrs() {
 			if resource.DeposedKey != states.NotDeposed {
 				t.view.streams.Eprintf("  - %s (%s)\n", resource.Instance, resource.DeposedKey)
@@ -362,7 +362,7 @@ func (t *TestHuman) FatalInterruptSummary(run *moduletest.Run, file *moduletest.
 			module = fmt.Sprintf("%q", run.Config.Module.Source.String())
 		}
 
-		t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("\nOpenTofu was in the process of creating the following resources for %q from %s, and they may not have been destroyed:\n", run.Name, module), t.view.errorColumns()))
+		t.view.streams.Eprint(format.WordWrap(fmt.Sprintf("\nBogform was in the process of creating the following resources for %q from %s, and they may not have been destroyed:\n", run.Name, module), t.view.errorColumns()))
 		for _, resource := range resources {
 			t.view.streams.Eprintf("  - %s\n", resource)
 		}
@@ -485,7 +485,7 @@ func (t *TestJSON) Run(run *moduletest.Run, file *moduletest.File) {
 				run.Diagnostics = run.Diagnostics.Append(tfdiags.Sourceless(
 					tfdiags.Warning,
 					"Failed to render test state",
-					fmt.Sprintf("OpenTofu could not marshal the state for display: %v", err)))
+					fmt.Sprintf("Bogform could not marshal the state for display: %v", err)))
 			} else {
 				t.view.log.Info(
 					"-verbose flag enabled, printing state",
@@ -500,7 +500,7 @@ func (t *TestJSON) Run(run *moduletest.Run, file *moduletest.File) {
 				run.Diagnostics = run.Diagnostics.Append(tfdiags.Sourceless(
 					tfdiags.Warning,
 					"Failed to render test plan",
-					fmt.Sprintf("OpenTofu could not marshal the plan for display: %v", err)))
+					fmt.Sprintf("Bogform could not marshal the plan for display: %v", err)))
 			} else {
 				t.view.log.Info(
 					"-verbose flag enabled, printing plan",
@@ -527,14 +527,14 @@ func (t *TestJSON) DestroySummary(diags tfdiags.Diagnostics, run *moduletest.Run
 
 		if run != nil {
 			t.view.log.Error(
-				fmt.Sprintf("OpenTofu left some resources in state after executing %s/%s, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:", file.Name, run.Name),
+				fmt.Sprintf("Bogform left some resources in state after executing %s/%s, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:", file.Name, run.Name),
 				"type", json.MessageTestCleanup,
 				json.MessageTestCleanup, cleanup,
 				"@testfile", file.Name,
 				"@testrun", run.Name)
 		} else {
 			t.view.log.Error(
-				fmt.Sprintf("OpenTofu left some resources in state after executing %s, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:", file.Name),
+				fmt.Sprintf("Bogform left some resources in state after executing %s, these left-over resources can be viewed by reading the statefile written to disk(errored_test.tfstate) and they need to be cleaned up manually:", file.Name),
 				"type", json.MessageTestCleanup,
 				json.MessageTestCleanup, cleanup,
 				"@testfile", file.Name)
@@ -600,7 +600,7 @@ func (t *TestJSON) FatalInterruptSummary(run *moduletest.Run, file *moduletest.F
 	}
 
 	t.view.log.Error(
-		"OpenTofu was interrupted during test execution, and may not have performed the expected cleanup operations.",
+		"Bogform was interrupted during test execution, and may not have performed the expected cleanup operations.",
 		"type", json.MessageTestInterrupt,
 		json.MessageTestInterrupt, message,
 		"@testfile", file.Name)
@@ -683,12 +683,12 @@ const stateWriteFatalErrorFmt = `Failed to save state after an errored test run.
 
 Error serializing state: %s
 
-A catastrophic error has prevented OpenTofu from persisting the state during an errored test run. 
+A catastrophic error has prevented Bogform from persisting the state during an errored test run. 
 
-This is a serious bug in OpenTofu and should be reported.
+This is a serious bug in Bogform and should be reported.
 `
 
-const stateWriteConsoleFallbackError = `The errors shown above prevented OpenTofu from writing the state to
+const stateWriteConsoleFallbackError = `The errors shown above prevented Bogform from writing the state to
 the errored_test.tfstate. As a fallback, the raw state data is printed above as a JSON object.
 
 To retry writing this state, copy the state data (from the first { to the last } inclusive) and save it into a local file named "errored_test.tfstate".

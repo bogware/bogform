@@ -29,11 +29,11 @@ func SplitPackageSubdir(given string) (packageAddr, subDir string) {
 	// versions just used go-getter directly and so we need to preserve
 	// its various quirks for compatibility reasons.
 	//
-	// However, note that in OpenTofu we _always_ split off the subdirectory
-	// portion and handle it within OpenTofu-level code, _never_ passing
+	// However, note that in Bogform we _always_ split off the subdirectory
+	// portion and handle it within Bogform-level code, _never_ passing
 	// a subdirectory portion down into go-getter's own Get function, because
-	// OpenTofu's ability to refer between local paths inside the same
-	// package depends on OpenTofu itself always being aware of where the
+	// Bogform's ability to refer between local paths inside the same
+	// package depends on Bogform itself always being aware of where the
 	// package's root directory ended up on disk, and always needs the
 	// package installed wholesale.
 	packageAddr, subDir = getter.SourceDirSubdir(given)

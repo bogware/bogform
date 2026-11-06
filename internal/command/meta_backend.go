@@ -81,8 +81,8 @@ type BackendWithRemoteTerraformVersion interface {
 
 // Backend initializes and returns the backend for this CLI session.
 //
-// The backend is used to perform the actual OpenTofu operations. This
-// abstraction enables easily sliding in new OpenTofu behavior such as
+// The backend is used to perform the actual Bogform operations. This
+// abstraction enables easily sliding in new Bogform behavior such as
 // remote state storage, remote operations, etc. while allowing the CLI
 // to remain mostly identical.
 //
@@ -96,7 +96,7 @@ type BackendWithRemoteTerraformVersion interface {
 //
 // A side-effect of this method is the population of m.backendState, recording
 // the final resolved backend configuration after dealing with overrides from
-// the "tofu init" command line, etc.
+// the "bogform init" command line, etc.
 func (m *Meta) Backend(ctx context.Context, opts *BackendOpts, enc encryption.StateEncryption) (backend.Enhanced, tfdiags.Diagnostics) {
 	var diags tfdiags.Diagnostics
 
@@ -139,16 +139,16 @@ func (m *Meta) Backend(ctx context.Context, opts *BackendOpts, enc encryption.St
 				for addr, err := range errs {
 					fmt.Fprintf(&buf, "\n  - %s: %s", addr, err)
 				}
-				suggestion := "To download the plugins required for this configuration, run:\n  tofu init"
+				suggestion := "To download the plugins required for this configuration, run:\n  bogform init"
 				if m.SystemCfg.RunningInAutomation {
-					// Don't mention "tofu init" specifically if we're running in an automation wrapper
-					suggestion = "You must install the required plugins before running OpenTofu operations."
+					// Don't mention "bogform init" specifically if we're running in an automation wrapper
+					suggestion = "You must install the required plugins before running Bogform operations."
 				}
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					"Required plugins are not installed",
 					fmt.Sprintf(
-						"The installed provider plugins are not consistent with the packages selected in the dependency lock file:%s\n\nOpenTofu uses external plugins to integrate with a variety of different infrastructure services. %s",
+						"The installed provider plugins are not consistent with the packages selected in the dependency lock file:%s\n\nBogform uses external plugins to integrate with a variety of different infrastructure services. %s",
 						buf.String(), suggestion,
 					),
 				))
@@ -309,7 +309,7 @@ func (m *Meta) BackendForLocalPlan(ctx context.Context, settings plans.Backend, 
 		// We should always save the canonical name in a plan -- never an alias
 		// name -- so getting here suggests a bug in the code that generated
 		// this plan.
-		diags = diags.Append(fmt.Errorf("saved plan should use canonical backend type %q, not alias %q; this is a bug in OpenTofu", canonType, settings.Type))
+		diags = diags.Append(fmt.Errorf("saved plan should use canonical backend type %q, not alias %q; this is a bug in Bogform", canonType, settings.Type))
 		return nil, diags
 	}
 	b := f(enc)
@@ -540,7 +540,7 @@ func (m *Meta) backendFromConfig(ctx context.Context, opts *BackendOpts, enc enc
 	// ------------------------------------------------------------------------
 	// For historical reasons, current backend configuration for a working
 	// directory is kept in a *state-like* file using clistate.CLIState.
-	// It is not actually an OpenTofu resource state, and so only the
+	// It is not actually a Bogform resource state, and so only the
 	// "backend" portion of it is actually used.
 	//
 	// The remainder of this code often confusingly refers to this as a "state",
@@ -603,7 +603,7 @@ func (m *Meta) backendFromConfig(ctx context.Context, opts *BackendOpts, enc enc
 		if !opts.Init {
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
-				"Backend initialization required, please run \"tofu init\"",
+				"Backend initialization required, please run \"bogform init\"",
 				fmt.Sprintf(strings.TrimSpace(errBackendInit), initReason),
 			))
 			return nil, diags
@@ -623,7 +623,7 @@ func (m *Meta) backendFromConfig(ctx context.Context, opts *BackendOpts, enc enc
 			initReason := fmt.Sprintf("Initial configuration of the requested backend %q", c.Type)
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
-				"Backend initialization required, please run \"tofu init\"",
+				"Backend initialization required, please run \"bogform init\"",
 				fmt.Sprintf(strings.TrimSpace(errBackendInit), initReason),
 			))
 			return nil, diags
@@ -716,7 +716,7 @@ func (m *Meta) determineInitReason(previousBackendType string, currentBackendTyp
 	var diags tfdiags.Diagnostics
 	diags = diags.Append(tfdiags.Sourceless(
 		tfdiags.Error,
-		"Backend initialization required: please run \"tofu init\"",
+		"Backend initialization required: please run \"bogform init\"",
 		fmt.Sprintf(strings.TrimSpace(errBackendInit), initReason),
 	))
 	return diags
@@ -733,7 +733,7 @@ func savedBackendUnknownError(backendType string) error {
 
 // backendFromState returns the initialized (not configured) backend directly
 // from the backend state. This should be used only when a user runs
-// `tofu init -backend=false`. This function returns a local backend if
+// `bogform init -backend=false`. This function returns a local backend if
 // there is no backend state or no backend configured.
 func (m *Meta) backendFromState(ctx context.Context, enc encryption.StateEncryption) (backend.Backend, tfdiags.Diagnostics) {
 	var diags tfdiags.Diagnostics
@@ -773,21 +773,21 @@ func (m *Meta) backendFromState(ctx context.Context, enc encryption.StateEncrypt
 		// the clistate package) should always record the canonical backend
 		// type, not an alias for it. If we get here then there's a bug in
 		// the code that generated the s.Backend values.
-		diags = diags.Append(fmt.Errorf("working directory is configured for backend alias %q instead of the canonical name %q; this is a bug in OpenTofu", s.Backend.Type, canonType))
+		diags = diags.Append(fmt.Errorf("working directory is configured for backend alias %q instead of the canonical name %q; this is a bug in Bogform", s.Backend.Type, canonType))
 		return nil, diags
 	}
 	b := f(enc)
 
 	// The configuration saved in the working directory state file is used
 	// in this case, since it will contain any additional values that
-	// were provided via -backend-config arguments on tofu init.
+	// were provided via -backend-config arguments on bogform init.
 	schema := b.ConfigSchema()
 	configVal, err := s.Backend.Config(schema)
 	if err != nil {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Failed to decode current backend config",
-			fmt.Sprintf("The backend configuration created by the most recent run of \"tofu init\" could not be decoded: %s. The configuration may have been initialized by an earlier version that used an incompatible configuration structure. Run \"tofu init -reconfigure\" to force re-initialization of the backend.", err),
+			fmt.Sprintf("The backend configuration created by the most recent run of \"bogform init\" could not be decoded: %s. The configuration may have been initialized by an earlier version that used an incompatible configuration structure. Run \"bogform init -reconfigure\" to force re-initialization of the backend.", err),
 		))
 		return nil, diags
 	}
@@ -1164,21 +1164,21 @@ func (m *Meta) savedBackend(ctx context.Context, sMgr *clistate.LocalState, enc 
 	if s.Backend.Type != canonName {
 		// We should always save the canonical name in the clistate, so if we
 		// get here then it's a bug in whatever generated the clistate.
-		diags = diags.Append(fmt.Errorf("working directory state uses alias %q instead of canonical backend type %q; this is a bug in OpenTofu", s.Backend.Type, canonName))
+		diags = diags.Append(fmt.Errorf("working directory state uses alias %q instead of canonical backend type %q; this is a bug in Bogform", s.Backend.Type, canonName))
 		return nil, diags
 	}
 	b := f(enc)
 
 	// The configuration saved in the working directory state file is used
 	// in this case, since it will contain any additional values that
-	// were provided via -backend-config arguments on tofu init.
+	// were provided via -backend-config arguments on bogform init.
 	schema := b.ConfigSchema()
 	configVal, err := s.Backend.Config(schema)
 	if err != nil {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Failed to decode current backend config",
-			fmt.Sprintf("The backend configuration created by the most recent run of \"tofu init\" could not be decoded: %s. The configuration may have been initialized by an earlier version that used an incompatible configuration structure. Run \"tofu init -reconfigure\" to force re-initialization of the backend.", err),
+			fmt.Sprintf("The backend configuration created by the most recent run of \"bogform init\" could not be decoded: %s. The configuration may have been initialized by an earlier version that used an incompatible configuration structure. Run \"bogform init -reconfigure\" to force re-initialization of the backend.", err),
 		))
 		return nil, diags
 	}
@@ -1303,7 +1303,7 @@ func (m *Meta) backendInitFromConfig(ctx context.Context, c *configs.Backend, en
 		return nil, cty.NilVal, diags
 	}
 	if c.Type != canonType {
-		diags = diags.Append(fmt.Errorf("backend configuration still contains alias type %q instead of canonical %q; this is a bug in OpenTofu", c.Type, canonType))
+		diags = diags.Append(fmt.Errorf("backend configuration still contains alias type %q instead of canonical %q; this is a bug in Bogform", c.Type, canonType))
 		return nil, cty.NilVal, diags
 	}
 	b := f(enc)
@@ -1386,7 +1386,7 @@ func (m *Meta) ignoreRemoteVersionConflict(b backend.Backend) {
 	}
 }
 
-// Helper method to check the local OpenTofu version against the configured
+// Helper method to check the local Bogform version against the configured
 // version in the remote workspace, returning diagnostics if they conflict.
 func (m *Meta) remoteVersionCheck(b backend.Backend, workspace string) tfdiags.Diagnostics {
 	var diags tfdiags.Diagnostics
@@ -1417,8 +1417,8 @@ func (m *Meta) remoteVersionCheck(b backend.Backend, workspace string) tfdiags.D
 const errBackendLocalRead = `
 Error reading local state: %w
 
-OpenTofu is trying to read your local state to determine if there is
-state to migrate to your newly configured backend. OpenTofu can't continue
+Bogform is trying to read your local state to determine if there is
+state to migrate to your newly configured backend. Bogform can't continue
 without this check because that would risk losing state. Please resolve the
 error above and try again.
 `
@@ -1436,19 +1436,19 @@ issue above and retry the command.
 const errBackendNewUnknown = `
 The backend %q could not be found.
 
-This is the backend specified in your OpenTofu configuration file.
+This is the backend specified in your Bogform configuration file.
 This error could be a simple typo in your configuration, but it can also
-be caused by using a OpenTofu version that doesn't support the specified
-backend type. Please check your configuration and your OpenTofu version.
+be caused by using a Bogform version that doesn't support the specified
+backend type. Please check your configuration and your Bogform version.
 
-If you'd like to run OpenTofu and store state locally, you can fix this
+If you'd like to run Bogform and store state locally, you can fix this
 error by removing the backend configuration from your configuration.
 `
 
 const errBackendNoExistingWorkspaces = `
 No existing workspaces.
 
-Use the "tofu workspace" command to create and select a new workspace.
+Use the "bogform workspace" command to create and select a new workspace.
 If the backend already contains existing workspaces, you may need to update
 the backend configuration.
 `
@@ -1456,21 +1456,21 @@ the backend configuration.
 const errBackendSavedUnknown = `
 The backend %q could not be found.
 
-This is the backend that this OpenTofu environment is configured to use
+This is the backend that this Bogform environment is configured to use
 both in your configuration and saved locally as your last-used backend.
-If it isn't found, it could mean an alternate version of OpenTofu was
-used with this configuration. Please use the proper version of OpenTofu that
+If it isn't found, it could mean an alternate version of Bogform was
+used with this configuration. Please use the proper version of Bogform that
 contains support for this backend.
 
 If you'd like to force remove this backend, you must update your configuration
-to not use the backend and run "tofu init" (or any other command) again.
+to not use the backend and run "bogform init" (or any other command) again.
 `
 
 const errBackendClearSaved = `
 Error clearing the backend configuration: %w
 
-OpenTofu removes the saved backend configuration when you're removing a
-configured backend. This must be done so future OpenTofu runs know to not
+Bogform removes the saved backend configuration when you're removing a
+configured backend. This must be done so future Bogform runs know to not
 use the backend configuration. Please look at the error above, resolve it,
 and try again.
 `
@@ -1478,14 +1478,14 @@ and try again.
 const errBackendInit = `
 Reason: %s
 
-The "backend" is the interface that OpenTofu uses to store state,
+The "backend" is the interface that Bogform uses to store state,
 perform operations, etc. If this message is showing up, it means that the
-OpenTofu configuration you're using is using a custom configuration for
-the OpenTofu backend.
+Bogform configuration you're using is using a custom configuration for
+the Bogform backend.
 
 Changes to backend configurations require reinitialization. This allows
-OpenTofu to set up the new configuration, copy existing state, etc. Please run
-"tofu init" with either the "-reconfigure" or "-migrate-state" flags to
+Bogform to set up the new configuration, copy existing state, etc. Please run
+"bogform init" with either the "-reconfigure" or "-migrate-state" flags to
 use the current configuration.
 
 If the change reason above is incorrect, please verify your configuration
@@ -1496,7 +1496,7 @@ configuration or state have been made.
 const errBackendWriteSaved = `
 Error saving the backend configuration: %w
 
-OpenTofu saves the complete backend configuration in a local file for
+Bogform saves the complete backend configuration in a local file for
 configuring the backend on future operations. This cannot be disabled. Errors
 are usually due to simple file permission errors. Please look at the error
 above, resolve it, and try again.
@@ -1506,5 +1506,5 @@ var migrateOrReconfigDiag = tfdiags.Sourceless(
 	tfdiags.Error,
 	"Backend configuration changed",
 	"A change in the backend configuration has been detected, which may require migrating existing state.\n\n"+
-		"If you wish to attempt automatic migration of the state, use \"tofu init -migrate-state\".\n"+
-		`If you wish to store the current configuration with no changes to the state, use "tofu init -reconfigure".`)
+		"If you wish to attempt automatic migration of the state, use \"bogform init -migrate-state\".\n"+
+		`If you wish to store the current configuration with no changes to the state, use "bogform init -reconfigure".`)

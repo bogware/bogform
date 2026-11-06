@@ -22,7 +22,7 @@ func TestParseMetadataFunctions_basicValidation(t *testing.T) {
 		"defaults": {
 			args:        nil,
 			want:        metadataFunctionsArgsWithDefaults(nil),
-			wantErrText: "The `tofu metadata functions` command requires the `-json` flag.",
+			wantErrText: "The `bogform metadata functions` command requires the `-json` flag.",
 		},
 		"json flag": {
 			args: []string{"-json"},

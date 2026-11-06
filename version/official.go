@@ -6,12 +6,12 @@
 package version
 
 // officialBuild is set to a non-empty value when we build executables for
-// the OpenTofu project's official release packages, and we assume it'll
+// the Bogform project's official release packages, and we assume it'll
 // be empty for all other builds.
 var officialBuild string
 
 // IsOfficialBuild returns true if the current executable was built with
-// an argument like the following, which is set by the OpenTofu project's main
+// an argument like the following, which is set by the Bogform project's main
 // release process:
 //
 //	-X 'github.com/bogware/bogform/version.officialBuild=1'

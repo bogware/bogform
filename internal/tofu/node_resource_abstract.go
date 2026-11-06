@@ -622,7 +622,7 @@ func (n *NodeAbstractResourceInstance) readResourceInstanceState(ctx context.Con
 	schema, currentVersion := (providerSchema).SchemaForResourceAddr(addr.Resource.ContainingResource())
 	if schema == nil {
 		// Shouldn't happen since we should've failed long ago if no schema is present
-		return nil, diags.Append(fmt.Errorf("no schema available for %s while reading state; this is a bug in OpenTofu and should be reported", addr))
+		return nil, diags.Append(fmt.Errorf("no schema available for %s while reading state; this is a bug in Bogform and should be reported", addr))
 	}
 
 	// prevAddr will match the newAddr if the resource wasn't moved (prevRunAddr checks move results)
@@ -687,7 +687,7 @@ func (n *NodeAbstractResourceInstance) readResourceInstanceStateDeposed(ctx cont
 	}
 
 	if key == states.NotDeposed {
-		return nil, diags.Append(fmt.Errorf("readResourceInstanceStateDeposed used with no instance key; this is a bug in OpenTofu and should be reported"))
+		return nil, diags.Append(fmt.Errorf("readResourceInstanceStateDeposed used with no instance key; this is a bug in Bogform and should be reported"))
 	}
 
 	log.Printf("[TRACE] readResourceInstanceStateDeposed: reading state for %s deposed object %s", addr, key)
@@ -702,7 +702,7 @@ func (n *NodeAbstractResourceInstance) readResourceInstanceStateDeposed(ctx cont
 	schema, currentVersion := (providerSchema).SchemaForResourceAddr(addr.Resource.ContainingResource())
 	if schema == nil {
 		// Shouldn't happen since we should've failed long ago if no schema is present
-		return nil, diags.Append(fmt.Errorf("no schema available for %s while reading state; this is a bug in OpenTofu and should be reported", addr))
+		return nil, diags.Append(fmt.Errorf("no schema available for %s while reading state; this is a bug in Bogform and should be reported", addr))
 	}
 	// prevAddr will match the newAddr if the resource wasn't moved (prevRunAddr checks move results)
 	prevAddr := n.prevRunAddr(evalCtx)

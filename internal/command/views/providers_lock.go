@@ -93,10 +93,10 @@ func (v *ProvidersLockHuman) LockUpdateNoChange(provider string, platform string
 
 func (v *ProvidersLockHuman) UpdatedSuccessfully(madeAnyChange bool) {
 	if !madeAnyChange {
-		_, _ = v.view.streams.Println(v.view.colorize.Color("\n[bold][green]Success![reset] [bold]OpenTofu has validated the lock file and found no need for changes.[reset]"))
+		_, _ = v.view.streams.Println(v.view.colorize.Color("\n[bold][green]Success![reset] [bold]Bogform has validated the lock file and found no need for changes.[reset]"))
 		return
 	}
-	_, _ = v.view.streams.Println(v.view.colorize.Color("\n[bold][green]Success![reset] [bold]OpenTofu has updated the lock file.[reset]"))
+	_, _ = v.view.streams.Println(v.view.colorize.Color("\n[bold][green]Success![reset] [bold]Bogform has updated the lock file.[reset]"))
 	_, _ = v.view.streams.Println("\nReview the changes in .terraform.lock.hcl and then commit to your\nversion control system to retain the new checksums.")
 	// This new line was in the previous message but the built-in go linter does not allow it
 	_, _ = v.view.streams.Println("")
@@ -184,8 +184,8 @@ func (v *ProvidersLockJSON) LockUpdateNoChange(provider string, platform string)
 
 func (v *ProvidersLockJSON) UpdatedSuccessfully(madeAnyChange bool) {
 	if !madeAnyChange {
-		v.view.Info("Success! OpenTofu has validated the lock file and found no need for changes.")
+		v.view.Info("Success! Bogform has validated the lock file and found no need for changes.")
 		return
 	}
-	v.view.Info("Success! OpenTofu has updated the lock file. Review the changes in .terraform.lock.hcl and then commit to your version control system to retain the new checksums")
+	v.view.Info("Success! Bogform has updated the lock file. Review the changes in .terraform.lock.hcl and then commit to your version control system to retain the new checksums")
 }

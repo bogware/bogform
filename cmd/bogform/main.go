@@ -105,11 +105,11 @@ func realMain() int {
 
 	ctx, err := tracing.OpenTelemetryInit(context.Background())
 	if err != nil {
-		// openTelemetryInit can only fail if OpenTofu was run with an
+		// openTelemetryInit can only fail if Bogform was run with an
 		// explicit environment variable to enable telemetry collection,
 		// so in typical use we cannot get here.
 		rv.Error(fmt.Sprintf("Could not initialize telemetry: %s", err))
-		rv.Error(fmt.Sprintf("Unset environment variable %s if you don't intend to collect telemetry from OpenTofu.", tracing.OTELExporterEnvVar))
+		rv.Error(fmt.Sprintf("Unset environment variable %s if you don't intend to collect telemetry from Bogform.", tracing.OTELExporterEnvVar))
 
 		return 1
 	}
@@ -132,11 +132,11 @@ func realMain() int {
 		}
 	}
 
-	log.Printf("[INFO] OpenTofu version: %s %s", Version, VersionPrerelease)
+	log.Printf("[INFO] Bogform version: %s %s", Version, VersionPrerelease)
 	if version.IsOfficialBuild() {
-		log.Printf("[DEBUG] This is an official build of OpenTofu")
+		log.Printf("[DEBUG] This is an official build of Bogform")
 	} else {
-		log.Printf("[DEBUG] This is a third-party build of OpenTofu")
+		log.Printf("[DEBUG] This is a third-party build of Bogform")
 	}
 	if logging.IsDebugOrHigher() {
 		for _, depMod := range version.InterestingDependencies() {
@@ -148,7 +148,7 @@ func realMain() int {
 		log.Printf("[WARN] GODEBUG environment variable is set to %q, which may activate unsupported and untested behavior", dynamicGodebug)
 	}
 	if fips140.Enabled() {
-		log.Printf("[WARN] Go runtime FIPS 140-3 mode is enabled; OpenTofu is not supported in this configuration, which may cause undesirable behavior")
+		log.Printf("[WARN] Go runtime FIPS 140-3 mode is enabled; Bogform is not supported in this configuration, which may cause undesirable behavior")
 	}
 	log.Printf("[INFO] CLI args: %#v", os.Args)
 
@@ -166,8 +166,8 @@ func realMain() int {
 		rv.Error("There are some problems with the CLI configuration:")
 		rv.Diagnostics(diags)
 		if diags.HasErrors() {
-			rv.Error("As a result of the above problems, OpenTofu may not behave as intended.\n\n")
-			// We continue to run anyway, since OpenTofu has reasonable defaults.
+			rv.Error("As a result of the above problems, Bogform may not behave as intended.\n\n")
+			// We continue to run anyway, since Bogform has reasonable defaults.
 		}
 	}
 
@@ -189,7 +189,7 @@ func realMain() int {
 	providerDevOverrides := providerDevOverrides(config.ProviderInstallation)
 
 	// The user can declare that certain providers are being managed on
-	// OpenTofu's behalf using this environment variable. This is used
+	// Bogform's behalf using this environment variable. This is used
 	// primarily by the SDK's acceptance testing framework.
 	unmanagedProviders, err := parseReattachProviders(os.Getenv("TF_REATTACH_PROVIDERS"))
 	if err != nil {
@@ -214,7 +214,7 @@ func realMain() int {
 		unmanagedProviders,
 	)
 
-	// We might generate some additional log lines if OpenTofu relied on any
+	// We might generate some additional log lines if Bogform relied on any
 	// non-default Go runtime behaviors enabled by GODEBUG settings, because
 	// they might be relevant when trying to reproduce certain problems for
 	// debugging or bug reporting purposes.

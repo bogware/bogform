@@ -25,7 +25,7 @@ import (
 
 // providerSource constructs a provider source based on a combination of the
 // CLI configuration and some default search locations. This will be the
-// provider source used for provider installation in the "tofu init"
+// provider source used for provider installation in the "bogform init"
 // command, unless overridden by the special -plugin-dir option.
 func providerSource(
 	ctx context.Context,
@@ -270,7 +270,7 @@ func providerSourceForCLIConfigLocation(
 			mappingFunc,
 			func(ctx context.Context, registryDomain, repositoryName string) (getproviders.OCIRepositoryStore, error) {
 				// We intentionally delay the finalization of the credentials policy until
-				// just before we need it because most OpenTofu commands don't install
+				// just before we need it because most Bogform commands don't install
 				// providers at all, and even those that do only need to do this if
 				// actually interacting with an OCI mirror, so we can avoid doing
 				// this work at all most of the time.

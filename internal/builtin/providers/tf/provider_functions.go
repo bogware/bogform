@@ -154,8 +154,8 @@ func (f *encodeExprFunc) GetFunctionSpec() providers.FunctionSpec {
 	return providers.FunctionSpec{
 		Parameters:        params,
 		Return:            cty.String,
-		Summary:           "Takes an arbitrary expression and converts it into a string with valid OpenTofu syntax",
-		Description:       "provider::terraform::encode_expr takes an arbitrary expression and converts it into a string with valid OpenTofu syntax",
+		Summary:           "Takes an arbitrary expression and converts it into a string with valid Bogform syntax",
+		Description:       "provider::terraform::encode_expr takes an arbitrary expression and converts it into a string with valid Bogform syntax",
 		DescriptionFormat: providers.TextFormattingPlain,
 	}
 }

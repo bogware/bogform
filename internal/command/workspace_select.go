@@ -18,7 +18,7 @@ func WorkspaceSelectCommander(legacyName bool) Command {
 	cmd := Command{
 		Name:  "select",
 		Short: "Select a workspace",
-		Long:  `Select a different OpenTofu workspace.`,
+		Long:  `Select a different Bogform workspace.`,
 
 		DiagsWithNewline: true,
 	}

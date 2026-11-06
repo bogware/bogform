@@ -25,7 +25,7 @@ func StatePullCommander() Command {
 		Long: `Pull the state from its location, upgrade the local copy, and output it to stdout.
 
 This command "pulls" the current state and outputs it to stdout.
-As part of this process, OpenTofu will upgrade the state format of the local copy to the current version.
+As part of this process, Bogform will upgrade the state format of the local copy to the current version.
 
 The primary use of this is for state stored remotely. This command will still work with local state but is less useful for this.`,
 

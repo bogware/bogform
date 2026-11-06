@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // Package oauthserver is a very simplistic OAuth server used only for
-// the testing of the "tofu login" and "tofu logout" commands.
+// the testing of the "bogform login" and "bogform logout" commands.
 package oauthserver
 
 import (

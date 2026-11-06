@@ -107,13 +107,13 @@ func extractImportPath(fullName string) string {
 		if dot := strings.Index(fullName, "."); dot != -1 {
 			return fullName[:dot]
 		}
-		log.Printf("[WARN] unable to extract import path from function name: %q. Tracing may be incomplete. This is a bug in OpenTofu, please report it.", fullName)
+		log.Printf("[WARN] unable to extract import path from function name: %q. Tracing may be incomplete. This is a bug in Bogform, please report it.", fullName)
 		return "unknown"
 	}
 
 	dotAfterSlash := strings.Index(fullName[lastSlash:], ".")
 	if dotAfterSlash == -1 {
-		log.Printf("[WARN] unable to extract import path from function name: %q. Tracing may be incomplete. This is a bug in OpenTofu, please report it.", fullName)
+		log.Printf("[WARN] unable to extract import path from function name: %q. Tracing may be incomplete. This is a bug in Bogform, please report it.", fullName)
 		return "unknown"
 	}
 
@@ -136,7 +136,7 @@ func SpanFromContext(ctx context.Context) trace.Span {
 }
 
 // SpanAttributes wraps [trace.WithAttributes] just so that we can minimize
-// how many different OpenTofu packages directly import the OpenTelemetry
+// how many different Bogform packages directly import the OpenTelemetry
 // packages, because we tend to need to control which versions we're using
 // quite closely to avoid dependency hell.
 func SpanAttributes(attrs ...attribute.KeyValue) trace.SpanStartEventOption {

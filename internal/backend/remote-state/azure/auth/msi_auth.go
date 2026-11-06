@@ -72,7 +72,7 @@ func (credWrapper *msiTokenCredentialWrapper) GetToken(ctx context.Context, opti
 // reconcileMSIEndpoint helps to set MSI_ENDPOINT, if it has not already set.
 // This is a bit of a hack, but we do this to ensure backwards compatibility.
 // The microsoft-authentication-library-for-go uses the MSI_ENDPOINT environment variable
-// to automatically set the endpoint, in the case OpenTofu is running in
+// to automatically set the endpoint, in the case Bogform is running in
 // Cloud Shell or AzureML. There isn't another way to get the endpoint information
 // to the library...
 func reconcileMSIEndpoint(msiEndpointFromConfig string) string {

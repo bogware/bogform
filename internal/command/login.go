@@ -81,7 +81,7 @@ func (c LoginCommand) Execute(args *arguments.Login, view views.Login) int {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Login is an interactive command",
-			"The \"tofu login\" command uses interactive prompts to obtain and record credentials, so it can't be run with input disabled.\n\nTo configure credentials in a non-interactive context, write existing credentials directly to a CLI configuration file.",
+			"The \"bogform login\" command uses interactive prompts to obtain and record credentials, so it can't be run with input disabled.\n\nTo configure credentials in a non-interactive context, write existing credentials directly to a CLI configuration file.",
 		))
 		view.Diagnostics(diags)
 		return 1
@@ -140,14 +140,14 @@ func (c LoginCommand) Execute(args *arguments.Login, view views.Login) int {
 	case *disco.ErrVersionNotSupported:
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Warning,
-			"Host does not support OpenTofu login",
-			fmt.Sprintf("The given hostname %q allows creating OpenTofu authorization tokens, but requires a newer version of OpenTofu CLI to do so.", dispHostname),
+			"Host does not support Bogform login",
+			fmt.Sprintf("The given hostname %q allows creating Bogform authorization tokens, but requires a newer version of Bogform CLI to do so.", dispHostname),
 		))
 	default:
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Warning,
-			"Host does not support OpenTofu login",
-			fmt.Sprintf("The given hostname %q cannot support \"tofu login\": %s.", dispHostname, err),
+			"Host does not support Bogform login",
+			fmt.Sprintf("The given hostname %q cannot support \"bogform login\": %s.", dispHostname, err),
 		))
 	}
 
@@ -161,20 +161,20 @@ func (c LoginCommand) Execute(args *arguments.Login, view views.Login) int {
 		case *disco.ErrServiceNotProvided:
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
-				"Host does not support OpenTofu tokens API",
-				fmt.Sprintf("The given hostname %q does not support creating OpenTofu authorization tokens.", dispHostname),
+				"Host does not support Bogform tokens API",
+				fmt.Sprintf("The given hostname %q does not support creating Bogform authorization tokens.", dispHostname),
 			))
 		case *disco.ErrVersionNotSupported:
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
-				"Host does not support OpenTofu tokens API",
-				fmt.Sprintf("The given hostname %q allows creating OpenTofu authorization tokens, but requires a newer version of OpenTofu CLI to do so.", dispHostname),
+				"Host does not support Bogform tokens API",
+				fmt.Sprintf("The given hostname %q allows creating Bogform authorization tokens, but requires a newer version of Bogform CLI to do so.", dispHostname),
 			))
 		default:
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
-				"Host does not support OpenTofu tokens API",
-				fmt.Sprintf("The given hostname %q cannot support \"tofu login\": %s.", dispHostname, err),
+				"Host does not support Bogform tokens API",
+				fmt.Sprintf("The given hostname %q cannot support \"bogform login\": %s.", dispHostname, err),
 			))
 		}
 	}
@@ -183,7 +183,7 @@ func (c LoginCommand) Execute(args *arguments.Login, view views.Login) int {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			fmt.Sprintf("Credentials for %s are manually configured", dispHostname),
-			"The \"tofu login\" command cannot log in because credentials for this host are already configured in a CLI configuration file.\n\nTo log in, first revoke the existing credentials and remove that block from the CLI configuration.",
+			"The \"bogform login\" command cannot log in because credentials for this host are already configured in a CLI configuration file.\n\nTo log in, first revoke the existing credentials and remove that block from the CLI configuration.",
 		))
 	}
 
@@ -195,7 +195,7 @@ func (c LoginCommand) Execute(args *arguments.Login, view views.Login) int {
 	var token svcauth.HostCredentialsToken
 	var tokenDiags tfdiags.Diagnostics
 
-	// Prefer OpenTofu login if available
+	// Prefer Bogform login if available
 	if clientConfig != nil {
 		var oauthToken *oauth2.Token
 
@@ -211,8 +211,8 @@ func (c LoginCommand) Execute(args *arguments.Login, view views.Login) int {
 		default:
 			tokenDiags = tokenDiags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
-				"Host does not support OpenTofu login",
-				fmt.Sprintf("The given hostname %q does not allow any OAuth grant types that are supported by this version of OpenTofu.", dispHostname),
+				"Host does not support Bogform login",
+				fmt.Sprintf("The given hostname %q does not allow any OAuth grant types that are supported by this version of Bogform.", dispHostname),
 			))
 		}
 		if oauthToken != nil {
@@ -233,7 +233,7 @@ func (c LoginCommand) Execute(args *arguments.Login, view views.Login) int {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Error,
 			"Failed to save API token",
-			fmt.Sprintf("The given host returned an API token, but OpenTofu failed to save it: %s.", err),
+			fmt.Sprintf("The given host returned an API token, but Bogform failed to save it: %s.", err),
 		))
 	}
 
@@ -675,7 +675,7 @@ func (c *LoginCommand) interactiveGetTokenByUI(ctx context.Context, hostname svc
 	}
 
 	// Update user-agent from 'go-tfe' to opentofu
-	cfg.Headers.Set("User-Agent", httpclient.OpenTofuUserAgent(version.String()))
+	cfg.Headers.Set("User-Agent", httpclient.BogformUserAgent(version.String()))
 
 	client, err := tfe.NewClient(cfg)
 	if err != nil {
@@ -821,7 +821,7 @@ type loginCredentialsContext struct {
 const callbackSuccessMessage = `
 <html>
 <head>
-<title>OpenTofu Login</title>
+<title>Bogform Login</title>
 <style type="text/css">
 body {
 	font-family: monospace;
@@ -832,8 +832,8 @@ body {
 </head>
 <body>
 
-<p>The login server has returned an authentication code to OpenTofu.</p>
-<p>Now close this page and return to the terminal where <tt>tofu login</tt>
+<p>The login server has returned an authentication code to Bogform.</p>
+<p>Now close this page and return to the terminal where <tt>bogform login</tt>
 is running to see the result of the login process.</p>
 
 </body>

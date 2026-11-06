@@ -48,11 +48,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Success! Logged in to cloud backend",
+					"@message": "Success! Logged in",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "\nSuccess! Logged in to cloud backend\n\n",
+			wantStdout: "\nSuccess! Logged in\n\n",
 		},
 		"defaultTFELoginSuccess": {
 			viewCall: func(login Login) {
@@ -61,11 +61,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Success! Logged in to the cloud backend (app.example.com)",
+					"@message": "Success! Logged in to app.example.com",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "Success! Logged in to the cloud backend (app.example.com)\n\n",
+			wantStdout: "Success! Logged in to app.example.com\n\n",
 		},
 		"tokenObtainedConfirmation": {
 			viewCall: func(login Login) {
@@ -74,11 +74,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "Success! OpenTofu has obtained and saved an API token. The new API token will be used for any future OpenTofu command that must make authenticated requests to app.example.com",
+					"@message": "Success! Bogform has obtained and saved an API token. The new API token will be used for any future Bogform command that must make authenticated requests to app.example.com",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "Success! OpenTofu has obtained and saved an API token.\n\nThe new API token will be used for any future OpenTofu command that must make\nauthenticated requests to app.example.com.\n\n",
+			wantStdout: "Success! Bogform has obtained and saved an API token.\n\nThe new API token will be used for any future Bogform command that must make\nauthenticated requests to app.example.com.\n\n",
 		},
 		"openingBrowserForOAuth": {
 			viewCall: func(login Login) {
@@ -91,7 +91,7 @@ func TestLoginViews(t *testing.T) {
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "OpenTofu must now open a web browser to the login page for app.example.com.\n\nIf a browser does not open this automatically, open the following URL to proceed:\n    https://app.example.com/oauth\n\n",
+			wantStdout: "Bogform must now open a web browser to the login page for app.example.com.\n\nIf a browser does not open this automatically, open the following URL to proceed:\n    https://app.example.com/oauth\n\n",
 		},
 		"manualBrowserLaunch": {
 			viewCall: func(login Login) {
@@ -117,7 +117,7 @@ func TestLoginViews(t *testing.T) {
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "OpenTofu will now wait for the host to signal that login was successful.\n\n",
+			wantStdout: "Bogform will now wait for the host to signal that login was successful.\n\n",
 		},
 		"passwordRequestHeader": {
 			viewCall: func(login Login) {
@@ -126,11 +126,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu must temporarily use your password to request an API token. This password will NOT be saved locally.",
+					"@message": "Bogform must temporarily use your password to request an API token. This password will NOT be saved locally.",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "OpenTofu must temporarily use your password to request an API token.\nThis password will NOT be saved locally.\n\n",
+			wantStdout: "Bogform must temporarily use your password to request an API token.\nThis password will NOT be saved locally.\n\n",
 		},
 		"openingBrowserForTokens": {
 			viewCall: func(login Login) {
@@ -139,11 +139,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu must now open a web browser to the login page for app.example.com: https://app.example.com/tokens. If a browser does not open this automatically, open the following URL to proceed: https://app.example.com/tokens",
+					"@message": "Bogform must now open a web browser to the login page for app.example.com: https://app.example.com/tokens. If a browser does not open this automatically, open the following URL to proceed: https://app.example.com/tokens",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "OpenTofu must now open a web browser to the tokens page for app.example.com.\n\nIf a browser does not open this automatically, open the following URL to proceed:\n    https://app.example.com/tokens\n\n",
+			wantStdout: "Bogform must now open a web browser to the tokens page for app.example.com.\n\nIf a browser does not open this automatically, open the following URL to proceed:\n    https://app.example.com/tokens\n\n",
 		},
 		"manualBrowserLaunchForTokens": {
 			viewCall: func(login Login) {
@@ -178,11 +178,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu will store the token in plain text in the following file for use by subsequent commands: /home/user/.terraform.d/credentials.tfrc.json",
+					"@message": "Bogform will store the token in plain text in the following file for use by subsequent commands: /home/user/.terraform.d/credentials.tfrc.json",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "OpenTofu will store the token in plain text in the following file\nfor use by subsequent commands:\n    /home/user/.terraform.d/credentials.tfrc.json\n\n",
+			wantStdout: "Bogform will store the token in plain text in the following file\nfor use by subsequent commands:\n    /home/user/.terraform.d/credentials.tfrc.json\n\n",
 		},
 		"tokenStorageInHelper": {
 			viewCall: func(login Login) {
@@ -191,11 +191,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu will store the token in the configured \"osxkeychain\" credentials helper for use by subsequent commands",
+					"@message": "Bogform will store the token in the configured \"osxkeychain\" credentials helper for use by subsequent commands",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "OpenTofu will store the token in the configured \"osxkeychain\" credentials helper\nfor use by subsequent commands.\n\n",
+			wantStdout: "Bogform will store the token in the configured \"osxkeychain\" credentials helper\nfor use by subsequent commands.\n\n",
 		},
 		"retrievedTokenForUser": {
 			viewCall: func(login Login) {
@@ -217,11 +217,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "OpenTofu will request an API token for app.example.com using OAuth",
+					"@message": "Bogform will request an API token for app.example.com using OAuth",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "OpenTofu will request an API token for app.example.com using OAuth.\n\n",
+			wantStdout: "Bogform will request an API token for app.example.com using OAuth.\n\n",
 		},
 		"browserBasedLoginInstruction": {
 			viewCall: func(login Login) {
@@ -243,11 +243,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "If login is successful, OpenTofu will store the token in the configured \"osxkeychain\" credentials helper for use by subsequent commands",
+					"@message": "If login is successful, Bogform will store the token in the configured \"osxkeychain\" credentials helper for use by subsequent commands",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "If login is successful, OpenTofu will store the token in the configured\n\"osxkeychain\" credentials helper for use by subsequent commands.\n\n",
+			wantStdout: "If login is successful, Bogform will store the token in the configured\n\"osxkeychain\" credentials helper for use by subsequent commands.\n\n",
 		},
 		"storageLocationConsentInFile": {
 			viewCall: func(login Login) {
@@ -256,11 +256,11 @@ func TestLoginViews(t *testing.T) {
 			wantJson: []map[string]any{
 				{
 					"@level":   "info",
-					"@message": "If login is successful, OpenTofu will store the token in plain text in the following file for use by subsequent commands: /home/user/.terraform.d/credentials.tfrc.json",
+					"@message": "If login is successful, Bogform will store the token in plain text in the following file for use by subsequent commands: /home/user/.terraform.d/credentials.tfrc.json",
 					"@module":  "tofu.ui",
 				},
 			},
-			wantStdout: "If login is successful, OpenTofu will store the token in plain text in\nthe following file for use by subsequent commands:\n    /home/user/.terraform.d/credentials.tfrc.json\n\n",
+			wantStdout: "If login is successful, Bogform will store the token in plain text in\nthe following file for use by subsequent commands:\n    /home/user/.terraform.d/credentials.tfrc.json\n\n",
 		},
 		// Diagnostics
 		"warning": {

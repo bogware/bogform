@@ -133,7 +133,7 @@ func (c Config) Build() (keyprovider.KeyProvider, keyprovider.KeyMeta, error) {
 		opts = append(opts, credOptions...)
 	}
 
-	opts = append(opts, option.WithUserAgent(httpclient.OpenTofuUserAgent(version.Version)))
+	opts = append(opts, option.WithUserAgent(httpclient.BogformUserAgent(version.Version)))
 
 	svc, err := newKeyManagementClient(ctx, opts...)
 	if err != nil {

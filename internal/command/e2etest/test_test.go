@@ -142,13 +142,13 @@ func TestMockProviderWhenEphemeralInConfiguration(t *testing.T) {
 	tf.AddEnv("TF_LOG=trace")
 	stdout, stderr, err = tf.Run("test")
 	if err != nil {
-		if strings.Contains(stdout, "OpenTofu crashed! This is always indicative of a bug within OpenTofu.") {
-			t.Errorf("Bug reproduced: running `tofu test` against a configuration that has an ephemeral resource.\n"+
+		if strings.Contains(stdout, "Bogform crashed! This is always indicative of a bug within Bogform.") {
+			t.Errorf("Bug reproduced: running `bogform test` against a configuration that has an ephemeral resource.\n"+
 				"This is the bug from https://github.com/opentofu/opentofu/issues/4251\n"+
 				"stdout:\n%s", stdout)
 			return
 		}
-		t.Errorf("unexpected error on 'tofu test': %v\nstderr:\n%s\nstdout:\n%s", err, stderr, stdout)
+		t.Errorf("unexpected error on 'bogform test': %v\nstderr:\n%s\nstdout:\n%s", err, stderr, stdout)
 	}
 	if !strings.Contains(stdout, "1 passed, 0 failed") {
 		t.Errorf("output doesn't have the expected success string\nstderr:\n%s\nstdout:\n%s", stdout, stderr)

@@ -62,7 +62,7 @@ func (b *Local) opPlan(
 			"Plan requires configuration to be present. Planning without a configuration would "+
 				"mark everything for destruction, which is normally not what is desired. If you "+
 				"would like to destroy everything, run plan with the -destroy option. Otherwise, "+
-				"create a OpenTofu configuration file (.tf file) and try again.",
+				"create a Bogform configuration file (.tf file) and try again.",
 		))
 		op.ReportResult(runningOp, diags)
 		return
@@ -150,7 +150,7 @@ func (b *Local) opPlan(
 	// We need the schemas in order to render the plan, but we
 	// compute them now (before writing the plan file) so that we can also
 	// embed a trimmed subset of them in the saved plan file, letting
-	// `tofu show` avoid relaunching every provider the plan refers to,
+	// `bogform show` avoid relaunching every provider the plan refers to,
 	// to solely gather schemas
 	//
 	// This is purely an optimization: if it fails, we don't bail out here.
@@ -163,7 +163,7 @@ func (b *Local) opPlan(
 			// This is always a bug in the operation caller; it's not valid
 			// to set PlanOutPath without also setting PlanOutBackend.
 			diags = diags.Append(fmt.Errorf(
-				"PlanOutPath set without also setting PlanOutBackend (this is a bug in OpenTofu)"),
+				"PlanOutPath set without also setting PlanOutBackend (this is a bug in Bogform)"),
 			)
 			op.ReportResult(runningOp, diags)
 			return
@@ -181,7 +181,7 @@ func (b *Local) opPlan(
 		// there) and so we just use a stub state file header in this case.
 		// NOTE: This won't be exactly identical to the latest state snapshot
 		// in the backend because it's still been subject to state upgrading
-		// to make it consumable by the current OpenTofu version, and
+		// to make it consumable by the current Bogform version, and
 		// intentionally doesn't preserve the header info.
 		prevStateFile := &statefile.File{
 			State: plan.PrevRunState,
@@ -189,7 +189,7 @@ func (b *Local) opPlan(
 
 		// If we failed to load schemas above then we still want to write
 		// out the plan file; we just won't be able to embed any schemas
-		// in it, so `tofu show` will need to launch providers to get the schemas.
+		// in it, so `bogform show` will need to launch providers to get the schemas.
 		// This s purposely handled down here instead of at the time of reading schema/s
 		// to ensure that its non-fatal.
 		var schemasForPlanFile map[addrs.Provider]providers.ProviderSchema
@@ -239,7 +239,7 @@ func (b *Local) opPlan(
 	// If we've accumulated any diagnostics along the way then we'll show them
 	// here just before we show the summary and next steps. This can potentially
 	// include errors, because we intentionally try to show a partial plan
-	// above even if OpenTofu Core encountered an error partway through
+	// above even if Bogform Core encountered an error partway through
 	// creating it.
 	op.ReportResult(runningOp, diags)
 

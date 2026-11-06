@@ -95,7 +95,7 @@ func (i *ModuleInstaller) installDescendentModulesNewRuntime(ctx context.Context
 }
 
 // newRuntimeModules is an implementation of [eval.ExternalModules] that makes
-// a best effort to shim to OpenTofu's current module loader, even though
+// a best effort to shim to Bogform's current module loader, even though
 // it works in some slightly-different terms than this new API expects.
 type newRuntimeModules struct {
 	loader configload.Loader

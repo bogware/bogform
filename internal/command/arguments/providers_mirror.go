@@ -30,7 +30,7 @@ func BindProvidersMirror(cli *CommandLine) *ProvidersMirror {
 		Vars: BindVars(cli),
 	}
 
-	cli.StringArrayVar(&arguments.OptPlatforms, "platform", nil, `Choose which target platform to build a mirror for. By default OpenTofu will obtain plugin packages suitable for the platform where you run this command. Use this flag multiple times to include packages for multiple target systems.
+	cli.StringArrayVar(&arguments.OptPlatforms, "platform", nil, `Choose which target platform to build a mirror for. By default Bogform will obtain plugin packages suitable for the platform where you run this command. Use this flag multiple times to include packages for multiple target systems.
 
  Target names consist of an operating system and a CPU architecture. For example, "linux_amd64" selects the Linux operating system running on an AMD64 or x86_64 CPU. Each provider is available only for a limited set of target platforms.`).SetDisplay("=os_arch")
 

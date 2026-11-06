@@ -41,9 +41,9 @@ func InitCommander() Command {
 	cmd := Command{
 		Name:  "init",
 		Short: "Prepare your working directory for other commands",
-		Long: `Initialize a new or existing OpenTofu working directory by creating initial files, loading any remote state, downloading modules, etc.
+		Long: `Initialize a new or existing Bogform working directory by creating initial files, loading any remote state, downloading modules, etc.
 
-This is the first command that should be run for any new or existing OpenTofu configuration per machine. This sets up all the local data necessary to run OpenTofu that is typically not committed to version control.
+This is the first command that should be run for any new or existing Bogform configuration per machine. This sets up all the local data necessary to run Bogform that is typically not committed to version control.
 
 This command is always safe to run multiple times. Though subsequent runs may give errors, this command will never delete your configuration or state. Even so, if you have important information, please back it up prior to running this command, just in case.`,
 		GroupID: MainCommandGroup.ID,
@@ -131,7 +131,7 @@ To initialize the configuration already in this working directory, omit the
 		hooks := view.Hooks(false)
 
 		ctx, span := tracing.Tracer().Start(ctx, "From module", tracing.SpanAttributes(
-			traceattrs.OpenTofuModuleSource(src),
+			traceattrs.BogformModuleSource(src),
 		))
 		defer span.End()
 
@@ -195,7 +195,7 @@ To initialize the configuration already in this working directory, omit the
 		// config loading errors about the root module. We no longer do that
 		// and instead exit early if the root module isn't at least valid enough
 		// to load, because remote operations with the "cloud" backend isn't
-		// such an important use-case for OpenTofu as it presumably is for our
+		// such an important use-case for Bogform as it presumably is for our
 		// predecessor and so we prefer simpler control flow here.
 		view.ConfigError()
 		diags = diags.Append(earlyConfDiags)
@@ -419,7 +419,7 @@ func (c *InitCommand) getModules(ctx context.Context, path, testsDir string, ear
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Error,
 				"Failed to read module manifest",
-				fmt.Sprintf("After installing modules, OpenTofu could not re-read the manifest of installed modules. This is a bug in OpenTofu. %s.", err),
+				fmt.Sprintf("After installing modules, Bogform could not re-read the manifest of installed modules. This is a bug in Bogform. %s.", err),
 			))
 		}
 	}
@@ -510,9 +510,9 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 	ctx, span := tracing.Tracer().Start(ctx, "Get Providers")
 	defer span.End()
 
-	// Dev overrides cause the result of "tofu init" to be irrelevant for
+	// Dev overrides cause the result of "bogform init" to be irrelevant for
 	// any overridden providers, so we'll warn about it to avoid later
-	// confusion when OpenTofu ends up using a different provider than the
+	// confusion when Bogform ends up using a different provider than the
 	// lock file called for.
 	diags = diags.Append(c.providerDevOverrideInitWarnings())
 
@@ -573,7 +573,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 				tfdiags.Warning,
 				"Potential provider misconfiguration",
 				fmt.Sprintf(
-					"OpenTofu has detected multiple providers of type %s (%s) which may be a misconfiguration.\n\nIf this is intentional you can ignore this warning",
+					"Bogform has detected multiple providers of type %s (%s) which may be a misconfiguration.\n\nIf this is intentional you can ignore this warning",
 					name,
 					strings.Join(addrs, ", "),
 				),
@@ -595,7 +595,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 		inst = c.providerInstaller()
 	} else {
 		// If the user passes at least one -plugin-dir then that circumvents
-		// the usual sources and forces OpenTofu to consult only the given
+		// the usual sources and forces Bogform to consult only the given
 		// directories. Anything not available in one of those directories
 		// is not available for installation.
 		source := c.providerCustomLocalDirectorySource(ctx, pluginDirs)
@@ -669,11 +669,11 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 			case getproviders.ErrRegistryProviderNotKnown:
 				// We might be able to suggest an alternative provider to use
 				// instead of this one.
-				suggestion := fmt.Sprintf("\n\nAll modules should specify their required_providers so that external consumers will get the correct providers when using a module. To see which modules are currently depending on %s, run the following command:\n    tofu providers", provider.ForDisplay())
+				suggestion := fmt.Sprintf("\n\nAll modules should specify their required_providers so that external consumers will get the correct providers when using a module. To see which modules are currently depending on %s, run the following command:\n    bogform providers", provider.ForDisplay())
 				alternative := getproviders.MissingProviderSuggestion(ctx, provider, inst.ProviderSource(), reqs)
 				if alternative != provider {
 					suggestion = fmt.Sprintf(
-						"\n\nDid you intend to use %s? If so, you must specify that source address in each module which requires that provider. To see which modules are currently depending on %s, run the following command:\n    tofu providers",
+						"\n\nDid you intend to use %s? If so, you must specify that source address in each module which requires that provider. To see which modules are currently depending on %s, run the following command:\n    bogform providers",
 						alternative.ForDisplay(), provider.ForDisplay(),
 					)
 				}
@@ -706,7 +706,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 					diags = diags.Append(tfdiags.Sourceless(
 						tfdiags.Error,
 						"Invalid provider registry host",
-						fmt.Sprintf("The given source address %q specifies a GitHub repository rather than a OpenTofu provider. Refer to the documentation of the provider to find the correct source address to use.",
+						fmt.Sprintf("The given source address %q specifies a GitHub repository rather than a Bogform provider. Refer to the documentation of the provider to find the correct source address to use.",
 							provider.String(),
 						),
 					))
@@ -715,7 +715,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 					diags = diags.Append(tfdiags.Sourceless(
 						tfdiags.Error,
 						"Invalid provider registry host",
-						fmt.Sprintf("The host %q given in provider source address %q does not offer a OpenTofu provider registry that is compatible with this OpenTofu version, but it may be compatible with a different OpenTofu version.",
+						fmt.Sprintf("The host %q given in provider source address %q does not offer a Bogform provider registry that is compatible with this Bogform version, but it may be compatible with a different Bogform version.",
 							errorTy.Hostname, provider.String(),
 						),
 					))
@@ -724,7 +724,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 					diags = diags.Append(tfdiags.Sourceless(
 						tfdiags.Error,
 						"Invalid provider registry host",
-						fmt.Sprintf("The host %q given in provider source address %q does not offer a OpenTofu provider registry.",
+						fmt.Sprintf("The host %q given in provider source address %q does not offer a Bogform provider registry.",
 							errorTy.Hostname, provider.String(),
 						),
 					))
@@ -809,7 +809,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 						tfdiags.Error,
 						summaryIncompatible,
 						fmt.Sprintf(
-							"Your chosen provider mirror at %s does not have a %s v%s package available for your current platform, %s.\n\nProvider releases are separate from OpenTofu CLI releases, so this provider might not support your current platform. Alternatively, the mirror itself might have only a subset of the plugin packages available in the origin registry, at %s.",
+							"Your chosen provider mirror at %s does not have a %s v%s package available for your current platform, %s.\n\nProvider releases are separate from Bogform CLI releases, so this provider might not support your current platform. Alternatively, the mirror itself might have only a subset of the plugin packages available in the origin registry, at %s.",
 							err.MirrorURL, err.Provider, err.Version, err.Platform,
 							err.Provider.Hostname,
 						),
@@ -819,7 +819,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 						tfdiags.Error,
 						summaryIncompatible,
 						fmt.Sprintf(
-							"Provider %s v%s does not have a package available for your current platform, %s.\n\nProvider releases are separate from OpenTofu CLI releases, so not all providers are available for all platforms. Other versions of this provider may have different platforms supported.",
+							"Provider %s v%s does not have a package available for your current platform, %s.\n\nProvider releases are separate from Bogform CLI releases, so not all providers are available for all platforms. Other versions of this provider may have different platforms supported.",
 							err.Provider, err.Version, err.Platform,
 						),
 					))
@@ -866,7 +866,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 			// We're going to use this opportunity to track if we have any
 			// "incomplete" installs of providers. An incomplete install is
 			// when we are only going to write the local hashes into our lock
-			// file which means a `tofu init` command will fail in future
+			// file which means a `bogform init` command will fail in future
 			// when used on machines of a different architecture.
 			//
 			// We want to print a warning about this.
@@ -955,7 +955,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 				diags = diags.Append(tfdiags.Sourceless(
 					tfdiags.Error,
 					`Provider dependency changes detected`,
-					`Changes to the required provider dependencies were detected, but the lock file is read-only. To use and record these requirements, run "tofu init" without the "-lockfile=readonly" flag.`,
+					`Changes to the required provider dependencies were detected, but the lock file is read-only. To use and record these requirements, run "bogform init" without the "-lockfile=readonly" flag.`,
 				))
 				return true, true, diags
 			}
@@ -965,7 +965,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 			diags = diags.Append(tfdiags.Sourceless(
 				tfdiags.Warning,
 				`Provider lock file not updated`,
-				`Changes to the provider selections were detected, but not saved in the .terraform.lock.hcl file. To record these selections, run "tofu init" without the "-lockfile=readonly" flag.`,
+				`Changes to the provider selections were detected, but not saved in the .terraform.lock.hcl file. To record these selections, run "bogform init" without the "-lockfile=readonly" flag.`,
 			))
 			return true, false, diags
 		}
@@ -986,7 +986,7 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 
 		if previousLocks.Empty() {
 			// A change from empty to non-empty is special because it suggests
-			// we're running "tofu init" for the first time against a
+			// we're running "bogform init" for the first time against a
 			// new configuration. In that case we'll take the opportunity to
 			// say a little about what the dependency lock file is, for new
 			// users or those who are upgrading from a previous Terraform
@@ -1175,47 +1175,47 @@ func (c *InitCommand) platformSupportWarnings() tfdiags.Diagnostics {
 // providerProtocolTooOld is a message sent to the CLI UI if the provider's
 // supported protocol versions are too old for the user's version of tofu,
 // but a newer version of the provider is compatible.
-const providerProtocolTooOld = `Provider %q v%s is not compatible with OpenTofu %s.
+const providerProtocolTooOld = `Provider %q v%s is not compatible with Bogform %s.
 Provider version %s is the latest compatible version. Select it with the following version constraint:
 	version = %q
 
-OpenTofu checked all of the plugin versions matching the given constraint:
+Bogform checked all of the plugin versions matching the given constraint:
 	%s
 
-Consult the documentation for this provider for more information on compatibility between provider and OpenTofu versions.
+Consult the documentation for this provider for more information on compatibility between provider and Bogform versions.
 `
 
 // providerProtocolTooNew is a message sent to the CLI UI if the provider's
 // supported protocol versions are too new for the user's version of tofu,
-// and the user could either upgrade tofu or choose an older version of the
+// and the user could either upgrade bogform or choose an older version of the
 // provider.
-const providerProtocolTooNew = `Provider %q v%s is not compatible with OpenTofu %s.
+const providerProtocolTooNew = `Provider %q v%s is not compatible with Bogform %s.
 You need to downgrade to v%s or earlier. Select it with the following constraint:
 	version = %q
 
-OpenTofu checked all of the plugin versions matching the given constraint:
+Bogform checked all of the plugin versions matching the given constraint:
 	%s
 
-Consult the documentation for this provider for more information on compatibility between provider and OpenTofu versions.
-Alternatively, upgrade to the latest version of OpenTofu for compatibility with newer provider releases.
+Consult the documentation for this provider for more information on compatibility between provider and Bogform versions.
+Alternatively, upgrade to the latest version of Bogform for compatibility with newer provider releases.
 `
 
 // incompleteLockFileInformationBody is the body of text displayed to users when
 // the lock file has only recorded local hashes.
-const incompleteLockFileInformationBody = `Due to your customized provider installation methods, OpenTofu was forced to calculate lock file checksums locally for the following providers:
+const incompleteLockFileInformationBody = `Due to your customized provider installation methods, Bogform was forced to calculate lock file checksums locally for the following providers:
   - %s
 
-The current .terraform.lock.hcl file only includes checksums for %s, so OpenTofu running on another platform will fail to install these providers.
+The current .terraform.lock.hcl file only includes checksums for %s, so Bogform running on another platform will fail to install these providers.
 
 To calculate additional checksums for another platform, run:
-  tofu providers lock -platform=linux_amd64
+  bogform providers lock -platform=linux_amd64
 (where linux_amd64 is the platform to generate)`
 
-const implicitProviderReferenceBody = `Due to the prefix of the resource type name OpenTofu guessed that you intended to associate %s with a provider whose local name is "%s", but that name is not declared in this module's required_providers block. OpenTofu therefore guessed that you intended to use %s, but that provider does not exist.
+const implicitProviderReferenceBody = `Due to the prefix of the resource type name Bogform guessed that you intended to associate %s with a provider whose local name is "%s", but that name is not declared in this module's required_providers block. Bogform therefore guessed that you intended to use %s, but that provider does not exist.
 
-Make at least one of the following changes to tell OpenTofu which provider to use:
+Make at least one of the following changes to tell Bogform which provider to use:
 
 - Add a declaration for local name "%s" to this module's required_providers block, specifying the full source address for the provider you intended to use.
 - Verify that "%s" is the correct resource type name to use. Did you omit a prefix which would imply the correct provider?
-- Use a "provider" argument within this resource block to override OpenTofu's automatic selection of the local name "%s".
+- Use a "provider" argument within this resource block to override Bogform's automatic selection of the local name "%s".
 `

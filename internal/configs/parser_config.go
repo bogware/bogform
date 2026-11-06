@@ -40,7 +40,7 @@ func (p *Parser) LoadConfigFileOverride(path string) (*File, hcl.Diagnostics) {
 	return p.loadConfigFile(path, true)
 }
 
-// LoadTestFile reads the file at the given path and parses it as a OpenTofu
+// LoadTestFile reads the file at the given path and parses it as a Bogform
 // test file.
 //
 // It references the same LoadHCLFile as LoadConfigFile, so inherits the same
@@ -119,7 +119,7 @@ func loadConfigFileBody(body hcl.Body, _ string, override bool) (*File, hcl.Diag
 			// We ignore the "required_version", "language" and "experiments"
 			// attributes here because checkVersionRequirements above deals
 			// with "required_version" and the other two are not relevant
-			// to OpenTofu. ("language" blocks contain OpenTofu's equivalents.)
+			// to Bogform. ("language" blocks contain Bogform's equivalents.)
 
 			for _, innerBlock := range content.Blocks {
 				switch innerBlock.Type {
@@ -342,15 +342,15 @@ var terraformBlockSchema = &hcl.BodySchema{
 	Attributes: []hcl.AttributeSchema{
 		// This argument is accepted in any file, but ignored unless it appears
 		// in a file named with a ".tofu" or similar suffix that indicates
-		// it's intended for OpenTofu rather than its predecessor.
+		// it's intended for Bogform rather than its predecessor.
 		{Name: "required_version"},
 
 		// The following two are included for compatibility with modules
-		// written by OpenTofu's predecessor, but are ignored when present
+		// written by Bogform's predecessor, but are ignored when present
 		// because we cannot predict what any future experiment or language
 		// edition keywords in our predecessor might represent.
 		//
-		// The equivalents of these arguments for OpenTofu are inside top-level
+		// The equivalents of these arguments for Bogform are inside top-level
 		// "language" blocks, which are handled elsewhere in this package.
 		{Name: "experiments"},
 		{Name: "language"},

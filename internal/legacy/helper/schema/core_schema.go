@@ -14,10 +14,10 @@ import (
 
 // The functions and methods in this file are concerned with the conversion
 // of this package's schema model into the slightly-lower-level schema model
-// used by OpenTofu core for configuration parsing.
+// used by Bogform core for configuration parsing.
 
 // CoreConfigSchema lowers the receiver to the schema model expected by
-// OpenTofu core.
+// Bogform core.
 //
 // This lower-level model has fewer features than the schema in this package,
 // describing only the basic structure of configuration and state values we
@@ -93,7 +93,7 @@ func (m schemaMap) CoreConfigSchema() *configschema.Block {
 func (s *Schema) coreConfigSchemaAttribute() *configschema.Attribute {
 	// The Schema.DefaultFunc capability adds some extra weirdness here since
 	// it can be combined with "Required: true" to create a situation where
-	// required-ness is conditional. OpenTofu Core doesn't share this concept,
+	// required-ness is conditional. Bogform Core doesn't share this concept,
 	// so we must sniff for this possibility here and conditionally turn
 	// off the "Required" flag if it looks like the DefaultFunc is going
 	// to provide a value.
