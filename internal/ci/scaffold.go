@@ -33,8 +33,13 @@ type ScaffoldOptions struct {
 	DefaultBranch string
 	Directory     string
 	Environment   string
-	Force         bool
-	Root          string // The repository root.
+	// ApplyOn is "manual" to apply only when someone starts the pipeline, or "merge" to apply every
+	// change merged to the default branch.
+	ApplyOn string
+	// GitState sets up the pipeline for the git state backend.
+	GitState bool
+	Force    bool
+	Root     string // The repository root.
 }
 
 var (
@@ -46,6 +51,9 @@ var (
 
 // Scaffold writes a pipeline file and returns its path.
 func Scaffold(opts ScaffoldOptions) (string, error) {
+	if opts.Environment == "" {
+		opts.Environment = "production"
+	}
 	content, err := RenderPipeline(opts)
 	if err != nil {
 		return "", err
@@ -79,6 +87,12 @@ func RenderPipeline(opts ScaffoldOptions) ([]byte, error) {
 	if opts.Environment == "" {
 		opts.Environment = "production"
 	}
+	if opts.ApplyOn == "" {
+		opts.ApplyOn = ApplyManual
+	}
+	if opts.ApplyOn != ApplyManual && opts.ApplyOn != ApplyMerge {
+		return nil, fmt.Errorf("-apply-on must be %q or %q", ApplyManual, ApplyMerge)
+	}
 	for name, value := range map[string]string{"branch": opts.DefaultBranch, "directory": opts.Directory, "environment": opts.Environment} {
 		if value != "." && !safeValue.MatchString(value) {
 			return nil, fmt.Errorf("the %s %q contains unsupported characters", name, value)
@@ -86,13 +100,16 @@ func RenderPipeline(opts ScaffoldOptions) ([]byte, error) {
 	}
 
 	data := struct {
-		DefaultBranch, Directory, Environment string
+		DefaultBranch, Directory, Environment, ApplyOn string
+		GitState                                       bool
 		// ImageTag and ActionRef are for platforms that use the container image and the action.
 		ImageTag, ActionRef, ReleaseVersion string
 	}{
 		DefaultBranch:  opts.DefaultBranch,
 		Directory:      opts.Directory,
 		Environment:    opts.Environment,
+		ApplyOn:        opts.ApplyOn,
+		GitState:       opts.GitState,
 		ImageTag:       "latest",
 		ActionRef:      "main",
 		ReleaseVersion: "latest",
@@ -119,6 +136,12 @@ func RenderPipeline(opts ScaffoldOptions) ([]byte, error) {
 	return out.Bytes(), nil
 }
 
+// When a pipeline applies changes.
+const (
+	ApplyManual = "manual"
+	ApplyMerge  = "merge"
+)
+
 // DetectPlatformFromRemote guesses the platform from a Git remote URL, or returns an empty string.
 func DetectPlatformFromRemote(remote string) string {
 	remote = strings.ToLower(remote)
@@ -136,22 +159,38 @@ func DetectPlatformFromRemote(remote string) string {
 }
 
 // NextSteps explains what to do after generating a pipeline file for a platform.
-func NextSteps(platform string) string {
-	common := "\nNext steps:\n" +
-		"  1. Configure a remote state backend, such as s3. Pipelines start from a clean checkout, so local state is lost after each run.\n" +
-		"  2. Give the pipeline access to your cloud account, using OIDC rather than stored keys. The file has a comment showing where.\n"
+func NextSteps(platform string, opts ScaffoldOptions) string {
+	var steps []string
+	if opts.GitState {
+		steps = append(steps, "Configure the git backend with state encryption, and store its passphrase as a pipeline secret named BOGFORM_STATE_PASSPHRASE. Keep a copy somewhere safe: without it, the state can't be read.")
+	} else {
+		steps = append(steps, "Configure a remote state backend, such as s3. Pipelines start from a clean checkout, so local state is lost after each run.")
+	}
+	steps = append(steps, "Give the pipeline access to your cloud account, using OIDC rather than stored keys. The file has a comment showing where.")
 	switch platform {
 	case PlatformGitHub:
-		return common + "  3. Create a \"production\" environment with required reviewers to approve each apply.\n"
+		steps = append(steps, "If your plan supports it, add required reviewers to the \""+opts.Environment+"\" environment to approve each apply.")
 	case PlatformGitLab:
-		return common + "  3. Add a project access token with the api scope as a masked variable named BOG_CI_TOKEN, so plans can comment on merge requests.\n" +
-			"  4. Protect the \"production\" environment to require approval for each apply.\n"
+		steps = append(steps,
+			"Add a project access token with the api scope as a masked variable named BOG_CI_TOKEN, so plans can comment on merge requests.",
+			"Protect the \""+opts.Environment+"\" environment to require approval for each apply.")
 	case PlatformAzure:
-		return common + "  3. Add this file as a pipeline, and add a build validation policy to your default branch so it runs on pull requests.\n" +
-			"  4. Add an approval check to the \"production\" environment.\n"
+		steps = append(steps,
+			"Add this file as a pipeline, and add a build validation policy to your default branch so it runs on pull requests.",
+			"Add an approval check to the \""+opts.Environment+"\" environment.")
 	case PlatformBitbucket:
-		return common + "  3. Add an access token with pull request write access as a secured variable named BOG_CI_TOKEN, so plans can comment.\n" +
-			"  4. Require approval on the \"production\" deployment environment, if your plan includes it.\n"
+		steps = append(steps, "Add an access token with pull request write access as a secured variable named BOG_CI_TOKEN, so plans can comment.")
 	}
-	return common
+
+	var out strings.Builder
+	out.WriteString("\nNext steps:\n")
+	for i, step := range steps {
+		fmt.Fprintf(&out, "  %d. %s\n", i+1, step)
+	}
+	if opts.ApplyOn == ApplyMerge {
+		out.WriteString("\nChanges are applied when they're merged to the default branch.\n")
+	} else {
+		out.WriteString("\nPull requests get a plan. To apply, run the pipeline manually on the default branch.\n")
+	}
+	return out.String()
 }

@@ -2,6 +2,11 @@
 #
 # To comment on pull requests, add an access token with pull request write access as a secured
 # repository variable named BOG_CI_TOKEN.
+[[- if .GitState]]
+#
+# For the git state backend, add the state passphrase as a secured variable named TF_VAR_state_passphrase,
+# and set "repository" in the backend to a URL with an access token that can push.
+[[- end]]
 
 image:
   name: ghcr.io/bogware/bogform:[[.ImageTag]]
@@ -17,6 +22,7 @@ pipelines:
             - bogform -chdir="[[.Directory]]" ci plan
           artifacts:
             - "[[.Directory]]/.bogform-ci/report.json"
+[[- if eq .ApplyOn "merge"]]
   branches:
     [[.DefaultBranch]]:
       - step:
@@ -26,3 +32,15 @@ pipelines:
             - bogform -chdir="[[.Directory]]" ci apply
           artifacts:
             - "[[.Directory]]/.bogform-ci/report.json"
+[[- else]]
+  # To apply, run the "apply" pipeline on [[.DefaultBranch]] from the Pipelines page.
+  custom:
+    apply:
+      - step:
+          name: Apply
+          deployment: [[.Environment]]
+          script:
+            - bogform -chdir="[[.Directory]]" ci apply
+          artifacts:
+            - "[[.Directory]]/.bogform-ci/report.json"
+[[- end]]

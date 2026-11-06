@@ -3,9 +3,11 @@ name: Bogform
 
 on:
   pull_request:
+[[- if eq .ApplyOn "merge"]]
   push:
     branches:
       - [[.DefaultBranch]]
+[[- end]]
   workflow_dispatch: {}
 
 # Only one run at a time can change this infrastructure.
@@ -15,6 +17,12 @@ concurrency:
 
 permissions:
   contents: read
+[[- if .GitState]]
+
+# The git backend keeps encrypted state on a branch of this repository. Store its passphrase as a secret.
+env:
+  TF_VAR_state_passphrase: ${{ secrets.BOGFORM_STATE_PASSPHRASE }}
+[[- end]]
 
 jobs:
   plan:
@@ -22,7 +30,11 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
+[[- if .GitState]]
+      contents: write # The git backend takes a lock by pushing a branch.
+[[- else]]
       contents: read
+[[- end]]
       pull-requests: write # To comment with the plan.
       id-token: write # For cloud access using OIDC.
     steps:
@@ -45,12 +57,22 @@ jobs:
 
   apply:
     name: Apply
+[[- if eq .ApplyOn "merge"]]
+    # Applies every change merged to [[.DefaultBranch]].
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/[[.DefaultBranch]]'
+[[- else]]
+    # Applies only when someone starts this workflow from the Actions tab, on [[.DefaultBranch]].
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/[[.DefaultBranch]]'
+[[- end]]
     runs-on: ubuntu-latest
-    # Add required reviewers to this environment to approve each apply.
+    # On plans that support it, add required reviewers to this environment to approve each apply.
     environment: [[.Environment]]
     permissions:
+[[- if .GitState]]
+      contents: write # The git backend stores state by pushing to a branch.
+[[- else]]
       contents: read
+[[- end]]
       id-token: write # For cloud access using OIDC.
     steps:
       - uses: actions/checkout@v4

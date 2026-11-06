@@ -3,11 +3,21 @@
 # For plans on pull requests, add this pipeline as a build validation policy on your default branch.
 # To comment, allow the build service to contribute to pull requests in the repository's security
 # settings. Add an approval check to the "[[.Environment]]" environment to approve each apply.
+[[- if .GitState]]
+#
+# For the git state backend, add the state passphrase as a secret variable named STATE_PASSPHRASE, set
+# persistCredentials: true on each checkout, and give the build service Contribute permission.
+[[- end]]
 
+[[- if eq .ApplyOn "merge"]]
 trigger:
   branches:
     include:
       - [[.DefaultBranch]]
+[[- else]]
+# Pull requests run through the branch policy. To apply, run this pipeline manually on [[.DefaultBranch]].
+trigger: none
+[[- end]]
 
 pr: none
 
@@ -48,11 +58,18 @@ stages:
             displayName: Plan
             env:
               BOG_CI_TOKEN: $(System.AccessToken)
+[[- if .GitState]]
+              TF_VAR_state_passphrase: $(STATE_PASSPHRASE)
+[[- end]]
 
   - stage: Apply
     # Stages depend on the previous one by default, and Plan is skipped outside pull requests.
     dependsOn: []
+[[- if eq .ApplyOn "merge"]]
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/[[.DefaultBranch]]'))
+[[- else]]
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.SourceBranch'], 'refs/heads/[[.DefaultBranch]]'))
+[[- end]]
     jobs:
       - deployment: Apply
         environment: [[.Environment]]
@@ -81,3 +98,7 @@ stages:
                 # Sign in to your cloud provider here.
                 - bash: bogform -chdir="$(bogformDirectory)" ci apply
                   displayName: Apply
+[[- if .GitState]]
+                  env:
+                    TF_VAR_state_passphrase: $(STATE_PASSPHRASE)
+[[- end]]

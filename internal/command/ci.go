@@ -108,12 +108,14 @@ func ciInitCommander() Command {
 
 		DiagsWithNewline: true,
 	}
-	var platform, branch, directory, environment string
-	var force bool
+	var platform, branch, directory, environment, applyOn string
+	var force, gitState bool
 	cmd.CommandLine.PositionalArg(&platform, "platform", true)
 	cmd.CommandLine.StringVar(&branch, "branch", "main", "The branch to apply from.")
 	cmd.CommandLine.StringVar(&directory, "directory", ".", "The directory containing your configuration, relative to the repository root.")
 	cmd.CommandLine.StringVar(&environment, "environment", "production", "The name of the environment that protects applies.")
+	cmd.CommandLine.StringVar(&applyOn, "apply-on", ci.ApplyManual, "When to apply: \"manual\" to apply only when someone runs the pipeline, or \"merge\" to apply every change merged to the branch.")
+	cmd.CommandLine.BoolVar(&gitState, "git-state", false, "Set up the pipeline for the git state backend: write access to the repository, and the state passphrase from a secret.")
 	cmd.CommandLine.BoolVar(&force, "force", false, "Replace the file if it already exists.")
 
 	cmd.Run = func(Meta) int {
@@ -127,20 +129,23 @@ func ciInitCommander() Command {
 				return ci.ExitFailed
 			}
 		}
-		path, err := ci.Scaffold(ci.ScaffoldOptions{
+		opts := ci.ScaffoldOptions{
 			Platform:      platform,
-			Version:       version.Version,
+			Version:       version.String(),
 			DefaultBranch: branch,
 			Directory:     directory,
 			Environment:   environment,
+			ApplyOn:       applyOn,
+			GitState:      gitState,
 			Force:         force,
 			Root:          ".",
-		})
+		}
+		path, err := ci.Scaffold(opts)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 			return ci.ExitFailed
 		}
-		fmt.Printf("Created %s.\n%s", path, ci.NextSteps(platform))
+		fmt.Printf("Created %s.\n%s", path, ci.NextSteps(platform, opts))
 		return ci.ExitOK
 	}
 	return cmd

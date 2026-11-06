@@ -504,6 +504,49 @@ func TestRenderPipeline_azureApplyDoesNotDependOnPlan(t *testing.T) {
 	}
 }
 
+func TestRenderPipeline_applyOn(t *testing.T) {
+	for _, platform := range []string{PlatformGitHub, PlatformGitLab, PlatformAzure, PlatformBitbucket} {
+		for _, applyOn := range []string{ApplyManual, ApplyMerge} {
+			for _, gitState := range []bool{false, true} {
+				t.Run(fmt.Sprintf("%s/%s/git=%t", platform, applyOn, gitState), func(t *testing.T) {
+					content, err := RenderPipeline(ScaffoldOptions{Platform: platform, ApplyOn: applyOn, GitState: gitState})
+					if err != nil {
+						t.Fatal(err)
+					}
+					var parsed map[string]any
+					if err := yaml.Unmarshal(content, &parsed); err != nil {
+						t.Fatalf("invalid YAML: %s\n%s", err, content)
+					}
+					text := string(content)
+					manual := map[string]string{
+						PlatformGitHub:    "github.event_name == 'workflow_dispatch'",
+						PlatformGitLab:    "when: manual",
+						PlatformAzure:     "eq(variables['Build.Reason'], 'Manual')",
+						PlatformBitbucket: "custom:",
+					}[platform]
+					if (applyOn == ApplyManual) != strings.Contains(text, manual) {
+						t.Errorf("apply-on %s, but manual marker %q present=%t:\n%s", applyOn, manual, strings.Contains(text, manual), text)
+					}
+					if platform == PlatformGitHub {
+						if applyOn == ApplyManual && strings.Contains(text, "push:") {
+							t.Errorf("a manual pipeline shouldn't run on push:\n%s", text)
+						}
+						if gitState != strings.Contains(text, "contents: write") || gitState != strings.Contains(text, "BOGFORM_STATE_PASSPHRASE") {
+							t.Errorf("git state %t isn't reflected:\n%s", gitState, text)
+						}
+					}
+				})
+			}
+		}
+	}
+}
+
+func TestRenderPipeline_rejectsUnknownApplyOn(t *testing.T) {
+	if _, err := RenderPipeline(ScaffoldOptions{Platform: PlatformGitHub, ApplyOn: "sometimes"}); err == nil {
+		t.Fatal("expected an error")
+	}
+}
+
 func TestRenderPipeline_noAnchorsOnAzure(t *testing.T) {
 	// Azure Pipelines doesn't support YAML anchors and aliases.
 	content, err := RenderPipeline(ScaffoldOptions{Platform: PlatformAzure})

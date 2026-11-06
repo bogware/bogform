@@ -22,6 +22,17 @@ Bogform works out your platform from the `origin` remote and writes a pipeline f
 platform, name it, such as `bogform ci init gitlab`. The file is yours to edit, and it doesn't depend
 on any Bogform service.
 
+By default, pull requests get a plan, and you apply by running the pipeline yourself on your default
+branch. To apply every change as soon as it's merged instead, use `-apply-on=merge`.
+
+| Option | Purpose |
+|---|---|
+| `-apply-on=manual` | Apply only when someone runs the pipeline. This is the default |
+| `-apply-on=merge` | Apply every change merged to the default branch |
+| `-git-state` | Set up the pipeline for the [`git` backend](../language/settings/backends/git.mdx) |
+| `-directory=PATH` | The directory containing your configuration |
+| `-branch=NAME` | The default branch. Defaults to `main` |
+
 | Platform | Command | File |
 |---|---|---|
 | [GitHub Actions](./github.mdx) | `bogform ci init github` | `.github/workflows/bogform.yml` |

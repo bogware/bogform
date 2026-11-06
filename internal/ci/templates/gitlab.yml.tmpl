@@ -2,6 +2,11 @@
 #
 # To comment on merge requests, add a project access token with the api scope as a masked CI/CD
 # variable named BOG_CI_TOKEN. Protect the "[[.Environment]]" environment to require approval to apply.
+[[- if .GitState]]
+#
+# For the git state backend, add the state passphrase as a masked variable named TF_VAR_state_passphrase,
+# and give the job token permission to push to this project.
+[[- end]]
 
 stages:
   - plan
@@ -37,6 +42,10 @@ bogform-apply:
   environment: [[.Environment]]
   rules:
     - if: $CI_COMMIT_BRANCH == "[[.DefaultBranch]]" && $CI_PIPELINE_SOURCE != "merge_request_event"
+[[- if eq .ApplyOn "manual"]]
+      # Start this job from the pipeline page to apply.
+      when: manual
+[[- end]]
   script:
     - bogform -chdir="$BOGFORM_DIRECTORY" ci apply
   artifacts:
