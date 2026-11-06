@@ -52,7 +52,7 @@ type ProvisionerManager interface {
 	StopAll() error
 	// CloseAll forcefully closes all tracked provisioners.
 	// See [provisioners.Interface.Close] for more information.
-	// See cmd/tofu/main.go:plugin.CleanupClients for the fallback.
+	// See cmd/bogform/main.go:plugin.CleanupClients for the fallback.
 	CloseAll() error
 	// Shutdown locks the provisioner manager in a Shutdown state and calls CloseAll,
 	// preventing any further usage of this object.

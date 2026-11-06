@@ -55,7 +55,7 @@ type ProviderManager interface {
 	StopAll(context.Context) error
 	// CloseAll forcefully closes all tracked providers.
 	// See [providers.Unconfigured.Close] for more information.
-	// See cmd/tofu/main.go:plugin.CleanupClients for the fallback.
+	// See cmd/bogform/main.go:plugin.CleanupClients for the fallback.
 	CloseAll(context.Context) error
 	// Shutdown locks the provider manager in a Shutdown state and calls CloseAll,
 	// preventing any further usage of this object.

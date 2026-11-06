@@ -43,7 +43,7 @@ jobs:
 
       - name: "Build tofu executable"
         run: |
-          go build ./cmd/tofu
+          go build ./cmd/bogform
 
   e2e-tests:
     strategy:

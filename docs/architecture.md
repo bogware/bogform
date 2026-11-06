@@ -26,7 +26,7 @@ transfers immediately into one of the "command" implementations in
 [the `command` package](https://pkg.go.dev/github.com/bogware/bogform/internal/command).
 The mapping between the user-facing command names and
 their corresponding `command` package types can be found in the `commands.go`
-file under the `cmd/tofu` directory (package `main`).
+file under the `cmd/bogform` directory (package `main`).
 
 The full flow illustrated above does not actually apply to _all_ commands,
 but it applies to the main OpenTofu workflow commands `tofu plan` and

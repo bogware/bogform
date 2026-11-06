@@ -151,7 +151,7 @@ func TestMain_mergeEnvArgs(t *testing.T) {
 
 			// Set up the args
 			args := make([]string, len(tc.Args)+1)
-			args[0] = "tofu" // process name
+			args[0] = "bogform" // process name
 			copy(args[1:], tc.Args)
 
 			// Run it!
@@ -191,10 +191,10 @@ func TestMain_autoComplete(t *testing.T) {
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
 
-	t.Setenv("COMP_LINE", "tofu versio")
+	t.Setenv("COMP_LINE", "bogform versio")
 
 	// Run it!
-	os.Args = []string{"tofu", "tofu", "versio"}
+	os.Args = []string{"bogform", "bogform", "versio"}
 	exit := realMain()
 	if exit != 0 {
 		t.Fatalf("unexpected exit status %d; want 0", exit)

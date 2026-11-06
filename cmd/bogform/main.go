@@ -6,6 +6,9 @@
 package main
 
 import (
+	// Applies BOG_* variables before any other package reads the environment.
+	_ "github.com/bogware/bogform/internal/bogenv"
+
 	"context"
 	"crypto/fips140"
 	"encoding/json"
@@ -113,7 +116,7 @@ func realMain() int {
 	defer tracing.ForceFlush(5 * time.Second)
 
 	// At minimum, we emit a span covering the entire command execution.
-	ctx, span := tracing.Tracer().Start(ctx, "tofu")
+	ctx, span := tracing.Tracer().Start(ctx, "bogform")
 	defer span.End()
 
 	tmpLogPath := os.Getenv(envTmpLogPath)

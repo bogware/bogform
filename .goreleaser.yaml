@@ -15,7 +15,7 @@ builds:
   - env:
       - CGO_ENABLED=0
 
-    main: ./cmd/tofu
+    main: ./cmd/bogform
 
     flags:
       - "-mod=readonly"

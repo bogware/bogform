@@ -336,7 +336,7 @@ func checkAndRunCompletion(root *command.Command, meta func() (command.Meta, int
 
 		return comp
 	}
-	completer := complete.New("tofu", builder(*root))
+	completer := complete.New("bogform", builder(*root))
 
 	var installComplete bool
 	var uninstallComplete bool
@@ -348,14 +348,14 @@ func checkAndRunCompletion(root *command.Command, meta func() (command.Meta, int
 			return 1
 		}
 		if installComplete {
-			err := install.Install("tofu")
+			err := install.Install("bogform")
 			if err != nil {
 				println(err.Error())
 			}
 			return 0
 		}
 		if uninstallComplete {
-			err := install.Uninstall("tofu")
+			err := install.Uninstall("bogform")
 			if err != nil {
 				println(err.Error())
 			}

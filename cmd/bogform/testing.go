@@ -9,7 +9,7 @@ package main
 // arguments in order to enable the use of e2e test features for a
 // particular OpenTofu build:
 //
-//	go install -ldflags="-X 'main.e2eTestingFeatures=yes'" ./cmd/tofu
+//	go install -ldflags="-X 'main.e2eTestingFeatures=yes'" ./cmd/bogform
 //
 // By default this variable is initialized as empty, in which case
 // e2e testing features are not available.

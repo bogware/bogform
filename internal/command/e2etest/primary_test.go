@@ -871,7 +871,7 @@ func TestApplyPanic(t *testing.T) {
 		t.Skip("custom build required with additional LDFLAGS")
 	}
 
-	e2eTofuBin := e2e.GoBuild("github.com/bogware/bogform/cmd/tofu", "tofu_e2e", `-ldflags=-X 'main.e2eTestingFeatures=yes'`)
+	e2eTofuBin := e2e.GoBuild("github.com/bogware/bogform/cmd/bogform", "bogform_e2e", `-ldflags=-X 'main.e2eTestingFeatures=yes'`)
 	defer func() {
 		os.Remove(e2eTofuBin)
 	}()

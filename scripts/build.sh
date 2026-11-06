@@ -60,8 +60,8 @@ gox \
     -arch="${XC_ARCH}" \
     -osarch="${XC_EXCLUDE_OSARCH}" \
     -ldflags "${LD_FLAGS}" \
-    -output "pkg/{{.OS}}_{{.Arch}}/tofu" \
-    ./cmd/tofu
+    -output "pkg/{{.OS}}_{{.Arch}}/bogform" \
+    ./cmd/bogform
 
 # Move all the compiled things to the $GOPATH/bin
 GOPATH=${GOPATH:-$(go env GOPATH)}

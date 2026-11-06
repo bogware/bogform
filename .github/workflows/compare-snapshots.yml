@@ -52,7 +52,7 @@ jobs:
 
       - name: Build the OpenTofu binary
         run: |
-          go build -o ./bin/tofu ./cmd/tofu
+          go build -o ./bin/tofu ./cmd/bogform
 
       - name: Run the equivalence tests
         run: |

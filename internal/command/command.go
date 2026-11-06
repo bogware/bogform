@@ -96,7 +96,7 @@ var (
 )
 
 // Command is the metadata and action associated with a command available to the CLI.
-// This is eventually translated into a parsable/runnable CLI in cmd/tofu.
+// This is eventually translated into a parsable/runnable CLI in cmd/bogform.
 type Command struct {
 	Name    string
 	Aliases []string
