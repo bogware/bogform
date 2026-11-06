@@ -31,6 +31,9 @@ const maxPushAttempts = 5
 // repository is a private bare clone used to talk to the remote without touching the user's checkout.
 type repository struct {
 	url, branch, dir string
+	// credentialConfig is git configuration from the user's checkout that the private clone needs, as
+	// GIT_CONFIG_* environment variables. See checkoutCredentials.
+	credentialConfig []string
 	// mu serializes use of the clone, whose index and fetched refs aren't safe to share.
 	mu sync.Mutex
 }
@@ -48,11 +51,7 @@ func (r *repository) init(ctx context.Context) error {
 func (r *repository) git(ctx context.Context, stdin []byte, args ...string) (string, error) {
 	cmd := exec.CommandContext(ctx, "git", args...)
 	cmd.Dir = r.dir
-	cmd.Env = append(os.Environ(),
-		"GIT_TERMINAL_PROMPT=0",
-		"GIT_AUTHOR_NAME=Bogform", "GIT_AUTHOR_EMAIL=bogform@localhost",
-		"GIT_COMMITTER_NAME=Bogform", "GIT_COMMITTER_EMAIL=bogform@localhost",
-	)
+	cmd.Env = r.environment()
 	if stdin != nil {
 		cmd.Stdin = bytes.NewReader(stdin)
 	}
@@ -63,6 +62,39 @@ func (r *repository) git(ctx context.Context, stdin []byte, args ...string) (str
 		return "", &gitError{args: args[0], stderr: strings.TrimSpace(stderr.String()), err: err}
 	}
 	return strings.TrimSpace(stdout.String()), nil
+}
+
+func (r *repository) environment() []string {
+	env := append(os.Environ(),
+		"GIT_TERMINAL_PROMPT=0",
+		"GIT_AUTHOR_NAME=Bogform", "GIT_AUTHOR_EMAIL=bogform@localhost",
+		"GIT_COMMITTER_NAME=Bogform", "GIT_COMMITTER_EMAIL=bogform@localhost",
+	)
+	return append(env, r.credentialConfig...)
+}
+
+// checkoutCredentials finds credentials configured only in the current repository. CI systems set these
+// on their checkout, for example actions/checkout's extraheader, and the private clone wouldn't otherwise
+// see them. They're passed in the environment, which isn't visible in process listings as arguments are.
+func checkoutCredentials(ctx context.Context) []string {
+	out, err := exec.CommandContext(ctx, "git", "config", "--local", "--includes", "--get-regexp", `^http\..*\.extraheader$`).Output()
+	if err != nil {
+		return nil
+	}
+	var env []string
+	count := 0
+	for line := range strings.Lines(string(out)) {
+		key, value, found := strings.Cut(strings.TrimSpace(line), " ")
+		if !found {
+			continue
+		}
+		env = append(env, fmt.Sprintf("GIT_CONFIG_KEY_%d=%s", count, key), fmt.Sprintf("GIT_CONFIG_VALUE_%d=%s", count, value))
+		count++
+	}
+	if count == 0 {
+		return nil
+	}
+	return append(env, fmt.Sprintf("GIT_CONFIG_COUNT=%d", count))
 }
 
 // gitError reports a failed command. It leaves out the arguments, because they can include a URL
@@ -80,7 +112,7 @@ func (e *gitError) Unwrap() error { return e.err }
 
 // remoteRef returns the commit that a ref on the remote points to, or "" if it doesn't exist.
 func (r *repository) remoteRef(ctx context.Context, ref string) (string, error) {
-	out, err := r.git(ctx, nil, "ls-remote", r.url, ref)
+	out, err := r.git(ctx, nil, "ls-remote", "--", r.url, ref)
 	if err != nil {
 		return "", err
 	}
@@ -101,10 +133,11 @@ func (r *repository) fetchHead(ctx context.Context) (string, error) {
 		return "", err
 	}
 	// Only the latest commit is needed, however long the state's history has grown.
-	if _, err := r.git(ctx, nil, "fetch", "--quiet", "--no-tags", "--depth=1", r.url, ref); err != nil {
+	if _, err := r.git(ctx, nil, "fetch", "--quiet", "--no-tags", "--depth=1", "--", r.url, ref); err != nil {
 		return "", err
 	}
-	return head, nil
+	// Another writer could have pushed since the check above. Use what was actually fetched.
+	return r.git(ctx, nil, "rev-parse", "--verify", "FETCH_HEAD^{commit}")
 }
 
 func (r *repository) listFiles(ctx context.Context) ([]string, error) {
@@ -152,7 +185,7 @@ func (r *repository) updateFile(ctx context.Context, path string, content []byte
 			return nil // Nothing to change.
 		}
 		ref := "refs/heads/" + r.branch
-		_, err = r.git(ctx, nil, "push", "--quiet", "--force-with-lease="+ref+":"+head, r.url, commit+":"+ref)
+		_, err = r.git(ctx, nil, "push", "--quiet", "--force-with-lease="+ref+":"+head, "--", r.url, commit+":"+ref)
 		if err == nil {
 			return nil
 		}
@@ -179,10 +212,7 @@ func (r *repository) commitFile(ctx context.Context, parent, path string, conten
 	run := func(stdin []byte, args ...string) (string, error) {
 		cmd := exec.CommandContext(ctx, "git", args...)
 		cmd.Dir = r.dir
-		cmd.Env = append(os.Environ(), "GIT_INDEX_FILE="+indexPath,
-			"GIT_AUTHOR_NAME=Bogform", "GIT_AUTHOR_EMAIL=bogform@localhost",
-			"GIT_COMMITTER_NAME=Bogform", "GIT_COMMITTER_EMAIL=bogform@localhost",
-		)
+		cmd.Env = append(r.environment(), "GIT_INDEX_FILE="+indexPath)
 		if stdin != nil {
 			cmd.Stdin = bytes.NewReader(stdin)
 		}
@@ -338,7 +368,7 @@ func (c *Client) Lock(ctx context.Context, info *statemgr.LockInfo) (string, err
 		}
 	}
 	ref := c.lockRef()
-	if _, err := c.repo.git(ctx, nil, "push", "--quiet", "--force-with-lease="+ref+":", c.repo.url, commit+":"+ref); err != nil {
+	if _, err := c.repo.git(ctx, nil, "push", "--quiet", "--force-with-lease="+ref+":", "--", c.repo.url, commit+":"+ref); err != nil {
 		if !isRejected(err) {
 			return "", err
 		}
@@ -358,7 +388,7 @@ func (c *Client) lockHolder(ctx context.Context) (*statemgr.LockInfo, error) {
 	if err != nil || commit == "" {
 		return nil, err
 	}
-	if _, err := c.repo.git(ctx, nil, "fetch", "--quiet", "--no-tags", c.repo.url, ref); err != nil {
+	if _, err := c.repo.git(ctx, nil, "fetch", "--quiet", "--no-tags", "--", c.repo.url, ref); err != nil {
 		return nil, err
 	}
 	message, err := c.repo.git(ctx, nil, "log", "-1", "--format=%B", commit)
@@ -393,7 +423,7 @@ func (c *Client) Unlock(ctx context.Context, id string) error {
 	if err != nil {
 		return &statemgr.LockError{Info: holder, Err: err}
 	}
-	if _, err := c.repo.git(ctx, nil, "push", "--quiet", "--force-with-lease="+ref+":"+commit, c.repo.url, ":"+ref); err != nil {
+	if _, err := c.repo.git(ctx, nil, "push", "--quiet", "--force-with-lease="+ref+":"+commit, "--", c.repo.url, ":"+ref); err != nil {
 		return &statemgr.LockError{Info: holder, Err: err}
 	}
 	c.lockCommit = ""

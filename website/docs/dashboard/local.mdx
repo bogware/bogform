@@ -1,0 +1,43 @@
+---
+sidebar_position: 3
+sidebar_label: Try it locally
+description: |-
+  Run the Bogform dashboard on your own machine.
+---
+
+# Try the dashboard locally
+
+From a copy of the Bogform repository, with Docker installed:
+
+```shell
+docker compose -f deploy/local/docker-compose.yml up --build
+```
+
+Then open [http://localhost:8080](http://localhost:8080). This setup skips sign-in, which the server only
+allows on a local address. Don't use it for anything else.
+
+To send it a report, create a token, then run a pipeline command as if you were in CI:
+
+```shell
+docker compose -f deploy/local/docker-compose.yml exec server \
+  bogform-server create-token -name local -repository '*'
+
+export GITHUB_ACTIONS=true GITHUB_REPOSITORY=acme/infra
+export BOG_SERVER_URL=http://localhost:8080 BOG_SERVER_TOKEN=the-token-from-above
+bogform ci plan
+```
+
+## Server settings
+
+If you host the server another way, run `bogform-server serve` and set these variables:
+
+| Variable | Purpose |
+|---|---|
+| `BOG_SERVER_PUBLIC_URL` | The address people use. Must be `https`, except on a local address |
+| `BOG_SERVER_DATABASE_URL` | The Postgres connection string |
+| `BOG_SERVER_SESSION_KEY` | Signs sessions. Generate one with `openssl rand -hex 32` |
+| `BOG_SERVER_VIEWERS`, `BOG_SERVER_OPERATORS` | Comma-separated email addresses and domains |
+| `BOG_SERVER_OIDC_ISSUER`, `BOG_SERVER_OIDC_CLIENT_ID`, `BOG_SERVER_OIDC_CLIENT_SECRET` | Sign-in |
+| `BOG_SERVER_AUTH_PROVIDER` | `oidc`, the default, or `github` |
+| `BOG_SERVER_STATIC_DIR` | Serve the built UI from this directory |
+| `BOG_SERVER_RETENTION_DAYS` | How long to keep runs. The default is `365`, and `0` keeps them forever |

@@ -1,0 +1,115 @@
+---
+sidebar_position: 1
+sidebar_label: Deploy to AWS
+description: |-
+  Deploy the Bogform dashboard to your own AWS account.
+---
+
+# Deploy the dashboard to AWS
+
+The `deploy/aws` module creates everything except the database, and keeps your secrets out of deployment
+state.
+
+## Before you begin
+
+You need:
+
+- A Postgres database and its connection string. Any provider works. Use `sslmode=require`.
+- An application registered with your sign-in provider. You register its redirect URL in step 4.
+
+## 1. Build the dashboard
+
+From a copy of the Bogform repository, with Go and Node.js installed:
+
+```shell
+scripts/build-server.sh build/server
+```
+
+## 2. Configure the module
+
+```hcl
+module "dashboard" {
+  source = "github.com/bogware/bogform//deploy/aws"
+
+  artifacts_dir = "${path.root}/build/server"
+
+  oidc_issuer    = "https://accounts.google.com"
+  oidc_client_id = "your-client-id"
+
+  viewers   = ["@example.com"]
+  operators = ["you@example.com"]
+}
+
+output "dashboard" {
+  value = module.dashboard
+}
+```
+
+| Sign-in provider | Settings |
+|---|---|
+| Google, Okta, Auth0, and most others | `oidc_issuer`, `oidc_client_id` |
+| GitHub | `auth_provider = "github"`, `oidc_client_id` |
+| GitLab | `oidc_issuer = "https://gitlab.com"`, `oidc_client_id` |
+| Microsoft Entra ID | `oidc_issuer`, `oidc_client_id`, and `oidc_trust_email = true`, because Entra ID doesn't include the claim that marks an email address as verified |
+
+`viewers` can see everything. `operators` can also start pipelines. Entries are email addresses, or domains
+such as `@example.com`.
+
+To use your own domain, set `domain_name`, and `certificate_arn` to an ACM certificate in `us-east-1`.
+
+## 3. Deploy
+
+```shell
+bogform init
+bogform apply
+```
+
+## 4. Set your secrets
+
+The first deployment creates parameters holding placeholders. The server won't start until you replace
+them, so a forgotten secret can't become a known one. Setting them outside of Bogform keeps them out of your
+state.
+
+```shell
+aws ssm put-parameter --overwrite --type SecureString --name /bogform/database-url \
+  --value 'postgres://user:password@host:5432/bogform?sslmode=require'
+aws ssm put-parameter --overwrite --type SecureString --name /bogform/session-key \
+  --value "$(openssl rand -hex 32)"
+aws ssm put-parameter --overwrite --type SecureString --name /bogform/oidc-client-secret \
+  --value 'your-client-secret'
+```
+
+Then register the `redirect_url` output with your sign-in provider, and open the `url` output. The database
+schema is created automatically. If you change a parameter later, redeploy the function or wait for a new
+instance to start.
+
+## Let operators start pipelines
+
+Enable each platform you use in the module, and set its token parameter:
+
+| Platform | Module setting | Parameter | The token needs |
+|---|---|---|---|
+| GitHub | `github_trigger = true` | `github-token` | Actions: write |
+| GitLab | `gitlab_trigger = true` | `gitlab-token` | `api` scope |
+| Bitbucket | `bitbucket_trigger = true` | `bitbucket-token` | Pipelines: write |
+| Azure | `azure_org_url`, `azure_pipelines` | `azure-token` | A personal access token with Build: read and execute |
+
+The token can start pipelines, but your pipeline's approval rules still apply. Every run started from the
+dashboard is recorded in the `audit_log` table.
+
+Pipelines start on the branch in `trigger_ref`, which is `main` by default. This is a setting rather than
+something learned from reports, so that someone who can send a report can't choose what an operator's click
+runs.
+
+On GitHub, the dashboard starts `.github/workflows/bogform.yml`, which is the file that `bogform ci init`
+creates. It needs a `workflow_dispatch` trigger, which that file includes.
+
+## Security
+
+- Sign-in uses the authorization code flow with PKCE, state, and nonce. Sessions last eight hours, in signed
+  cookies that scripts can't read.
+- Removing someone from `viewers` and `operators` takes effect on their next request.
+- To end all sessions at once, replace the `session-key` parameter and start new instances.
+- The function can only write its logs and read its own parameters. It has no access to your infrastructure.
+- CloudFront adds a secret header that the server requires, so its function URL can't be used directly.
+- The module's state holds that header's value. Use [state encryption](../language/state/encryption.mdx).

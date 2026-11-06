@@ -46,3 +46,11 @@ website/.docusaurus
 
 # Plans and reports from "bogform ci"
 .bogform-ci/
+
+# Dashboard build output
+web/node_modules
+web/dist
+deploy/aws/.build
+deploy/aws/.terraform
+build/
+deploy/aws/.terraform.lock.hcl

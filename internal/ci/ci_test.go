@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -57,7 +58,8 @@ func TestDetect(t *testing.T) {
 		"azure pull request": {
 			env: map[string]string{
 				"TF_BUILD": "True", "SYSTEM_COLLECTIONURI": "https://dev.azure.com/acme", "SYSTEM_TEAMPROJECT": "infra",
-				"BUILD_BUILDID": "9", "SYSTEM_PULLREQUEST_PULLREQUESTID": "3", "SYSTEM_PULLREQUEST_SOURCEBRANCH": "refs/heads/feature",
+				"BUILD_SOURCEBRANCH": "refs/heads/release/1.0",
+				"BUILD_BUILDID":      "9", "SYSTEM_PULLREQUEST_PULLREQUESTID": "3", "SYSTEM_PULLREQUEST_SOURCEBRANCH": "refs/heads/feature",
 			},
 			want: Context{Platform: PlatformAzure, Branch: "feature", IsPullRequest: true, PullRequest: "3", RunURL: "https://dev.azure.com/acme/infra/_build/results?buildId=9"},
 		},
@@ -77,18 +79,30 @@ func TestDetect(t *testing.T) {
 	}
 }
 
-// fakeForge records comments the way each platform's API does.
+const (
+	botID      = 1
+	attackerID = 2
+)
+
+// fakeForge records comments the way each platform's API does, including who wrote them.
 type fakeForge struct {
-	mu       sync.Mutex
-	comments map[int64]string
-	nextID   int64
-	failures int
-	token    string
+	mu         sync.Mutex
+	comments   map[int64]string
+	authors    map[int64]int
+	nextID     int64
+	failures   int
+	token      string
+	noIdentity bool
 }
 
-func (f *fakeForge) add(body string) int64 {
+func newFakeForge() *fakeForge {
+	return &fakeForge{comments: map[int64]string{}, authors: map[int64]int{}}
+}
+
+func (f *fakeForge) add(body string, author int) int64 {
 	f.nextID++
 	f.comments[f.nextID] = body
+	f.authors[f.nextID] = author
 	return f.nextID
 }
 
@@ -99,6 +113,7 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 		_ = json.NewDecoder(r.Body).Decode(&in)
 		return in
 	}
+	name := func(author int) string { return fmt.Sprintf("user-%d", author) }
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		f.mu.Lock()
 		defer f.mu.Unlock()
@@ -108,6 +123,18 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 			return
 		}
 		f.token = r.Header.Get("Authorization") + r.Header.Get("PRIVATE-TOKEN")
+
+		if r.URL.Path == "/user" || strings.HasSuffix(r.URL.Path, "/connectionData") {
+			if f.noIdentity {
+				w.WriteHeader(http.StatusForbidden)
+				return
+			}
+			json.NewEncoder(w).Encode(map[string]any{
+				"login": name(botID), "id": botID, "uuid": name(botID),
+				"authenticatedUser": map[string]string{"id": name(botID)},
+			})
+			return
+		}
 
 		id := int64(0)
 		if m := regexp.MustCompile(`/(\d+)$`).FindStringSubmatch(r.URL.Path); m != nil {
@@ -119,11 +146,15 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 			case http.MethodGet:
 				out := []map[string]any{}
 				for commentID, body := range f.comments {
-					out = append(out, map[string]any{"id": commentID, "body": body})
+					out = append(out, map[string]any{
+						"id": commentID, "body": body,
+						"user":   map[string]any{"login": name(f.authors[commentID])},
+						"author": map[string]any{"id": f.authors[commentID]},
+					})
 				}
 				json.NewEncoder(w).Encode(out)
 			case http.MethodPost:
-				f.add(decode(r)["body"].(string))
+				f.add(decode(r)["body"].(string), botID)
 			case http.MethodPatch, http.MethodPut:
 				f.comments[id] = decode(r)["body"].(string)
 			}
@@ -132,12 +163,14 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 			case http.MethodGet:
 				threads := []map[string]any{}
 				for commentID, body := range f.comments {
-					threads = append(threads, map[string]any{"id": 900, "comments": []map[string]any{{"id": commentID, "content": body}}})
+					threads = append(threads, map[string]any{"id": 900, "comments": []map[string]any{{
+						"id": commentID, "content": body, "author": map[string]string{"id": name(f.authors[commentID])},
+					}}})
 				}
 				json.NewEncoder(w).Encode(map[string]any{"value": threads})
 			case http.MethodPost:
 				comment := decode(r)["comments"].([]any)[0].(map[string]any)
-				f.add(comment["content"].(string))
+				f.add(comment["content"].(string), botID)
 			case http.MethodPatch:
 				f.comments[id] = decode(r)["content"].(string)
 			}
@@ -146,11 +179,13 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 			case http.MethodGet:
 				values := []map[string]any{}
 				for commentID, body := range f.comments {
-					values = append(values, map[string]any{"id": commentID, "content": map[string]string{"raw": body}})
+					values = append(values, map[string]any{
+						"id": commentID, "content": map[string]string{"raw": body}, "user": map[string]string{"uuid": name(f.authors[commentID])},
+					})
 				}
 				json.NewEncoder(w).Encode(map[string]any{"values": values})
 			case http.MethodPost:
-				f.add(decode(r)["content"].(map[string]any)["raw"].(string))
+				f.add(decode(r)["content"].(map[string]any)["raw"].(string), botID)
 			case http.MethodPut:
 				f.comments[id] = decode(r)["content"].(map[string]any)["raw"].(string)
 			}
@@ -161,21 +196,11 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 func TestCommentersCreateThenUpdate(t *testing.T) {
 	for _, platform := range []string{PlatformGitHub, PlatformGitLab, PlatformAzure, PlatformBitbucket} {
 		t.Run(platform, func(t *testing.T) {
-			forge := &fakeForge{comments: map[int64]string{}}
-			forge.add("someone else's comment")
+			forge := newFakeForge()
+			forge.add("someone else's comment", attackerID)
 			server := httptest.NewServer(forge.handler(t, platform))
 			defer server.Close()
-
-			run := Context{Platform: platform, IsPullRequest: true, PullRequest: "1", Repository: "acme/infra", apiURL: server.URL, projectURL: "proj"}
-			if platform == PlatformAzure {
-				run.apiURL = server.URL + "/"
-				run.projectURL = "proj/repo"
-			}
-			commenter, err := NewCommenter(run, "secret", server.Client())
-			if err != nil {
-				t.Fatal(err)
-			}
-			setRetry(commenter)
+			commenter := newTestCommenter(t, platform, server)
 
 			marker := Marker(KindPlan, ".", "default")
 			if err := commenter.Upsert(t.Context(), marker, marker+"\nfirst"); err != nil {
@@ -201,6 +226,95 @@ func TestCommentersCreateThenUpdate(t *testing.T) {
 	}
 }
 
+// TestCommentersIgnoreCommentsFromOthers covers someone writing a comment with the predictable marker,
+// hoping the bot writes the plan into it so that they can then edit what reviewers see.
+func TestCommentersIgnoreCommentsFromOthers(t *testing.T) {
+	for _, platform := range []string{PlatformGitHub, PlatformGitLab, PlatformAzure, PlatformBitbucket} {
+		t.Run(platform, func(t *testing.T) {
+			forge := newFakeForge()
+			marker := Marker(KindPlan, ".", "default")
+			forge.add(marker+"\nplanted", attackerID)
+			server := httptest.NewServer(forge.handler(t, platform))
+			defer server.Close()
+			if err := newTestCommenter(t, platform, server).Upsert(t.Context(), marker, marker+"\nreal"); err != nil {
+				t.Fatal(err)
+			}
+			if forge.comments[1] != marker+"\nplanted" {
+				t.Fatalf("the bot wrote into someone else's comment: %q", forge.comments[1])
+			}
+			if !strings.HasSuffix(forge.comments[2], "real") {
+				t.Fatalf("expected a new comment: %v", forge.comments)
+			}
+		})
+	}
+}
+
+func TestCommentersRequireMarkerAtStart(t *testing.T) {
+	forge := newFakeForge()
+	marker := Marker(KindPlan, "a", "default")
+	forge.add(Marker(KindPlan, "b", "default")+"\noutput that mentions "+marker, botID)
+	server := httptest.NewServer(forge.handler(t, PlatformGitLab))
+	defer server.Close()
+	if err := newTestCommenter(t, PlatformGitLab, server).Upsert(t.Context(), marker, marker+"\nreal"); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(forge.comments[1], "output that mentions") || len(forge.comments) != 2 {
+		t.Fatalf("another directory's comment was overwritten: %v", forge.comments)
+	}
+}
+
+func TestCommenterWithUnknownIdentityCreatesNew(t *testing.T) {
+	forge := newFakeForge()
+	forge.noIdentity = true
+	marker := Marker(KindPlan, ".", "default")
+	forge.add(marker+"\nold", botID)
+	server := httptest.NewServer(forge.handler(t, PlatformGitLab))
+	defer server.Close()
+	if err := newTestCommenter(t, PlatformGitLab, server).Upsert(t.Context(), marker, marker+"\nnew"); err != nil {
+		t.Fatal(err)
+	}
+	if len(forge.comments) != 2 {
+		t.Fatalf("expected a new comment, which is noisy but safe: %v", forge.comments)
+	}
+}
+
+func TestGitHubCommenterAssumesActionsBotWithoutUserAccess(t *testing.T) {
+	forge := newFakeForge()
+	forge.noIdentity = true
+	marker := Marker(KindPlan, ".", "default")
+	forge.comments[1] = marker + "\nold"
+	forge.nextID = 1
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet && r.URL.Path != "/user" {
+			json.NewEncoder(w).Encode([]map[string]any{{"id": 1, "body": forge.comments[1], "user": map[string]string{"login": "github-actions[bot]"}}})
+			return
+		}
+		forge.handler(t, PlatformGitHub).ServeHTTP(w, r)
+	}))
+	defer server.Close()
+	if err := newTestCommenter(t, PlatformGitHub, server).Upsert(t.Context(), marker, marker+"\nnew"); err != nil {
+		t.Fatal(err)
+	}
+	if len(forge.comments) != 1 || !strings.HasSuffix(forge.comments[1], "new") {
+		t.Fatalf("the Actions token can't call /user, but its own comment should still update: %v", forge.comments)
+	}
+}
+
+func newTestCommenter(t *testing.T, platform string, server *httptest.Server) Commenter {
+	t.Helper()
+	run := Context{Platform: platform, IsPullRequest: true, PullRequest: "1", Repository: "acme/infra", apiURL: server.URL, projectURL: "proj"}
+	if platform == PlatformAzure {
+		run.apiURL = server.URL + "/"
+		run.projectURL = "proj/repo"
+	}
+	commenter, err := NewCommenter(run, "secret", server.Client())
+	if err != nil {
+		t.Fatal(err)
+	}
+	setRetry(commenter)
+	return commenter
+}
+
 func setRetry(c Commenter) {
 	switch v := c.(type) {
 	case *githubCommenter:
@@ -215,7 +329,8 @@ func setRetry(c Commenter) {
 }
 
 func TestCommenterRetriesTemporaryFailures(t *testing.T) {
-	forge := &fakeForge{comments: map[int64]string{}, failures: 2}
+	forge := newFakeForge()
+	forge.failures = 2
 	server := httptest.NewServer(forge.handler(t, PlatformGitHub))
 	defer server.Close()
 	commenter, err := NewCommenter(Context{Platform: PlatformGitHub, IsPullRequest: true, PullRequest: "1", Repository: "a/b", apiURL: server.URL}, "t", server.Client())
@@ -369,6 +484,26 @@ func TestRenderPipeline(t *testing.T) {
 	}
 }
 
+func TestDetect_azureKeepsWholeBranchName(t *testing.T) {
+	got := Detect(envMap(map[string]string{
+		"TF_BUILD": "True", "SYSTEM_COLLECTIONURI": "https://dev.azure.com/acme",
+		"BUILD_SOURCEBRANCH": "refs/heads/release/1.0", "BUILD_SOURCEBRANCHNAME": "1.0",
+	}))
+	if got.Branch != "release/1.0" {
+		t.Fatalf("wrong branch: %q", got.Branch)
+	}
+}
+
+func TestRenderPipeline_azureApplyDoesNotDependOnPlan(t *testing.T) {
+	content, err := RenderPipeline(ScaffoldOptions{Platform: PlatformAzure})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(content), "dependsOn: []") {
+		t.Fatalf("Apply would be skipped along with Plan:\n%s", content)
+	}
+}
+
 func TestRenderPipeline_noAnchorsOnAzure(t *testing.T) {
 	// Azure Pipelines doesn't support YAML anchors and aliases.
 	content, err := RenderPipeline(ScaffoldOptions{Platform: PlatformAzure})
@@ -441,7 +576,7 @@ func TestDetectPlatformFromRemote(t *testing.T) {
 
 func TestNewRunner_keepsTokenFromChildren(t *testing.T) {
 	runner := NewRunner(Options{
-		Env:    []string{"BOG_CI_TOKEN=secret", "TF_CI_TOKEN=secret", "PATH=/bin", "GITHUB_ACTIONS=true"},
+		Env:    []string{"BOG_CI_TOKEN=secret", "TF_CI_TOKEN=secret", "BOG_SERVER_TOKEN=secret", "TF_SERVER_TOKEN=secret", "PATH=/bin", "GITHUB_ACTIONS=true"},
 		Stdout: io.Discard, Stderr: io.Discard,
 	})
 	if runner.token != "secret" {

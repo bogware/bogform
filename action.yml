@@ -26,6 +26,12 @@ inputs:
   binary:
     description: Use this bogform executable instead of installing a release.
     default: ""
+  server-url:
+    description: The address of your Bogform dashboard. If set, reports are sent to it.
+    default: ""
+  server-token:
+    description: The dashboard token for this repository. Keep it in a secret.
+    default: ""
 
 outputs:
   report:
@@ -92,6 +98,8 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       env:
         BOG_CI_TOKEN: ${{ inputs.token }}
+        BOG_SERVER_URL: ${{ inputs.server-url }}
+        BOG_SERVER_TOKEN: ${{ inputs.server-token }}
         BOGFORM_COMMAND: ${{ inputs.command }}
         BOGFORM_WORKSPACE: ${{ inputs.workspace }}
         BOGFORM_ARGS: ${{ inputs.args }}
@@ -111,4 +119,4 @@ runs:
         # Intentionally split on spaces.
         # shellcheck disable=SC2206
         options+=($BOGFORM_ARGS)
-        "${BOGFORM_BINARY:-bogform}" ci "$BOGFORM_COMMAND" "${options[@]}"
+        "${BOGFORM_BINARY:-bogform}" ci "$BOGFORM_COMMAND" ${options[@]+"${options[@]}"}

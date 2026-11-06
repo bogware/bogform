@@ -1,0 +1,41 @@
+# Copyright (c) The Bogform Authors
+# SPDX-License-Identifier: MPL-2.0
+
+# Runs the dashboard locally, for development and trying it out. Sign-in is skipped, so this is only
+# reachable from this machine. Don't use it in production.
+#
+#   docker compose -f deploy/local/docker-compose.yml up --build
+#   Then open http://localhost:8080
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: bogform
+      POSTGRES_DB: bogform
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "bogform"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  server:
+    build:
+      context: ../..
+      dockerfile: deploy/local/Dockerfile
+    # Inside the container this must listen on all interfaces. The port mapping below keeps it local.
+    command: ["serve", "-address", ":8080"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      BOG_SERVER_PUBLIC_URL: http://localhost:8080
+      BOG_SERVER_DATABASE_URL: postgres://postgres:bogform@postgres:5432/bogform?sslmode=disable
+      # Only for this local setup. Any real deployment needs its own random key.
+      BOG_SERVER_SESSION_KEY: "0000000000000000000000000000000000000000000000000000000000000000"
+      BOG_SERVER_DEV_USER: developer@localhost
+      BOG_SERVER_STATIC_DIR: /srv/ui
+    ports:
+      - "127.0.0.1:8080:8080"

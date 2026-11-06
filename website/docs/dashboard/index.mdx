@@ -1,0 +1,43 @@
+---
+sidebar_position: 4
+sidebar_label: Dashboard
+description: |-
+  An optional self-hosted dashboard that shows your pipeline runs and drift, and can start pipelines.
+---
+
+# Dashboard
+
+The dashboard is an optional web app that you host yourself. It shows every workspace across your
+repositories, what each pipeline did, and what's drifted, and it can start a pipeline.
+
+You don't need it to use Bogform. [Pipelines](../pipelines/index.mdx) work without it.
+
+## How it works
+
+```text
+Browser ── CloudFront ─┬─ /*      ── S3 (private, static UI)
+                       └─ /api/*  ── Lambda
+                                       │
+Pipelines ── bogform ci ── report ─────┤
+                                       ├── Postgres
+                                       └── Your pipeline platform (to start a run)
+```
+
+The dashboard **doesn't run Bogform and holds no cloud credentials**. Your plans and applies still run in
+your pipelines. The worst that someone could do with a compromised dashboard is show misleading
+information or start a pipeline, which must still pass that pipeline's approvals.
+
+It stores resource addresses, actions, commits, and statuses. It doesn't store plans, state, or attribute
+values.
+
+## What it costs
+
+Lambda and CloudFront charge for what you use, so they're typically very low for a dashboard used by one
+organization. Postgres is the main cost, and you choose it: use a serverless plan that scales to zero, a
+small instance, or a database you already have. Check your provider's current prices.
+
+## Next steps
+
+- [Deploy it to AWS](./deploy.mdx)
+- [Send reports from your pipelines](./connect.mdx)
+- [Try it on your own machine](./local.mdx)

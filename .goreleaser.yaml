@@ -7,12 +7,15 @@ project_name: bogform
 
 before:
   hooks:
+    - sh -c "cd web && npm ci --no-audit --no-fund && npm run build"
     - go mod tidy
     - go generate ./...
     - make protobuf
 
 builds:
-  - env:
+  - id: bogform
+    binary: bogform
+    env:
       - CGO_ENABLED=0
 
     main: ./cmd/bogform
@@ -48,17 +51,46 @@ builds:
       - goos: solaris
         goarch: arm64
 
+  - id: bogform-server
+    binary: bootstrap
+    env:
+      - CGO_ENABLED=0
+    main: ./cmd/bogform-server
+    flags:
+      - "-mod=readonly"
+      - "-trimpath"
+    ldflags:
+      - "-s -w"
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
 archives:
   - format: tar.gz
     id: targz
+    builds: [bogform]
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{- .Os }}_{{- .Arch }}"
-  
+
   - format: zip
-    id: zip 
+    id: zip
+    builds: [bogform]
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{- .Os }}_{{- .Arch }}"
+
+  # What the deployment module in deploy/aws reads: the server as "bootstrap", and the UI in "ui".
+  - format: tar.gz
+    id: server
+    builds: [bogform-server]
+    name_template: "bogform-server_{{ .Version }}_{{- .Os }}_{{- .Arch }}"
+    files:
+      - src: web/dist/**
+        dst: ui
+        strip_parent: true
 
 dockers:
   - use: buildx
+    ids: [bogform]
     goarch: amd64
     build_flag_templates:
       - "--pull"
@@ -77,6 +109,7 @@ dockers:
       - "ghcr.io/bogware/bogform:{{ .Version }}-amd64"
 
   - use: buildx
+    ids: [bogform]
     goarch: amd64
     dockerfile: Dockerfile.minimal
     build_flag_templates:
@@ -96,6 +129,7 @@ dockers:
       - "ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64"
 
   - use: buildx
+    ids: [bogform]
     goarch: arm64
     build_flag_templates:
       - "--pull"
@@ -114,6 +148,7 @@ dockers:
       - "ghcr.io/bogware/bogform:{{ .Version }}-arm64"
 
   - use: buildx
+    ids: [bogform]
     goarch: arm64
     dockerfile: Dockerfile.minimal
     build_flag_templates:
@@ -180,7 +215,8 @@ docker_manifests:
     skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
 
 nfpms:
-  - file_name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Arch }}'
+  - builds: [bogform]
+    file_name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Arch }}'
     maintainer: 'Bogform maintainers <https://github.com/bogware/bogform>'
     homepage: https://github.com/bogware/bogform
     description: >-

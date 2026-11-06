@@ -86,6 +86,7 @@ func (b *Backend) configure(ctx context.Context) error {
 		return fmt.Errorf(`the "git" backend needs the git command, which wasn't found: %w`, err)
 	}
 
+	var credentials []string
 	url := data.Get("repository").(string)
 	if url == "" {
 		out, err := exec.CommandContext(ctx, "git", "remote", "get-url", "origin").Output()
@@ -93,6 +94,11 @@ func (b *Backend) configure(ctx context.Context) error {
 			return fmt.Errorf(`couldn't find the "origin" remote of this repository. Set "repository" in the backend configuration: %w`, err)
 		}
 		url = strings.TrimSpace(string(out))
+		// Only the user's own "origin" can use the credentials from their checkout.
+		credentials = checkoutCredentials(ctx)
+	}
+	if strings.HasPrefix(url, "-") {
+		return fmt.Errorf("%q isn't a valid repository", url)
 	}
 
 	branch := data.Get("branch").(string)
@@ -109,7 +115,7 @@ func (b *Backend) configure(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	b.repo = &repository{url: url, branch: branch, dir: dir}
+	b.repo = &repository{url: url, branch: branch, dir: dir, credentialConfig: credentials}
 	if err := b.repo.init(ctx); err != nil {
 		return err
 	}
@@ -135,6 +141,15 @@ func removeStaleClones() {
 func validateBranch(branch string) error {
 	if branch == "" || strings.HasPrefix(branch, "-") || strings.ContainsAny(branch, " ~^:?*[\\") || strings.Contains(branch, "..") {
 		return fmt.Errorf("%q isn't a valid branch name", branch)
+	}
+	return nil
+}
+
+// validateWorkspace rejects names that would change the state's path. A name of ".." would otherwise
+// resolve to the default workspace's state while using a different lock.
+func validateWorkspace(name string) error {
+	if name == "." || name == ".." || strings.ContainsAny(name, "/\\") {
+		return fmt.Errorf("%q can't be used as a workspace name with the git backend", name)
 	}
 	return nil
 }
@@ -172,6 +187,9 @@ func (b *Backend) DeleteWorkspace(ctx context.Context, name string, _ bool) erro
 	if name == backend.DefaultStateName || name == "" {
 		return fmt.Errorf("can't delete default state")
 	}
+	if err := validateWorkspace(name); err != nil {
+		return err
+	}
 	return b.client(name).Delete(ctx)
 }
 
@@ -186,6 +204,9 @@ func (b *Backend) client(workspace string) *Client {
 
 // StateMgr returns the state manager for a workspace, creating an empty state if it's new.
 func (b *Backend) StateMgr(ctx context.Context, name string) (statemgr.Full, error) {
+	if err := validateWorkspace(name); err != nil {
+		return nil, err
+	}
 	var stateMgr statemgr.Full = remote.NewState(b.client(name), b.encryption)
 
 	existing, err := b.Workspaces(ctx)

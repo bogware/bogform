@@ -33,8 +33,13 @@ pipelines have nobody to answer.
 ## What Bogform does for you
 
 - **Refuses to apply from pull requests,** unless you use `-allow-pull-request-apply`.
-- **Keeps the comment token private.** `BOG_CI_TOKEN` is removed from the environment of everything that
-  Bogform runs, so configuration and providers can't read it.
+- **Keeps tokens out of what it runs.** `BOG_CI_TOKEN` and `BOG_SERVER_TOKEN` are removed from the environment
+  of everything that Bogform runs, so they don't reach providers by accident. This isn't a security boundary,
+  because a malicious program running as the same user could still find them. So give these tokens only the
+  permissions they need.
+- **Only updates its own comments.** Bogform won't write into a comment by someone else, even one that
+  imitates its comments. If it can't work out which account its token belongs to, it adds a new comment
+  rather than updating an existing one.
 - **Doesn't include attribute values in reports.** `report.json` lists resource addresses and actions.
 - **Protects comments from injection.** Resource names and plan text can't escape their code formatting.
 - **Keeps plans out of Git.** The `.bogform-ci` directory ignores its own contents.

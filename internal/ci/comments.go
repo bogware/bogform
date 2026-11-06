@@ -57,14 +57,16 @@ func NewCommenter(run Context, token string, client *http.Client) (Commenter, er
 		api.setHeaders = func(h http.Header) { h.Set("Authorization", "Bearer "+token) }
 		project, repo, _ := strings.Cut(run.projectURL, "/")
 		return &azureCommenter{
-			api:  api,
-			base: fmt.Sprintf("%s%s/_apis/git/repositories/%s/pullRequests/%s/threads", run.apiURL, url.PathEscape(project), url.PathEscape(repo), run.PullRequest),
+			api:        api,
+			base:       fmt.Sprintf("%s%s/_apis/git/repositories/%s/pullRequests/%s/threads", run.apiURL, url.PathEscape(project), url.PathEscape(repo), run.PullRequest),
+			connection: run.apiURL + "_apis/connectionData?api-version=7.1-preview.1",
 		}, nil
 	case PlatformBitbucket:
 		api.setHeaders = func(h http.Header) { h.Set("Authorization", "Bearer "+token) }
 		return &bitbucketCommenter{
 			api:  api,
 			base: fmt.Sprintf("%s/repositories/%s/pullrequests/%s/comments", run.apiURL, run.Repository, run.PullRequest),
+			user: run.apiURL + "/user",
 		}, nil
 	}
 	return nil, ErrNoCommenter
@@ -154,18 +156,37 @@ type githubCommenter struct {
 func (*githubCommenter) MaxBody() int      { return 65000 }
 func (*githubCommenter) Collapsible() bool { return true }
 
+// ownsComment decides whether a comment can be updated. The marker is predictable, so anyone could write
+// a comment containing it. If the bot then wrote the plan into that comment, its author could edit it to
+// mislead reviewers. Output from another directory's plan could also contain the marker, so it must be at
+// the very start.
+func ownsComment(body, marker string, author, self any) bool {
+	return strings.HasPrefix(body, marker) && self != nil && author == self
+}
+
 func (g *githubCommenter) Upsert(ctx context.Context, marker, body string) error {
 	list := fmt.Sprintf("%s/repos/%s/issues/%s/comments", g.base, g.repo, g.number)
+	// The token that GitHub Actions provides can't call /user, and always comments as this account.
+	self := "github-actions[bot]"
+	var user struct {
+		Login string `json:"login"`
+	}
+	if err := g.api.do(ctx, http.MethodGet, g.base+"/user", nil, &user); err == nil && user.Login != "" {
+		self = user.Login
+	}
 	for page := 1; ; page++ {
 		var comments []struct {
 			ID   int64  `json:"id"`
 			Body string `json:"body"`
+			User struct {
+				Login string `json:"login"`
+			} `json:"user"`
 		}
 		if err := g.api.do(ctx, http.MethodGet, fmt.Sprintf("%s?per_page=100&page=%d", list, page), nil, &comments); err != nil {
 			return err
 		}
 		for _, comment := range comments {
-			if strings.Contains(comment.Body, marker) {
+			if ownsComment(comment.Body, marker, comment.User.Login, self) {
 				target := fmt.Sprintf("%s/repos/%s/issues/comments/%d", g.base, g.repo, comment.ID)
 				return g.api.do(ctx, http.MethodPatch, target, map[string]string{"body": body}, nil)
 			}
@@ -189,16 +210,27 @@ func (*gitlabCommenter) Collapsible() bool { return true }
 
 func (g *gitlabCommenter) Upsert(ctx context.Context, marker, body string) error {
 	list := fmt.Sprintf("%s/projects/%s/merge_requests/%s/notes", g.base, url.PathEscape(g.project), g.iid)
+	// If the token's identity can't be found, nothing matches and a new comment is created, which is safe.
+	var self any
+	var user struct {
+		ID int64 `json:"id"`
+	}
+	if err := g.api.do(ctx, http.MethodGet, g.base+"/user", nil, &user); err == nil && user.ID != 0 {
+		self = user.ID
+	}
 	for page := 1; ; page++ {
 		var notes []struct {
-			ID   int64  `json:"id"`
-			Body string `json:"body"`
+			ID     int64  `json:"id"`
+			Body   string `json:"body"`
+			Author struct {
+				ID int64 `json:"id"`
+			} `json:"author"`
 		}
 		if err := g.api.do(ctx, http.MethodGet, fmt.Sprintf("%s?per_page=100&page=%d", list, page), nil, &notes); err != nil {
 			return err
 		}
 		for _, note := range notes {
-			if strings.Contains(note.Body, marker) {
+			if ownsComment(note.Body, marker, note.Author.ID, self) {
 				return g.api.do(ctx, http.MethodPut, fmt.Sprintf("%s/%d", list, note.ID), map[string]string{"body": body}, nil)
 			}
 		}
@@ -214,20 +246,33 @@ func (g *gitlabCommenter) Upsert(ctx context.Context, marker, body string) error
 const azureAPIVersion = "api-version=7.1"
 
 type azureCommenter struct {
-	api  *apiClient
-	base string
+	api        *apiClient
+	base       string
+	connection string
 }
 
 func (*azureCommenter) MaxBody() int      { return 140000 }
 func (*azureCommenter) Collapsible() bool { return true }
 
 func (a *azureCommenter) Upsert(ctx context.Context, marker, body string) error {
+	var self any
+	var connection struct {
+		AuthenticatedUser struct {
+			ID string `json:"id"`
+		} `json:"authenticatedUser"`
+	}
+	if err := a.api.do(ctx, http.MethodGet, a.connection, nil, &connection); err == nil && connection.AuthenticatedUser.ID != "" {
+		self = connection.AuthenticatedUser.ID
+	}
 	var threads struct {
 		Value []struct {
 			ID       int64 `json:"id"`
 			Comments []struct {
 				ID      int64  `json:"id"`
 				Content string `json:"content"`
+				Author  struct {
+					ID string `json:"id"`
+				} `json:"author"`
 			} `json:"comments"`
 		} `json:"value"`
 	}
@@ -236,7 +281,7 @@ func (a *azureCommenter) Upsert(ctx context.Context, marker, body string) error 
 	}
 	for _, thread := range threads.Value {
 		for _, comment := range thread.Comments {
-			if strings.Contains(comment.Content, marker) {
+			if ownsComment(comment.Content, marker, comment.Author.ID, self) {
 				target := fmt.Sprintf("%s/%d/comments/%d?%s", a.base, thread.ID, comment.ID, azureAPIVersion)
 				return a.api.do(ctx, http.MethodPatch, target, map[string]string{"content": body}, nil)
 			}
@@ -254,6 +299,7 @@ func (a *azureCommenter) Upsert(ctx context.Context, marker, body string) error 
 type bitbucketCommenter struct {
 	api  *apiClient
 	base string
+	user string
 }
 
 func (*bitbucketCommenter) MaxBody() int      { return 32000 }
@@ -261,6 +307,13 @@ func (*bitbucketCommenter) Collapsible() bool { return false }
 
 func (b *bitbucketCommenter) Upsert(ctx context.Context, marker, body string) error {
 	content := map[string]any{"content": map[string]string{"raw": body}}
+	var self any
+	var user struct {
+		UUID string `json:"uuid"`
+	}
+	if err := b.api.do(ctx, http.MethodGet, b.user, nil, &user); err == nil && user.UUID != "" {
+		self = user.UUID
+	}
 	next := b.base + "?pagelen=100"
 	for next != "" {
 		var page struct {
@@ -270,13 +323,16 @@ func (b *bitbucketCommenter) Upsert(ctx context.Context, marker, body string) er
 				Content struct {
 					Raw string `json:"raw"`
 				} `json:"content"`
+				User struct {
+					UUID string `json:"uuid"`
+				} `json:"user"`
 			} `json:"values"`
 		}
 		if err := b.api.do(ctx, http.MethodGet, next, nil, &page); err != nil {
 			return err
 		}
 		for _, comment := range page.Values {
-			if strings.Contains(comment.Content.Raw, marker) {
+			if ownsComment(comment.Content.Raw, marker, comment.User.UUID, self) {
 				return b.api.do(ctx, http.MethodPut, b.base+"/"+strconv.FormatInt(comment.ID, 10), content, nil)
 			}
 		}

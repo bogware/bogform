@@ -1,0 +1,14 @@
+.git
+.github
+build
+dist
+docs
+rfc
+testing
+website
+web/node_modules
+web/dist
+deploy/aws/.terraform
+deploy/aws/.build
+**/.bogform-ci
+**/node_modules

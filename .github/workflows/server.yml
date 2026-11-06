@@ -1,0 +1,98 @@
+name: Dashboard
+
+on:
+  pull_request:
+    paths:
+      - 'internal/server/**'
+      - 'internal/ci/**'
+      - 'cmd/bogform-server/**'
+      - 'web/**'
+      - 'deploy/**'
+      - '.github/workflows/server.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'internal/server/**'
+      - 'internal/ci/**'
+      - 'cmd/bogform-server/**'
+      - 'web/**'
+      - 'deploy/**'
+      - '.github/workflows/server.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  server:
+    name: Server tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: bogform
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d bogform"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      BOG_TEST_DATABASE_URL: postgres://postgres:test@localhost:5432/bogform?sslmode=disable
+    steps:
+      - name: Fetch source code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Configure Go toolchain
+        uses: ./.github/actions/go-toolchain
+
+      # These share one database, so packages must not run at the same time.
+      - name: Run tests
+        run: go test -p 1 -count=1 ./internal/server/ ./cmd/bogform-server/
+      - name: Run the end-to-end test with the CLI
+        run: go test -p 1 -count=1 -run 'TestCI_reportsToServer' ./internal/command/e2etest/
+
+  ui:
+    name: UI build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Fetch source code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build
+        run: npm run build
+
+  module:
+    name: Deployment module
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch source code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Configure Go toolchain
+        uses: ./.github/actions/go-toolchain
+
+      - name: Validate
+        run: |
+          go build -o "$RUNNER_TEMP/bogform" ./cmd/bogform
+          cd deploy/aws
+          "$RUNNER_TEMP/bogform" fmt -check -recursive
+          "$RUNNER_TEMP/bogform" init -backend=false -input=false
+          "$RUNNER_TEMP/bogform" validate

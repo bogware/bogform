@@ -50,6 +50,8 @@ stages:
               BOG_CI_TOKEN: $(System.AccessToken)
 
   - stage: Apply
+    # Stages depend on the previous one by default, and Plan is skipped outside pull requests.
+    dependsOn: []
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/[[.DefaultBranch]]'))
     jobs:
       - deployment: Apply

@@ -22,8 +22,10 @@ const (
 	PlatformBitbucket = "bitbucket"
 )
 
-// TokenEnvName is the variable holding the token used to post pull request comments. It's removed
-// from the environment of the commands Bogform runs, so that providers and configuration can't read it.
+// TokenEnvName is the variable holding the token used to post pull request comments. It's removed from
+// the environment of the commands Bogform runs, so that it doesn't reach them by accident. This isn't a
+// security boundary: code running as the same user can read a parent process's memory. So give this token
+// only the permission to comment.
 const TokenEnvName = "BOG_CI_TOKEN"
 
 // Context describes the pipeline run that Bogform is executing in.
@@ -141,7 +143,8 @@ func detectAzure(env EnvFunc) Context {
 	ctx := Context{
 		Platform:   PlatformAzure,
 		Repository: env("BUILD_REPOSITORY_NAME"),
-		Branch:     env("BUILD_SOURCEBRANCHNAME"),
+		// BUILD_SOURCEBRANCHNAME holds only the last part of a name such as release/1.0.
+		Branch:     strings.TrimPrefix(env("BUILD_SOURCEBRANCH"), "refs/heads/"),
 		Commit:     env("BUILD_SOURCEVERSION"),
 		apiURL:     collection,
 		projectURL: project + "/" + env("BUILD_REPOSITORY_ID"),

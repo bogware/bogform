@@ -57,10 +57,12 @@ func (s *ciServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer s.mu.Unlock()
 	s.tokens = append(s.tokens, r.Header.Get("Authorization"))
 	switch {
+	case r.Method == http.MethodGet && r.URL.Path == "/user":
+		w.WriteHeader(http.StatusForbidden) // As with the token that GitHub Actions provides.
 	case r.Method == http.MethodGet:
 		var out []map[string]any
 		for id, body := range s.comments {
-			out = append(out, map[string]any{"id": id, "body": body})
+			out = append(out, map[string]any{"id": id, "body": body, "user": map[string]string{"login": "github-actions[bot]"}})
 		}
 		json.NewEncoder(w).Encode(out)
 	case r.Method == http.MethodPost:

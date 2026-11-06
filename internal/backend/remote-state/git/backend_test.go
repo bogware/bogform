@@ -182,3 +182,50 @@ func TestConfigValidation(t *testing.T) {
 		})
 	}
 }
+
+func TestWorkspaceNameCannotEscape(t *testing.T) {
+	b := testBackend(t, unencrypted(testRepository(t)))
+	for _, name := range []string{"..", ".", "a/b", "a\\b"} {
+		if _, err := b.StateMgr(t.Context(), name); err == nil {
+			t.Errorf("%q should be refused", name)
+		}
+		if err := b.DeleteWorkspace(t.Context(), name, false); err == nil {
+			t.Errorf("deleting %q should be refused", name)
+		}
+	}
+}
+
+func TestCheckoutCredentials(t *testing.T) {
+	url := testRepository(t)
+	checkout := t.TempDir()
+	run := func(args ...string) {
+		t.Helper()
+		cmd := exec.Command("git", args...)
+		cmd.Dir = checkout
+		if out, err := cmd.CombinedOutput(); err != nil {
+			t.Fatalf("git %v: %s: %s", args, err, out)
+		}
+	}
+	run("init", "--quiet")
+	run("remote", "add", "origin", url)
+	run("config", "--local", "http.https://example.com/.extraheader", "AUTHORIZATION: basic c2VjcmV0")
+	t.Chdir(checkout)
+
+	got := strings.Join(checkoutCredentials(t.Context()), "\n")
+	for _, want := range []string{"GIT_CONFIG_COUNT=1", "GIT_CONFIG_KEY_0=http.https://example.com/.extraheader", "GIT_CONFIG_VALUE_0=AUTHORIZATION: basic c2VjcmV0"} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q in:\n%s", want, got)
+		}
+	}
+
+	// The default origin gets them. An explicitly configured repository doesn't, so a configuration
+	// can't direct the checkout's credentials to a server of its choosing.
+	withOrigin := testBackend(t, map[string]any{"allow_unencrypted": true})
+	if len(withOrigin.repo.credentialConfig) == 0 {
+		t.Error("the origin remote should use the checkout's credentials")
+	}
+	explicit := testBackend(t, unencrypted(url))
+	if len(explicit.repo.credentialConfig) != 0 {
+		t.Error("an explicit repository must not receive the checkout's credentials")
+	}
+}

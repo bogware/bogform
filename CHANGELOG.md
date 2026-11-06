@@ -16,6 +16,8 @@ NEW FEATURES:
   Pipelines. It comments on pull requests with the plan, and `bogform ci init` adds a pipeline to your
   repository.
 - Added the `git` backend, which stores encrypted state on a dedicated branch of a Git repository.
+- Added an optional self-hosted dashboard, `bogform-server`, that shows pipeline runs and drift and can
+  start pipelines. `deploy/aws` deploys it using CloudFront, AWS Lambda, and any Postgres database.
 
 ENHANCEMENTS:
 

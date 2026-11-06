@@ -39,6 +39,9 @@ jobs:
           version: [[.ReleaseVersion]]
           command: plan
           working-directory: [[.Directory]]
+          # If you run a Bogform dashboard:
+          # server-url: https://bogform.example.com
+          # server-token: ${{ secrets.BOG_SERVER_TOKEN }}
 
   apply:
     name: Apply
@@ -59,3 +62,6 @@ jobs:
           version: [[.ReleaseVersion]]
           command: apply
           working-directory: [[.Directory]]
+          # If you run a Bogform dashboard:
+          # server-url: https://bogform.example.com
+          # server-token: ${{ secrets.BOG_SERVER_TOKEN }}

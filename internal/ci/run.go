@@ -14,6 +14,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 )
@@ -51,6 +52,10 @@ type Options struct {
 	Now       func() time.Time
 }
 
+// privateEnvNames are only for this process, so they're withheld from what it runs. BOG_ variables are
+// also copied to TF_ at startup, so both forms are listed.
+var privateEnvNames = []string{TokenEnvName, "TF_CI_TOKEN", ServerTokenEnvName, "TF_SERVER_TOKEN"}
+
 // Runner carries out "ci" commands by running the bogform executable, exactly as a person would.
 type Runner struct {
 	Options
@@ -80,18 +85,25 @@ func NewRunner(opts Options) *Runner {
 		opts.Workspace = lookup("TF_WORKSPACE")
 	}
 
-	// The token only needs to reach this process. BOG_ variables are also copied to TF_ at startup,
-	// so remove both.
 	env := make([]string, 0, len(opts.Env)+2)
 	for _, entry := range opts.Env {
-		if strings.HasPrefix(entry, TokenEnvName+"=") || strings.HasPrefix(entry, "TF_CI_TOKEN=") {
+		if slices.ContainsFunc(privateEnvNames, func(name string) bool { return strings.HasPrefix(entry, name+"=") }) {
 			continue
 		}
 		env = append(env, entry)
 	}
 	env = append(env, "TF_IN_AUTOMATION=1", "TF_INPUT=0")
 
-	return &Runner{Options: opts, Context: Detect(lookup), token: lookup(TokenEnvName), env: env}
+	runner := &Runner{Options: opts, Context: Detect(lookup), token: lookup(TokenEnvName), env: env}
+	if serverURL := lookup(ServerURLEnvName); serverURL != "" && runner.Publisher == nil {
+		publisher, err := NewPublisher(serverURL, lookup(ServerTokenEnvName), opts.HTTPClient)
+		if err != nil {
+			runner.warn("not sending reports to the Bogform server: %s", err)
+		} else {
+			runner.Publisher = publisher
+		}
+	}
+	return runner
 }
 
 // command runs bogform with the given arguments and returns what it wrote to stdout. When stream is

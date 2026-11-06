@@ -56,8 +56,20 @@ the passphrase in your pipeline's secrets. If you lose the passphrase, the state
 | `path` | The path of the state file on the branch | `terraform.tfstate` |
 | `allow_unencrypted` | Allow storing unencrypted state | `false` |
 
-Credentials come from your Git configuration, as they do for your other Git commands. The backend never
-prompts for them, so a missing credential fails straight away.
+## Credentials
+
+The backend never prompts for credentials, so a missing one fails straight away. It uses your Git credential
+helpers and global configuration. With the default repository, it also uses credentials from your checkout,
+such as the ones that `actions/checkout` sets up. It doesn't pass those to a `repository` you set explicitly.
+
+The credentials must be able to push:
+
+| Platform | What to do |
+|---|---|
+| GitHub Actions | Give the job `permissions: contents: write`. The plan job needs this too, because plans take a lock |
+| GitLab CI | The job token can't push by default. Allow it in the project's job token settings, or use a project access token in `repository` |
+| Azure Pipelines | Set `persistCredentials: true` on the checkout step, and give the build service Contribute permission |
+| Bitbucket Pipelines | Use a repository access token in `repository` |
 
 ## Locking
 

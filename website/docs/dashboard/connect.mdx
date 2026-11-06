@@ -1,0 +1,62 @@
+---
+sidebar_position: 2
+sidebar_label: Send reports
+description: |-
+  Connect your pipelines to the Bogform dashboard.
+---
+
+# Send reports from your pipelines
+
+`bogform ci` sends each run's report to the dashboard if two variables are set. If the dashboard can't be
+reached, the pipeline shows a warning and carries on, so a dashboard problem can't block a deployment.
+
+## 1. Create a token
+
+Run this from any machine that can reach your database:
+
+```shell
+BOG_SERVER_DATABASE_URL='postgres://...' \
+  bogform-server create-token -name infra-team -repository 'acme/*'
+```
+
+The token is shown once, and only its hash is stored. The `-repository` pattern limits which repositories it
+can report for, so a token leaked from one repository can't write records for another. `acme/*` covers
+repositories directly under `acme`. Use `*` for every repository. To also limit the platform, add a prefix,
+such as `github:acme/*`.
+
+To see or revoke tokens, use `list-tokens` and `revoke-token -name infra-team`.
+
+## 2. Add it to your pipeline
+
+Store the token in a secret named `BOG_SERVER_TOKEN`, and set `BOG_SERVER_URL` to your dashboard's address.
+Bogform only sends the token over `https`, except to the local machine.
+
+On GitHub Actions, use the action's inputs:
+
+```yaml
+- uses: bogware/bogform@main
+  with:
+    command: plan
+    server-url: https://bogform.example.com
+    server-token: ${{ secrets.BOG_SERVER_TOKEN }}
+```
+
+On GitLab, Azure, and Bitbucket, set them as variables on the pipeline. Mark the token as masked or secret.
+
+## What a token can do
+
+Anyone with a token can write records for the repositories it covers, including false ones, so treat what
+the dashboard shows as what your pipelines reported. Keep the most sensitive setup simple:
+
+- Don't give the token to jobs that run on pull requests from people you don't trust. Pull requests from
+  forks don't receive secrets on most platforms.
+- A pull request that can edit its own pipeline file in your repository can read any secret that the pipeline
+  uses. If that's a concern, only send reports from your default branch.
+
+A token can't start a pipeline or read anything from the dashboard.
+
+## Detecting drift
+
+The dashboard shows drift from `bogform ci drift` runs. To check regularly, add a job that runs it on a
+schedule in your pipeline, or start it by hand. It exits with `2` if there's drift, so the job also fails
+visibly in your pipeline.
