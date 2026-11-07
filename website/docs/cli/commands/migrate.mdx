@@ -1,0 +1,55 @@
+---
+description: The bogform migrate tfc command moves workspaces from HCP Terraform or Terraform Enterprise.
+---
+
+# Command: migrate tfc
+
+The `bogform migrate tfc` command copies the current state of HCP Terraform or Terraform Enterprise
+workspaces into the backend that the current configuration uses. It also prints each workspace's
+settings and variables, and the `bogform ci init` command that matches them.
+
+It only reads from HCP Terraform. For a walkthrough, see
+[Leaving HCP Terraform](../../intro/migration/hcp-terraform.mdx).
+
+## Usage
+
+Usage: `bogform migrate tfc [options]`
+
+Before running it, replace the `cloud` block or `remote` backend with a supported backend, configure
+[state encryption](../../language/state/encryption.mdx), and run `bogform init`.
+
+The state is written through the new backend, holding its lock, so it's encrypted, and it keeps its
+lineage and serial. If the new backend already has state for a workspace, the command stops, unless
+you use `-force`.
+
+With one `-workspace`, its state goes to the currently selected workspace. With more than one, each
+goes to the workspace with the same name, which is created if it doesn't exist. Everything is read
+from HCP Terraform before anything is written, so a problem reading any workspace stops the move
+before any state is written.
+
+## Options
+
+| Option | Description |
+|---|---|
+| `-organization=NAME` | The HCP Terraform organization. Required. |
+| `-workspace=NAME` | A workspace to move. Required, and can be used more than once. |
+| `-hostname=HOST` | The host of HCP Terraform or Terraform Enterprise. Defaults to `app.terraform.io`. |
+| `-dry-run` | Read the workspaces and their state, and print the report, without writing any state. |
+| `-force` | Replace state that already exists in the new backend. |
+| `-show-values` | Print the values of variables that aren't sensitive. Sensitive values are never shown. |
+| `-lock=false` | Don't hold the state lock while writing. |
+| `-lock-timeout=DURATION` | How long to retry taking the state lock. |
+| `-var` and `-var-file` | Set variables, such as the state passphrase, for the encryption configuration. |
+
+## Token
+
+The token comes from `bogform login`, or an environment variable named after the host, such as
+`BOG_TOKEN_app_terraform_io` (`TF_TOKEN_app_terraform_io` also works). It needs permission to read
+the workspace, its variables, and its state. It's never printed, and it's only sent to the HCP
+Terraform host.
+
+## What isn't moved
+
+- **Variable sets** aren't listed. Check whether the workspace used any.
+- **Sensitive variable values** can't be read through the API. Copy them from where you keep them.
+- **Run history, policies and notifications** stay in HCP Terraform.

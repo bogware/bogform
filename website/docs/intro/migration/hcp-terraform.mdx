@@ -1,0 +1,118 @@
+---
+sidebar_position: 2
+sidebar_label: Leaving HCP Terraform
+description: |-
+  Move workspaces from HCP Terraform or Terraform Enterprise to Bogform, with state in your own
+  repository or bucket and runs in your own pipelines.
+---
+
+# Leaving HCP Terraform
+
+This guide moves a workspace from HCP Terraform or Terraform Enterprise to Bogform. Afterwards, state
+is encrypted in your repository or your own bucket, pull requests get plans from your existing CI,
+and there's no subscription to pay.
+
+`bogform migrate tfc` does the part that's easy to get wrong: it copies the workspace's current state
+into your new backend, encrypted, with its lineage and serial intact. It also lists the workspace's
+settings and variables, so you can rebuild them in your pipeline. It only reads from HCP Terraform.
+
+## Before you start
+
+- Have an HCP Terraform token that can read the workspace and its state. `bogform login` stores one,
+  or set `BOG_TOKEN_app_terraform_io`.
+- Make sure no runs are queued in the workspace, and lock it in HCP Terraform so that nothing
+  changes during the move.
+
+## 1. Point the configuration at a new backend
+
+Replace the `cloud` block or `remote` backend with a supported backend, and turn on state
+encryption. For a small project, the [`git` backend](../../language/settings/backends/git.mdx) keeps
+state on a branch of the same repository:
+
+```hcl
+terraform {
+  backend "git" {}
+
+  encryption {
+    key_provider "pbkdf2" "state" {
+      passphrase = var.state_passphrase
+    }
+    method "aes_gcm" "state" {
+      keys = key_provider.pbkdf2.state
+    }
+    state {
+      method   = method.aes_gcm.state
+      enforced = true
+    }
+    plan {
+      method   = method.aes_gcm.state
+      enforced = true
+    }
+  }
+}
+
+variable "state_passphrase" {
+  type      = string
+  sensitive = true
+}
+```
+
+Generate a long random passphrase, keep a copy somewhere safe, such as a password manager or SSM
+Parameter Store, and set it with `BOG_VAR_state_passphrase` or `TF_VAR_state_passphrase`. Then run
+`bogform init`.
+
+## 2. Copy the state
+
+Try it first with `-dry-run`, which reads everything and writes nothing:
+
+```shell
+bogform migrate tfc -organization=acme -workspace=production -dry-run
+```
+
+It prints the state's serial and resource count, the workspace's settings, its variables, and the
+next steps. Variable values aren't shown unless you add `-show-values`, and sensitive values are
+never shown. Then copy the state:
+
+```shell
+bogform migrate tfc -organization=acme -workspace=production
+bogform plan
+```
+
+The plan should show no changes. If the workspace used variables, set them first (see step 4).
+
+To move several workspaces into one configuration's workspaces, repeat `-workspace`. Each one's
+state goes to the Bogform workspace with the same name.
+
+## 3. Add a pipeline
+
+The report suggests a `bogform ci init` command that keeps the workspace's behavior. For example, a
+workspace with auto-apply in `infra/` becomes:
+
+```shell
+bogform ci init -directory=infra -apply-on=merge -git-state
+```
+
+Give the pipeline access to your cloud with OIDC. See the [pipeline docs](../../pipelines/index.mdx).
+
+## 4. Move the variables
+
+- **Sensitive variables** become pipeline secrets. The report shows each secret's suggested name,
+  and how to pass it: Terraform variables as `TF_VAR_<name>`, environment variables as themselves.
+- **Other variables** can go into the configuration, as defaults or in a `.tfvars` file. Treat
+  anything personal, like an email address, as a secret, so that it stays out of the repository.
+- **Static cloud credentials**, such as `AWS_SECRET_ACCESS_KEY` or `ARM_CLIENT_SECRET`, aren't needed:
+  the pipeline signs in with OIDC. Delete those keys once nothing uses them.
+
+Variable sets aren't listed, so check whether the workspace used any.
+
+## 5. Delete the workspace
+
+Once a pull request gets a plan and an apply succeeds through the pipeline, disconnect the
+repository from the workspace and delete the workspace in HCP Terraform. If the workspace signed in
+to your cloud through HCP Terraform's own OIDC, remove that role and trust too.
+
+## Importing resources instead
+
+If a workspace's state is lost or untrustworthy, you can rebuild it from the real infrastructure:
+[`bogform adopt`](../../cli/commands/adopt.mdx) finds existing resources and writes import blocks for
+them.

@@ -65,10 +65,11 @@ var RemovedBackends map[string]string
 // Terraform Enterprise, whose "cloud" block and "remote" backend aren't supported.
 const removedSaaSBackendMessage = `Bogform doesn't support the "cloud" block or the "remote" backend, which connect to HCP Terraform and Terraform Enterprise.
 
-To keep your existing state, move it to a supported backend such as "s3", "gcs", "azurerm", or "pg":
-  1. Using your current tool, run "state pull > terraform.tfstate" in each workspace.
-  2. Replace the "cloud" block or "remote" backend with the new backend's configuration.
-  3. Run "bogform init", then "bogform state push terraform.tfstate".`
+To keep your existing state, move it to a supported backend such as "git", "s3", "gcs", "azurerm", or "pg":
+  1. Replace the "cloud" block or "remote" backend with the new backend's configuration, and run "bogform init".
+  2. Run "bogform migrate tfc -organization=NAME -workspace=NAME" to copy each workspace's state.
+
+Without access to HCP Terraform, run "state pull > terraform.tfstate" with your current tool, then "bogform state push terraform.tfstate" after step 1.`
 
 // Init initializes the backends map with all our hardcoded backends.
 func Init(services *disco.Disco) {

@@ -11,8 +11,11 @@ import (
 	"github.com/bogware/bogform/internal/command/workdir"
 )
 
-// migrationStep is a line of the removed-backend guidance that users rely on.
-const migrationStep = `state pull > terraform.tfstate`
+// migrationStep and migrationCommand are parts of the removed-backend guidance that users rely on.
+const (
+	migrationStep    = `state pull > terraform.tfstate`
+	migrationCommand = `bogform migrate tfc`
+)
 
 func TestInit_removedSaaSBackends(t *testing.T) {
 	configs := map[string]string{
@@ -71,7 +74,7 @@ func TestSavedBackendUnknownError(t *testing.T) {
 	for _, backendType := range []string{"cloud", "remote"} {
 		t.Run(backendType, func(t *testing.T) {
 			got := savedBackendUnknownError(backendType).Error()
-			if !strings.Contains(got, migrationStep) {
+			if !strings.Contains(got, migrationStep) || !strings.Contains(got, migrationCommand) {
 				t.Fatalf("error doesn't explain how to migrate: %s", got)
 			}
 		})
