@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"github.com/bogware/bogform/internal/ci"
+	"github.com/bogware/bogform/internal/dashboard"
 
 	_ "github.com/lib/pq"
 )
@@ -204,20 +205,7 @@ func scopeAllows(scope, platform, repository string) bool {
 }
 
 // Workspace is one configuration directory and workspace in one repository.
-type Workspace struct {
-	ID           int64      `json:"id"`
-	Platform     string     `json:"platform"`
-	Repository   string     `json:"repository"`
-	Directory    string     `json:"directory"`
-	Name         string     `json:"workspace"`
-	DefaultRef   string     `json:"default_ref,omitempty"`
-	LastStatus   string     `json:"last_status"`
-	LastKind     string     `json:"last_kind"`
-	LastRunAt    time.Time  `json:"last_run_at"`
-	LastApplyAt  *time.Time `json:"last_apply_at,omitempty"`
-	DriftStatus  string     `json:"drift_status,omitempty"`
-	DriftCheckAt *time.Time `json:"drift_checked_at,omitempty"`
-}
+type Workspace = dashboard.Workspace
 
 const workspaceColumns = `id, platform, repository, directory, name, last_status, last_kind,
 	last_run_at, last_apply_at, drift_status, drift_checked_at`
@@ -230,26 +218,7 @@ func scanWorkspace(row interface{ Scan(...any) error }) (Workspace, error) {
 }
 
 // Run is the record of one pipeline run.
-type Run struct {
-	ID             int64       `json:"id"`
-	WorkspaceID    int64       `json:"workspace_id"`
-	Repository     string      `json:"repository,omitempty"`
-	Directory      string      `json:"directory,omitempty"`
-	WorkspaceName  string      `json:"workspace,omitempty"`
-	Kind           string      `json:"kind"`
-	Status         string      `json:"status"`
-	Branch         string      `json:"branch"`
-	Commit         string      `json:"commit"`
-	PullRequest    string      `json:"pull_request,omitempty"`
-	RunURL         string      `json:"run_url,omitempty"`
-	BogformVersion string      `json:"bogform_version"`
-	Counts         ci.Counts   `json:"counts"`
-	Changes        []ci.Change `json:"changes,omitempty"`
-	OutputsChanged []string    `json:"outputs_changed,omitempty"`
-	Error          string      `json:"error,omitempty"`
-	StartedAt      time.Time   `json:"started_at"`
-	FinishedAt     time.Time   `json:"finished_at"`
-}
+type Run = dashboard.Run
 
 const (
 	maxFieldLength = 1024

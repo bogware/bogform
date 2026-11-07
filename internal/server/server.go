@@ -237,11 +237,12 @@ func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleOverview(w http.ResponseWriter, r *http.Request) {
 	var overview struct {
-		Workspaces int   `json:"workspaces"`
-		Failing    int   `json:"failing"`
-		Drifted    int   `json:"drifted"`
-		RunsToday  int   `json:"runs_today"`
-		RecentRuns []Run `json:"recent_runs"`
+		Workspaces   int                  `json:"workspaces"`
+		Failing      int                  `json:"failing"`
+		Drifted      int                  `json:"drifted"`
+		RunsToday    int                  `json:"runs_today"`
+		RecentRuns   []Run                `json:"recent_runs"`
+		Repositories []RepositoryOverview `json:"repositories"`
 	}
 	err := s.db.QueryRowContext(r.Context(), `SELECT
 		COUNT(*),
@@ -258,6 +259,12 @@ func (s *Server) handleOverview(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, err)
 		return
 	}
+	workspaces, err := loadWorkspaceOverviews(r.Context(), s.db)
+	if err != nil {
+		s.fail(w, r, err)
+		return
+	}
+	overview.Repositories = groupRepositories(workspaces)
 	writeJSON(w, http.StatusOK, overview)
 }
 
