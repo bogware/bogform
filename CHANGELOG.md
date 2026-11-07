@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.15.0 (Unreleased)
+## 1.15.0 (November 7, 2026)
 
 The first stable release of Bogform. It follows 1.14.0-alpha2; there's no 1.14.0.
 
