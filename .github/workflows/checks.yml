@@ -42,6 +42,11 @@ jobs:
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
+          # Pushes have no base to compare with, so they run every check.
+          if [ -z "$BASE_REF" ]; then
+            echo "go=1" | tee -a "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git fetch --no-tags --prune --no-recurse-submodules --depth=1 origin "$BASE_REF"
           echo "go=$(git diff --name-only origin/"$BASE_REF" | grep -e '\.go' -e '\.github' -e 'go\.mod' -e 'go\.sum' -e '\.tf' -e '\.gitattributes' | wc -l)" | tee -a "$GITHUB_OUTPUT"
     outputs:
