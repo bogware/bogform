@@ -2,7 +2,7 @@
 
 This document describes how to use and implement tracing in Bogform Core using OpenTelemetry.
 
-There's background information on Bogform's tracing implementation in [the OpenTelemetry Tracing RFC](https://github.com/bogware/bogform/blob/main/rfc/20250129-Tracing-For-Extra-Context.md)
+There's background information on Bogform's tracing implementation in [the OpenTelemetry Tracing RFC](https://github.com/opentofu/opentofu/blob/main/rfc/20250129-Tracing-For-Extra-Context.md)
 
 > [!WARNING]
 > If you change which version of the `go.opentelemetry.io/otel/sdk` we have selected in our `go.mod`, you **must** make sure that `internal/tracing/traceattrs/semconv.go` imports the same subpackage of `go.opentelemetry.io/otel/semconv/*` that is used by the selected version of `go.opentelemetry.io/otel/sdk`.

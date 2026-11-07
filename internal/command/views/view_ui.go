@@ -87,7 +87,7 @@ func (u ViewUiMulti) Output(message string) {
 var matchColorRe = regexp.MustCompile("\033\\[[\\d;]*m")
 
 func stripColor(s string) string {
-	// This is a workaround for supporting json-into in legacy UI code paths. Hopefully this will all be ripped out once rfc/20251105-use-cobra-instead-of-mitchellh.md
+	// This is a workaround for supporting json-into in legacy UI code paths. Hopefully this will all be ripped out once the CLI moves to cobra (https://github.com/opentofu/opentofu/blob/main/rfc/20251105-use-cobra-instead-of-mitchellh.md)
 	// and related work is completed.
 	//
 	// NOTE: The regexp above is specifically tailored to the mitchellh colorstring.go implementation and will NOT work with the *full* set

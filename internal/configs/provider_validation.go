@@ -855,7 +855,7 @@ func providerName(name, alias string) string {
 	return name
 }
 
-// See rfc/20240513-static-evaluation-providers.md for explicit logic and reasoning behind these comparisons
+// See https://github.com/opentofu/opentofu/blob/main/rfc/20240513-static-evaluation-providers.md for explicit logic and reasoning behind these comparisons
 func providerIterationIdenticalWarning(blockType, target string, sourceExpr, instanceExpr hcl.Expression) hcl.Diagnostics {
 	if sourceExpr == nil || instanceExpr == nil {
 		return nil

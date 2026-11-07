@@ -413,7 +413,7 @@ type registryPackageAuthentication struct {
 // ReportedByRegistry. It should be combined with other authentications
 // to be useful.
 //
-// See the corresponding [RFC](rfc/20251027-provider-registry-hashes.md) for
+// See the corresponding [RFC](https://github.com/opentofu/opentofu/blob/main/rfc/20251027-provider-registry-hashes.md) for
 // more information.
 func NewRegistryPackageAuthentication(meta PackageMeta, sha256sum string, packageData map[Platform]RegistryPlatformData) PackageAuthentication {
 	return &registryPackageAuthentication{
