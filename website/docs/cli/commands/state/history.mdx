@@ -1,0 +1,35 @@
+---
+description: >-
+  The bogform state history command lists earlier versions of the state.
+---
+
+# Command: state history
+
+The `bogform state history` command lists the stored versions of a workspace's state, newest first.
+
+## Usage
+
+Usage: `bogform state history [options]`
+
+```
+$ bogform state history
+VERSION         WRITTEN (UTC)             SIZE  NOTE
+9b982f9d9748    2026-11-07 16:17:14     1.3 KB  Update terraform.tfstate (current)
+46fc115e572b    2026-11-07 16:16:45     1.5 KB  Update terraform.tfstate
+83463e1d3508    2026-11-07 16:16:31     1003 B  Update terraform.tfstate
+```
+
+To go back to one of these versions, use [`bogform state restore`](restore.mdx).
+
+History works with these backends:
+
+- **[git](../../../language/settings/backends/git.mdx):** every version is a commit on the state branch. The version is the commit, and you can use its short form.
+- **[s3](../../../language/settings/backends/s3.mdx):** versions are kept when the bucket has versioning on. The version is the S3 version ID. Without versioning, S3 keeps only the latest state, and Bogform says so.
+
+Other backends report that history isn't available.
+
+Options:
+
+- `-workspace=NAME` - The workspace whose history to show. Defaults to the selected workspace.
+- `-limit=N` - The most versions to list. Defaults to 20. Use `0` to list them all.
+- `-json` - Print the versions as JSON, with each version's `id`, `time`, `size`, `description` and `current`. A size of `-1` means that version removed the state.

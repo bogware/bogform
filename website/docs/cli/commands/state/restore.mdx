@@ -1,0 +1,43 @@
+---
+description: >-
+  The bogform state restore command makes an earlier version of the state current again.
+---
+
+# Command: state restore
+
+The `bogform state restore` command makes an earlier version of a workspace's state current again. Use it when a change left the state wrong, for example after a bad `state rm` or `import`.
+
+## Usage
+
+Usage: `bogform state restore [options] VERSION`
+
+`VERSION` is a version from [`bogform state history`](history.mdx).
+
+```
+$ bogform state restore 83463e1d3508
+Restoring version 83463e1d3508 of the "default" workspace's state.
+  Resource instances now:             2
+  Resource instances after restoring: 1
+This changes only the state. Run "bogform plan" afterwards to compare it with your infrastructure.
+
+Do you want to restore this version?
+  Only 'yes' will be accepted to continue.
+
+  Enter a value: yes
+
+Restored. The version it replaced is still in the history.
+```
+
+Bogform takes the state lock, reads the version, and decrypts it with your [encryption configuration](../../../language/state/encryption.mdx), including any fallback. It then writes it as a new version with a new serial, so nothing is lost: the version it replaces stays in the history, and you can restore that too.
+
+Restoring changes only the state, never your infrastructure. Run `bogform plan` afterwards to see how the two differ.
+
+Bogform refuses a version from a different state, with another lineage, unless you use `-force`.
+
+Options:
+
+- `-workspace=NAME` - The workspace to restore. Defaults to the selected workspace.
+- `-auto-approve` - Restore without asking for confirmation.
+- `-force` - Restore even if the version has a different lineage.
+- `-lock=false` - Don't hold the state lock. This is dangerous if others might run commands at the same time.
+- `-lock-timeout=DURATION` - How long to keep trying to take the lock, such as `30s`.
