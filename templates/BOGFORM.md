@@ -26,6 +26,9 @@ copy the file and fill that section in yourself.
   posted as a comment, using a read-only cloud role. Changes are applied by the pipeline, using a
   role that can only change this project's resources, either when the pull request merges or when
   someone runs the workflow on the default branch. **This repository** says which.
+- **The plan comment is the review.** It lists what the plan destroys or replaces, warnings from
+  built-in checks, and, if the pipeline uses `-cost`, the change in monthly cost. Then the full list
+  of changes and the plan's output.
 - **No stored cloud keys.** The pipeline signs in to AWS with GitHub's OIDC tokens. The plan and
   apply roles, and what each may do, are defined in bogware/aws-shared, not here.
 
@@ -43,11 +46,17 @@ copy the file and fill that section in yourself.
    because a run was cancelled, check that nothing is running, then ask a person before running
    `bogform force-unlock`. To undo a bad change to the state, ask a person, then use
    `bogform state history` and `bogform state restore`.
-5. **Review the plan before merging.** Look for anything that's replaced or destroyed. A change to
-   a resource's name or key often means a replacement; use a `moved` block to avoid it.
-6. **If the pipeline gets `AccessDenied`**, the plan or apply role is missing a permission. Change
+5. **Review the plan before merging.** The comment lists anything that's destroyed or replaced
+   first. A change to a resource's name or key often means a replacement; use a `moved` block to
+   avoid it. Applies refuse to destroy or replace anything unless a person allows it: on GitHub,
+   with the `allow-destroy` label on the pull request or the **allow destroy** option when running
+   the workflow. Never add that label or option yourself; ask a person.
+6. **Treat check warnings as problems to fix**, such as public storage or SSH open to the internet.
+   If a resource really needs the setting, a person can add a `bogform:skip-checks` tag with the
+   check's ID, and a comment saying why.
+7. **If the pipeline gets `AccessDenied`**, the plan or apply role is missing a permission. Change
    the role in bogware/aws-shared, in its own pull request. Don't work around it here.
-7. **Commit `.terraform.lock.hcl`.** Don't commit `.terraform/`, `.bogform-ci/`, plan files or
+8. **Commit `.terraform.lock.hcl`.** Don't commit `.terraform/`, `.bogform-ci/`, plan files or
    build output.
 
 ## Making a change

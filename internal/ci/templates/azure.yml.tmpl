@@ -9,6 +9,14 @@
 # persistCredentials: true on each checkout, and give the build service Contribute permission.
 [[- end]]
 
+
+parameters:
+  # Applies refuse to destroy or replace resources unless this is checked when the pipeline runs.
+  - name: allowDestroy
+    displayName: Allow destroy
+    type: boolean
+    default: false
+
 [[- if eq .ApplyOn "merge"]]
 trigger:
   branches:
@@ -53,7 +61,7 @@ stages:
               echo "##vso[task.prependpath]$(Agent.TempDirectory)/bogform"
             displayName: Install Bogform
 [[- template "azure-signin-plan" .Plan]]
-          - bash: bogform -chdir="$(bogformDirectory)" ci plan
+          - bash: bogform -chdir="$(bogformDirectory)" ci plan[[if .Cost]] -cost[[end]]
             displayName: Plan
             env:
               BOG_CI_TOKEN: $(System.AccessToken)
@@ -102,9 +110,8 @@ stages:
 [[- template "azure-signin-apply" .Apply]]
                 - bash: bogform -chdir="$(bogformDirectory)" ci apply
                   displayName: Apply
-[[- if or .GitState .Apply.Azure]]
                   env:
-[[- end]]
+                    BOG_CI_ALLOW_DESTROY: ${{ parameters.allowDestroy }}
 [[- if .GitState]]
                     TF_VAR_state_passphrase: $(STATE_PASSPHRASE)
 [[- end]]

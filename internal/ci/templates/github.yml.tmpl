@@ -8,7 +8,12 @@ on:
     branches:
       - [[.DefaultBranch]]
 [[- end]]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      allow_destroy:
+        description: Apply even if the plan destroys or replaces resources
+        type: boolean
+        default: false
 
 # Only one run at a time can change this infrastructure.
 concurrency:
@@ -46,6 +51,9 @@ jobs:
           version: [[.ReleaseVersion]]
           command: plan
           working-directory: [[.Directory]]
+[[- if .Cost]]
+          args: -cost
+[[- end]]
           # If you run a Bogform dashboard:
           # server-url: https://bogform.example.com
           # server-token: ${{ secrets.BOG_SERVER_TOKEN }}
@@ -70,6 +78,7 @@ jobs:
 [[- else]]
       contents: read
 [[- end]]
+      pull-requests: read # To check the merged pull request for the allow-destroy label.
       id-token: write # For cloud access using OIDC.
     steps:
       - uses: actions/checkout@v7
@@ -80,6 +89,9 @@ jobs:
           version: [[.ReleaseVersion]]
           command: apply
           working-directory: [[.Directory]]
+          # Applies refuse to destroy or replace resources unless the merged pull request has the
+          # allow-destroy label, or someone runs this workflow with "allow destroy" ticked.
+          args: ${{ inputs.allow_destroy && '-allow-destroy' || '' }}
           # If you run a Bogform dashboard:
           # server-url: https://bogform.example.com
           # server-token: ${{ secrets.BOG_SERVER_TOKEN }}

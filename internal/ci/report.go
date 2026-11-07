@@ -11,6 +11,8 @@ import (
 	"slices"
 	"strings"
 	"time"
+
+	"github.com/bogware/bogform/internal/ci/cost"
 )
 
 // Kinds of run.
@@ -49,24 +51,33 @@ type Counts struct {
 	Read    int `json:"read,omitempty"`
 }
 
+// Destructive is the number of resources that would be destroyed or replaced.
+func (c Counts) Destructive() int { return c.Destroy + c.Replace }
+
 // Total is the number of resources that would change.
 func (c Counts) Total() int { return c.Add + c.Change + c.Destroy + c.Replace + c.Import }
 
 // Report is the record of a pipeline run, written to report.json.
 type Report struct {
-	FormatVersion  int       `json:"format_version"`
-	Kind           string    `json:"kind"`
-	Status         string    `json:"status"`
-	BogformVersion string    `json:"bogform_version"`
-	Directory      string    `json:"directory"`
-	Workspace      string    `json:"workspace"`
-	Run            Context   `json:"run"`
-	Counts         Counts    `json:"counts"`
-	Changes        []Change  `json:"changes"`
-	OutputsChanged []string  `json:"outputs_changed,omitempty"`
-	Error          string    `json:"error,omitempty"`
-	StartedAt      time.Time `json:"started_at"`
-	FinishedAt     time.Time `json:"finished_at"`
+	FormatVersion  int      `json:"format_version"`
+	Kind           string   `json:"kind"`
+	Status         string   `json:"status"`
+	BogformVersion string   `json:"bogform_version"`
+	Directory      string   `json:"directory"`
+	Workspace      string   `json:"workspace"`
+	Run            Context  `json:"run"`
+	Counts         Counts   `json:"counts"`
+	Changes        []Change `json:"changes"`
+	OutputsChanged []string `json:"outputs_changed,omitempty"`
+	// Checks are the built-in checks that planned resources don't pass. They're warnings.
+	Checks []Finding `json:"checks,omitempty"`
+	// Cost is the monthly cost estimate, when one was asked for.
+	Cost *cost.Estimate `json:"cost,omitempty"`
+	// DestroyAllowedBy says what allowed an apply to destroy or replace resources.
+	DestroyAllowedBy string    `json:"destroy_allowed_by,omitempty"`
+	Error            string    `json:"error,omitempty"`
+	StartedAt        time.Time `json:"started_at"`
+	FinishedAt       time.Time `json:"finished_at"`
 
 	// Output is the text of the plan or the failure. Bogform redacts sensitive values in it, but a
 	// provider could still print something private, so it's left out of report.json.
@@ -178,6 +189,9 @@ func (r *Report) Render(opts RenderOptions) string {
 		}
 		head.WriteString("\n\n")
 	}
+	head.WriteString(r.renderDestroys())
+	head.WriteString(renderChecks(r.Checks))
+	head.WriteString(renderCost(r.Cost, opts.Collapsible))
 	head.WriteString(renderChanges(r.Changes))
 	if len(r.OutputsChanged) > 0 {
 		quoted := make([]string, len(r.OutputsChanged))
@@ -308,4 +322,136 @@ func shortCommit(commit string) string {
 		return commit[:8]
 	}
 	return commit
+}
+
+// maxListedFindings limits how many destroys, check warnings and priced resources are listed in a
+// comment. Everything stays in report.json.
+const maxListedFindings = 50
+
+// destroyedAddresses lists the resources that a plan destroys or replaces.
+func (r *Report) destroyedAddresses() []Change {
+	var result []Change
+	for _, change := range r.Changes {
+		if slices.Contains(change.Actions, "delete") {
+			result = append(result, change)
+		}
+	}
+	return result
+}
+
+// allowDestroyHint explains how to allow an apply that destroys resources on each platform.
+func allowDestroyHint(platform string) string {
+	switch platform {
+	case PlatformGitHub:
+		return "add the `allow-destroy` label to the pull request before it merges, or tick **allow destroy** when you run the workflow"
+	case PlatformGitLab:
+		return "run the apply job with the `BOG_CI_ALLOW_DESTROY` variable set to `true`"
+	case PlatformAzure:
+		return "run the pipeline with **Allow destroy** checked"
+	case PlatformBitbucket:
+		return "run the apply pipeline with `BOG_CI_ALLOW_DESTROY` set to `true`"
+	}
+	return "run `bogform ci apply -allow-destroy`"
+}
+
+func (r *Report) renderDestroys() string {
+	destroyed := r.destroyedAddresses()
+	if len(destroyed) == 0 {
+		return ""
+	}
+	var out strings.Builder
+	noun := "resources"
+	if len(destroyed) == 1 {
+		noun = "resource"
+	}
+	verb := "This plan destroys or replaces"
+	if r.Kind == KindApply && r.Status == StatusApplied {
+		verb = "This apply destroyed or replaced"
+	}
+	fmt.Fprintf(&out, "#### ⚠️ %s %d %s\n\n", verb, len(destroyed), noun)
+	for i, change := range destroyed {
+		if i == maxListedFindings {
+			fmt.Fprintf(&out, "- ...and %d more\n", len(destroyed)-maxListedFindings)
+			break
+		}
+		fmt.Fprintf(&out, "- %s %s\n", actionLabel(change.Actions), inlineCode(change.Address))
+	}
+	out.WriteString("\n")
+	switch {
+	case r.DestroyAllowedBy != "":
+		fmt.Fprintf(&out, "Allowed by %s.\n\n", r.DestroyAllowedBy)
+	case r.Kind == KindPlan:
+		fmt.Fprintf(&out, "Applying this needs approval: %s.\n\n", allowDestroyHint(r.Run.Platform))
+	}
+	return out.String()
+}
+
+// tableText makes text safe in a Markdown table cell.
+func tableText(text string) string {
+	return strings.NewReplacer("|", "\\|", "\r", " ", "\n", " ").Replace(text)
+}
+
+func renderChecks(findings []Finding) string {
+	if len(findings) == 0 {
+		return ""
+	}
+	var out strings.Builder
+	noun := "warnings"
+	if len(findings) == 1 {
+		noun = "warning"
+	}
+	fmt.Fprintf(&out, "#### 🛡️ %d check %s\n\n| Check | Resource | Problem |\n|---|---|---|\n", len(findings), noun)
+	for i, finding := range findings {
+		if i == maxListedFindings {
+			fmt.Fprintf(&out, "| | | ...and %d more |\n", len(findings)-maxListedFindings)
+			break
+		}
+		fmt.Fprintf(&out, "| %s | %s | %s |\n", inlineCode(finding.Check), inlineCode(finding.Address), tableText(finding.Message))
+	}
+	fmt.Fprintf(&out, "\nTo skip a check for one resource, give it a %s tag with the check's ID, or `all`.\n\n", inlineCode(SkipChecksTag))
+	return out.String()
+}
+
+func renderCost(estimate *cost.Estimate, collapsible bool) string {
+	if estimate == nil {
+		return ""
+	}
+	var out strings.Builder
+	fmt.Fprintf(&out, "#### 💰 Estimated monthly cost: %s → %s (%s)\n\n",
+		cost.FormatMoney(estimate.Before), cost.FormatMoney(estimate.After), cost.FormatDelta(estimate.Delta()))
+	if len(estimate.Resources) > 0 {
+		out.WriteString("| Resource | Monthly | Change |\n|---|---|---|\n")
+		for i, line := range estimate.Resources {
+			if i == maxListedFindings {
+				fmt.Fprintf(&out, "| ...and %d more | | |\n", len(estimate.Resources)-maxListedFindings)
+				break
+			}
+			fmt.Fprintf(&out, "| %s<br>%s | %s | %s |\n", inlineCode(line.Address), tableText(line.Description), cost.FormatMoney(line.After), cost.FormatDelta(line.After-line.Before))
+		}
+		out.WriteString("\n")
+	}
+	for _, warning := range estimate.Warnings {
+		fmt.Fprintf(&out, "Couldn't price everything: %s\n\n", strings.ReplaceAll(warning, "\n", " "))
+	}
+	if len(estimate.NotPriced) > 0 {
+		var list strings.Builder
+		for i, item := range estimate.NotPriced {
+			if i == maxListedFindings {
+				fmt.Fprintf(&list, "- ...and %d more\n", len(estimate.NotPriced)-maxListedFindings)
+				break
+			}
+			fmt.Fprintf(&list, "- %s: %s\n", inlineCode(item.Address), item.Reason)
+		}
+		summary := fmt.Sprintf("%d changed resources aren't in the estimate", len(estimate.NotPriced))
+		if len(estimate.NotPriced) == 1 {
+			summary = "1 changed resource isn't in the estimate"
+		}
+		if collapsible {
+			fmt.Fprintf(&out, "<details><summary>%s</summary>\n\n%s\n</details>\n\n", summary, list.String())
+		} else {
+			fmt.Fprintf(&out, "%s:\n\n%s\n", summary, list.String())
+		}
+	}
+	out.WriteString("On-demand list prices in US dollars, before tax, discounts, and usage-based charges.\n\n")
+	return out.String()
 }

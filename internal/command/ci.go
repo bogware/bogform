@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/bogware/bogform/internal/ci"
@@ -26,10 +27,10 @@ func CICommander() Command {
 They initialize the working directory, run the operation, publish a report, and comment on the current pull request. Use "bogform ci init" to add a pipeline to your repository.`,
 		Commands: []Command{
 			ciRunCommander("plan", "Plan changes and comment on the pull request",
-				"Initializes the working directory, creates a plan, and comments on the current pull request with the result. A plan with changes is still a success.",
+				"Initializes the working directory, creates a plan, and comments on the current pull request with the result. A plan with changes is still a success.\n\nThe comment lists anything the plan destroys or replaces, and warnings from built-in checks, such as for public storage or administration ports open to the internet. With -cost, it also estimates the monthly cost.",
 				(*ci.Runner).Plan),
 			ciRunCommander("apply", "Plan and apply changes",
-				"Initializes the working directory, creates a plan, and applies it without asking for approval. Use your platform's environment approvals as the gate.\n\nThis command refuses to run for a pull request unless you use -allow-pull-request-apply, because the code on a pull request might not be reviewed.",
+				"Initializes the working directory, creates a plan, and applies it without asking for approval. Use your platform's environment approvals as the gate.\n\nThis command refuses to run for a pull request unless you use -allow-pull-request-apply, because the code on a pull request might not be reviewed.\n\nIt also refuses a plan that destroys or replaces resources, unless you use -allow-destroy, set BOG_CI_ALLOW_DESTROY=true, or on GitHub, the merged pull request has the allow-destroy label.",
 				(*ci.Runner).Apply),
 			ciRunCommander("drift", "Check whether real infrastructure has drifted",
 				"Runs a refresh-only plan to compare real infrastructure with the state. Exits with 0 if nothing has drifted, 1 on an error, and 2 if there's drift.",
@@ -45,7 +46,9 @@ func ciRunCommander(name, short, long string, run func(*ci.Runner, context.Conte
 
 	var workspace string
 	var vars, varFiles, args []string
-	var allowPR, noComment, noOutput bool
+	var allowPR, noComment, noOutput, allowDestroy, cost bool
+	checks := true
+	var skipChecks string
 	cmd.CommandLine.StringVar(&workspace, "workspace", "", "The workspace to use, created if it doesn't exist. Defaults to BOG_WORKSPACE, then TF_WORKSPACE.")
 	cmd.CommandLine.StringArrayVar(&vars, "var", nil, "Set an input variable, as NAME=VALUE. Can be used more than once.")
 	cmd.CommandLine.StringArrayVar(&varFiles, "var-file", nil, "Load input variables from a file. Can be used more than once.")
@@ -54,6 +57,14 @@ func ciRunCommander(name, short, long string, run func(*ci.Runner, context.Conte
 	cmd.CommandLine.BoolVar(&noOutput, "no-output", false, "Show only the list of changes in comments and summaries, not the plan's text. Use this if your pipeline's readers shouldn't see planned values.")
 	if name == "apply" {
 		cmd.CommandLine.BoolVar(&allowPR, "allow-pull-request-apply", false, "Allow applying from a pull request. Anyone who can open a pull request could then change your infrastructure.")
+		cmd.CommandLine.BoolVar(&allowDestroy, "allow-destroy", false, "Apply even if the plan destroys or replaces resources.")
+	}
+	if name == "plan" || name == "apply" {
+		cmd.CommandLine.BoolVar(&checks, "checks", true, "Run the built-in checks, such as for public storage. Use -checks=false to turn them off.")
+		cmd.CommandLine.StringVar(&skipChecks, "skip-checks", "", "Turn off the listed checks, separated by commas.")
+	}
+	if name == "plan" {
+		cmd.CommandLine.BoolVar(&cost, "cost", false, "Estimate the monthly cost of the plan, using the AWS and Azure price lists.")
 	}
 
 	cmd.Run = func(meta Meta) int {
@@ -61,6 +72,16 @@ func ciRunCommander(name, short, long string, run func(*ci.Runner, context.Conte
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: couldn't find the bogform executable: %s\n", err)
 			return ci.ExitFailed
+		}
+		var skip []string
+		for _, id := range strings.Split(skipChecks, ",") {
+			if id = strings.TrimSpace(id); id == "" {
+				continue
+			}
+			if id != "all" && !slices.Contains(ci.CheckIDs, id) {
+				fmt.Fprintf(os.Stderr, "Warning: there's no check named %q. The checks are: %s\n", id, strings.Join(ci.CheckIDs, ", "))
+			}
+			skip = append(skip, id)
 		}
 		runner := ci.NewRunner(ci.Options{
 			Binary:                binary,
@@ -73,6 +94,10 @@ func ciRunCommander(name, short, long string, run func(*ci.Runner, context.Conte
 			AllowPullRequestApply: allowPR,
 			NoComment:             noComment,
 			NoOutput:              noOutput,
+			AllowDestroy:          allowDestroy,
+			NoChecks:              !checks || slices.Contains(skip, "all"),
+			SkipChecks:            skip,
+			Cost:                  cost,
 			Env:                   os.Environ(),
 			Stdout:                os.Stdout,
 			Stderr:                os.Stderr,
@@ -109,7 +134,7 @@ func ciInitCommander() Command {
 		DiagsWithNewline: true,
 	}
 	var platform, branch, directory, environment, applyOn string
-	var force, gitState, bogformMD bool
+	var force, gitState, bogformMD, cost bool
 	var signin ci.ScaffoldOptions
 	cmd.CommandLine.PositionalArg(&platform, "platform", true)
 	cmd.CommandLine.StringVar(&branch, "branch", "main", "The branch to apply from.")
@@ -128,6 +153,7 @@ func ciInitCommander() Command {
 	cmd.CommandLine.StringVar(&signin.AzureTenantID, "azure-tenant-id", "", "The Azure tenant ID, for -azure-client-id.")
 	cmd.CommandLine.StringVar(&signin.AzureSubscriptionID, "azure-subscription-id", "", "The Azure subscription ID, for -azure-client-id.")
 	cmd.CommandLine.StringVar(&signin.AzureServiceConnection, "azure-service-connection", "", "For Azure Pipelines: the workload identity service connection to sign in to Azure with.")
+	cmd.CommandLine.BoolVar(&cost, "cost", false, "Estimate the monthly cost of each plan. On AWS, the plan role needs pricing:GetProducts, which ReadOnlyAccess includes.")
 
 	cmd.Run = func(Meta) int {
 		if platform == "" {
@@ -148,6 +174,7 @@ func ciInitCommander() Command {
 		opts.Environment = environment
 		opts.ApplyOn = applyOn
 		opts.GitState = gitState
+		opts.Cost = cost
 		opts.Force = force
 		opts.Root = "."
 		path, err := ci.Scaffold(opts)

@@ -19,10 +19,12 @@ pipelines:
 [[- template "bitbucket-oidc" .Plan]]
           script:
 [[- template "bitbucket-signin" .Plan]]
-            - bogform -chdir="[[.Directory]]" ci plan
+            - bogform -chdir="[[.Directory]]" ci plan[[if .Cost]] -cost[[end]]
           artifacts:
             - "[[.Directory]]/.bogform-ci/report.json"
 [[- if eq .ApplyOn "merge"]]
+  # Applies refuse to destroy or replace resources. To allow it for a change, set a BOG_CI_ALLOW_DESTROY
+  # repository variable to "true" before merging, and remove it afterwards.
   branches:
     [[.DefaultBranch]]:
       - step:
@@ -40,6 +42,13 @@ pipelines:
   # To apply, run the "apply" pipeline on [[.DefaultBranch]] from the Pipelines page.
   custom:
     apply:
+      # Applies refuse to destroy or replace resources unless this is "true" when the pipeline runs.
+      - variables:
+          - name: BOG_CI_ALLOW_DESTROY
+            default: "false"
+            allowed-values:
+              - "false"
+              - "true"
       - step:
           name: Apply
 [[- if .Environment]]

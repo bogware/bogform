@@ -37,6 +37,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/cloudcontrol v1.32.5
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.63.2
 	github.com/aws/aws-sdk-go-v2/service/kms v1.55.5
+	github.com/aws/aws-sdk-go-v2/service/pricing v1.44.5
 	github.com/aws/aws-sdk-go-v2/service/resourcegroupstaggingapi v1.36.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.107.1
 	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.66.5

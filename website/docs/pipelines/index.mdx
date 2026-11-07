@@ -36,6 +36,7 @@ branch. To apply every change as soon as it's merged instead, use `-apply-on=mer
 | `-aws-plan-role=ARN`, `-aws-apply-role=ARN` | Sign in to AWS with these roles. See [Cloud access](./access.mdx) |
 | `-azure-client-id=ID` and others | Sign in to Azure with these identities. See [Cloud access](./access.mdx) |
 | `-bogform-md=false` | Don't write `BOGFORM.md` |
+| `-cost` | Estimate the monthly cost of each plan. See [safety checks and cost](./safety.mdx) |
 
 | Platform | Command | File |
 |---|---|---|
@@ -57,7 +58,9 @@ Then:
 2. [Give the pipeline access to your cloud account](./access.mdx), unless you already passed its
    identities to `ci init`. Follow the [security guidance](./security.mdx).
 3. Require approval for the `production` environment, so that a person approves each apply.
-4. Run `bogform doctor` in your configuration's directory to check the setup.
+4. On GitHub, create a label named `allow-destroy`. Applies refuse to destroy or replace resources
+   unless the merged pull request has it. See [safety checks and cost](./safety.mdx).
+5. Run `bogform doctor` in your configuration's directory to check the setup.
 
 ## What the commands do
 
@@ -80,6 +83,15 @@ These options work with `plan`, `apply`, and `drift`:
 | `-no-comment` | Don't comment on the pull request |
 | `-no-output` | Show only the list of changes in comments and summaries, not the plan's text |
 
+These work with `plan` and `apply`, and are described in [safety checks and cost](./safety.mdx):
+
+| Option | Purpose |
+|---|---|
+| `-checks=false` | Turn the built-in checks off |
+| `-skip-checks=ID,ID` | Turn off the listed checks |
+| `-cost` | Estimate the monthly cost. `plan` only |
+| `-allow-destroy` | Apply a plan that destroys or replaces resources. `apply` only |
+
 To use a directory other than the current one, use the global `-chdir` option:
 `bogform -chdir=infra/prod ci plan`.
 
@@ -90,6 +102,6 @@ updated in place on later runs.
 
 ## Reports
 
-Each run writes `.bogform-ci/report.json`, with the status, the commit, and the list of changed
-resources. It holds no attribute values. Bogform creates a `.gitignore` in that directory so its
+Each run writes `.bogform-ci/report.json`, with the status, the commit, the list of changed
+resources, check warnings, and any cost estimate. It holds no attribute values. Bogform creates a `.gitignore` in that directory so its
 contents, including the saved plan, aren't committed.

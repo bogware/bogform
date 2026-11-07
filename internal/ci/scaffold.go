@@ -38,8 +38,10 @@ type ScaffoldOptions struct {
 	ApplyOn string
 	// GitState sets up the pipeline for the git state backend.
 	GitState bool
-	Force    bool
-	Root     string // The repository root.
+	// Cost adds a monthly cost estimate to plans.
+	Cost  bool
+	Force bool
+	Root  string // The repository root.
 
 	// Cloud sign-in. Empty values leave a comment showing where to sign in instead.
 	AWSPlanRole  string // The role that plans assume.
@@ -215,7 +217,7 @@ func RenderPipeline(opts ScaffoldOptions) ([]byte, error) {
 
 	data := struct {
 		DefaultBranch, Directory, Environment, ApplyOn string
-		GitState                                       bool
+		GitState, Cost                                 bool
 		// ImageTag and ActionRef are for platforms that use the container image and the action.
 		ImageTag, ActionRef, ReleaseVersion string
 		// Plan and Apply say how each job signs in to the cloud.
@@ -226,6 +228,7 @@ func RenderPipeline(opts ScaffoldOptions) ([]byte, error) {
 		Environment:    opts.Environment,
 		ApplyOn:        opts.ApplyOn,
 		GitState:       opts.GitState,
+		Cost:           opts.Cost,
 		ImageTag:       "latest",
 		ActionRef:      "main",
 		ReleaseVersion: "latest",
@@ -319,8 +322,12 @@ func NextSteps(platform string, opts ScaffoldOptions) string {
 	default:
 		steps = append(steps, "Give the pipeline access to your cloud account, using OIDC rather than stored keys. The file has a comment showing where. \"bogform bootstrap aws\" or \"bogform bootstrap azure\" can set up the roles, and \"bogform ci init\" can fill them in with options like -aws-plan-role and -aws-apply-role.")
 	}
+	if opts.Cost {
+		steps = append(steps, "For cost estimates on AWS, let the plan role call pricing:GetProducts. ReadOnlyAccess includes it. Azure prices need no access.")
+	}
 	switch platform {
 	case PlatformGitHub:
+		steps = append(steps, "Create a label named \""+AllowDestroyLabel+"\". Applies refuse to destroy or replace resources unless the merged pull request has it, or someone runs the workflow with \"allow destroy\" ticked.")
 		if opts.Environment != "" {
 			steps = append(steps, "If your plan supports it, add required reviewers to the \""+opts.Environment+"\" environment to approve each apply. Private repositories need a paid plan for this; use -environment= to leave it out.")
 		}
