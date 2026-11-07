@@ -1,18 +1,67 @@
 # Changelog
 
-## 1.14.0 (Unreleased)
+## 1.15.0 (Unreleased)
+
+The first stable release of Bogform. It follows 1.14.0-alpha2; there's no 1.14.0.
+
+NEW FEATURES:
+
+- `bogform migrate tfc` moves HCP Terraform and Terraform Enterprise workspaces to any backend. It
+  copies the current state, encrypted and with its lineage intact, and reports each workspace's
+  settings and variables with the matching `ci init` options. It only reads from HCP Terraform.
+- `bogform adopt aws` (by tag or name prefix) and `bogform adopt azure` (by resource group) find
+  existing resources and write `import` blocks. Import IDs that look like email addresses are left
+  out, because plan output shows them.
+- `bogform bootstrap aws` and `bogform bootstrap azure` write a configuration that gives pipelines a
+  read-only plan identity and a default-branch-only apply identity for each repository.
+- `bogform doctor` checks a configuration's setup, from its backend and passphrase to its pipeline
+  and committed secrets, and says how to fix what it finds.
+- `bogform ui` shows `bogform ci` reports in a local, read-only dashboard, with nothing to host.
+- The new `passphrase` key provider reads the state passphrase from an environment variable, the OS
+  keychain, AWS SSM Parameter Store or Azure Key Vault, and chains into `pbkdf2`. Switching to it
+  doesn't re-encrypt existing state.
+- `bogform state passphrase set` and `delete` manage the passphrase in the OS keychain.
+- `bogform state history` and `bogform state restore` list and bring back earlier versions of the
+  state, with the `git` backend, or `s3` with bucket versioning.
+- `bogform state rekey` re-encrypts every workspace's state with the current method, to finish
+  rotating a passphrase or key.
+- `bogform ci apply` refuses plans that destroy or replace resources unless a person allows it, with
+  `-allow-destroy`, `BOG_CI_ALLOW_DESTROY=true`, or on GitHub the `allow-destroy` label on the merged
+  pull request. Generated pipelines have a matching input. Plan comments list destroys first.
+- `bogform ci plan` and `apply` run built-in checks for common AWS and Azure mistakes, such as
+  public storage, unencrypted disks, wildcard IAM policies and SSH open to the internet. They're
+  warnings, and can be turned off with `-skip-checks`, `-checks=false`, or a `bogform:skip-checks`
+  tag.
+- `bogform ci plan -cost` and `ci init -cost` add a monthly cost estimate to plans, from the AWS and
+  Azure price lists.
+- The dashboard sends alerts to Slack, Microsoft Teams, email through SES, or a signed webhook, when
+  an apply succeeds or fails, a plan fails, or drift starts or ends.
+- The dashboard's overview lists every repository's directories, with their latest plan, apply and
+  drift check, and puts what needs attention first.
 
 ENHANCEMENTS:
 
-- `templates/BOGFORM.md` is a guide to copy into each repository that uses Bogform. It explains how
-  the pipeline and encrypted git state work, and the rules for changing them, for people and coding
-  agents.
+- `bogform ci init` signs pipelines in to AWS or Azure with OIDC, on all four platforms, with
+  `-aws-plan-role` and `-aws-apply-role` or `-azure-client-id` and related options.
+- `bogform ci init` writes `BOGFORM.md`, a guide to the setup for people and coding agents, with its
+  repository section filled in. Use `-bogform-md=false` to skip it. The template is
+  `templates/BOGFORM.md`.
+- Reports record who started a run and why, where the platform provides it.
+- The error for `cloud` and `remote` blocks suggests `bogform migrate tfc`.
+- Releases are published to Homebrew (`brew install --cask bogware/tap/bogform`), Scoop and
+  winget, and there are install scripts that check the release's checksums and signature.
+- Each release archive has an SPDX SBOM, and each release file a GitHub build attestation.
+- Container images are multi-platform, built with GoReleaser 2.
 
 BUG FIXES:
 
 - `bogform ci` runs plans and applies with `-concise`, so pull request comments and reports leave
   out progress messages. These were noise, and showed every resource's ID, even an ID that's
   private, like an email address.
+
+OTHER CHANGES:
+
+- Removed OpenTofu's RFCs, which stay available upstream, and the experimental engine's workflow.
 
 ## 1.14.0-alpha2 (November 7, 2026)
 

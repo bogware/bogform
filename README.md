@@ -14,17 +14,18 @@ bogform plan
 bogform apply
 ```
 
-## Status
+## Ways to run it
 
-Bogform is in early development. These are the ways to run it:
-
-- **Local:** run the `bogform` command on your own machine.
-- **Repository:** plan on pull requests and apply on merge, using GitHub Actions, GitLab CI, Azure
-  Pipelines, or Bitbucket Pipelines. Run `bogform ci init` to add a pipeline to your repository, and copy
-  [`templates/BOGFORM.md`](templates/BOGFORM.md) next to it to explain the setup to people and agents.
+- **Local:** run the `bogform` command on your own machine. `bogform ui` shows your pipeline reports
+  in a local dashboard, with nothing to host.
+- **Repository:** plan on pull requests and apply on merge or on demand, using GitHub Actions, GitLab
+  CI, Azure Pipelines, or Bitbucket Pipelines. `bogform ci init` writes the pipeline, signed in to AWS
+  or Azure with OIDC, and a [`BOGFORM.md`](templates/BOGFORM.md) that explains the setup to people
+  and coding agents.
 - **Self-hosted dashboard:** an optional web app that you deploy to your own AWS account, using
-  CloudFront, AWS Lambda, and any Postgres database. It shows your runs and drift, and starts runs in your
-  existing pipelines, so there are no runners to host.
+  CloudFront, AWS Lambda, and any Postgres database. It shows your runs and drift, sends alerts to
+  Slack, Teams, email or a webhook, and starts runs in your existing pipelines, so there are no runners
+  to host.
 
 ## Key features
 
@@ -33,7 +34,27 @@ Bogform is in early development. These are the ways to run it:
 - **Execution plans:** see exactly what will change before anything does.
 - **Resource graph:** changes are ordered by their dependencies and run in parallel where possible.
 - **Existing providers and modules:** use the providers and modules from the OpenTofu Registry.
-- **State encryption:** encrypt state and plan files with a key provider you control.
+- **State encryption:** encrypt state and plan files with a key provider you control. The passphrase
+  can come from an environment variable, your OS keychain, AWS SSM or Azure Key Vault.
+- **State in your repository:** the `git` backend keeps encrypted state on a branch, with
+  `bogform state history` and `state restore` to undo a bad change.
+- **Safer pull requests:** plans list destroys first and run built-in checks for common AWS and Azure
+  mistakes, applies refuse destroys unless a person allows them, and plans can include a monthly cost
+  estimate.
+- **Easy to adopt:** `bogform migrate tfc` leaves HCP Terraform, `bogform adopt` writes import blocks
+  for resources you already have, `bogform bootstrap` sets up pipeline access to AWS or Azure, and
+  `bogform doctor` checks the result.
+
+## Install
+
+```shell
+brew install --cask bogware/tap/bogform                                          # macOS
+scoop bucket add bogware https://github.com/bogware/scoop-bucket; scoop install bogform  # Windows
+curl -fsSL https://raw.githubusercontent.com/bogware/bogform/main/scripts/install.sh | sh    # Linux and others
+```
+
+See [Installing Bogform](https://bogware.github.io/bogform/docs/intro/install/) for winget, packages
+and containers.
 
 ## Compatibility
 

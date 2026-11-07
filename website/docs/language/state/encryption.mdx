@@ -342,13 +342,13 @@ The OpenBao key provider is compatible with the last MPL-licensed version of Has
 ### OVHcloud KMS (external)
 
 This key provider uses the [OVHcloud Key Management Service](https://www.ovhcloud.com/en/identity-security-operations/key-management-service/) to generate and wrap data keys.
-It builds on Bogform's built-in [`external` key provider](#external-experimental) and is maintained separately by OVHcloud.
+It builds on Bogform's built-in [`external` key provider](#external-key-provider) and is maintained separately by OVHcloud.
 
 For installation and configuration instructions, see the [ovh/opentofu-kms-ovhcloud](https://github.com/ovh/opentofu-kms-ovhcloud) repository.
 
 ### External {/* #external-key-provider */}
 
-<div id="#external-experimental"></div>{/* preserved fragment identifier from earlier version of these docs */}
+<div id="external-experimental"></div>{/* preserved fragment identifier from earlier version of these docs */}
 
 The external command provider lets you run external commands in order to obtain encryption keys. These programs must be specifically written to work with Bogform. This key provider has the following fields:
 
@@ -441,7 +441,7 @@ AES-GCM is a secure, industry-standard encryption algorithm, but suffers from "k
 
 ### External {/* #external-encryption-method */}
 
-<div id="#external-experimental-1"></div>{/* preserved fragment identifier from earlier version of these docs */}
+<div id="external-experimental-1"></div>{/* preserved fragment identifier from earlier version of these docs */}
 
 The external command method lets you run external commands in order to perform encryption and decryption. These programs must be specifically written to work with Bogform. This key provider has the following fields:
 
