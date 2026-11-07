@@ -28,6 +28,14 @@ EXT := $(shell go env GOEXE)
 build:
 	go build -ldflags "-X main.version=$(shell git describe --tags --always --dirty)" -o bogform$(EXT) ./cmd/bogform
 
+# Build the dashboard's web page into the CLI, for "bogform ui". Run this before "make build" to
+# include it. Without it, "bogform ui" explains that the page is missing.
+.PHONY: webui
+webui:
+	cd web && npm ci --no-audit --no-fund && npm run build
+	rm -rf internal/webui/assets/app
+	cp -r web/dist internal/webui/assets/app
+
 # Experimental engine building
 .PHONY: build-experimental
 build-experimental:

@@ -161,10 +161,11 @@ func serve(ctx context.Context, args []string) error {
 			return fmt.Errorf("updating the database: %w", err)
 		}
 	}
-	handler := server.New(cfg, db).Handler()
+	srv := server.New(cfg, db)
+	handler := srv.Handler()
 
 	if runtimeAPI := os.Getenv("AWS_LAMBDA_RUNTIME_API"); runtimeAPI != "" {
-		return server.RunLambda(ctx, runtimeAPI, handler)
+		return server.RunLambda(ctx, runtimeAPI, handler, srv.Wait)
 	}
 
 	httpServer := &http.Server{
@@ -185,5 +186,7 @@ func serve(ctx context.Context, args []string) error {
 	if err := httpServer.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
+	// Let alerts that are still being sent finish.
+	srv.Wait()
 	return nil
 }

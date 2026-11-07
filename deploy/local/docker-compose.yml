@@ -37,5 +37,10 @@ services:
       BOG_SERVER_SESSION_KEY: "0000000000000000000000000000000000000000000000000000000000000000"
       BOG_SERVER_DEV_USER: developer@localhost
       BOG_SERVER_STATIC_DIR: /srv/ui
+      # To try alerts, set any of these. See website/docs/dashboard/alerts.mdx.
+      # BOG_SERVER_ALERT_SLACK_WEBHOOK: https://hooks.slack.com/services/...
+      # BOG_SERVER_ALERT_TEAMS_WEBHOOK: https://....logic.azure.com/workflows/...
+      # BOG_SERVER_ALERT_WEBHOOK_URL: http://host.docker.internal:9000/bogform
+      # BOG_SERVER_ALERT_WEBHOOK_SECRET: local-only-secret
     ports:
       - "127.0.0.1:8080:8080"

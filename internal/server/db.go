@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"github.com/bogware/bogform/internal/ci"
+	"github.com/bogware/bogform/internal/dashboard"
 
 	_ "github.com/lib/pq"
 )
@@ -204,20 +205,7 @@ func scopeAllows(scope, platform, repository string) bool {
 }
 
 // Workspace is one configuration directory and workspace in one repository.
-type Workspace struct {
-	ID           int64      `json:"id"`
-	Platform     string     `json:"platform"`
-	Repository   string     `json:"repository"`
-	Directory    string     `json:"directory"`
-	Name         string     `json:"workspace"`
-	DefaultRef   string     `json:"default_ref,omitempty"`
-	LastStatus   string     `json:"last_status"`
-	LastKind     string     `json:"last_kind"`
-	LastRunAt    time.Time  `json:"last_run_at"`
-	LastApplyAt  *time.Time `json:"last_apply_at,omitempty"`
-	DriftStatus  string     `json:"drift_status,omitempty"`
-	DriftCheckAt *time.Time `json:"drift_checked_at,omitempty"`
-}
+type Workspace = dashboard.Workspace
 
 const workspaceColumns = `id, platform, repository, directory, name, last_status, last_kind,
 	last_run_at, last_apply_at, drift_status, drift_checked_at`
@@ -230,26 +218,7 @@ func scanWorkspace(row interface{ Scan(...any) error }) (Workspace, error) {
 }
 
 // Run is the record of one pipeline run.
-type Run struct {
-	ID             int64       `json:"id"`
-	WorkspaceID    int64       `json:"workspace_id"`
-	Repository     string      `json:"repository,omitempty"`
-	Directory      string      `json:"directory,omitempty"`
-	WorkspaceName  string      `json:"workspace,omitempty"`
-	Kind           string      `json:"kind"`
-	Status         string      `json:"status"`
-	Branch         string      `json:"branch"`
-	Commit         string      `json:"commit"`
-	PullRequest    string      `json:"pull_request,omitempty"`
-	RunURL         string      `json:"run_url,omitempty"`
-	BogformVersion string      `json:"bogform_version"`
-	Counts         ci.Counts   `json:"counts"`
-	Changes        []ci.Change `json:"changes,omitempty"`
-	OutputsChanged []string    `json:"outputs_changed,omitempty"`
-	Error          string      `json:"error,omitempty"`
-	StartedAt      time.Time   `json:"started_at"`
-	FinishedAt     time.Time   `json:"finished_at"`
-}
+type Run = dashboard.Run
 
 const (
 	maxFieldLength = 1024
@@ -301,7 +270,7 @@ func validateReport(report *ci.Report, now time.Time) error {
 	if !validRepositoryName(report.Run.Repository) {
 		return errors.New("the repository name isn't valid")
 	}
-	for _, value := range []string{report.Run.Repository, report.Directory, report.Workspace, report.Run.Branch, report.Run.PullRequest, report.BogformVersion, report.Run.RunURL} {
+	for _, value := range []string{report.Run.Repository, report.Directory, report.Workspace, report.Run.Branch, report.Run.PullRequest, report.BogformVersion, report.Run.RunURL, report.Run.Actor, report.Run.Trigger} {
 		if len(value) > maxFieldLength {
 			return errors.New("a field is too long")
 		}
@@ -332,31 +301,51 @@ func validateReport(report *ci.Report, now time.Time) error {
 
 // RecordReport stores a report, and updates the workspace's current status.
 func RecordReport(ctx context.Context, db *sql.DB, report *ci.Report) (int64, error) {
+	recorded, err := recordReport(ctx, db, report)
+	return recorded.runID, err
+}
+
+// recorded is what storing a report changed.
+type recorded struct {
+	runID int64
+	// previousDrift is the workspace's drift status before this report, for deciding on alerts.
+	previousDrift string
+}
+
+func recordReport(ctx context.Context, db *sql.DB, report *ci.Report) (recorded, error) {
+	var result recorded
 	// Status decisions rely on these two fields agreeing, so a report can't claim both at once.
 	if !report.Run.IsPullRequest {
 		report.Run.PullRequest = ""
 	}
 	changes, err := json.Marshal(report.Changes)
 	if err != nil {
-		return 0, err
+		return result, err
 	}
 	outputs, err := json.Marshal(report.OutputsChanged)
 	if err != nil {
-		return 0, err
+		return result, err
 	}
 	counts, err := json.Marshal(report.Counts)
 	if err != nil {
-		return 0, err
+		return result, err
 	}
 
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
-		return 0, err
+		return result, err
 	}
 	defer tx.Rollback() //nolint:errcheck // This does nothing after a commit.
 
 	// A pull request's run only sets the status until the first run outside a pull request, because one
 	// green plan on a branch mustn't hide a failed deployment.
+	// Lock the workspace's row, if it exists, so that the drift status read here is the one replaced.
+	err = tx.QueryRowContext(ctx, `SELECT drift_status FROM workspaces WHERE platform = $1 AND repository = $2 AND directory = $3 AND name = $4 FOR UPDATE`,
+		report.Run.Platform, report.Run.Repository, report.Directory, report.Workspace).Scan(&result.previousDrift)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return result, err
+	}
+
 	var workspaceID int64
 	mainline := !report.Run.IsPullRequest
 	err = tx.QueryRowContext(ctx, `
@@ -369,10 +358,9 @@ func RecordReport(ctx context.Context, db *sql.DB, report *ci.Report) (int64, er
 		report.Run.Platform, report.Run.Repository, report.Directory, report.Workspace, report.Status, report.Kind, mainline, report.FinishedAt,
 	).Scan(&workspaceID)
 	if err != nil {
-		return 0, err
+		return result, err
 	}
 
-	var runID int64
 	err = tx.QueryRowContext(ctx, `
 		INSERT INTO runs (workspace_id, kind, status, branch, commit_sha, pull_request, run_url, bogform_version,
 			counts, changes, outputs_changed, error, started_at, finished_at)
@@ -380,9 +368,9 @@ func RecordReport(ctx context.Context, db *sql.DB, report *ci.Report) (int64, er
 		RETURNING id`,
 		workspaceID, report.Kind, report.Status, report.Run.Branch, report.Run.Commit, report.Run.PullRequest, report.Run.RunURL, report.BogformVersion,
 		counts, changes, outputs, report.Error, report.StartedAt, report.FinishedAt,
-	).Scan(&runID)
+	).Scan(&result.runID)
 	if err != nil {
-		return 0, err
+		return result, err
 	}
 
 	// The conditions compare with the time of the latest mainline run, which is kept in runs, so that a
@@ -391,9 +379,9 @@ func RecordReport(ctx context.Context, db *sql.DB, report *ci.Report) (int64, er
 		UPDATE workspaces w SET last_status = $2, last_kind = $3
 		WHERE w.id = $1 AND ($4 OR NOT w.status_from_mainline) AND NOT EXISTS (
 			SELECT 1 FROM runs r WHERE r.workspace_id = w.id AND r.id <> $5 AND r.pull_request = '' AND r.finished_at > $6
-		)`, workspaceID, report.Status, report.Kind, mainline, runID, report.FinishedAt)
+		)`, workspaceID, report.Status, report.Kind, mainline, result.runID, report.FinishedAt)
 	if err != nil {
-		return 0, err
+		return result, err
 	}
 
 	// Drift status comes only from drift checks, and an apply clears it, because it should have brought
@@ -408,10 +396,10 @@ func RecordReport(ctx context.Context, db *sql.DB, report *ci.Report) (int64, er
 				workspaceID, report.FinishedAt)
 		}
 		if err != nil {
-			return 0, err
+			return result, err
 		}
 	}
-	return runID, tx.Commit()
+	return result, tx.Commit()
 }
 
 // Prune deletes runs past the retention period, so that low-cost databases don't fill up.

@@ -10,6 +10,8 @@ project_name: bogform
 before:
   hooks:
     - sh -c "cd web && npm ci --no-audit --no-fund && npm run build && rm -rf ../ui && cp -r dist ../ui"
+    # The same page, embedded in the CLI for "bogform ui".
+    - sh -c "rm -rf internal/webui/assets/app && cp -r web/dist internal/webui/assets/app"
     - go mod tidy
     - go generate ./...
     - make protobuf

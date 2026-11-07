@@ -31,7 +31,16 @@ locals {
     var.gitlab_trigger ? ["gitlab-token"] : [],
     var.bitbucket_trigger ? ["bitbucket-token"] : [],
     var.azure_org_url != null ? ["azure-token"] : [],
+    var.alert_slack ? ["alert-slack-webhook"] : [],
+    var.alert_teams ? ["alert-teams-webhook"] : [],
+    var.alert_webhook ? ["alert-webhook-url", "alert-webhook-secret"] : [],
   ))
+
+  # SES checks permission on the sender's identity, and in its sandbox on each recipient's too. An
+  # identity can be an address or its domain.
+  alert_email_identities = var.alert_email_from == null ? [] : distinct(flatten([
+    for address in concat([var.alert_email_from], var.alert_email_to) : [address, split("@", address)[1]]
+  ]))
 
   content_types = {
     css   = "text/css; charset=utf-8"
@@ -120,6 +129,20 @@ data "aws_iam_policy_document" "server" {
     actions   = ["ssm:GetParametersByPath"]
     resources = ["arn:${data.aws_partition.current.partition}:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${local.ssm_prefix}", "arn:${data.aws_partition.current.partition}:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${local.ssm_prefix}/*"]
   }
+
+  # Email alerts, only as the configured sender.
+  dynamic "statement" {
+    for_each = length(local.alert_email_identities) > 0 ? [1] : []
+    content {
+      actions   = ["ses:SendEmail"]
+      resources = [for identity in local.alert_email_identities : "arn:${data.aws_partition.current.partition}:ses:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:identity/${identity}"]
+      condition {
+        test     = "StringEquals"
+        variable = "ses:FromAddress"
+        values   = [var.alert_email_from]
+      }
+    }
+  }
 }
 
 resource "aws_iam_role_policy" "server" {
@@ -166,6 +189,12 @@ resource "aws_lambda_function" "server" {
       length(var.azure_pipelines) > 0 ? {
         BOG_SERVER_AZURE_PIPELINES = join(",", [for repository, pipeline in var.azure_pipelines : "${repository}=${pipeline}"])
       } : {},
+      var.alert_email_from != null ? {
+        BOG_SERVER_ALERT_EMAIL_FROM = var.alert_email_from
+        BOG_SERVER_ALERT_EMAIL_TO   = join(",", var.alert_email_to)
+      } : {},
+      length(var.alert_events) > 0 ? { BOG_SERVER_ALERT_EVENTS = join(",", var.alert_events) } : {},
+      length(var.alert_repositories) > 0 ? { BOG_SERVER_ALERT_REPOSITORIES = join(",", var.alert_repositories) } : {},
     )
   }
 

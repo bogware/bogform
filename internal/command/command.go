@@ -405,6 +405,7 @@ func RootCommander(help *bool, ver *bool, chdir *string) Command {
 			DoctorCommander(),
 			MigrateCommander(),
 			AdoptCommander(),
+			UICommander(),
 		},
 		Groups: []Group{MainCommandGroup, OtherCommandGroup},
 

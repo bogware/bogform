@@ -1,0 +1,28 @@
+---
+description: >-
+  The bogform ui command shows the reports that bogform ci writes, in a dashboard on your own computer.
+---
+
+# Command: ui
+
+The `bogform ui` command shows the reports that [`bogform ci`](../../pipelines/index.mdx) writes, in the
+same dashboard that you can [host yourself](../../dashboard/index.mdx), without hosting anything.
+
+## Usage
+
+Usage: `bogform ui [options] [DIR...]`
+
+It searches each `DIR` for `.bogform-ci/report.json` files. With no `DIR`, it searches the current
+repository, or the current directory outside a repository. It skips `.git`, `.terraform`, `node_modules`,
+and `vendor` directories.
+
+It prints the dashboard's address and opens it in your browser. Leave it running while you use the
+dashboard, and press Ctrl+C to stop it.
+
+This command has these options:
+
+- `-address=ADDRESS`: the local address to listen on. The default, `127.0.0.1:0`, picks a free port. Only
+  addresses on this computer are allowed.
+- `-no-browser`: don't open a browser. Use the address it prints instead.
+
+See [the local dashboard](../../dashboard/ui.mdx) for what it shows.

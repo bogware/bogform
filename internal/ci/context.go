@@ -38,6 +38,9 @@ type Context struct {
 	IsPullRequest bool   `json:"is_pull_request"`
 	PullRequest   string `json:"pull_request,omitempty"`
 	FromFork      bool   `json:"from_fork,omitempty"`
+	// Actor is who started the run, and Trigger is the platform's name for why it ran, such as push.
+	Actor   string `json:"actor,omitempty"`
+	Trigger string `json:"trigger,omitempty"`
 
 	// apiURL is the base URL of the platform's API.
 	apiURL string
@@ -75,6 +78,8 @@ func detectGitHub(env EnvFunc) Context {
 		Commit:      env("GITHUB_SHA"),
 		apiURL:      strings.TrimSuffix(env("GITHUB_API_URL"), "/"),
 		summaryPath: env("GITHUB_STEP_SUMMARY"),
+		Actor:       firstNonEmpty(env("GITHUB_TRIGGERING_ACTOR"), env("GITHUB_ACTOR")),
+		Trigger:     env("GITHUB_EVENT_NAME"),
 	}
 	if runID := env("GITHUB_RUN_ID"); server != "" && repository != "" && runID != "" {
 		ctx.RunURL = fmt.Sprintf("%s/%s/actions/runs/%s", server, repository, runID)
@@ -123,6 +128,8 @@ func detectGitLab(env EnvFunc) Context {
 		RunURL:     env("CI_JOB_URL"),
 		apiURL:     strings.TrimSuffix(env("CI_API_V4_URL"), "/"),
 		projectURL: env("CI_PROJECT_ID"),
+		Actor:      env("GITLAB_USER_LOGIN"),
+		Trigger:    env("CI_PIPELINE_SOURCE"),
 	}
 	if iid := env("CI_MERGE_REQUEST_IID"); iid != "" {
 		ctx.IsPullRequest = true
@@ -148,6 +155,8 @@ func detectAzure(env EnvFunc) Context {
 		Commit:     env("BUILD_SOURCEVERSION"),
 		apiURL:     collection,
 		projectURL: project + "/" + env("BUILD_REPOSITORY_ID"),
+		Actor:      env("BUILD_REQUESTEDFOR"),
+		Trigger:    env("BUILD_REASON"),
 	}
 	if buildID := env("BUILD_BUILDID"); buildID != "" {
 		ctx.RunURL = fmt.Sprintf("%s%s/_build/results?buildId=%s", collection, project, buildID)
@@ -178,4 +187,13 @@ func detectBitbucket(env EnvFunc) Context {
 		ctx.PullRequest = id
 	}
 	return ctx
+}
+
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		if value != "" {
+			return value
+		}
+	}
+	return ""
 }

@@ -1,0 +1,149 @@
+---
+sidebar_position: 3
+sidebar_label: Alerts
+description: |-
+  Send Slack, Microsoft Teams, email, or webhook alerts when applies succeed or fail, plans fail, or
+  infrastructure drifts.
+---
+
+# Alerts
+
+The dashboard can tell you when something happens, so you don't have to check it. Alerts are optional, and
+you can use any mix of these destinations:
+
+- **Slack**, through an incoming webhook.
+- **Microsoft Teams**, through a Workflows webhook, as an Adaptive Card.
+- **Email**, through Amazon SES.
+- **A webhook** of your own, signed so that you can check where it came from. Use it for Discord, ntfy,
+  PagerDuty, or anything else.
+
+## Events
+
+| Event | When |
+|---|---|
+| `apply_succeeded` | An apply made changes |
+| `apply_failed` | An apply failed. Some changes might have been made |
+| `plan_failed` | A plan failed, including on a pull request |
+| `drift_detected` | A drift check found drift, after the previous check didn't |
+| `drift_resolved` | A drift check found no drift, after the previous check did |
+
+Drift alerts only come when drift starts or ends, so checking often doesn't repeat them. An apply that
+changes nothing doesn't send an alert.
+
+Each alert names the repository, directory, and workspace, the planned or applied changes, the branch or
+pull request, and who started the run, where the platform says so. It links to the run in the dashboard and
+in your pipeline.
+
+## Set up alerts on AWS
+
+Turn on the destinations you want in the [module](./deploy.mdx):
+
+```hcl
+module "dashboard" {
+  source = "github.com/bogware/bogform//deploy/aws"
+  # ...
+
+  alert_slack   = true
+  alert_teams   = true
+  alert_webhook = true
+
+  alert_email_from = "bogform@example.com"
+  alert_email_to   = ["ops@example.com"]
+
+  # Optional. Leave these out to send every event, for every repository.
+  alert_events       = ["apply_failed", "plan_failed", "drift_detected"]
+  alert_repositories = ["acme/*"]
+}
+```
+
+Then set the secrets. Webhook addresses are secrets, because anyone with one can post to your channel.
+
+```shell
+aws ssm put-parameter --overwrite --type SecureString --name /bogform/alert-slack-webhook \
+  --value 'https://hooks.slack.com/services/...'
+aws ssm put-parameter --overwrite --type SecureString --name /bogform/alert-teams-webhook \
+  --value 'https://....logic.azure.com/workflows/...'
+aws ssm put-parameter --overwrite --type SecureString --name /bogform/alert-webhook-url \
+  --value 'https://hooks.example.com/bogform'
+aws ssm put-parameter --overwrite --type SecureString --name /bogform/alert-webhook-secret \
+  --value "$(openssl rand -hex 32)"
+```
+
+| Destination | How to get the address |
+|---|---|
+| Slack | Create an app with an [incoming webhook](https://api.slack.com/messaging/webhooks) for the channel |
+| Teams | In the channel, add the **Post to a channel when a webhook request is received** workflow |
+| Email | Verify the sender's address or domain in SES in the dashboard's region. While SES is in its sandbox, verify each recipient too |
+
+For email, the module lets the function send only from `alert_email_from`.
+
+## Set up alerts on another host
+
+Set these variables for `bogform-server serve`:
+
+| Variable | Purpose |
+|---|---|
+| `BOG_SERVER_ALERT_SLACK_WEBHOOK` | A Slack incoming webhook address |
+| `BOG_SERVER_ALERT_TEAMS_WEBHOOK` | A Teams Workflows webhook address |
+| `BOG_SERVER_ALERT_EMAIL_FROM`, `BOG_SERVER_ALERT_EMAIL_TO` | The sender and a comma-separated list of recipients, sent through SES with the server's AWS credentials |
+| `BOG_SERVER_ALERT_WEBHOOK_URL`, `BOG_SERVER_ALERT_WEBHOOK_SECRET` | Your webhook's address, and the secret that signs it |
+| `BOG_SERVER_ALERT_EVENTS` | A comma-separated list of events. Empty means all |
+| `BOG_SERVER_ALERT_REPOSITORIES` | Comma-separated patterns, such as `acme/*`. Empty means all |
+
+The server checks these when it starts, and refuses to start if one is wrong.
+
+## Webhook format
+
+The webhook gets a `POST` with a JSON body:
+
+```json
+{
+  "event": "apply_failed",
+  "summary": "Apply failed: acme/infra (network, default)",
+  "platform": "github",
+  "repository": "acme/infra",
+  "directory": "network",
+  "workspace": "default",
+  "kind": "apply",
+  "status": "failed",
+  "counts": { "add": 2, "change": 0, "destroy": 1, "replace": 0, "import": 0 },
+  "branch": "main",
+  "commit": "8f2c1e0d...",
+  "actor": "octocat",
+  "trigger": "workflow_dispatch",
+  "error": "Error: creating S3 bucket...",
+  "dashboard_url": "https://bogform.example.com/runs/42",
+  "pipeline_url": "https://github.com/acme/infra/actions/runs/123",
+  "finished_at": "2026-11-07T18:04:05Z"
+}
+```
+
+Fields that don't apply, such as `pull_request` for a run on a branch, are left out. New fields might be
+added, so ignore ones you don't recognize.
+
+These headers come with it:
+
+| Header | Value |
+|---|---|
+| `X-Bogform-Event` | The event, such as `apply_failed` |
+| `X-Bogform-Timestamp` | When it was sent, in seconds since 1970 |
+| `X-Bogform-Signature` | `sha256=` and the hex HMAC-SHA256 of the timestamp, a period, and the raw body, keyed with your secret |
+
+To check an alert, compute the signature yourself, compare it in constant time, and reject timestamps more
+than five minutes old. For example, in Python:
+
+```python
+import hashlib, hmac, time
+
+def verify(secret: bytes, body: bytes, timestamp: str, signature: str) -> bool:
+    if abs(time.time() - int(timestamp)) > 300:
+        return False
+    expected = hmac.new(secret, timestamp.encode() + b"." + body, hashlib.sha256).hexdigest()
+    return hmac.compare_digest("sha256=" + expected, signature)
+```
+
+## Reliability
+
+Alerts are sent after the report is saved, with a five-second timeout and one retry if the destination is
+unavailable or rate-limiting. A destination that's down never delays or fails a pipeline's report.
+Failures are written to the server's log, without the destination's address.
