@@ -21,11 +21,15 @@ This is sometimes necessary in advanced cases. For your safety, all state manage
 The structure and output of the commands is specifically tailored to work well with the common Unix utilities such as grep, awk, etc. We recommend using those tools to perform more advanced state tasks.`,
 
 		Commands: []Command{
+			StateHistoryCommander(),
 			StateListCommander(),
 			StateMvCommander(),
+			StatePassphraseCommander(),
 			StatePullCommander(),
 			StatePushCommander(),
+			StateRekeyCommander(),
 			StateReplaceProviderCommander(),
+			StateRestoreCommander(),
 			StateRmCommander(),
 			StateShowCommander(),
 		},

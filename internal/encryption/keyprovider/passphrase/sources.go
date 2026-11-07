@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	ssmtypes "github.com/aws/aws-sdk-go-v2/service/ssm/types"
 	"github.com/zalando/go-keyring"
 )
 
@@ -61,6 +62,10 @@ var (
 			Name:           aws.String(name),
 			WithDecryption: aws.Bool(true),
 		})
+		var notFound *ssmtypes.ParameterNotFound
+		if errors.As(err, &notFound) {
+			return "", errNotFound
+		}
 		if err != nil {
 			return "", err
 		}
