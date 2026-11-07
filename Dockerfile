@@ -9,6 +9,8 @@ LABEL maintainer="Bogform maintainers <https://github.com/bogware/bogform>"
 
 RUN apk add --no-cache git bash openssh
 
-COPY bogform /usr/local/bin/bogform
+# GoReleaser puts each platform's binary in a directory named for the platform.
+ARG TARGETPLATFORM
+COPY $TARGETPLATFORM/bogform /usr/local/bin/bogform
 
 ENTRYPOINT ["/usr/local/bin/bogform"]

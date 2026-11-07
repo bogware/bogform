@@ -3,6 +3,8 @@
 # Copyright (c) 2023 HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+version: 2
+
 project_name: bogform
 
 before:
@@ -68,152 +70,72 @@ builds:
       - arm64
 
 archives:
-  - format: tar.gz
+  - formats: [tar.gz]
     id: targz
-    builds: [bogform]
+    ids: [bogform]
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{- .Os }}_{{- .Arch }}"
 
-  - format: zip
+  - formats: [zip]
     id: zip
-    builds: [bogform]
+    ids: [bogform]
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{- .Os }}_{{- .Arch }}"
 
   # What the deployment module in deploy/aws reads: the server as "bootstrap", and the UI in "ui".
-  - format: tar.gz
+  - formats: [tar.gz]
     id: server
-    builds: [bogform-server]
+    ids: [bogform-server]
     name_template: "bogform-server_{{ .Version }}_{{- .Os }}_{{- .Arch }}"
     files:
       - ui/**
 
-dockers:
-  - use: buildx
+# Multi-platform images, built and pushed with buildx. Prereleases get only their exact version tag.
+dockers_v2:
+  - id: standard
     ids: [bogform]
-    goarch: amd64
-    build_flag_templates:
-      - "--pull"
-      - "--platform=linux/amd64"
-      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.vendor=Bogware"
-      - "--label=org.opencontainers.image.description=Bogform {{ .Version }}"
-      - "--label=org.opencontainers.image.url=https://github.com/bogware/bogform"
-      - "--label=org.opencontainers.image.documentation=https://github.com/bogware/bogform/blob/main/README.md"
-      - "--label=org.opencontainers.image.source=https://github.com/bogware/bogform"
-      - "--label=org.opencontainers.image.licenses=MPL-2.0"
-      - "--label=org.opencontainers.image.version={{ .Version }}"
-      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
-      - "--label=org.opencontainers.image.created={{ time \"2006-01-02T15:04:05Z07:00\" }}"
-    image_templates:
-      - "ghcr.io/bogware/bogform:{{ .Version }}-amd64"
+    dockerfile: Dockerfile
+    images: [ghcr.io/bogware/bogform]
+    tags:
+      - "{{ .Version }}"
+      - "{{ if not .Prerelease }}{{ .Major }}.{{ .Minor }}{{ end }}"
+      - "{{ if not .Prerelease }}{{ .Major }}{{ end }}"
+      - "{{ if not .Prerelease }}latest{{ end }}"
+    platforms: [linux/amd64, linux/arm64]
+    labels:
+      org.opencontainers.image.title: "{{ .ProjectName }}"
+      org.opencontainers.image.vendor: Bogware
+      org.opencontainers.image.description: "Bogform {{ .Version }}"
+      org.opencontainers.image.url: https://github.com/bogware/bogform
+      org.opencontainers.image.documentation: https://github.com/bogware/bogform/blob/main/README.md
+      org.opencontainers.image.source: https://github.com/bogware/bogform
+      org.opencontainers.image.licenses: MPL-2.0
+      org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+      org.opencontainers.image.created: "{{ .Date }}"
 
-  - use: buildx
+  - id: minimal
     ids: [bogform]
-    goarch: amd64
     dockerfile: Dockerfile.minimal
-    build_flag_templates:
-      - "--pull"
-      - "--platform=linux/amd64"
-      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.vendor=Bogware"
-      - "--label=org.opencontainers.image.description=Bogform {{ .Version }}"
-      - "--label=org.opencontainers.image.url=https://github.com/bogware/bogform"
-      - "--label=org.opencontainers.image.documentation=https://github.com/bogware/bogform/blob/main/README.md"
-      - "--label=org.opencontainers.image.source=https://github.com/bogware/bogform"
-      - "--label=org.opencontainers.image.licenses=MPL-2.0"
-      - "--label=org.opencontainers.image.version={{ .Version }}"
-      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
-      - "--label=org.opencontainers.image.created={{ time \"2006-01-02T15:04:05Z07:00\" }}"
-    image_templates:
-      - "ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64"
-
-  - use: buildx
-    ids: [bogform]
-    goarch: arm64
-    build_flag_templates:
-      - "--pull"
-      - "--platform=linux/arm64"
-      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.vendor=Bogware"
-      - "--label=org.opencontainers.image.description=Bogform {{ .Version }}"
-      - "--label=org.opencontainers.image.url=https://github.com/bogware/bogform"
-      - "--label=org.opencontainers.image.documentation=https://github.com/bogware/bogform/blob/main/README.md"
-      - "--label=org.opencontainers.image.source=https://github.com/bogware/bogform"
-      - "--label=org.opencontainers.image.licenses=MPL-2.0"
-      - "--label=org.opencontainers.image.version={{ .Version }}"
-      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
-      - "--label=org.opencontainers.image.created={{ time \"2006-01-02T15:04:05Z07:00\" }}"
-    image_templates:
-      - "ghcr.io/bogware/bogform:{{ .Version }}-arm64"
-
-  - use: buildx
-    ids: [bogform]
-    goarch: arm64
-    dockerfile: Dockerfile.minimal
-    build_flag_templates:
-      - "--pull"
-      - "--platform=linux/arm64"
-      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.vendor=Bogware"
-      - "--label=org.opencontainers.image.description=Bogform {{ .Version }}"
-      - "--label=org.opencontainers.image.url=https://github.com/bogware/bogform"
-      - "--label=org.opencontainers.image.documentation=https://github.com/bogware/bogform/blob/main/README.md"
-      - "--label=org.opencontainers.image.source=https://github.com/bogware/bogform"
-      - "--label=org.opencontainers.image.licenses=MPL-2.0"
-      - "--label=org.opencontainers.image.version={{ .Version }}"
-      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
-      - "--label=org.opencontainers.image.created={{ time \"2006-01-02T15:04:05Z07:00\" }}"
-    image_templates:
-      - "ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64"
-
-docker_manifests:
-  - name_template: ghcr.io/bogware/bogform:{{ .Version }}
-    image_templates:
-      - ghcr.io/bogware/bogform:{{ .Version }}-amd64
-      - ghcr.io/bogware/bogform:{{ .Version }}-arm64
-
-  - name_template: ghcr.io/bogware/bogform:{{ .Version }}-minimal
-    image_templates:
-      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64
-      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64
-
-  - name_template: ghcr.io/bogware/bogform:{{ .Major }}.{{ .Minor }}
-    image_templates:
-      - ghcr.io/bogware/bogform:{{ .Version }}-amd64
-      - ghcr.io/bogware/bogform:{{ .Version }}-arm64
-    skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
-
-  - name_template: ghcr.io/bogware/bogform:{{ .Major }}.{{ .Minor }}-minimal
-    image_templates:
-      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64
-      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64
-    skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
-
-  - name_template: ghcr.io/bogware/bogform:{{ .Major }}
-    image_templates:
-      - ghcr.io/bogware/bogform:{{ .Version }}-amd64
-      - ghcr.io/bogware/bogform:{{ .Version }}-arm64
-    skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
-
-  - name_template: ghcr.io/bogware/bogform:{{ .Major }}-minimal
-    image_templates:
-      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64
-      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64
-    skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
-
-  - name_template: ghcr.io/bogware/bogform:latest
-    image_templates:
-      - ghcr.io/bogware/bogform:{{ .Version }}-amd64
-      - ghcr.io/bogware/bogform:{{ .Version }}-arm64
-    skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
-
-  - name_template: ghcr.io/bogware/bogform:minimal
-    image_templates:
-      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-amd64
-      - ghcr.io/bogware/bogform:{{ .Version }}-minimal-arm64
-    skip_push: auto # Skips the push on pre-release versions, like 1.6.1-alpha1. See https://goreleaser.com/customization/docker_manifest/#customization
+    images: [ghcr.io/bogware/bogform]
+    tags:
+      - "{{ .Version }}-minimal"
+      - "{{ if not .Prerelease }}{{ .Major }}.{{ .Minor }}-minimal{{ end }}"
+      - "{{ if not .Prerelease }}{{ .Major }}-minimal{{ end }}"
+      - "{{ if not .Prerelease }}minimal{{ end }}"
+    platforms: [linux/amd64, linux/arm64]
+    labels:
+      org.opencontainers.image.title: "{{ .ProjectName }}"
+      org.opencontainers.image.vendor: Bogware
+      org.opencontainers.image.description: "Bogform {{ .Version }}"
+      org.opencontainers.image.url: https://github.com/bogware/bogform
+      org.opencontainers.image.documentation: https://github.com/bogware/bogform/blob/main/README.md
+      org.opencontainers.image.source: https://github.com/bogware/bogform
+      org.opencontainers.image.licenses: MPL-2.0
+      org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+      org.opencontainers.image.created: "{{ .Date }}"
 
 nfpms:
-  - builds: [bogform]
+  - ids: [bogform]
     file_name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Arch }}'
     maintainer: 'Bogform maintainers <https://github.com/bogware/bogform>'
     homepage: https://github.com/bogware/bogform
@@ -232,6 +154,59 @@ nfpms:
         file_info:
           mode: 0444
 
+# An SPDX SBOM for each archive, made with Syft.
+sboms:
+  - artifacts: archive
+
+# Package managers. Each repository is written with its own deploy key, and prereleases are skipped.
+homebrew_casks:
+  - name: bogform
+    ids: [targz]
+    binaries: [bogform]
+    homepage: https://github.com/bogware/bogform
+    description: Manage cloud infrastructure from your repository, without a hosted platform.
+    directory: Casks
+    skip_upload: auto
+    commit_msg_template: "Update Bogform to {{ .Tag }}"
+    commit_author:
+      name: Bogform release
+      email: bogform-release@users.noreply.github.com
+    # The binaries aren't notarized by Apple, so macOS would otherwise refuse to run them. The
+    # release's checksums and cosign signatures are the way to verify them.
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/bogform"]
+          end
+    repository:
+      owner: bogware
+      name: homebrew-tap
+      branch: main
+      git:
+        url: "git@github.com:bogware/homebrew-tap.git"
+        private_key: "{{ .Env.HOMEBREW_TAP_SSH_KEY }}"
+
+scoops:
+  - name: bogform
+    ids: [zip]
+    homepage: https://github.com/bogware/bogform
+    description: Manage cloud infrastructure from your repository, without a hosted platform.
+    license: MPL-2.0
+    directory: bucket
+    skip_upload: auto
+    commit_msg_template: "Update Bogform to {{ .Tag }}"
+    commit_author:
+      name: Bogform release
+      email: bogform-release@users.noreply.github.com
+    repository:
+      owner: bogware
+      name: scoop-bucket
+      branch: main
+      git:
+        url: "git@github.com:bogware/scoop-bucket.git"
+        private_key: "{{ .Env.SCOOP_BUCKET_SSH_KEY }}"
+
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
 
@@ -247,7 +222,7 @@ docker_signs:
     args: [ "sign", "--oidc-issuer=https://token.actions.githubusercontent.com", "${artifact}@${digest}", "--yes" ]
 
 snapshot:
-  name_template: "{{ .Version }}-next"
+  version_template: "{{ .Version }}-next"
 
 changelog:
   use: github-native

@@ -7,7 +7,40 @@ description: |-
 # Installing Bogform
 
 Bogform is a single executable, published on
-[GitHub Releases](https://github.com/bogware/bogform/releases) and as a container image.
+[GitHub Releases](https://github.com/bogware/bogform/releases), through Homebrew, Scoop and
+winget, and as a container image. Every method installs the same signed release.
+
+## Install script
+
+On Linux, macOS or the BSDs:
+
+```shell
+curl -fsSL https://raw.githubusercontent.com/bogware/bogform/main/scripts/install.sh | sh
+```
+
+On Windows, in PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/bogware/bogform/main/scripts/install.ps1 | iex
+```
+
+The scripts install the latest stable release, check it against the release's checksums, and,
+if [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) is installed, check
+the release's signature too. Set `BOGFORM_VERSION` to choose a version, or `BOGFORM_INSTALL_DIR`
+to choose where it goes. Read the script before you run it:
+[install.sh](https://github.com/bogware/bogform/blob/main/scripts/install.sh),
+[install.ps1](https://github.com/bogware/bogform/blob/main/scripts/install.ps1).
+
+## Package managers
+
+| Platform | Command |
+|---|---|
+| macOS (Homebrew) | `brew install --cask bogware/tap/bogform` |
+| Windows (Scoop) | `scoop bucket add bogware https://github.com/bogware/scoop-bucket` then `scoop install bogware/bogform` |
+| Windows (winget) | `winget install Bogware.Bogform` |
+| Debian, Ubuntu, Fedora, Alpine | Download the `.deb`, `.rpm` or `.apk` from the [releases page](https://github.com/bogware/bogform/releases) |
+
+Package managers get stable releases only. Prereleases are on the releases page.
 
 ## Download a release
 
@@ -40,6 +73,16 @@ cosign verify-blob \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
   --certificate-identity-regexp '^https://github\.com/bogware/bogform/\.github/workflows/release\.yml@' \
   bogform_<VERSION>_SHA256SUMS
+```
+
+## Verify where a file was built
+
+Each release file also has a [build attestation](https://docs.github.com/actions/security-for-github-actions/using-artifact-attestations),
+which records the workflow and commit that built it, and an SPDX SBOM (`.sbom.json`) that lists
+what's inside it. With the GitHub CLI:
+
+```shell
+gh attestation verify bogform_<VERSION>_linux_amd64.tar.gz --repo bogware/bogform
 ```
 
 ## Use the container image

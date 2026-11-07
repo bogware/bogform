@@ -1,0 +1,41 @@
+name: winget
+
+# Sends each stable release to the Windows Package Manager, as a pull request to
+# microsoft/winget-pkgs. It needs a WINGET_TOKEN secret: a classic token with the public_repo
+# scope, from the account whose fork of winget-pkgs is used. Without it, this does nothing.
+on:
+  release:
+    types: [released]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to submit, such as v1.15.0"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  winget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for the token
+        id: token
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          if [ -z "$WINGET_TOKEN" ]; then
+            echo "WINGET_TOKEN isn't set, so the release won't be sent to winget."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Submit to winget
+        if: steps.token.outputs.present == 'true'
+        uses: vedantmgoyal9/winget-releaser@b7370d4d152efdce803a26cc6ca9eee58cb2ad54 # v2
+        with:
+          identifier: Bogware.Bogform
+          release-tag: ${{ inputs.tag || github.event.release.tag_name }}
+          installers-regex: '_windows_(amd64|arm64)\.zip$'
+          token: ${{ secrets.WINGET_TOKEN }}

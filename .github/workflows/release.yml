@@ -17,8 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write
+      id-token: write # Keyless cosign signatures and build attestations.
       packages: write
+      attestations: write
 
     steps:
       - name: Set up QEMU cross build support
@@ -81,17 +82,37 @@ jobs:
         with:
           cosign-release: v2.4.3
 
+      - name: Install Syft
+        uses: anchore/sbom-action/download-syft@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811 # v5.1.0
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
         with:
-          version: v1.21.2
+          version: v2.18.3
           distribution: goreleaser
           args: release --clean --timeout=60m --snapshot=${{ !startsWith(inputs.tag, 'v') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Deploy keys that can write only to bogware/homebrew-tap and bogware/scoop-bucket.
+          HOMEBREW_TAP_SSH_KEY: ${{ secrets.HOMEBREW_TAP_SSH_KEY }}
+          SCOOP_BUCKET_SSH_KEY: ${{ secrets.SCOOP_BUCKET_SSH_KEY }}
           # This causes version.IsOfficialBuild to return true when someone is
           # running one of our official release builds.
           BUILD_BOGFORM_OFFICIAL: '1'
+
+      # Records which workflow and commit built each file. Check one with
+      # "gh attestation verify <file> --repo bogware/bogform".
+      - name: Attest build provenance
+        if: startsWith(inputs.tag, 'v')
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/*.deb
+            dist/*.rpm
+            dist/*.apk
+            dist/*_SHA256SUMS
 
       - name: Upload artifacts
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
