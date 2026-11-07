@@ -23,6 +23,9 @@ This creates `azure-pipelines.yml`, which plans on pull requests and applies on 
 
 ## Sign in to your cloud provider
 
+If you pass a service connection to `ci init` with `-azure-service-connection`, the file signs in to
+Azure for you. See [Cloud access](./access.mdx). To set it up yourself:
+
 Use a service connection with workload identity federation rather than stored keys. To use one from a
 script, run Bogform in an `AzureCLI@2` task with `addSpnToEnvironment: true`, and set `ARM_USE_OIDC`,
 `ARM_CLIENT_ID`, `ARM_TENANT_ID`, and `ARM_SUBSCRIPTION_ID` from its variables.

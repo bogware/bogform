@@ -1,0 +1,67 @@
+---
+description: >-
+  The bogform bootstrap command writes a configuration that gives repository
+  pipelines access to an AWS account or Azure subscription, without stored keys.
+---
+
+# Command: bootstrap
+
+The `bogform bootstrap` command writes a configuration that lets repository pipelines reach a cloud
+account through OIDC. Each repository gets a read-only identity for plans, and an identity for
+applies that only its default branch can use.
+
+The configuration is yours to review and edit. Apply it once from a workstation, then pass the
+identities to [`bogform ci init`](../../pipelines/index.mdx). See [Cloud
+access](../../pipelines/access.mdx) for a walkthrough.
+
+## Usage
+
+Usage: `bogform bootstrap aws [options]`
+
+Usage: `bogform bootstrap azure [options]`
+
+Both write their files to `bootstrap/`, or the directory named by `-out`, and refuse to replace
+existing files unless you use `-force`.
+
+## `bootstrap aws`
+
+Writes an OIDC provider for GitHub Actions or GitLab, and for each repository a `<name>-ci-plan`
+role, which is read-only and can't read data, and a `<name>-ci-apply` role, which starts with a
+placeholder policy that you replace.
+
+| Option | Purpose |
+|---|---|
+| `-repository=OWNER/NAME[=PREFIX]` | A repository that needs access. Add `=PREFIX` for a GitHub repository with immutable OIDC subjects. Can be used more than once |
+| `-subject-prefix=PREFIX` | The subject prefix, when there's only one `-repository` |
+| `-admin-repository=OWNER/NAME[=PREFIX]` | The repository that holds this configuration, whose pipeline can manage it. Defaults to the current repository on GitHub. Use `none` to leave it out |
+| `-platform=github` | `github` or `gitlab` |
+| `-gitlab-url=URL` | Your GitLab instance. Defaults to `https://gitlab.com` |
+| `-region=REGION` | Defaults to `us-east-1` |
+| `-branch=NAME` | The branch that applies run from. Defaults to `main` |
+| `-passphrase-parameter=NAME` | An SSM parameter with a backup of the state passphrase |
+| `-out=DIR` | Defaults to `bootstrap` |
+| `-force` | Replace existing files |
+
+## `bootstrap azure`
+
+Writes a user-assigned managed identity for plans (Reader) and one for applies (Contributor) for
+each GitHub repository, with federated credentials for pull requests and the default branch.
+
+| Option | Purpose |
+|---|---|
+| `-repository=OWNER/NAME[=PREFIX]` | A repository that needs access. Can be used more than once |
+| `-subject-prefix=PREFIX` | The subject prefix, when there's only one `-repository` |
+| `-resource-group=NAME` | Limit the identities to an existing resource group. Without it, they cover the subscription |
+| `-identity-resource-group=NAME` | The resource group to create for the identities. Defaults to `bogform-ci` |
+| `-location=LOCATION` | Defaults to `eastus` |
+| `-branch=NAME` | The branch that applies run from. Defaults to `main` |
+| `-passphrase-key-vault-secret=URL` | A Key Vault secret with a backup of the state passphrase |
+| `-out=DIR` | Defaults to `bootstrap` |
+| `-force` | Replace existing files |
+
+## State
+
+The bootstrap configuration keeps its own state encrypted with the [`git`
+backend](../../language/settings/backends/git.mdx). The passphrase comes from the
+`TF_VAR_state_passphrase` environment variable in a pipeline, or from your keychain on a workstation,
+with the backup as a fallback.

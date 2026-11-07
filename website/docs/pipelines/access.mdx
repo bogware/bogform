@@ -1,0 +1,112 @@
+---
+sidebar_position: 4.5
+sidebar_label: Cloud access
+description: |-
+  Give your pipelines access to AWS or Azure with OIDC, without stored keys.
+---
+
+# Give pipelines access to your cloud
+
+Pipelines sign in to your cloud with short-lived OIDC tokens, so there are no keys to store or leak.
+Each repository gets two identities:
+
+- **A plan identity**, for pull requests. It can only read, and on AWS it can't read data such as S3
+  objects, secrets or logs, because a pull request's configuration can run code during a plan.
+- **An apply identity**, which only your default branch can use. It can change only what that
+  repository manages.
+
+## Create the identities
+
+`bogform bootstrap` writes a configuration that creates them. Review it, then apply it once from a
+workstation with administrator access.
+
+### AWS
+
+```shell
+bogform bootstrap aws -repository acme/website -repository acme/api
+```
+
+This writes `bootstrap/` with:
+
+- the GitHub Actions OIDC provider, or GitLab's with `-platform=gitlab`
+- a `<name>-ci-plan` role for each repository, with `ReadOnlyAccess` and a deny on data reads
+- a `<name>-ci-apply` role for each repository, which only the `main` branch can assume
+
+Each apply role starts with a placeholder policy that allows nothing useful. **Replace it** with
+what the repository manages, naming its resources rather than using `"*"`.
+
+The repository that holds the bootstrap configuration gets an apply role that can manage the OIDC
+provider and the other roles, so its own pipeline can manage the configuration after the first
+apply. It defaults to the current repository. Choose another with `-admin-repository`.
+
+| Option | Purpose |
+|---|---|
+| `-repository=OWNER/NAME` | A repository that needs access. Can be used more than once |
+| `-admin-repository=OWNER/NAME` | The repository that holds this configuration. Use `none` to manage it only from a workstation |
+| `-platform=github` | `github` or `gitlab` |
+| `-gitlab-url=URL` | Your GitLab instance. Defaults to `https://gitlab.com` |
+| `-region=REGION` | Defaults to `us-east-1` |
+| `-branch=NAME` | The branch that applies run from. Defaults to `main` |
+| `-passphrase-parameter=NAME` | An SSM parameter with a backup of the state passphrase |
+| `-out=DIR` | Where to write the files. Defaults to `bootstrap` |
+
+GitHub repositories created recently use [immutable OIDC
+subjects](./security.mdx#match-the-right-oidc-subject), which include the owner's and repository's
+IDs. For those, add the subject prefix: `-repository acme/website=repo:acme@123/website@456`. If a
+prefix is wrong, the roles can't be assumed, and nothing else breaks.
+
+### Azure
+
+```shell
+bogform bootstrap azure -repository acme/website -resource-group website-prod
+```
+
+This writes a user-assigned managed identity for plans, with the Reader role, and one for applies,
+with the Contributor role, for each GitHub repository, trusted through federated credentials. With
+`-resource-group`, both are limited to that resource group. Without it, they cover the whole
+subscription.
+
+Neither role can create role assignments, so a pipeline can't grant itself more. That also means
+the bootstrap configuration is always applied from a workstation, by an Owner of the subscription.
+
+## Use them in a pipeline
+
+Pass the identities to `bogform ci init`, and the pipeline file signs in with them:
+
+```shell
+# AWS
+bogform ci init -aws-plan-role arn:aws:iam::123456789012:role/website-ci-plan \
+  -aws-apply-role arn:aws:iam::123456789012:role/website-ci-apply
+
+# Azure
+bogform ci init -azure-plan-client-id PLAN_CLIENT_ID -azure-apply-client-id APPLY_CLIENT_ID \
+  -azure-tenant-id TENANT_ID -azure-subscription-id SUBSCRIPTION_ID
+```
+
+The bootstrap configuration's outputs list these values for each repository.
+
+| Option | Purpose |
+|---|---|
+| `-aws-plan-role=ARN` | The role that plans assume |
+| `-aws-apply-role=ARN` | The role that applies assume |
+| `-aws-region=REGION` | Defaults to `us-east-1` |
+| `-azure-client-id=ID` | The identity for plans and applies, if they share one |
+| `-azure-plan-client-id=ID` | The identity for plans |
+| `-azure-apply-client-id=ID` | The identity for applies |
+| `-azure-tenant-id=ID` | The Azure tenant |
+| `-azure-subscription-id=ID` | The Azure subscription |
+| `-azure-service-connection=NAME` | Azure Pipelines only: the workload identity service connection to use |
+
+How each platform signs in:
+
+| Platform | AWS | Azure |
+|---|---|---|
+| GitHub Actions | `aws-actions/configure-aws-credentials` | `azure/login`, and `ARM_USE_OIDC` for the azurerm provider |
+| GitLab CI | The job's `id_tokens`, read by the AWS SDK | The job's `id_tokens` as `ARM_OIDC_TOKEN` |
+| Azure Pipelines | Not generated. Use the AWS Toolkit's service connection | An `AzureCLI@2` task with a workload identity service connection |
+| Bitbucket Pipelines | `oidc: true` and `BITBUCKET_STEP_OIDC_TOKEN` | `oidc: true` and `BITBUCKET_STEP_OIDC_TOKEN` as `ARM_OIDC_TOKEN` |
+
+## Check the setup
+
+Run `bogform doctor` in the configuration's directory. It checks the backend, encryption, the
+pipeline and more, and says how to fix what it finds. See [`doctor`](../cli/commands/doctor.mdx).

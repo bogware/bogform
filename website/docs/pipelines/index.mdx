@@ -33,6 +33,9 @@ branch. To apply every change as soon as it's merged instead, use `-apply-on=mer
 | `-directory=PATH` | The directory containing your configuration |
 | `-branch=NAME` | The default branch. Defaults to `main` |
 | `-environment=NAME` | The GitHub environment that protects applies. Defaults to `production`; use `-environment=` to leave it out |
+| `-aws-plan-role=ARN`, `-aws-apply-role=ARN` | Sign in to AWS with these roles. See [Cloud access](./access.mdx) |
+| `-azure-client-id=ID` and others | Sign in to Azure with these identities. See [Cloud access](./access.mdx) |
+| `-bogform-md=false` | Don't write `BOGFORM.md` |
 
 | Platform | Command | File |
 |---|---|---|
@@ -41,15 +44,20 @@ branch. To apply every change as soon as it's merged instead, use `-apply-on=mer
 | [Azure Pipelines](./azure.mdx) | `bogform ci init azure` | `azure-pipelines.yml` |
 | [Bitbucket Pipelines](./bitbucket.mdx) | `bogform ci init bitbucket` | `bitbucket-pipelines.yml` |
 
+`bogform ci init` also writes `BOGFORM.md` at the root of your repository, unless it already exists.
+It explains how the setup works, and the rules for changing it, to the people and coding agents who
+work in the repository. Its last section is filled in from the options you used: fill in anything
+left blank. The canonical copy is
+[`templates/BOGFORM.md`](https://github.com/bogware/bogform/blob/main/templates/BOGFORM.md).
+
 Then:
 
 1. [Choose where to store state](./state.mdx). Pipelines start from a clean checkout, so state on
    local disk is lost after each run.
-2. Give the pipeline access to your cloud account. Follow the [security guidance](./security.mdx).
+2. [Give the pipeline access to your cloud account](./access.mdx), unless you already passed its
+   identities to `ci init`. Follow the [security guidance](./security.mdx).
 3. Require approval for the `production` environment, so that a person approves each apply.
-4. Copy [`templates/BOGFORM.md`](https://github.com/bogware/bogform/blob/main/templates/BOGFORM.md)
-   to the root of your repository, and fill in its last section. It explains how the setup works,
-   and the rules for changing it, to the people and coding agents who work in the repository.
+4. Run `bogform doctor` in your configuration's directory to check the setup.
 
 ## What the commands do
 

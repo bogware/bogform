@@ -16,9 +16,9 @@ pipelines:
     "**":
       - step:
           name: Plan
-          # Set oidc: true, then use BITBUCKET_STEP_OIDC_TOKEN to sign in to your cloud provider
-          # rather than storing keys.
+[[- template "bitbucket-oidc" .Plan]]
           script:
+[[- template "bitbucket-signin" .Plan]]
             - bogform -chdir="[[.Directory]]" ci plan
           artifacts:
             - "[[.Directory]]/.bogform-ci/report.json"
@@ -30,7 +30,9 @@ pipelines:
 [[- if .Environment]]
           deployment: [[.Environment]]
 [[- end]]
+[[- template "bitbucket-oidc" .Apply]]
           script:
+[[- template "bitbucket-signin" .Apply]]
             - bogform -chdir="[[.Directory]]" ci apply
           artifacts:
             - "[[.Directory]]/.bogform-ci/report.json"
@@ -43,7 +45,9 @@ pipelines:
 [[- if .Environment]]
           deployment: [[.Environment]]
 [[- end]]
+[[- template "bitbucket-oidc" .Apply]]
           script:
+[[- template "bitbucket-signin" .Apply]]
             - bogform -chdir="[[.Directory]]" ci apply
           artifacts:
             - "[[.Directory]]/.bogform-ci/report.json"

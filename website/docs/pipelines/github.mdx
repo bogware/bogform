@@ -15,11 +15,12 @@ This creates `.github/workflows/bogform.yml`, which plans on pull requests and a
 
 ## Sign in to your cloud provider
 
-Use OIDC, so there are no stored keys to leak. Add the sign-in step before the Bogform step. For example,
-on AWS:
+Use OIDC, so there are no stored keys to leak. If you pass the roles or identities to `ci init`, such as
+`-aws-plan-role` and `-aws-apply-role`, the file signs in for you. See [Cloud access](./access.mdx).
+Otherwise, add the sign-in step before the Bogform step. For example, on AWS:
 
 ```yaml
-- uses: aws-actions/configure-aws-credentials@v4
+- uses: aws-actions/configure-aws-credentials@v6
   with:
     role-to-assume: arn:aws:iam::123456789012:role/bogform-plan
     aws-region: us-east-1

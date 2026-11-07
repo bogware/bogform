@@ -1,0 +1,244 @@
+# CI roles for each repository that runs Bogform. Every repository gets two:
+#   - <name>-ci-plan, for {{if .GitHub}}pull requests{{else}}merge requests and other branches{{end}}. It's read-only, and it can't read data such as S3
+#     objects, secrets or logs, because a {{if .GitHub}}pull request's{{else}}merge request's{{end}} configuration can run code during a plan.
+#   - <name>-ci-apply, which only the {{.Options.Branch}} branch can assume. It can change only what that
+#     repository's apply policy below allows.
+
+locals {
+  oidc_host = {{quote .IssuerHost}}
+
+  # Reads that a plan never needs, and that could expose data or secrets.
+  plan_denied_actions = [
+    "s3:GetObject",
+    "s3:GetObjectVersion",
+    "s3:GetObjectAttributes",
+    "ssm:GetParameter",
+    "ssm:GetParameters",
+    "ssm:GetParametersByPath",
+    "secretsmanager:GetSecretValue",
+    "logs:GetLogEvents",
+    "logs:FilterLogEvents",
+    "logs:StartQuery",
+    "logs:GetQueryResults",
+    "dynamodb:GetItem",
+    "dynamodb:BatchGetItem",
+    "dynamodb:Query",
+    "dynamodb:Scan",
+  ]
+
+{{- if .GitHub}}
+
+  # subject_prefix is the start of the "sub" claim in each repository's OIDC tokens. Repositories
+  # created recently use GitHub's immutable form, with the owner's and repository's IDs, like
+  # repo:owner@123/name@456, which stops a recreated repository with the same name from inheriting
+  # access. Older ones use repo:owner/name. To find a repository's prefix, run a workflow that prints
+  # its token's claims, or check its OIDC settings with:
+  #   gh api repos/OWNER/REPO/actions/oidc/customization/sub
+  # If the prefix is wrong, the roles can't be assumed. Nothing else breaks.
+{{- else}}
+
+  # subject_prefix is the start of the "sub" claim in each project's OIDC tokens.
+{{- end}}
+  repositories = {
+{{- range .All}}
+    {{quote .Key}} = {
+      repository     = {{quote .Name}}
+      subject_prefix = {{quote .SubjectPrefix}}
+      apply_policy   = data.aws_iam_policy_document.{{.HCLKey}}_apply.json
+    }
+{{- end}}
+  }
+}
+
+data "aws_iam_policy_document" "plan_trust" {
+  for_each = local.repositories
+
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.ci.arn]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_host}:aud"
+      values   = [{{quote .Audience}}]
+    }
+    condition {
+{{- if .GitHub}}
+      test     = "StringEquals"
+      variable = "${local.oidc_host}:sub"
+      values   = ["${each.value.subject_prefix}:pull_request"]
+{{- else}}
+      test     = "StringLike"
+      variable = "${local.oidc_host}:sub"
+      values   = ["${each.value.subject_prefix}:ref_type:branch:ref:*"]
+{{- end}}
+    }
+  }
+}
+
+data "aws_iam_policy_document" "apply_trust" {
+  for_each = local.repositories
+
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.ci.arn]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_host}:aud"
+      values   = [{{quote .Audience}}]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_host}:sub"
+{{- if .GitHub}}
+      values   = ["${each.value.subject_prefix}:ref:refs/heads/{{.Options.Branch}}"]
+{{- else}}
+      values   = ["${each.value.subject_prefix}:ref_type:branch:ref:{{.Options.Branch}}"]
+{{- end}}
+    }
+  }
+}
+
+data "aws_iam_policy_document" "plan_deny_data" {
+  statement {
+    sid       = "NoDataReads"
+    effect    = "Deny"
+    actions   = local.plan_denied_actions
+    resources = ["*"]
+  }
+
+  # Plans read Lambda functions' environment variables, which Lambda decrypts on the caller's behalf.
+  # Any other decryption could expose data, so it's denied.
+  statement {
+    sid       = "DecryptOnlyThroughLambda"
+    effect    = "Deny"
+    actions   = ["kms:Decrypt"]
+    resources = ["*"]
+    condition {
+      test     = "StringNotEquals"
+      variable = "kms:ViaService"
+      values   = [{{quote (printf "lambda.%s.amazonaws.com" .Options.Region)}}]
+    }
+  }
+}
+
+resource "aws_iam_role" "plan" {
+  for_each = local.repositories
+
+  name                 = "${each.key}-ci-plan"
+  description          = "Plans for ${each.value.repository}"
+  assume_role_policy   = data.aws_iam_policy_document.plan_trust[each.key].json
+  max_session_duration = 3600
+}
+
+resource "aws_iam_role_policy_attachment" "plan_read_only" {
+  for_each = local.repositories
+
+  role       = aws_iam_role.plan[each.key].name
+  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+resource "aws_iam_role_policy" "plan_deny_data" {
+  for_each = local.repositories
+
+  name   = "no-data-reads"
+  role   = aws_iam_role.plan[each.key].id
+  policy = data.aws_iam_policy_document.plan_deny_data.json
+}
+
+resource "aws_iam_role" "apply" {
+  for_each = local.repositories
+
+  name                 = "${each.key}-ci-apply"
+  description          = "Applies from the {{.Options.Branch}} branch of ${each.value.repository}"
+  assume_role_policy   = data.aws_iam_policy_document.apply_trust[each.key].json
+  max_session_duration = 3600
+}
+
+# Applies refresh state before changing anything, so they need to read what plans read.
+resource "aws_iam_role_policy_attachment" "apply_read_only" {
+  for_each = local.repositories
+
+  role       = aws_iam_role.apply[each.key].name
+  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+resource "aws_iam_role_policy" "apply" {
+  for_each = local.repositories
+
+  name   = "apply"
+  role   = aws_iam_role.apply[each.key].id
+  policy = each.value.apply_policy
+}
+{{- if .Options.Admin}}
+
+# What {{.Options.Admin.Name}}'s own pipeline can change: the OIDC provider and the CI roles.
+data "aws_iam_policy_document" "{{.Options.Admin.HCLKey}}_apply" {
+  statement {
+    sid = "ManageOidcProvider"
+    actions = [
+      "iam:UpdateOpenIDConnectProviderThumbprint",
+      "iam:AddClientIDToOpenIDConnectProvider",
+      "iam:RemoveClientIDFromOpenIDConnectProvider",
+      "iam:TagOpenIDConnectProvider",
+      "iam:UntagOpenIDConnectProvider",
+    ]
+    resources = [aws_iam_openid_connect_provider.ci.arn]
+  }
+  statement {
+    sid = "ManageCiRoles"
+    actions = [
+      "iam:CreateRole",
+      "iam:DeleteRole",
+      "iam:UpdateRole",
+      "iam:UpdateRoleDescription",
+      "iam:UpdateAssumeRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:DeleteRolePolicy",
+      "iam:AttachRolePolicy",
+      "iam:DetachRolePolicy",
+      "iam:TagRole",
+      "iam:UntagRole",
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/*-ci-plan",
+      "arn:aws:iam::${local.account_id}:role/*-ci-apply",
+    ]
+  }
+}
+{{- end}}
+{{- range .Options.Repositories}}
+{{- if or (not $.Options.Admin) (ne .Key $.Options.Admin.Key)}}
+
+# ---------------------------------------------------------------------------------------------
+# REPLACE THIS. What {{.Name}}'s pipeline can change.
+#
+# This placeholder allows nothing useful, so applies fail until you list what the repository
+# manages. Keep it narrow: name its resources, or a prefix they share, rather than "*". For
+# example, a static site might need s3:* on its buckets, CloudFront and ACM changes, and
+# route53:ChangeResourceRecordSets on its zone.
+# ---------------------------------------------------------------------------------------------
+data "aws_iam_policy_document" "{{.HCLKey}}_apply" {
+  statement {
+    sid       = "ReplaceMe"
+    actions   = ["s3:GetBucketLocation"]
+    resources = ["arn:aws:s3:::replace-me-{{.Key}}"]
+  }
+}
+{{- end}}
+{{- end}}
+
+output "ci_roles" {
+  description = "The roles that each repository's pipeline assumes. Pass them to \"bogform ci init -aws-plan-role -aws-apply-role\"."
+  value = {
+    for key, repository in local.repositories : repository.repository => {
+      plan  = aws_iam_role.plan[key].arn
+      apply = aws_iam_role.apply[key].arn
+    }
+  }
+}

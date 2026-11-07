@@ -1,0 +1,135 @@
+[[- /*
+Cloud sign-in steps for each platform, slotted into the pipeline templates. Each is called with the
+signinOptions for one job: .Plan or .Apply. With no cloud details, they leave a comment showing where
+to sign in.
+*/ -]]
+
+[[- define "github-signin"]]
+[[- if .AWS]]
+
+      # Sign in to AWS with OIDC, using [[if eq .Phase "plan"]]a read-only role[[else]]a role that can make changes[[end]].
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: [[.AWSRole]]
+          aws-region: [[.AWSRegion]]
+          role-session-name: bogform-[[.Phase]]-${{ github.run_id }}
+[[- end]]
+[[- if .Azure]]
+
+      # Sign in to Azure with OIDC, using [[if eq .Phase "plan"]]a read-only identity[[else]]an identity that can make changes[[end]].
+      - uses: azure/login@v2
+        with:
+          client-id: [[.AzureClientID]]
+          tenant-id: [[.AzureTenantID]]
+          subscription-id: [[.AzureSubscriptionID]]
+[[- end]]
+[[- if not .Any]]
+[[- if eq .Phase "plan"]]
+
+      # Sign in to your cloud provider here, using OIDC rather than stored keys. For example:
+      # - uses: aws-actions/configure-aws-credentials@v6
+      #   with:
+      #     role-to-assume: arn:aws:iam::123456789012:role/bogform-plan
+      #     aws-region: us-east-1
+[[- else]]
+
+      # Sign in to your cloud provider here, using a role that's allowed to make changes.
+[[- end]]
+[[- end]]
+[[end]]
+
+[[- define "github-arm-env"]]
+[[- if .Azure]]
+        env:
+          # The azurerm provider signs in with the same identity, using OIDC.
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: [[.AzureClientID]]
+          ARM_TENANT_ID: [[.AzureTenantID]]
+          ARM_SUBSCRIPTION_ID: [[.AzureSubscriptionID]]
+[[- end]]
+[[- end]]
+
+[[- define "gitlab-signin"]]
+[[- if .Any]]
+  # Sign in with this job's OIDC token, rather than stored keys.
+  id_tokens:
+[[- if .AWS]]
+    BOG_AWS_ID_TOKEN:
+      aud: https://gitlab.com
+[[- end]]
+[[- if .Azure]]
+    ARM_OIDC_TOKEN:
+      aud: api://AzureADTokenExchange
+[[- end]]
+  variables:
+[[- if .AWS]]
+    AWS_ROLE_ARN: [[.AWSRole]]
+    AWS_REGION: [[.AWSRegion]]
+    AWS_ROLE_SESSION_NAME: bogform-[[.Phase]]-$CI_PIPELINE_ID
+    AWS_WEB_IDENTITY_TOKEN_FILE: /tmp/aws-web-identity-token
+[[- end]]
+[[- if .Azure]]
+    ARM_USE_OIDC: "true"
+    ARM_CLIENT_ID: [[.AzureClientID]]
+    ARM_TENANT_ID: [[.AzureTenantID]]
+    ARM_SUBSCRIPTION_ID: [[.AzureSubscriptionID]]
+[[- end]]
+[[- if .AWS]]
+  before_script:
+    # The AWS SDK reads the token from a file.
+    - printf '%s' "$BOG_AWS_ID_TOKEN" > "$AWS_WEB_IDENTITY_TOKEN_FILE"
+[[- end]]
+[[- end]]
+[[- end]]
+
+[[- define "bitbucket-oidc"]]
+[[- if .Any]]
+          oidc: true
+[[- else if eq .Phase "plan"]]
+          # Set oidc: true, then use BITBUCKET_STEP_OIDC_TOKEN to sign in to your cloud provider
+          # rather than storing keys.
+[[- end]]
+[[- end]]
+
+[[- define "bitbucket-signin"]]
+[[- if .AWS]]
+            - export AWS_ROLE_ARN=[[.AWSRole]] AWS_REGION=[[.AWSRegion]] AWS_ROLE_SESSION_NAME=bogform-[[.Phase]] AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/aws-web-identity-token
+            - printf '%s' "$BITBUCKET_STEP_OIDC_TOKEN" > "$AWS_WEB_IDENTITY_TOKEN_FILE"
+[[- end]]
+[[- if .Azure]]
+            - export ARM_USE_OIDC=true ARM_OIDC_TOKEN="$BITBUCKET_STEP_OIDC_TOKEN" ARM_CLIENT_ID=[[.AzureClientID]] ARM_TENANT_ID=[[.AzureTenantID]] ARM_SUBSCRIPTION_ID=[[.AzureSubscriptionID]]
+[[- end]]
+[[- end]]
+
+[[- define "azure-signin-task"]]
+          - task: AzureCLI@2
+            displayName: Sign in to Azure
+            inputs:
+              azureSubscription: [[.AzureServiceConnection]]
+              scriptType: bash
+              scriptLocation: inlineScript
+              addSpnToEnvironment: true
+              # Hands the service connection's workload identity to Bogform, for the azurerm
+              # provider's OIDC sign-in.
+              inlineScript: |
+                echo "##vso[task.setvariable variable=ARM_USE_OIDC]true"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$servicePrincipalId"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID]$tenantId"
+                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$(az account show --query id --output tsv)"
+                echo "##vso[task.setvariable variable=ARM_OIDC_TOKEN;issecret=true]$idToken"
+[[- end]]
+
+[[- define "azure-signin-plan"]]
+[[- if .Azure]][[template "azure-signin-task" .]]
+[[- else]]
+          # Sign in to your cloud provider here, using a workload identity service connection. An
+          # AzureCLI@2 task with addSpnToEnvironment: true can make its identity available.
+[[- end]]
+[[- end]]
+
+[[- define "azure-signin-apply"]]
+[[- if .Azure]][[include "azure-signin-task" . | indent 6]]
+[[- else]]
+                # Sign in to your cloud provider here.
+[[- end]]
+[[- end]]

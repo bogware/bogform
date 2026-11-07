@@ -1,0 +1,106 @@
+# Identities for each repository that runs Bogform. Every repository gets two:
+#   - <name>-ci-plan, for pull requests. It has the Reader role, so it can't change anything.
+#     Reader can't list storage account keys, so plans of storage accounts that need them fail. If
+#     yours do, grant the narrowest role that works, knowing that it lets pull requests read data.
+#   - <name>-ci-apply, which only the {{.Options.Branch}} branch can use. It has the Contributor role on the scope
+#     below. Contributor can't create role assignments, so a pipeline can't grant itself more.
+
+locals {
+  github_issuer = "https://token.actions.githubusercontent.com"
+
+  repositories = {
+{{- range .All}}
+    {{quote .Key}} = {
+      repository     = {{quote .Name}}
+      subject_prefix = {{quote .SubjectPrefix}}
+    }
+{{- end}}
+  }
+
+{{- if .Options.ResourceGroup}}
+
+  # What the identities can see and change: the {{.Options.ResourceGroup}} resource group.
+  scope = data.azurerm_resource_group.target.id
+{{- else}}
+
+  # What the identities can see and change: the whole subscription. Narrow this to a resource group
+  # for each repository if you can, with "bogform bootstrap azure -resource-group".
+  scope = data.azurerm_subscription.current.id
+{{- end}}
+}
+{{- if .Options.ResourceGroup}}
+
+data "azurerm_resource_group" "target" {
+  name = {{quote .Options.ResourceGroup}}
+}
+{{- end}}
+
+resource "azurerm_resource_group" "ci" {
+  name     = {{quote .Options.IdentityResourceGroup}}
+  location = {{quote .Options.Location}}
+}
+
+resource "azurerm_user_assigned_identity" "plan" {
+  for_each = local.repositories
+
+  name                = "${each.key}-ci-plan"
+  resource_group_name = azurerm_resource_group.ci.name
+  location            = azurerm_resource_group.ci.location
+}
+
+resource "azurerm_federated_identity_credential" "plan" {
+  for_each = local.repositories
+
+  name                = "pull-requests"
+  resource_group_name = azurerm_resource_group.ci.name
+  parent_id           = azurerm_user_assigned_identity.plan[each.key].id
+  audience            = ["api://AzureADTokenExchange"]
+  issuer              = local.github_issuer
+  subject             = "${each.value.subject_prefix}:pull_request"
+}
+
+resource "azurerm_role_assignment" "plan_reader" {
+  for_each = local.repositories
+
+  scope                = local.scope
+  role_definition_name = "Reader"
+  principal_id         = azurerm_user_assigned_identity.plan[each.key].principal_id
+}
+
+resource "azurerm_user_assigned_identity" "apply" {
+  for_each = local.repositories
+
+  name                = "${each.key}-ci-apply"
+  resource_group_name = azurerm_resource_group.ci.name
+  location            = azurerm_resource_group.ci.location
+}
+
+resource "azurerm_federated_identity_credential" "apply" {
+  for_each = local.repositories
+
+  name                = "{{.Options.Branch}}-branch"
+  resource_group_name = azurerm_resource_group.ci.name
+  parent_id           = azurerm_user_assigned_identity.apply[each.key].id
+  audience            = ["api://AzureADTokenExchange"]
+  issuer              = local.github_issuer
+  subject             = "${each.value.subject_prefix}:ref:refs/heads/{{.Options.Branch}}"
+}
+
+resource "azurerm_role_assignment" "apply_contributor" {
+  for_each = local.repositories
+
+  scope                = local.scope
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_user_assigned_identity.apply[each.key].principal_id
+}
+
+output "ci_identities" {
+  description = "The identities that each repository's pipeline uses. Pass them to \"bogform ci init\"."
+  value = {
+    for key, repository in local.repositories : repository.repository => {
+      plan_client_id  = azurerm_user_assigned_identity.plan[key].client_id
+      apply_client_id = azurerm_user_assigned_identity.apply[key].client_id
+      ci_init         = "bogform ci init -azure-plan-client-id ${azurerm_user_assigned_identity.plan[key].client_id} -azure-apply-client-id ${azurerm_user_assigned_identity.apply[key].client_id} -azure-tenant-id ${data.azurerm_client_config.current.tenant_id} -azure-subscription-id ${data.azurerm_subscription.current.subscription_id}"
+    }
+  }
+}

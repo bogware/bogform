@@ -1,0 +1,65 @@
+# Written by "bogform bootstrap azure". Review it, then apply it from a workstation signed in with
+# "az login" as someone who can create role assignments, such as an Owner of the subscription.
+#
+# It sets up what repository pipelines need to reach this subscription without stored secrets: for
+# each repository, a user-assigned managed identity for plans, which pull requests can use and which
+# can only read, and one for applies, which only the {{.Options.Branch}} branch can use. Each repository owns its
+# own resources. This configuration decides what each pipeline may do.
+#
+# Pipelines can't manage this configuration themselves, because that would need permission to
+# create role assignments. Keep applying it from a workstation.
+
+terraform {
+  required_version = ">= 1.10"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
+    }
+  }
+
+  # State is kept encrypted on the bogform-state branch of the repository that holds this
+  # configuration.
+  backend "git" {}
+
+  encryption {
+    # The passphrase comes from the first of these that's available. Store it in your keychain with
+    # "bogform state passphrase set {{.Keychain}}"{{if .Options.PassphraseVaultSecret}}, or rely on the backup in Key Vault{{end}}.
+    key_provider "passphrase" "state" {
+      env      = "TF_VAR_state_passphrase"
+      keychain = {{quote .Keychain}}
+{{- if .Options.PassphraseVaultSecret}}
+      azure_key_vault = {{quote .Options.PassphraseVaultSecret}}
+{{- end}}
+    }
+    key_provider "pbkdf2" "state" {
+      chain = key_provider.passphrase.state
+    }
+    method "aes_gcm" "state" {
+      keys = key_provider.pbkdf2.state
+    }
+    state {
+      method   = method.aes_gcm.state
+      enforced = true
+    }
+    plan {
+      method   = method.aes_gcm.state
+      enforced = true
+    }
+  }
+}
+
+variable "subscription_id" {
+  type        = string
+  description = "The subscription that pipelines get access to."
+}
+
+provider "azurerm" {
+  features {}
+  subscription_id = var.subscription_id
+}
+
+data "azurerm_client_config" "current" {}
+
+data "azurerm_subscription" "current" {}
