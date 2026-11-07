@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.14.0-alpha2 (November 7, 2026)
+
+ENHANCEMENTS:
+
+- `bogform ci init` now takes `-apply-on`: `manual`, the default, plans on pull requests and applies only
+  when someone runs the pipeline, and `merge` applies every merged change.
+- `bogform ci init -git-state` sets up a pipeline for the `git` backend.
+- `bogform ci init -environment=` leaves the environment out, for private GitHub repositories without
+  a paid plan.
+- Generated GitHub pipelines use current versions of `actions/checkout` and
+  `aws-actions/configure-aws-credentials`.
+
+BUG FIXES:
+
+- The `bogform-server` archives now keep the dashboard UI's `assets` folder, so the UI loads.
+- `bogform ci init` pins the full version, including any prerelease suffix.
+
 ## 1.14.0-alpha1 (November 6, 2026)
 
 Bogform forked from OpenTofu at 1.14.0-dev. Entries below this section are inherited from OpenTofu and
