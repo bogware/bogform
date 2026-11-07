@@ -2,6 +2,11 @@
 
 ## 1.16.0 (Unreleased)
 
+BUG FIXES:
+
+- `bogform ci init -git-state` sets `BOGFORM_STATE_PASSPHRASE` as well as `TF_VAR_state_passphrase`
+  from the passphrase secret, so pipelines work with the `passphrase` key provider without editing.
+
 ## 1.15.0 (November 7, 2026)
 
 The first stable release of Bogform. It follows 1.14.0-alpha2; there's no 1.14.0.

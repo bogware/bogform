@@ -25,7 +25,9 @@ permissions:
 [[- if .GitState]]
 
 # The git backend keeps encrypted state on a branch of this repository. Store its passphrase as a secret.
+# The passphrase key provider reads BOGFORM_STATE_PASSPHRASE; older configurations read the variable.
 env:
+  BOGFORM_STATE_PASSPHRASE: ${{ secrets.BOGFORM_STATE_PASSPHRASE }}
   TF_VAR_state_passphrase: ${{ secrets.BOGFORM_STATE_PASSPHRASE }}
 [[- end]]
 

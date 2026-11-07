@@ -66,6 +66,7 @@ stages:
             env:
               BOG_CI_TOKEN: $(System.AccessToken)
 [[- if .GitState]]
+              BOGFORM_STATE_PASSPHRASE: $(STATE_PASSPHRASE)
               TF_VAR_state_passphrase: $(STATE_PASSPHRASE)
 [[- end]]
 [[- if .Plan.Azure]]
@@ -113,6 +114,7 @@ stages:
                   env:
                     BOG_CI_ALLOW_DESTROY: ${{ parameters.allowDestroy }}
 [[- if .GitState]]
+                    BOGFORM_STATE_PASSPHRASE: $(STATE_PASSPHRASE)
                     TF_VAR_state_passphrase: $(STATE_PASSPHRASE)
 [[- end]]
 [[- if .Apply.Azure]]

@@ -4,8 +4,10 @@
 # repository variable named BOG_CI_TOKEN.
 [[- if .GitState]]
 #
-# For the git state backend, add the state passphrase as a secured variable named TF_VAR_state_passphrase,
-# and set "repository" in the backend to a URL with an access token that can push.
+# For the git state backend, add the state passphrase as a secured variable named
+# BOGFORM_STATE_PASSPHRASE, which the passphrase key provider reads (or TF_VAR_state_passphrase, if the
+# configuration passes it in as a variable), and set "repository" in the backend to a URL with an
+# access token that can push.
 [[- end]]
 
 image:

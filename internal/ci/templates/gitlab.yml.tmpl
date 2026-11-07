@@ -4,8 +4,9 @@
 # variable named BOG_CI_TOKEN. Protect the "[[.Environment]]" environment to require approval to apply.
 [[- if .GitState]]
 #
-# For the git state backend, add the state passphrase as a masked variable named TF_VAR_state_passphrase,
-# and give the job token permission to push to this project.
+# For the git state backend, add the state passphrase as a masked variable named
+# BOGFORM_STATE_PASSPHRASE, which the passphrase key provider reads (or TF_VAR_state_passphrase, if the
+# configuration passes it in as a variable), and give the job token permission to push to this project.
 [[- end]]
 
 stages:

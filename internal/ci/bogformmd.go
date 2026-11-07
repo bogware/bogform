@@ -123,11 +123,11 @@ func secretsDescription(opts ScaffoldOptions) string {
 	if opts.GitState {
 		switch opts.Platform {
 		case PlatformGitHub:
-			secrets = append(secrets, "`BOGFORM_STATE_PASSPHRASE` (`TF_VAR_state_passphrase`)")
+			secrets = append(secrets, "`BOGFORM_STATE_PASSPHRASE` (set as `BOGFORM_STATE_PASSPHRASE` and `TF_VAR_state_passphrase`)")
 		case PlatformAzure:
-			secrets = append(secrets, "`STATE_PASSPHRASE` (`TF_VAR_state_passphrase`)")
+			secrets = append(secrets, "`STATE_PASSPHRASE` (set as `BOGFORM_STATE_PASSPHRASE` and `TF_VAR_state_passphrase`)")
 		default:
-			secrets = append(secrets, "`TF_VAR_state_passphrase`")
+			secrets = append(secrets, "`BOGFORM_STATE_PASSPHRASE`, or `TF_VAR_state_passphrase` for a configuration that passes it in as a variable")
 		}
 	}
 	if opts.Platform == PlatformGitLab || opts.Platform == PlatformBitbucket {
