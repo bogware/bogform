@@ -39,14 +39,9 @@ jobs:
       id-token: write # For cloud access using OIDC.
     steps:
       - uses: actions/checkout@v7
-
-      # Sign in to your cloud provider here, using OIDC rather than stored keys. For example:
-      # - uses: aws-actions/configure-aws-credentials@v6
-      #   with:
-      #     role-to-assume: arn:aws:iam::123456789012:role/bogform-plan
-      #     aws-region: us-east-1
-
+[[- template "github-signin" .Plan]]
       - uses: bogware/bogform@[[.ActionRef]]
+[[- template "github-arm-env" .Plan]]
         with:
           version: [[.ReleaseVersion]]
           command: plan
@@ -78,10 +73,9 @@ jobs:
       id-token: write # For cloud access using OIDC.
     steps:
       - uses: actions/checkout@v7
-
-      # Sign in to your cloud provider here, using a role that's allowed to make changes.
-
+[[- template "github-signin" .Apply]]
       - uses: bogware/bogform@[[.ActionRef]]
+[[- template "github-arm-env" .Apply]]
         with:
           version: [[.ReleaseVersion]]
           command: apply

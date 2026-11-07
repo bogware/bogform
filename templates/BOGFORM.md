@@ -4,8 +4,9 @@ This repository manages its infrastructure with [Bogform](https://github.com/bog
 open-source fork of OpenTofu. This file tells people and coding agents how the setup works and what
 the rules are. Read it before changing anything in the infrastructure directory or its pipeline.
 
-The canonical copy is `templates/BOGFORM.md` in bogware/bogform. When you adopt Bogform in another
-repository, copy that file, then fill in **This repository** at the bottom.
+The canonical copy is `templates/BOGFORM.md` in bogware/bogform. `bogform ci init` writes it when
+it adds a pipeline, with **This repository** at the bottom filled in as far as it can. Otherwise,
+copy the file and fill that section in yourself.
 
 ## How it works
 
@@ -75,6 +76,9 @@ the lock file. Dependency updates are always manual: don't set up scheduled upda
 
 ## Troubleshooting
 
+Run `bogform doctor` in the infrastructure directory first. It checks the setup and says how to fix
+what it finds.
+
 | Symptom | Cause |
 |---|---|
 | `Unable to compute static value ... state_passphrase` | The passphrase isn't set. Set `TF_VAR_state_passphrase`. |
@@ -96,7 +100,7 @@ the lock file. Dependency updates are always manual: don't set up scheduled upda
 | Apply role | |
 | Secrets | |
 | Passphrase backup | |
-| Defined in bogware/aws-shared | |
+| Access defined in | |
 
 Anything else specific to this repository:
 

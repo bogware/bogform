@@ -52,14 +52,16 @@ stages:
               tar -xzf "$archive" -C "$(Agent.TempDirectory)/bogform" bogform
               echo "##vso[task.prependpath]$(Agent.TempDirectory)/bogform"
             displayName: Install Bogform
-          # Sign in to your cloud provider here, using a workload identity service connection. An
-          # AzureCLI@2 task with addSpnToEnvironment: true can make its identity available.
+[[- template "azure-signin-plan" .Plan]]
           - bash: bogform -chdir="$(bogformDirectory)" ci plan
             displayName: Plan
             env:
               BOG_CI_TOKEN: $(System.AccessToken)
 [[- if .GitState]]
               TF_VAR_state_passphrase: $(STATE_PASSPHRASE)
+[[- end]]
+[[- if .Plan.Azure]]
+              ARM_OIDC_TOKEN: $(ARM_OIDC_TOKEN)
 [[- end]]
 
   - stage: Apply
@@ -97,10 +99,15 @@ stages:
                     tar -xzf "$archive" -C "$(Agent.TempDirectory)/bogform" bogform
                     echo "##vso[task.prependpath]$(Agent.TempDirectory)/bogform"
                   displayName: Install Bogform
-                # Sign in to your cloud provider here.
+[[- template "azure-signin-apply" .Apply]]
                 - bash: bogform -chdir="$(bogformDirectory)" ci apply
                   displayName: Apply
-[[- if .GitState]]
+[[- if or .GitState .Apply.Azure]]
                   env:
+[[- end]]
+[[- if .GitState]]
                     TF_VAR_state_passphrase: $(STATE_PASSPHRASE)
+[[- end]]
+[[- if .Apply.Azure]]
+                    ARM_OIDC_TOKEN: $(ARM_OIDC_TOKEN)
 [[- end]]

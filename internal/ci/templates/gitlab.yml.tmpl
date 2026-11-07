@@ -16,10 +16,12 @@ default:
   image:
     name: ghcr.io/bogware/bogform:[[.ImageTag]]
     entrypoint: [""]
+[[- if not (or .Plan.Any .Apply.Any)]]
   # Sign in to your cloud provider here, using OIDC rather than stored keys. For example:
   # id_tokens:
   #   AWS_WEB_IDENTITY_TOKEN:
   #     aud: https://gitlab.com
+[[- end]]
 
 variables:
   BOGFORM_DIRECTORY: "[[.Directory]]"
@@ -27,6 +29,7 @@ variables:
 bogform-plan:
   stage: plan
   resource_group: bogform
+[[- template "gitlab-signin" .Plan]]
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
@@ -39,6 +42,7 @@ bogform-plan:
 bogform-apply:
   stage: apply
   resource_group: bogform
+[[- template "gitlab-signin" .Apply]]
 [[- if .Environment]]
   environment: [[.Environment]]
 [[- end]]

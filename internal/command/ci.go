@@ -104,19 +104,30 @@ func ciInitCommander() Command {
 	cmd := Command{
 		Name:  "init",
 		Short: "Add a pipeline to this repository",
-		Long:  "Writes a pipeline file for GitHub Actions (github), GitLab CI (gitlab), Azure Pipelines (azure), or Bitbucket Pipelines (bitbucket). If you don't name a platform, Bogform works it out from the \"origin\" Git remote.\n\nRun this from the root of your repository. The file is yours to edit and doesn't depend on any Bogform service.",
+		Long:  "Writes a pipeline file for GitHub Actions (github), GitLab CI (gitlab), Azure Pipelines (azure), or Bitbucket Pipelines (bitbucket). If you don't name a platform, Bogform works it out from the \"origin\" Git remote.\n\nRun this from the root of your repository. The file is yours to edit and doesn't depend on any Bogform service. Bogform also writes BOGFORM.md, which explains the setup to the people and coding agents who work in the repository.\n\nWith options like -aws-plan-role and -aws-apply-role, or -azure-client-id, the file signs in to your cloud account with OIDC. Otherwise it has a comment showing where to.",
 
 		DiagsWithNewline: true,
 	}
 	var platform, branch, directory, environment, applyOn string
-	var force, gitState bool
+	var force, gitState, bogformMD bool
+	var signin ci.ScaffoldOptions
 	cmd.CommandLine.PositionalArg(&platform, "platform", true)
 	cmd.CommandLine.StringVar(&branch, "branch", "main", "The branch to apply from.")
 	cmd.CommandLine.StringVar(&directory, "directory", ".", "The directory containing your configuration, relative to the repository root.")
 	cmd.CommandLine.StringVar(&environment, "environment", "production", "The name of the environment that protects applies. Use -environment= to leave it out, for example on a private GitHub repository without a paid plan.")
 	cmd.CommandLine.StringVar(&applyOn, "apply-on", ci.ApplyManual, "When to apply: \"manual\" to apply only when someone runs the pipeline, or \"merge\" to apply every change merged to the branch.")
 	cmd.CommandLine.BoolVar(&gitState, "git-state", false, "Set up the pipeline for the git state backend: write access to the repository, and the state passphrase from a secret.")
-	cmd.CommandLine.BoolVar(&force, "force", false, "Replace the file if it already exists.")
+	cmd.CommandLine.BoolVar(&force, "force", false, "Replace the pipeline file, and BOGFORM.md, if they already exist.")
+	cmd.CommandLine.BoolVar(&bogformMD, "bogform-md", true, "Write BOGFORM.md, a guide to this setup for people and coding agents, at the repository root.")
+	cmd.CommandLine.StringVar(&signin.AWSPlanRole, "aws-plan-role", "", "The ARN of the AWS role that plans assume through OIDC. It should be read-only.")
+	cmd.CommandLine.StringVar(&signin.AWSApplyRole, "aws-apply-role", "", "The ARN of the AWS role that applies assume through OIDC.")
+	cmd.CommandLine.StringVar(&signin.AWSRegion, "aws-region", "us-east-1", "The AWS region to sign in to.")
+	cmd.CommandLine.StringVar(&signin.AzureClientID, "azure-client-id", "", "The client ID of the Azure identity that plans and applies use through OIDC.")
+	cmd.CommandLine.StringVar(&signin.AzurePlanClientID, "azure-plan-client-id", "", "The client ID of the Azure identity that plans use, if it's different from applies. It should be read-only.")
+	cmd.CommandLine.StringVar(&signin.AzureApplyClientID, "azure-apply-client-id", "", "The client ID of the Azure identity that applies use, if it's different from plans.")
+	cmd.CommandLine.StringVar(&signin.AzureTenantID, "azure-tenant-id", "", "The Azure tenant ID, for -azure-client-id.")
+	cmd.CommandLine.StringVar(&signin.AzureSubscriptionID, "azure-subscription-id", "", "The Azure subscription ID, for -azure-client-id.")
+	cmd.CommandLine.StringVar(&signin.AzureServiceConnection, "azure-service-connection", "", "For Azure Pipelines: the workload identity service connection to sign in to Azure with.")
 
 	cmd.Run = func(Meta) int {
 		if platform == "" {
@@ -129,23 +140,34 @@ func ciInitCommander() Command {
 				return ci.ExitFailed
 			}
 		}
-		opts := ci.ScaffoldOptions{
-			Platform:      platform,
-			Version:       version.String(),
-			DefaultBranch: branch,
-			Directory:     directory,
-			Environment:   environment,
-			ApplyOn:       applyOn,
-			GitState:      gitState,
-			Force:         force,
-			Root:          ".",
-		}
+		opts := signin
+		opts.Platform = platform
+		opts.Version = version.String()
+		opts.DefaultBranch = branch
+		opts.Directory = directory
+		opts.Environment = environment
+		opts.ApplyOn = applyOn
+		opts.GitState = gitState
+		opts.Force = force
+		opts.Root = "."
 		path, err := ci.Scaffold(opts)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 			return ci.ExitFailed
 		}
-		fmt.Printf("Created %s.\n%s", path, ci.NextSteps(platform, opts))
+		fmt.Printf("Created %s.\n", path)
+		if bogformMD {
+			written, err := ci.WriteBogformMD(opts)
+			switch {
+			case err != nil:
+				fmt.Fprintf(os.Stderr, "Warning: couldn't write %s: %s\n", ci.BogformMDFile, err)
+			case written:
+				fmt.Printf("Created %s. Fill in anything left blank in its last section.\n", ci.BogformMDFile)
+			default:
+				fmt.Printf("Left the existing %s alone. Use -force to replace it.\n", ci.BogformMDFile)
+			}
+		}
+		fmt.Print(ci.NextSteps(platform, opts))
 		return ci.ExitOK
 	}
 	return cmd
