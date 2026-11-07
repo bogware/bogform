@@ -189,7 +189,9 @@ func (r *Runner) fail(report *Report, message, output string) bool {
 // plan has changes, and whether it succeeded.
 func (r *Runner) plan(ctx context.Context, report *Report, extra ...string) (string, bool, bool) {
 	planPath := filepath.Join(WorkDir, "plan.tfplan")
-	args := []string{"plan", "-input=false", "-no-color", "-detailed-exitcode", "-out=" + planPath}
+	// -concise leaves out progress messages, which are noise in a comment, and which show each
+	// resource's ID even when the ID is something private, like an email address.
+	args := []string{"plan", "-input=false", "-no-color", "-concise", "-detailed-exitcode", "-out=" + planPath}
 	args = append(args, extra...)
 	for _, file := range r.VarFiles {
 		args = append(args, "-var-file="+file)
@@ -251,7 +253,7 @@ func (r *Runner) Apply(ctx context.Context) int {
 			report.Status = StatusNoChanges
 			break
 		}
-		_, output, code, err := r.command(ctx, true, "apply", "-input=false", "-no-color", planPath)
+		_, output, code, err := r.command(ctx, true, "apply", "-input=false", "-no-color", "-concise", planPath)
 		switch {
 		case err != nil:
 			r.fail(report, fmt.Sprintf("Couldn't run bogform: %s", err), "")

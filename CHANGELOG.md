@@ -8,6 +8,12 @@ ENHANCEMENTS:
   the pipeline and encrypted git state work, and the rules for changing them, for people and coding
   agents.
 
+BUG FIXES:
+
+- `bogform ci` runs plans and applies with `-concise`, so pull request comments and reports leave
+  out progress messages. These were noise, and showed every resource's ID, even an ID that's
+  private, like an email address.
+
 ## 1.14.0-alpha2 (November 7, 2026)
 
 ENHANCEMENTS:
