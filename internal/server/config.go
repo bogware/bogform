@@ -42,6 +42,8 @@ type Config struct {
 	DevUser string
 
 	Triggers TriggerConfig
+
+	Alerts AlertConfig
 }
 
 // AuthConfig selects how people sign in.
@@ -127,6 +129,16 @@ func LoadConfig(env func(string) string) (Config, error) {
 			AzureOrgURL:    strings.TrimSuffix(get("AZURE_ORG_URL"), "/"),
 			AzurePipelines: map[string]string{},
 		},
+		Alerts: AlertConfig{
+			SlackWebhook:  get("ALERT_SLACK_WEBHOOK"),
+			TeamsWebhook:  get("ALERT_TEAMS_WEBHOOK"),
+			EmailFrom:     get("ALERT_EMAIL_FROM"),
+			EmailTo:       splitList(get("ALERT_EMAIL_TO")),
+			WebhookURL:    get("ALERT_WEBHOOK_URL"),
+			WebhookSecret: get("ALERT_WEBHOOK_SECRET"),
+			Events:        splitList(get("ALERT_EVENTS")),
+			Repositories:  splitCaseList(get("ALERT_REPOSITORIES")),
+		},
 	}
 
 	var err error
@@ -206,6 +218,7 @@ func (c Config) Validate() error {
 	if c.OriginSecret == PlaceholderSecret {
 		add("BOG_SERVER_ORIGIN_SECRET still has its placeholder value")
 	}
+	c.Alerts.validate(add)
 	if len(problems) > 0 {
 		return errors.New(strings.Join(problems, "\n"))
 	}
@@ -228,10 +241,15 @@ func isLoopback(host string) bool {
 
 func splitList(value string) []string {
 	var out []string
-	for _, item := range strings.FieldsFunc(value, func(r rune) bool { return r == ',' || r == ' ' || r == '\n' }) {
+	for _, item := range splitCaseList(value) {
 		out = append(out, strings.ToLower(item))
 	}
 	return out
+}
+
+// splitCaseList splits a list without changing case, for values such as repository names.
+func splitCaseList(value string) []string {
+	return strings.FieldsFunc(value, func(r rune) bool { return r == ',' || r == ' ' || r == '\n' })
 }
 
 // Roles a person can have.

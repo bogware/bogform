@@ -35,6 +35,7 @@ type Server struct {
 	client *http.Client
 	now    func() time.Time
 	logger *log.Logger
+	alerts *alerter
 }
 
 // New creates a Server.
@@ -46,8 +47,15 @@ func New(cfg Config, db *sql.DB) *Server {
 	} else {
 		s.auth = &oidcAuthenticator{cfg: cfg.Auth, client: client}
 	}
+	if cfg.Alerts.enabled() {
+		s.alerts = newAlerter(cfg.Alerts, &sesSender{}, s.log)
+	}
 	return s
 }
+
+// Wait blocks until alerts that are still being sent have finished. On AWS Lambda, call it after each
+// response, because the function is frozen between requests.
+func (s *Server) Wait() { s.alerts.wait() }
 
 func (s *Server) log(format string, args ...any) { s.logger.Printf(format, args...) }
 
@@ -209,10 +217,14 @@ func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusForbidden, "this token can't report for that repository")
 		return
 	}
-	id, err := RecordReport(r.Context(), s.db, &report)
+	result, err := recordReport(r.Context(), s.db, &report)
 	if err != nil {
 		s.fail(w, r, err)
 		return
+	}
+	id := result.runID
+	if event := alertEvent(&report, result.previousDrift); event != "" {
+		s.alerts.notify(newAlert(event, &report, fmt.Sprintf("%s/runs/%d", s.cfg.PublicURL, id)))
 	}
 	// Serverless hosting has no background jobs, so an occasional request tidies up.
 	if rand.IntN(100) == 0 {

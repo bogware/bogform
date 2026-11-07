@@ -19,8 +19,10 @@ import (
 
 // RunLambda serves requests using AWS Lambda's runtime API, which is a small HTTP protocol. Speaking it
 // directly avoids a dependency, and handler is the same one used by the standalone server. It returns
-// only if the runtime API stops working.
-func RunLambda(ctx context.Context, runtimeAPI string, handler http.Handler) error {
+// only if the runtime API stops working. afterResponse runs once each response has been sent, before
+// asking for the next event, which is the last chance for work in the background to finish before
+// Lambda freezes the function.
+func RunLambda(ctx context.Context, runtimeAPI string, handler http.Handler, afterResponse ...func()) error {
 	base := "http://" + runtimeAPI + "/2018-06-01/runtime/invocation/"
 	// Waiting for the next event can take any length of time, so there's no timeout.
 	client := &http.Client{}
@@ -68,6 +70,9 @@ func RunLambda(ctx context.Context, runtimeAPI string, handler http.Handler) err
 		}
 		io.Copy(io.Discard, result.Body) //nolint:errcheck // Only draining the connection.
 		result.Body.Close()
+		for _, fn := range afterResponse {
+			fn()
+		}
 	}
 }
 
