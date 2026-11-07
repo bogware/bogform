@@ -1,0 +1,59 @@
+---
+description: >-
+  The bogform doctor command checks a configuration's setup, and says how to fix
+  what it finds. It changes nothing.
+---
+
+# Command: doctor
+
+The `bogform doctor` command checks the configuration in the current directory, and the repository
+around it. It prints one line for each check, marked `ok`, `warning` or `problem`, with a fix for
+anything that isn't ok.
+
+It reads files and asks the backend whether it can be reached, but it changes nothing, and it never
+shows secret values: findings say which file and line to look at.
+
+## Usage
+
+Usage: `bogform doctor [options]`
+
+| Option | Purpose |
+|---|---|
+| `-json` | Print the results as JSON |
+
+It exits with `1` if it finds a problem, and `0` otherwise, including when there are only warnings.
+To check another directory, use the global `-chdir` option.
+
+## What it checks
+
+| Check | What it looks for |
+|---|---|
+| Configuration | The configuration loads |
+| Backend | State isn't only on this machine, and the backend can be reached. For the `git` backend, it checks the repository and its state branch |
+| Encryption | State is encrypted with `enforced = true`. The `git` backend requires encryption |
+| Passphrase | The passphrase isn't written in the configuration, and it's available in this shell |
+| Locks | For the `git` backend, no lock has been held for more than an hour, which usually means a cancelled run left it |
+| Versions | `required_version` is set, and each provider has a version constraint |
+| Lock file | `.terraform.lock.hcl` exists and is committed |
+| Pipeline | A pipeline runs Bogform, pinned to a release rather than `main` or `latest` |
+| BOGFORM.md | The repository explains its setup in `BOGFORM.md` |
+| Ignored | `.terraform/` and `.bogform-ci/` are ignored by Git |
+| Secrets | No AWS access keys, private keys or email addresses are committed in `.tf` or `.tfvars` files |
+
+## Example
+
+```text
+$ bogform doctor
+Checked /home/me/website/infra
+
+  ok       The configuration loads.
+  ok       The git backend's repository can be reached, and has state on bogform-state.
+  ok       State is encrypted, and enforced = true refuses to write it unencrypted.
+  warning  TF_VAR_state_passphrase isn't set here, so plans in this shell can't read the state.
+           Fix: Set it from your password manager or the backup, without echoing it, or use the
+           passphrase key provider so it comes from your keychain.
+  ok       The state isn't locked.
+  ...
+
+1 warning, 11 ok.
+```
