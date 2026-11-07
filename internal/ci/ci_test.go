@@ -40,20 +40,24 @@ func TestDetect(t *testing.T) {
 				"GITHUB_ACTIONS": "true", "GITHUB_EVENT_NAME": "pull_request", "GITHUB_EVENT_PATH": event,
 				"GITHUB_REPOSITORY": "acme/infra", "GITHUB_SHA": "abc", "GITHUB_HEAD_REF": "feature",
 				"GITHUB_SERVER_URL": "https://github.com", "GITHUB_RUN_ID": "7",
+				"GITHUB_ACTOR": "octocat", "GITHUB_TRIGGERING_ACTOR": "hubot",
 			},
 			want: Context{Platform: PlatformGitHub, Repository: "acme/infra", Commit: "abc", Branch: "feature",
-				IsPullRequest: true, PullRequest: "42", FromFork: true, RunURL: "https://github.com/acme/infra/actions/runs/7"},
+				IsPullRequest: true, PullRequest: "42", FromFork: true, RunURL: "https://github.com/acme/infra/actions/runs/7",
+				Actor: "hubot", Trigger: "pull_request"},
 		},
 		"github push": {
-			env:  map[string]string{"GITHUB_ACTIONS": "true", "GITHUB_EVENT_NAME": "push", "GITHUB_REF_NAME": "main"},
-			want: Context{Platform: PlatformGitHub, Branch: "main"},
+			env:  map[string]string{"GITHUB_ACTIONS": "true", "GITHUB_EVENT_NAME": "push", "GITHUB_REF_NAME": "main", "GITHUB_ACTOR": "octocat"},
+			want: Context{Platform: PlatformGitHub, Branch: "main", Actor: "octocat", Trigger: "push"},
 		},
 		"gitlab merge request": {
 			env: map[string]string{
 				"GITLAB_CI": "true", "CI_MERGE_REQUEST_IID": "5", "CI_PROJECT_PATH": "acme/infra",
 				"CI_MERGE_REQUEST_SOURCE_BRANCH_NAME": "feature", "CI_JOB_URL": "https://gitlab.com/j/1",
+				"GITLAB_USER_LOGIN": "dev", "CI_PIPELINE_SOURCE": "merge_request_event",
 			},
-			want: Context{Platform: PlatformGitLab, Repository: "acme/infra", Branch: "feature", IsPullRequest: true, PullRequest: "5", RunURL: "https://gitlab.com/j/1"},
+			want: Context{Platform: PlatformGitLab, Repository: "acme/infra", Branch: "feature", IsPullRequest: true, PullRequest: "5", RunURL: "https://gitlab.com/j/1",
+				Actor: "dev", Trigger: "merge_request_event"},
 		},
 		"azure pull request": {
 			env: map[string]string{
