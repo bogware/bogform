@@ -13,6 +13,8 @@ import ConfigurationPS1 from '!!raw-loader!./examples/encryption/configuration.p
 import Enforce from '!!raw-loader!./examples/encryption/enforce.tf'
 import AESGCM from '!!raw-loader!./examples/encryption/aes_gcm.tf'
 import PBKDF2 from '!!raw-loader!./examples/encryption/pbkdf2.tf'
+import Passphrase from '!!raw-loader!./examples/encryption/passphrase.tf'
+import RotatePassphrase from '!!raw-loader!./examples/encryption/rotate_passphrase.tf'
 import AWSKMS from '!!raw-loader!./examples/encryption/aws_kms.tf'
 import GCPKMS from '!!raw-loader!./examples/encryption/gcp_kms.tf'
 import AZVAULTASYM from '!!raw-loader!./examples/encryption/azure_vault_asymmetric.tf'
@@ -120,6 +122,23 @@ In some cases, you may want to change your encryption configuration. This can in
 
 If Bogform fails to **read** your state or plan file with the new method, it will automatically try the fallback method. When Bogform **saves** your state or plan file, it will always use the new method and not the fallback.
 
+### Rotating a passphrase
+
+1. Add the new passphrase under new names, make its method the `state` and `plan` method, and move the old method to a `fallback` block. Keep the old key provider's name: pbkdf2 finds the settings it stored in the state by that name.
+
+   <CodeBlock language="hcl">{RotatePassphrase}</CodeBlock>
+
+2. Run [`bogform state rekey`](../../cli/commands/state/rekey.mdx). It reads every workspace's state, with the fallback where needed, and writes it again with the new method.
+3. Remove the old key provider, pbkdf2 and method, and the `fallback` blocks.
+
+In a pipeline, set both passphrases as secrets until the rotation is done.
+
+:::warning
+
+Rotating doesn't re-encrypt earlier versions of the state. The git backend keeps every version on its branch, and the s3 backend keeps them when bucket versioning is on, all encrypted with the old passphrase. If the old passphrase was exposed, treat those versions as exposed too.
+
+:::
+
 ## Initial setup
 
 ### New project
@@ -199,6 +218,24 @@ The PBKDF2 key provider allows you to use a long passphrase as to generate a key
 | salt_length              | Length of the salt for the key derivation.                                                                                                              | 1         | 32                                 |
 | hash_function            | Specify either `sha256` or `sha512` to use as a hash function. `sha1` is not supported.                                                                 | N/A       | sha512                             |
 | encrypted_metadata_alias | Optional identifier to store metadata in the encrypted state/plan files under. Specify this to allow changing the name of a key provider.               | -         | derived from the key provider name |
+
+### Passphrase
+
+The passphrase key provider finds a passphrase and passes it to [PBKDF2](#pbkdf2) through `chain`. It looks in an environment variable, the OS keychain, AWS SSM Parameter Store, and Azure Key Vault, in that order, and uses the first one that's set. The same configuration then works in a pipeline, which sets the environment variable from a secret, and on a workstation, which reads the keychain or the cloud, without anyone exporting the passphrase by hand.
+
+<CodeBlock language="hcl">{Passphrase}</CodeBlock>
+
+| Option          | Description                                                                                                                                               |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| env             | The name of an environment variable.                                                                                                                      |
+| keychain        | The name of an entry in the OS keychain: Windows Credential Manager, the macOS Keychain, or the Secret Service on Linux. Store it with [`bogform state passphrase set`](../../cli/commands/state/passphrase.mdx). |
+| aws_ssm         | The name of an SSM parameter, usually a `SecureString`. Bogform reads it with the usual AWS credentials, so you need `ssm:GetParameter`, and `kms:Decrypt` on its key. |
+| aws_region      | The SSM parameter's region. Defaults to the usual AWS settings, such as `AWS_REGION`.                                                                     |
+| azure_key_vault | The URL of a Key Vault secret, such as `https://my-vault.vault.azure.net/secrets/state-passphrase`, optionally with a version. Bogform signs in the way the Azure CLI and SDKs do, and needs permission to get the secret. |
+
+Set at least one. If none of them has a passphrase, the error lists each one and why it didn't work. It never shows the passphrase. The passphrase must have at least 16 characters.
+
+Switching from a passphrase set directly on pbkdf2, such as `passphrase = var.state_passphrase`, to this provider doesn't need the state re-encrypted, as long as the passphrase and the pbkdf2 key provider's name stay the same.
 
 ### AWS KMS
 

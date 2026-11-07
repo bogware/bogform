@@ -47,6 +47,10 @@ branch. Your pipeline's token needs permission to push to that branch and to bra
 Use a [key provider](../../state/encryption.mdx#key-providers) such as AWS KMS if you have one, or keep
 the passphrase in your pipeline's secrets. If you lose the passphrase, the state can't be recovered.
 
+The [passphrase key provider](../../state/encryption.mdx#passphrase) can read the passphrase from an
+environment variable in the pipeline, and from your OS keychain, SSM or Key Vault on a workstation, so
+nobody has to set `TF_VAR_state_passphrase` by hand.
+
 ## Configuration
 
 | Argument | Description | Default |
@@ -81,11 +85,17 @@ lock with [`bogform force-unlock`](../../../cli/commands/force-unlock.mdx).
 
 The default workspace's state is at `path`. Other workspaces are at `workspaces/<name>/<path>`.
 
+## History
+
+Every version of the state is a commit on the state branch. [`bogform state history`](../../../cli/commands/state/history.mdx) lists them, and [`bogform state restore`](../../../cli/commands/state/restore.mdx) makes an earlier one current again.
+
+Because Git keeps every version, rotating your passphrase doesn't re-encrypt older ones. See [Rotating a passphrase](../../state/encryption.mdx#rotating-a-passphrase).
+
 ## Limitations
 
 - The `git` command must be available, so use the standard container image, not the `-minimal` one.
-- Every update is a commit, so the branch's history grows. Fetches only download the latest commit, so
-  this doesn't slow down runs.
+- Every update is a commit, so the branch's history grows. Runs only download the latest commit, so
+  this doesn't slow them down. `state history` and `state restore` download the whole branch.
 - Deleting a workspace or an old state doesn't remove it from history. Rewrite the branch's history if
   you need to remove it permanently.
 - Branch protection rules must allow Bogform to update `bogform-state`, and to create and delete branches under `bogform-locks/`.

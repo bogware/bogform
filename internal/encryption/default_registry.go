@@ -11,6 +11,7 @@ import (
 	externalKeyProvider "github.com/bogware/bogform/internal/encryption/keyprovider/external"
 	"github.com/bogware/bogform/internal/encryption/keyprovider/gcp_kms"
 	"github.com/bogware/bogform/internal/encryption/keyprovider/openbao"
+	"github.com/bogware/bogform/internal/encryption/keyprovider/passphrase"
 	"github.com/bogware/bogform/internal/encryption/keyprovider/pbkdf2"
 	"github.com/bogware/bogform/internal/encryption/method/aesgcm"
 	externalMethod "github.com/bogware/bogform/internal/encryption/method/external"
@@ -37,6 +38,9 @@ func init() {
 		panic(err)
 	}
 	if err := DefaultRegistry.RegisterKeyProvider(externalKeyProvider.New()); err != nil {
+		panic(err)
+	}
+	if err := DefaultRegistry.RegisterKeyProvider(passphrase.New()); err != nil {
 		panic(err)
 	}
 	if err := DefaultRegistry.RegisterMethod(aesgcm.New()); err != nil {

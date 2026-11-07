@@ -78,7 +78,15 @@ func ComplianceTest[TDescriptor keyprovider.Descriptor, TConfig keyprovider.Conf
 		})
 	})
 
+	// A key provider without metadata, such as one that reads a passphrase from somewhere, declares an
+	// interface type and has no metadata cases to test.
+	noMetadata := reflect.TypeOf((*TMeta)(nil)).Elem().Kind() == reflect.Interface
+
 	t.Run("metadata", func(t *testing.T) {
+		if noMetadata {
+			compliancetest.Skip(t, "The key provider declares no metadata type.")
+			return
+		}
 		if config.MetadataStructTestCases == nil {
 			compliancetest.Fail(t, "Please provide a map in MetadataStructTestCases.")
 		}
@@ -120,6 +128,10 @@ func ComplianceTest[TDescriptor keyprovider.Descriptor, TConfig keyprovider.Conf
 			}
 		})
 		t.Run("metadata", func(t *testing.T) {
+			if noMetadata {
+				compliancetest.Skip(t, "The key provider declares no metadata type.")
+				return
+			}
 			hasNotPresent := false
 			hasNotValid := false
 			hasValid := false
@@ -158,7 +170,7 @@ func complianceTestProvide[TDescriptor keyprovider.Descriptor, TConfig keyprovid
 	t.Run("nil-metadata", func(t *testing.T) {
 		keyProvider, inMeta := complianceTestBuildConfigAndValidate[TKeyProvider, TMeta](t, keyProviderConfig, true)
 
-		if reflect.ValueOf(inMeta).IsNil() {
+		if isNil(inMeta) {
 			compliancetest.Skip(t, "The key provider does not have metadata (no metadata returned from Build()).")
 			return
 		}
@@ -177,7 +189,7 @@ func complianceTestProvide[TDescriptor keyprovider.Descriptor, TConfig keyprovid
 	})
 	t.Run("incorrect-metadata-type", func(t *testing.T) {
 		keyProvider, inMeta := complianceTestBuildConfigAndValidate[TKeyProvider, TMeta](t, keyProviderConfig, true)
-		if reflect.ValueOf(inMeta).IsNil() {
+		if isNil(inMeta) {
 			compliancetest.Skip(t, "The key provider does not have metadata (no metadata returned from Build()).")
 			return
 		}
@@ -461,7 +473,8 @@ func complianceTestBuildConfigAndValidate[TKeyProvider keyprovider.KeyProvider, 
 			compliancetest.Log(t, "Build() returned the correct key provider type of %T.", typedKeyProvider)
 		}
 
-		metaType := reflect.TypeOf(typedMeta)
+		// TypeOf on the zero value would return nil for an interface type, so take the type from a pointer.
+		metaType := reflect.TypeOf((*TMeta)(nil)).Elem()
 		if meta == nil {
 			if metaType.Kind() != reflect.Interface {
 				compliancetest.Fail(t, "Build() did not return a metadata, but you declared a metadata type. Please make sure that you always return the same metadata type.")
@@ -570,4 +583,17 @@ func complianceTestMetadataTestCase[TConfig keyprovider.Config, TKeyProvider key
 			)
 		}
 	}
+}
+
+// isNil reports whether v is nil, including a nil interface, which reflect.Value.IsNil can't check.
+func isNil(v any) bool {
+	rv := reflect.ValueOf(v)
+	if !rv.IsValid() {
+		return true
+	}
+	switch rv.Kind() {
+	case reflect.Pointer, reflect.Interface, reflect.Map, reflect.Slice, reflect.Func, reflect.Chan:
+		return rv.IsNil()
+	}
+	return false
 }

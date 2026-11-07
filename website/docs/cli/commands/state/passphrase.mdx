@@ -1,0 +1,35 @@
+---
+description: >-
+  The bogform state passphrase commands store state passphrases in the OS keychain.
+---
+
+# Command: state passphrase
+
+The `bogform state passphrase` commands store and remove state passphrases in the OS keychain: Windows Credential Manager, the macOS Keychain, or the Secret Service on Linux. The [passphrase key provider](../../../language/state/encryption.mdx#passphrase) reads an entry when its `keychain` attribute names it, so you don't have to set an environment variable on your workstation.
+
+## Usage
+
+Usage: `bogform state passphrase set NAME`
+
+Usage: `bogform state passphrase delete NAME`
+
+`set` stores a passphrase under `NAME`, replacing any that's there. It asks for the passphrase twice without showing what you type, or reads it from standard input when that isn't a terminal. For example, to copy a backup from SSM:
+
+```shell
+aws ssm get-parameter --name /my-repository/state-passphrase \
+  --with-decryption --query Parameter.Value --output text \
+  | bogform state passphrase set my-repository
+```
+
+Then use the same name in your configuration:
+
+```hcl
+key_provider "passphrase" "state" {
+  env      = "BOGFORM_STATE_PASSPHRASE"
+  keychain = "my-repository"
+}
+```
+
+`delete` removes the entry. Keep another copy first: without the passphrase, the state can't be read.
+
+The passphrase must have at least 16 characters. Bogform never prints it.

@@ -15,8 +15,12 @@ repository, copy that file, then fill in **This repository** at the bottom.
   documentation for the language and providers applies.
 - **State is in this repository, encrypted.** The `git` backend keeps state on the
   `bogform-state` branch and takes locks by pushing `bogform-locks/*` branches. The `encryption`
-  block encrypts state and plans with a passphrase (`var.state_passphrase`), and `enforced = true`
-  refuses to write anything unencrypted. Without the passphrase, the state can't be read.
+  block encrypts state and plans with a passphrase, and `enforced = true` refuses to write anything
+  unencrypted. Without the passphrase, the state can't be read. Every version of the state stays
+  on the branch, so a bad change to the state can be undone.
+- **The passphrase finds itself.** The `passphrase` key provider reads it from an environment
+  variable in the pipeline, set from a secret, and from the OS keychain or the cloud (SSM or Key
+  Vault) on a workstation. Older setups pass it in as `var.state_passphrase` instead.
 - **Changes go through pull requests.** A pull request that touches the infrastructure gets a plan,
   posted as a comment, using a read-only cloud role. Changes are applied by the pipeline, using a
   role that can only change this project's resources, either when the pull request merges or when
@@ -36,7 +40,8 @@ repository, copy that file, then fill in **This repository** at the bottom.
    ID, appears there.
 4. **Don't touch the `bogform-state` or `bogform-locks/*` branches** by hand. If a lock is stuck
    because a run was cancelled, check that nothing is running, then ask a person before running
-   `bogform force-unlock`.
+   `bogform force-unlock`. To undo a bad change to the state, ask a person, then use
+   `bogform state history` and `bogform state restore`.
 5. **Review the plan before merging.** Look for anything that's replaced or destroyed. A change to
    a resource's name or key often means a replacement; use a `moved` block to avoid it.
 6. **If the pipeline gets `AccessDenied`**, the plan or apply role is missing a permission. Change
@@ -48,9 +53,8 @@ repository, copy that file, then fill in **This repository** at the bottom.
 
 ```sh
 cd <infrastructure directory>
-export TF_VAR_state_passphrase="$(aws ssm get-parameter --name <passphrase parameter> \
-  --with-decryption --query Parameter.Value --output text)"
-# Plus any other variables that come from secrets (see "This repository").
+# Set any variables that come from secrets (see "This repository"). The passphrase key provider
+# reads the state passphrase itself, from your keychain or the cloud.
 
 bogform init
 bogform fmt
@@ -59,6 +63,24 @@ bogform plan -lock=false
 ```
 
 Then open a pull request, read the plan comment, and merge.
+
+The first time on a workstation, if the passphrase key provider lists a `keychain` entry, store the
+passphrase there once. For example, from its backup in SSM:
+
+```sh
+aws ssm get-parameter --name <passphrase parameter> --with-decryption \
+  --query Parameter.Value --output text | bogform state passphrase set <keychain entry>
+```
+
+If it reads `aws_ssm` instead, your AWS credentials are enough. Older setups that use
+`var.state_passphrase` need `TF_VAR_state_passphrase` set, read from the backup without echoing it.
+
+### Rotating the passphrase
+
+Add the new passphrase under new names, with the old method as a `fallback`, then run
+`bogform state rekey` and remove the fallback. Earlier versions on the state branch stay encrypted
+with the old passphrase, so if it leaked, treat them as leaked too. Ask a person first: this writes
+the state.
 
 ### Adopting existing resources
 
@@ -77,7 +99,9 @@ the lock file. Dependency updates are always manual: don't set up scheduled upda
 
 | Symptom | Cause |
 |---|---|
-| `Unable to compute static value ... state_passphrase` | The passphrase isn't set. Set `TF_VAR_state_passphrase`. |
+| `couldn't find the state passphrase` | None of the passphrase key provider's sources has it. The error lists each one. Store it with `bogform state passphrase set`, or check your AWS credentials. |
+| `Unable to compute static value ... state_passphrase` | An older setup, and the passphrase isn't set. Set `TF_VAR_state_passphrase`. |
+| The state is wrong after a change, such as a bad `state rm` | `bogform state history` lists earlier versions, and `bogform state restore <version>` brings one back. Ask a person first. |
 | State can't be decrypted | The wrong passphrase. Check the secret against the backup. |
 | `Error acquiring the state lock` | A run is in progress, or one was cancelled and left its lock. See rule 4. |
 | A Lambda function changes on every plan | Its package isn't reproducible. Set `output_file_mode = "0644"` on the `archive_file`. |
@@ -96,6 +120,7 @@ the lock file. Dependency updates are always manual: don't set up scheduled upda
 | Apply role | |
 | Secrets | |
 | Passphrase backup | |
+| Keychain entry | |
 | Defined in bogware/aws-shared | |
 
 Anything else specific to this repository:
