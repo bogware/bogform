@@ -137,7 +137,7 @@ func TestApply_githubLabel(t *testing.T) {
 					return
 				}
 				gotAuth = r.Header.Get("Authorization")
-				io.WriteString(w, test.pulls)
+				_, _ = io.WriteString(w, test.pulls)
 			}))
 			defer server.Close()
 			runner, stdout, stderr := fakeRunner(t, destroyPlan, Options{},

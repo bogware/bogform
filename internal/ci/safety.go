@@ -25,7 +25,7 @@ const costTimeout = 90 * time.Second
 
 // analyze runs the checks and the cost estimate. Neither can fail the run: problems are warnings.
 func (r *Runner) analyze(ctx context.Context, report *Report, raw []byte) {
-	if r.NoChecks && !(r.Cost && report.Kind == KindPlan) {
+	if r.NoChecks && (!r.Cost || report.Kind != KindPlan) {
 		return
 	}
 	resources, region, err := readPlanValues(raw)

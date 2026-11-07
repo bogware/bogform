@@ -281,7 +281,7 @@ func TestAuthorization(t *testing.T) {
 					t.Fatalf("expected 401, got %d", w.Code)
 				case role == RoleViewer && route.minimum == RoleOperator && w.Code != http.StatusForbidden:
 					t.Fatalf("expected 403, got %d", w.Code)
-				case role != RoleNone && !(role == RoleViewer && route.minimum == RoleOperator) && (w.Code == http.StatusUnauthorized || w.Code == http.StatusForbidden):
+				case role != RoleNone && (role != RoleViewer || route.minimum != RoleOperator) && (w.Code == http.StatusUnauthorized || w.Code == http.StatusForbidden):
 					t.Fatalf("expected access, got %d", w.Code)
 				}
 			})
@@ -578,7 +578,6 @@ func TestPrune(t *testing.T) {
 func TestStartRun(t *testing.T) {
 	type call struct {
 		path, auth string
-		body       map[string]any
 	}
 	tests := map[string]struct {
 		platform   string
@@ -832,12 +831,12 @@ func newFakeOIDC(t *testing.T) *fakeOIDC {
 	f := &fakeOIDC{key: key, email: "operator@example.com", verified: true, audience: "client"}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/.well-known/openid-configuration", func(w http.ResponseWriter, _ *http.Request) {
-		json.NewEncoder(w).Encode(map[string]string{
+		_ = json.NewEncoder(w).Encode(map[string]string{
 			"issuer": f.URL, "authorization_endpoint": f.URL + "/authorize", "token_endpoint": f.URL + "/token", "jwks_uri": f.URL + "/jwks",
 		})
 	})
 	mux.HandleFunc("/jwks", func(w http.ResponseWriter, _ *http.Request) {
-		json.NewEncoder(w).Encode(map[string]any{"keys": []map[string]string{{
+		_ = json.NewEncoder(w).Encode(map[string]any{"keys": []map[string]string{{
 			"kid": "k1", "kty": "RSA", "use": "sig",
 			"n": base64.RawURLEncoding.EncodeToString(key.N.Bytes()),
 			"e": base64.RawURLEncoding.EncodeToString(big.NewInt(int64(key.E)).Bytes()),
@@ -880,7 +879,7 @@ func newFakeOIDC(t *testing.T) *fakeOIDC {
 			t.Error(err)
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]any{"access_token": "a", "token_type": "Bearer", "id_token": signed})
+		_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "a", "token_type": "Bearer", "id_token": signed})
 	})
 	f.Server = httptest.NewServer(mux)
 	t.Cleanup(f.Close)
@@ -930,7 +929,9 @@ func TestSignIn(t *testing.T) {
 		}
 		defer res.Body.Close()
 		var me map[string]string
-		json.NewDecoder(res.Body).Decode(&me)
+		if err := json.NewDecoder(res.Body).Decode(&me); err != nil {
+			t.Fatal(err)
+		}
 		if me["email"] != "operator@example.com" || me["role"] != RoleOperator || me["name"] != "Test User" {
 			t.Fatalf("wrong identity: %v", me)
 		}
@@ -1035,13 +1036,13 @@ func TestGitHubSignIn(t *testing.T) {
 	verified := true
 	mux.HandleFunc("/login/oauth/access_token", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"access_token": "gho", "token_type": "bearer"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"access_token": "gho", "token_type": "bearer"})
 	})
 	mux.HandleFunc("/user", func(w http.ResponseWriter, _ *http.Request) {
-		json.NewEncoder(w).Encode(map[string]string{"login": "octo"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"login": "octo"})
 	})
 	mux.HandleFunc("/user/emails", func(w http.ResponseWriter, _ *http.Request) {
-		json.NewEncoder(w).Encode([]map[string]any{
+		_ = json.NewEncoder(w).Encode([]map[string]any{
 			{"email": "other@example.com", "primary": false, "verified": true},
 			{"email": "octo@example.com", "primary": true, "verified": verified},
 		})
@@ -1108,7 +1109,7 @@ func TestRunLambda(t *testing.T) {
 			served = true
 			w.Header().Set("Lambda-Runtime-Aws-Request-Id", "req-1")
 			w.Header().Set("Lambda-Runtime-Deadline-Ms", fmt.Sprint(time.Now().Add(time.Minute).UnixMilli()))
-			w.Write(event)
+			_, _ = w.Write(event)
 		case strings.HasSuffix(r.URL.Path, "/next"):
 			cancel()
 			<-r.Context().Done()

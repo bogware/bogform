@@ -64,28 +64,27 @@ func (s *ciServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		for id, body := range s.comments {
 			out = append(out, map[string]any{"id": id, "body": body, "user": map[string]string{"login": "github-actions[bot]"}})
 		}
-		json.NewEncoder(w).Encode(out)
+		_ = json.NewEncoder(w).Encode(out)
 	case r.Method == http.MethodPost:
 		var in map[string]string
-		json.NewDecoder(r.Body).Decode(&in)
+		_ = json.NewDecoder(r.Body).Decode(&in)
 		s.next++
 		s.comments[s.next] = in["body"]
 		w.WriteHeader(http.StatusCreated)
 	case r.Method == http.MethodPatch:
 		var in map[string]string
-		json.NewDecoder(r.Body).Decode(&in)
+		_ = json.NewDecoder(r.Body).Decode(&in)
 		match := regexp.MustCompile(`/(\d+)$`).FindStringSubmatch(r.URL.Path)
 		var id int
-		json.Unmarshal([]byte(match[1]), &id)
+		_ = json.Unmarshal([]byte(match[1]), &id)
 		s.comments[id] = in["body"]
 	}
 }
 
 type ciResult struct {
-	exit    int
-	stdout  string
-	stderr  string
-	summary string
+	exit   int
+	stdout string
+	stderr string
 }
 
 func runCI(t *testing.T, dir string, env []string, args ...string) ciResult {
@@ -272,7 +271,7 @@ func TestCI_failureIsReported(t *testing.T) {
 func TestCI_commentFailureDoesNotFailTheRun(t *testing.T) {
 	t.Parallel()
 	api := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		io.Copy(io.Discard, r.Body)
+		_, _ = io.Copy(io.Discard, r.Body)
 		w.WriteHeader(http.StatusForbidden)
 	}))
 	defer api.Close()

@@ -146,7 +146,7 @@ func normalizeScaffoldOptions(opts ScaffoldOptions) (ScaffoldOptions, error) {
 		return opts, fmt.Errorf("-apply-on must be %q or %q", ApplyManual, ApplyMerge)
 	}
 	for name, value := range map[string]string{"branch": opts.DefaultBranch, "directory": opts.Directory, "environment": opts.Environment} {
-		if value != "." && !(name == "environment" && value == "") && !safeValue.MatchString(value) {
+		if value != "." && (name != "environment" || value != "") && !safeValue.MatchString(value) {
 			return opts, fmt.Errorf("the %s %q contains unsupported characters", name, value)
 		}
 	}

@@ -36,7 +36,7 @@ func fixtureServer(t *testing.T, name string) *httptest.Server {
 	}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/x-amz-json-1.1")
-		w.Write(body)
+		_, _ = w.Write(body)
 	}))
 	t.Cleanup(server.Close)
 	return server
@@ -147,7 +147,7 @@ func TestAzureClient_retriesRateLimits(t *testing.T) {
 			w.WriteHeader(http.StatusTooManyRequests)
 			return
 		}
-		w.Write(body)
+		_, _ = w.Write(body)
 	}))
 	defer server.Close()
 	client := testAzureClient(t, server)

@@ -27,23 +27,23 @@ func testServer(t *testing.T, downloadAuth *string) *httptest.Server {
 		}
 	}
 	mux.HandleFunc("/api/v2/organizations/acme/workspaces/web", auth(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`{"data":{"id":"ws-1","attributes":{"name":"web","terraform-version":"1.9.5","working-directory":"infra/","execution-mode":"remote","auto-apply":true,"vcs-repo":{"identifier":"acme/web","branch":""}}}}`))
+		_, _ = w.Write([]byte(`{"data":{"id":"ws-1","attributes":{"name":"web","terraform-version":"1.9.5","working-directory":"infra/","execution-mode":"remote","auto-apply":true,"vcs-repo":{"identifier":"acme/web","branch":""}}}}`))
 	}))
 	mux.HandleFunc("/api/v2/organizations/acme/workspaces/empty", auth(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`{"data":{"id":"ws-2","attributes":{"name":"empty"}}}`))
+		_, _ = w.Write([]byte(`{"data":{"id":"ws-2","attributes":{"name":"empty"}}}`))
 	}))
 	mux.HandleFunc("/api/v2/workspaces/ws-1/vars", auth(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`{"data":[{"id":"var-1","attributes":{"key":"region","value":"us-east-1","category":"terraform"}},{"id":"var-2","attributes":{"key":"db_password","value":null,"category":"terraform","sensitive":true}},{"id":"var-3","attributes":{"key":"AWS_SECRET_ACCESS_KEY","category":"env","sensitive":true}}]}`))
+		_, _ = w.Write([]byte(`{"data":[{"id":"var-1","attributes":{"key":"region","value":"us-east-1","category":"terraform"}},{"id":"var-2","attributes":{"key":"db_password","value":null,"category":"terraform","sensitive":true}},{"id":"var-3","attributes":{"key":"AWS_SECRET_ACCESS_KEY","category":"env","sensitive":true}}]}`))
 	}))
 	mux.HandleFunc("/api/v2/workspaces/ws-1/current-state-version", auth(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`{"data":{"id":"sv-1","attributes":{"serial":7,"hosted-state-download-url":"` + srv.URL + `/download/sv-1"}}}`))
+		_, _ = w.Write([]byte(`{"data":{"id":"sv-1","attributes":{"serial":7,"hosted-state-download-url":"` + srv.URL + `/download/sv-1"}}}`))
 	}))
 	mux.HandleFunc("/api/v2/workspaces/ws-2/current-state-version", auth(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 	}))
 	mux.HandleFunc("/download/sv-1", func(w http.ResponseWriter, r *http.Request) {
 		*downloadAuth = r.Header.Get("Authorization")
-		w.Write([]byte(`{"version":4,"serial":7,"lineage":"abc"}`))
+		_, _ = w.Write([]byte(`{"version":4,"serial":7,"lineage":"abc"}`))
 	})
 	srv = httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
@@ -119,7 +119,7 @@ func TestTokenNotSentElsewhere(t *testing.T) {
 	var gotAuth string
 	other := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		gotAuth = r.Header.Get("Authorization")
-		w.Write([]byte(`{}`))
+		_, _ = w.Write([]byte(`{}`))
 	}))
 	defer other.Close()
 	c := &Client{BaseURL: "http://127.0.0.2:1/api/v2", Token: "secret-token"}

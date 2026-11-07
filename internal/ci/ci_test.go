@@ -133,7 +133,7 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 				w.WriteHeader(http.StatusForbidden)
 				return
 			}
-			json.NewEncoder(w).Encode(map[string]any{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"login": name(botID), "id": botID, "uuid": name(botID),
 				"authenticatedUser": map[string]string{"id": name(botID)},
 			})
@@ -142,7 +142,7 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 
 		id := int64(0)
 		if m := regexp.MustCompile(`/(\d+)$`).FindStringSubmatch(r.URL.Path); m != nil {
-			json.Unmarshal([]byte(m[1]), &id)
+			_ = json.Unmarshal([]byte(m[1]), &id)
 		}
 		switch platform {
 		case PlatformGitHub, PlatformGitLab:
@@ -156,7 +156,7 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 						"author": map[string]any{"id": f.authors[commentID]},
 					})
 				}
-				json.NewEncoder(w).Encode(out)
+				_ = json.NewEncoder(w).Encode(out)
 			case http.MethodPost:
 				f.add(decode(r)["body"].(string), botID)
 			case http.MethodPatch, http.MethodPut:
@@ -171,7 +171,7 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 						"id": commentID, "content": body, "author": map[string]string{"id": name(f.authors[commentID])},
 					}}})
 				}
-				json.NewEncoder(w).Encode(map[string]any{"value": threads})
+				_ = json.NewEncoder(w).Encode(map[string]any{"value": threads})
 			case http.MethodPost:
 				comment := decode(r)["comments"].([]any)[0].(map[string]any)
 				f.add(comment["content"].(string), botID)
@@ -187,7 +187,7 @@ func (f *fakeForge) handler(t *testing.T, platform string) http.Handler {
 						"id": commentID, "content": map[string]string{"raw": body}, "user": map[string]string{"uuid": name(f.authors[commentID])},
 					})
 				}
-				json.NewEncoder(w).Encode(map[string]any{"values": values})
+				_ = json.NewEncoder(w).Encode(map[string]any{"values": values})
 			case http.MethodPost:
 				f.add(decode(r)["content"].(map[string]any)["raw"].(string), botID)
 			case http.MethodPut:
@@ -290,7 +290,7 @@ func TestGitHubCommenterAssumesActionsBotWithoutUserAccess(t *testing.T) {
 	forge.nextID = 1
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && r.URL.Path != "/user" {
-			json.NewEncoder(w).Encode([]map[string]any{{"id": 1, "body": forge.comments[1], "user": map[string]string{"login": "github-actions[bot]"}}})
+			_ = json.NewEncoder(w).Encode([]map[string]any{{"id": 1, "body": forge.comments[1], "user": map[string]string{"login": "github-actions[bot]"}}})
 			return
 		}
 		forge.handler(t, PlatformGitHub).ServeHTTP(w, r)
@@ -658,7 +658,9 @@ func TestNewRunner_keepsTokenFromChildren(t *testing.T) {
 func TestApply_refusesPullRequests(t *testing.T) {
 	t.Chdir(t.TempDir())
 	event := filepath.Join(t.TempDir(), "event.json")
-	os.WriteFile(event, []byte(`{"pull_request":{"number":1}}`), 0o600)
+	if err := os.WriteFile(event, []byte(`{"pull_request":{"number":1}}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
 	var stderr strings.Builder
 	runner := NewRunner(Options{
 		Binary: "binary-that-must-not-run",

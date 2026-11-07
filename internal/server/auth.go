@@ -392,12 +392,20 @@ func parseJWK(raw json.RawMessage) (string, any, error) {
 		if jwk.Crv != "P-256" {
 			return "", nil, errors.New("unsupported curve")
 		}
-		x, err1 := decode(jwk.X)
-		y, err2 := decode(jwk.Y)
+		x, err1 := base64.RawURLEncoding.DecodeString(jwk.X)
+		y, err2 := base64.RawURLEncoding.DecodeString(jwk.Y)
 		if err := errors.Join(err1, err2); err != nil {
 			return "", nil, err
 		}
-		return jwk.Kid, &ecdsa.PublicKey{Curve: elliptic.P256(), X: x, Y: y}, nil
+		if len(x) != 32 || len(y) != 32 {
+			return "", nil, errors.New("invalid P-256 key")
+		}
+		// An uncompressed point is 0x04 followed by the two coordinates.
+		key, err := ecdsa.ParseUncompressedPublicKey(elliptic.P256(), append(append([]byte{4}, x...), y...))
+		if err != nil {
+			return "", nil, err
+		}
+		return jwk.Kid, key, nil
 	}
 	return "", nil, errors.New("unsupported key type")
 }
