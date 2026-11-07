@@ -1,0 +1,93 @@
+---
+sidebar_position: 7
+sidebar_label: Safety checks and cost
+description: |-
+  How pipelines guard against destroying resources by surprise, warn about risky settings, and estimate cost.
+---
+
+# Safety checks and cost
+
+Every plan comment starts with a summary line, then up to three sections before the list of changes:
+what the plan destroys, any check warnings, and, if you ask for it, the cost.
+
+## Destroys need approval
+
+The comment lists every resource the plan destroys or replaces. `bogform ci apply` refuses to apply
+such a plan unless someone has explicitly allowed it, so a merged change can't delete infrastructure
+by surprise. The refusal says what to do.
+
+| Platform | How to allow it |
+|---|---|
+| GitHub Actions | Add the `allow-destroy` label to the pull request before it merges, or run the workflow with **allow destroy** ticked |
+| GitLab CI | Run the apply job with the `BOG_CI_ALLOW_DESTROY` variable set to `true` |
+| Azure Pipelines | Run the pipeline with **Allow destroy** checked |
+| Bitbucket Pipelines | Run the `apply` pipeline with `BOG_CI_ALLOW_DESTROY` set to `true`. With `-apply-on=merge`, set a `BOG_CI_ALLOW_DESTROY` repository variable for that change, then remove it |
+| Anywhere | `bogform ci apply -allow-destroy`, or set `BOG_CI_ALLOW_DESTROY=true` |
+
+On GitHub, create the `allow-destroy` label in your repository first. Bogform looks for it on the
+merged pull requests for the commit being applied, using the job's token, so the apply job needs
+`pull-requests: read`. Pipelines from `bogform ci init` include it. If the labels can't be checked,
+the apply is refused.
+
+The report records what allowed a destroy, in `destroy_allowed_by`.
+
+## Built-in checks
+
+Plans are checked for common risky settings in the resources they create or change. Problems are
+warnings in the comment and in `report.json`; they never fail the run. A value that isn't known until
+apply never produces a warning.
+
+| Check | Warns about |
+|---|---|
+| `aws-s3-public-access-block` | S3 public access protection that's turned off |
+| `aws-s3-public-acl` | S3 ACLs that make objects public |
+| `aws-s3-public-policy` | Bucket policies that allow anyone (`"*"`) without a condition |
+| `aws-ebs-unencrypted` | Unencrypted EBS volumes and instance block devices |
+| `aws-rds-unencrypted` | Unencrypted RDS, Aurora, DocumentDB and Neptune storage |
+| `aws-efs-unencrypted` | Unencrypted EFS file systems |
+| `aws-iam-wildcard` | IAM policies that allow every action on every resource |
+| `aws-security-group-open-admin` | Ports 22 or 3389 open to the internet |
+| `azure-nsg-open-admin` | Network security rules that open ports 22 or 3389 to the internet |
+| `azure-storage-public-access` | Storage accounts that allow public containers |
+| `azure-storage-container-public` | Containers whose blobs anyone can read |
+| `azure-storage-https-only` | Storage accounts that accept HTTP |
+| `azure-storage-min-tls` | Storage accounts that accept TLS older than 1.2 |
+| `azure-database-open-firewall` | SQL, PostgreSQL, MySQL and MariaDB firewall rules that allow every IP address |
+
+AWS has blocked public access to new S3 buckets by default since 2023, so a bucket without a public
+access block isn't flagged.
+
+To turn checks off:
+
+- For one resource, give it a `bogform:skip-checks` tag with a comma-separated list of check IDs, or
+  `all`. Write down why next to it.
+- For a run, use `-skip-checks=ID,ID`.
+- Entirely, use `-checks=false`.
+
+## Cost estimates
+
+`bogform ci plan -cost` adds a monthly estimate to the comment: the total before and after the
+change, and each resource whose cost changes. Use `bogform ci init -cost` to turn it on in a new
+pipeline.
+
+Prices come from the providers' public price lists, at on-demand rates in US dollars:
+
+- **AWS:** the Price List Query API, which needs `pricing:GetProducts`. `ReadOnlyAccess` includes it.
+- **Azure:** the Retail Prices API, which needs no sign-in.
+
+Estimates cover resources with a fixed hourly or monthly price:
+
+- **AWS:** EC2 instances and their root volumes, EBS volumes, RDS and Aurora instances and RDS
+  storage, NAT gateways, load balancers, DynamoDB provisioned capacity, ElastiCache nodes, EKS
+  clusters and node groups.
+- **Azure:** Linux and Windows VMs and scale sets, managed disks, App Service plans, SQL databases
+  on DTU SKUs, PostgreSQL flexible servers, and AKS clusters and their default node pools.
+
+Usage-based charges, such as Lambda requests, S3 storage, data transfer, and load balancer capacity
+units, aren't included. Resources that the plan changes but that aren't priced are listed with the
+reason, such as "Usage-based" or a value that isn't known until apply. Discounts, Savings Plans,
+reservations and free tiers aren't applied, and Linux is assumed for EC2.
+
+AWS resources are priced in their own region when their values say so, then in the AWS provider's
+`region` if it's a constant, then in `AWS_REGION`. Prices are cached for a week in your user cache
+directory. If prices can't be looked up, the comment says so, and the plan still succeeds.

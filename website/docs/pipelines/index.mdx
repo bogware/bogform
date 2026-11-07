@@ -33,6 +33,7 @@ branch. To apply every change as soon as it's merged instead, use `-apply-on=mer
 | `-directory=PATH` | The directory containing your configuration |
 | `-branch=NAME` | The default branch. Defaults to `main` |
 | `-environment=NAME` | The GitHub environment that protects applies. Defaults to `production`; use `-environment=` to leave it out |
+| `-cost` | Estimate the monthly cost of each plan. See [safety checks and cost](./safety.mdx) |
 
 | Platform | Command | File |
 |---|---|---|
@@ -47,7 +48,9 @@ Then:
    local disk is lost after each run.
 2. Give the pipeline access to your cloud account. Follow the [security guidance](./security.mdx).
 3. Require approval for the `production` environment, so that a person approves each apply.
-4. Copy [`templates/BOGFORM.md`](https://github.com/bogware/bogform/blob/main/templates/BOGFORM.md)
+4. On GitHub, create a label named `allow-destroy`. Applies refuse to destroy or replace resources
+   unless the merged pull request has it. See [safety checks and cost](./safety.mdx).
+5. Copy [`templates/BOGFORM.md`](https://github.com/bogware/bogform/blob/main/templates/BOGFORM.md)
    to the root of your repository, and fill in its last section. It explains how the setup works,
    and the rules for changing it, to the people and coding agents who work in the repository.
 
@@ -72,6 +75,15 @@ These options work with `plan`, `apply`, and `drift`:
 | `-no-comment` | Don't comment on the pull request |
 | `-no-output` | Show only the list of changes in comments and summaries, not the plan's text |
 
+These work with `plan` and `apply`, and are described in [safety checks and cost](./safety.mdx):
+
+| Option | Purpose |
+|---|---|
+| `-checks=false` | Turn the built-in checks off |
+| `-skip-checks=ID,ID` | Turn off the listed checks |
+| `-cost` | Estimate the monthly cost. `plan` only |
+| `-allow-destroy` | Apply a plan that destroys or replaces resources. `apply` only |
+
 To use a directory other than the current one, use the global `-chdir` option:
 `bogform -chdir=infra/prod ci plan`.
 
@@ -82,6 +94,6 @@ updated in place on later runs.
 
 ## Reports
 
-Each run writes `.bogform-ci/report.json`, with the status, the commit, and the list of changed
-resources. It holds no attribute values. Bogform creates a `.gitignore` in that directory so its
+Each run writes `.bogform-ci/report.json`, with the status, the commit, the list of changed
+resources, check warnings, and any cost estimate. It holds no attribute values. Bogform creates a `.gitignore` in that directory so its
 contents, including the saved plan, aren't committed.

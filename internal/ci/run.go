@@ -42,6 +42,15 @@ type Options struct {
 	AllowPullRequestApply bool
 	NoComment             bool
 	NoOutput              bool
+	// AllowDestroy lets an apply destroy or replace resources. Without it, such a plan is refused
+	// unless BOG_CI_ALLOW_DESTROY is true, or on GitHub, the merged pull request has the
+	// allow-destroy label.
+	AllowDestroy bool
+	// NoChecks turns the built-in checks off, and SkipChecks turns off the checks it lists.
+	NoChecks   bool
+	SkipChecks []string
+	// Cost adds a monthly cost estimate to plans.
+	Cost bool
 
 	Env        []string // Environment of this process, as os.Environ returns it.
 	Stdout     io.Writer
@@ -62,6 +71,7 @@ type Runner struct {
 	Context Context
 	token   string
 	env     []string
+	lookup  EnvFunc
 }
 
 // NewRunner detects the pipeline and prepares the environment for the commands it runs.
@@ -94,7 +104,7 @@ func NewRunner(opts Options) *Runner {
 	}
 	env = append(env, "TF_IN_AUTOMATION=1", "TF_INPUT=0")
 
-	runner := &Runner{Options: opts, Context: Detect(lookup), token: lookup(TokenEnvName), env: env}
+	runner := &Runner{Options: opts, Context: Detect(lookup), token: lookup(TokenEnvName), env: env, lookup: lookup}
 	if serverURL := lookup(ServerURLEnvName); serverURL != "" && runner.Publisher == nil {
 		publisher, err := NewPublisher(serverURL, lookup(ServerTokenEnvName), opts.HTTPClient)
 		if err != nil {
@@ -219,6 +229,9 @@ func (r *Runner) plan(ctx context.Context, report *Report, extra ...string) (str
 	if err := report.summarizePlan(raw); err != nil {
 		return "", false, r.fail(report, err.Error(), "")
 	}
+	if report.Kind != KindDrift {
+		r.analyze(ctx, report, raw)
+	}
 	return planPath, code == 2, true
 }
 
@@ -252,6 +265,14 @@ func (r *Runner) Apply(ctx context.Context) int {
 		if !changed {
 			report.Status = StatusNoChanges
 			break
+		}
+		if destructive := report.Counts.Destructive(); destructive > 0 {
+			allowedBy, why := r.destroyAllowed(ctx)
+			if allowedBy == "" {
+				r.fail(report, refuseDestroyMessage(report, why), report.Output)
+				break
+			}
+			report.DestroyAllowedBy = allowedBy
 		}
 		_, output, code, err := r.command(ctx, true, "apply", "-input=false", "-no-color", "-concise", planPath)
 		switch {

@@ -23,6 +23,11 @@ default:
 
 variables:
   BOGFORM_DIRECTORY: "[[.Directory]]"
+  # Applies refuse to destroy or replace resources unless this is "true". Set it when you run the
+  # apply job.
+  BOG_CI_ALLOW_DESTROY:
+    value: "false"
+    description: Set to "true" to apply a plan that destroys or replaces resources.
 
 bogform-plan:
   stage: plan
@@ -30,7 +35,7 @@ bogform-plan:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - bogform -chdir="$BOGFORM_DIRECTORY" ci plan
+    - bogform -chdir="$BOGFORM_DIRECTORY" ci plan[[if .Cost]] -cost[[end]]
   artifacts:
     when: always
     paths:

@@ -9,6 +9,14 @@
 # persistCredentials: true on each checkout, and give the build service Contribute permission.
 [[- end]]
 
+
+parameters:
+  # Applies refuse to destroy or replace resources unless this is checked when the pipeline runs.
+  - name: allowDestroy
+    displayName: Allow destroy
+    type: boolean
+    default: false
+
 [[- if eq .ApplyOn "merge"]]
 trigger:
   branches:
@@ -54,7 +62,7 @@ stages:
             displayName: Install Bogform
           # Sign in to your cloud provider here, using a workload identity service connection. An
           # AzureCLI@2 task with addSpnToEnvironment: true can make its identity available.
-          - bash: bogform -chdir="$(bogformDirectory)" ci plan
+          - bash: bogform -chdir="$(bogformDirectory)" ci plan[[if .Cost]] -cost[[end]]
             displayName: Plan
             env:
               BOG_CI_TOKEN: $(System.AccessToken)
@@ -100,7 +108,8 @@ stages:
                 # Sign in to your cloud provider here.
                 - bash: bogform -chdir="$(bogformDirectory)" ci apply
                   displayName: Apply
-[[- if .GitState]]
                   env:
+                    BOG_CI_ALLOW_DESTROY: ${{ parameters.allowDestroy }}
+[[- if .GitState]]
                     TF_VAR_state_passphrase: $(STATE_PASSPHRASE)
 [[- end]]
