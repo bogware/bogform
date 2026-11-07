@@ -401,6 +401,7 @@ func RootCommander(help *bool, ver *bool, chdir *string) Command {
 			UnlockCommander(),
 			StateCommander(),
 			CICommander(),
+			BootstrapCommander(),
 		},
 		Groups: []Group{MainCommandGroup, OtherCommandGroup},
 

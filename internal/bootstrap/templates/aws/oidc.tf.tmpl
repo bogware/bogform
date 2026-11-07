@@ -1,0 +1,48 @@
+{{- if .GitHub}}
+# The GitHub Actions OIDC provider. An account can have only one, and every repository's pipeline
+# depends on it, so it can't be destroyed by accident. If the account already has one, adopt it
+# rather than creating another:
+#
+#   import {
+#     to = aws_iam_openid_connect_provider.ci
+#     id = "arn:aws:iam::ACCOUNT_ID:oidc-provider/token.actions.githubusercontent.com"
+#   }
+resource "aws_iam_openid_connect_provider" "ci" {
+  url            = "https://token.actions.githubusercontent.com"
+  client_id_list = ["sts.amazonaws.com"]
+
+  # AWS no longer uses these for GitHub, but the API still requires a value.
+  thumbprint_list = [
+    "6938fd4d98bab03faadb97b34396831e3780aea1",
+    "1c58a3a8518e8759bf075b76b750d4f2df264fcd",
+  ]
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+{{- else}}
+# The GitLab OIDC provider. An account can have only one for each GitLab instance, and every
+# repository's pipeline depends on it, so it can't be destroyed by accident. If the account already
+# has one, adopt it rather than creating another:
+#
+#   import {
+#     to = aws_iam_openid_connect_provider.ci
+#     id = "arn:aws:iam::ACCOUNT_ID:oidc-provider/{{.IssuerHost}}"
+#   }
+#
+# AWS verifies GitLab's certificate against its own trusted authorities, so no thumbprint is set.
+resource "aws_iam_openid_connect_provider" "ci" {
+  url            = {{quote (printf "https://%s" .IssuerHost)}}
+  client_id_list = [{{quote .Audience}}]
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+{{- end}}
+
+output "oidc_provider_arn" {
+  description = "Roles that pipelines assume trust this provider."
+  value       = aws_iam_openid_connect_provider.ci.arn
+}

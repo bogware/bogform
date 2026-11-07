@@ -1,0 +1,68 @@
+# Written by "bogform bootstrap aws". Review it, then apply it once from a workstation with
+# administrator access. After that,{{if .Options.Admin}} {{.Options.Admin.Name}}'s pipeline can manage it.{{else}} apply changes the same way.{{end}}
+#
+# It sets up what repository pipelines need to reach this account without stored keys: the
+# {{if .GitHub}}GitHub Actions{{else}}GitLab{{end}} OIDC provider, and for each repository a read-only role for plans and a role for
+# applies that only the {{.Options.Branch}} branch can assume. Each repository owns its own resources. This
+# configuration decides what each pipeline may do, so no repository can grant itself more access.
+
+terraform {
+  required_version = ">= 1.10"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.100"
+    }
+  }
+
+  # State is kept encrypted on the bogform-state branch of the repository that holds this
+  # configuration.
+  backend "git" {}
+
+  encryption {
+    # The passphrase comes from the first of these that's available. In a pipeline, set the
+    # environment variable from a secret. On a workstation, store it in your keychain with
+    # "bogform state passphrase set {{.Keychain}}"{{if .Options.PassphraseParameter}}, or rely on the backup in SSM Parameter Store{{end}}.
+    key_provider "passphrase" "state" {
+      env      = "TF_VAR_state_passphrase"
+      keychain = {{quote .Keychain}}
+{{- if .Options.PassphraseParameter}}
+      aws_ssm  = {{quote .Options.PassphraseParameter}}
+{{- end}}
+    }
+    key_provider "pbkdf2" "state" {
+      chain = key_provider.passphrase.state
+    }
+    method "aes_gcm" "state" {
+      keys = key_provider.pbkdf2.state
+    }
+    state {
+      method   = method.aes_gcm.state
+      enforced = true
+    }
+    plan {
+      method   = method.aes_gcm.state
+      enforced = true
+    }
+  }
+}
+
+provider "aws" {
+  region = {{quote .Options.Region}}
+
+  default_tags {
+    tags = {
+      ManagedBy = "bogform"
+{{- if .Options.Admin}}
+      Repository = {{quote .Options.Admin.Name}}
+{{- end}}
+    }
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+}
