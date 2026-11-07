@@ -35,6 +35,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.18.36
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.63.2
 	github.com/aws/aws-sdk-go-v2/service/kms v1.55.5
+	github.com/aws/aws-sdk-go-v2/service/pricing v1.44.5
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.107.1
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.73.5
 	github.com/aws/smithy-go v1.27.7
