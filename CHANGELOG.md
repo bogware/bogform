@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.14.0 (Unreleased)
+
+ENHANCEMENTS:
+
+- `templates/BOGFORM.md` is a guide to copy into each repository that uses Bogform. It explains how
+  the pipeline and encrypted git state work, and the rules for changing them, for people and coding
+  agents.
+
 ## 1.14.0-alpha2 (November 7, 2026)
 
 ENHANCEMENTS:

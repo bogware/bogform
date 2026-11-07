@@ -20,7 +20,8 @@ Bogform is in early development. These are the ways to run it:
 
 - **Local:** run the `bogform` command on your own machine.
 - **Repository:** plan on pull requests and apply on merge, using GitHub Actions, GitLab CI, Azure
-  Pipelines, or Bitbucket Pipelines. Run `bogform ci init` to add a pipeline to your repository.
+  Pipelines, or Bitbucket Pipelines. Run `bogform ci init` to add a pipeline to your repository, and copy
+  [`templates/BOGFORM.md`](templates/BOGFORM.md) next to it to explain the setup to people and agents.
 - **Self-hosted dashboard:** an optional web app that you deploy to your own AWS account, using
   CloudFront, AWS Lambda, and any Postgres database. It shows your runs and drift, and starts runs in your
   existing pipelines, so there are no runners to host.

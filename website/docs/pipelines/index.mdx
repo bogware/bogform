@@ -32,6 +32,7 @@ branch. To apply every change as soon as it's merged instead, use `-apply-on=mer
 | `-git-state` | Set up the pipeline for the [`git` backend](../language/settings/backends/git.mdx) |
 | `-directory=PATH` | The directory containing your configuration |
 | `-branch=NAME` | The default branch. Defaults to `main` |
+| `-environment=NAME` | The GitHub environment that protects applies. Defaults to `production`; use `-environment=` to leave it out |
 
 | Platform | Command | File |
 |---|---|---|
@@ -46,6 +47,9 @@ Then:
    local disk is lost after each run.
 2. Give the pipeline access to your cloud account. Follow the [security guidance](./security.mdx).
 3. Require approval for the `production` environment, so that a person approves each apply.
+4. Copy [`templates/BOGFORM.md`](https://github.com/bogware/bogform/blob/main/templates/BOGFORM.md)
+   to the root of your repository, and fill in its last section. It explains how the setup works,
+   and the rules for changing it, to the people and coding agents who work in the repository.
 
 ## What the commands do
 
