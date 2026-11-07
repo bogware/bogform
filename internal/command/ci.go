@@ -113,7 +113,7 @@ func ciInitCommander() Command {
 	cmd.CommandLine.PositionalArg(&platform, "platform", true)
 	cmd.CommandLine.StringVar(&branch, "branch", "main", "The branch to apply from.")
 	cmd.CommandLine.StringVar(&directory, "directory", ".", "The directory containing your configuration, relative to the repository root.")
-	cmd.CommandLine.StringVar(&environment, "environment", "production", "The name of the environment that protects applies.")
+	cmd.CommandLine.StringVar(&environment, "environment", "production", "The name of the environment that protects applies. Use -environment= to leave it out, for example on a private GitHub repository without a paid plan.")
 	cmd.CommandLine.StringVar(&applyOn, "apply-on", ci.ApplyManual, "When to apply: \"manual\" to apply only when someone runs the pipeline, or \"merge\" to apply every change merged to the branch.")
 	cmd.CommandLine.BoolVar(&gitState, "git-state", false, "Set up the pipeline for the git state backend: write access to the repository, and the state passphrase from a secret.")
 	cmd.CommandLine.BoolVar(&force, "force", false, "Replace the file if it already exists.")

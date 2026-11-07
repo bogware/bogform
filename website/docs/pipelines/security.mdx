@@ -25,6 +25,21 @@ pull request as running that author's code with the pipeline's credentials.**
 Use your platform's OIDC support rather than storing cloud keys as secrets. There's nothing long-lived to
 leak, and access is tied to a specific repository and environment.
 
+## Match the right OIDC subject
+
+Your cloud role's trust policy should match the `sub` claim in your repository's OIDC tokens exactly.
+GitHub now gives new repositories an **immutable** subject that uses the organization and repository IDs,
+such as `repo:acme@12345/infra@67890:ref:refs/heads/main`, so that a deleted and recreated repository with
+the same name can't inherit access. Older repositories use the name, such as `repo:acme/infra:...`.
+
+To see which one your repository uses:
+
+```shell
+gh api repos/OWNER/REPO/actions/oidc/customization/sub --jq .sub_claim_prefix
+```
+
+Use the `pull_request` suffix for the plan role, and `ref:refs/heads/main` for the apply role.
+
 ## Require approval to apply
 
 Use your platform's environment approvals. `bogform ci apply` doesn't ask for approval itself, because

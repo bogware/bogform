@@ -509,7 +509,7 @@ func TestRenderPipeline_applyOn(t *testing.T) {
 		for _, applyOn := range []string{ApplyManual, ApplyMerge} {
 			for _, gitState := range []bool{false, true} {
 				t.Run(fmt.Sprintf("%s/%s/git=%t", platform, applyOn, gitState), func(t *testing.T) {
-					content, err := RenderPipeline(ScaffoldOptions{Platform: platform, ApplyOn: applyOn, GitState: gitState})
+					content, err := RenderPipeline(ScaffoldOptions{Platform: platform, ApplyOn: applyOn, GitState: gitState, Environment: "production"})
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -537,6 +537,22 @@ func TestRenderPipeline_applyOn(t *testing.T) {
 					}
 				})
 			}
+		}
+	}
+}
+
+func TestRenderPipeline_withoutEnvironment(t *testing.T) {
+	for _, platform := range []string{PlatformGitHub, PlatformGitLab, PlatformAzure, PlatformBitbucket} {
+		content, err := RenderPipeline(ScaffoldOptions{Platform: platform, Environment: "", ApplyOn: ApplyMerge})
+		if err != nil {
+			t.Fatal(err)
+		}
+		var parsed map[string]any
+		if err := yaml.Unmarshal(content, &parsed); err != nil {
+			t.Fatalf("%s: invalid YAML: %s\n%s", platform, err, content)
+		}
+		if regexp.MustCompile(`(?m)^\s+(environment|deployment):`).Match(content) {
+			t.Errorf("%s: an empty environment should be left out:\n%s", platform, content)
 		}
 	}
 }

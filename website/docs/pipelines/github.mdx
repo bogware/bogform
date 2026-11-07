@@ -33,6 +33,10 @@ its trust policy to the `production` environment.
 In the repository's settings, open **Environments**, create `production`, and add required reviewers.
 Each apply then waits for approval.
 
+Environment protection rules need a public repository, or a paid plan for a private one. Without them, use
+the default `-apply-on=manual`, so that applying is always a deliberate action, and add `-environment=` to
+leave the environment out of the file.
+
 ## The action
 
 You can also use the action directly in your own workflows:

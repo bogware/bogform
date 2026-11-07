@@ -72,7 +72,9 @@ stages:
 [[- end]]
     jobs:
       - deployment: Apply
+[[- if .Environment]]
         environment: [[.Environment]]
+[[- end]]
         strategy:
           runOnce:
             deploy:

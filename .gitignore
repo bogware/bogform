@@ -54,3 +54,4 @@ deploy/aws/.build
 deploy/aws/.terraform
 build/
 deploy/aws/.terraform.lock.hcl
+/ui/

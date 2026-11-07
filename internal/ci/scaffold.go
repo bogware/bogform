@@ -51,9 +51,6 @@ var (
 
 // Scaffold writes a pipeline file and returns its path.
 func Scaffold(opts ScaffoldOptions) (string, error) {
-	if opts.Environment == "" {
-		opts.Environment = "production"
-	}
 	content, err := RenderPipeline(opts)
 	if err != nil {
 		return "", err
@@ -84,9 +81,6 @@ func RenderPipeline(opts ScaffoldOptions) ([]byte, error) {
 	if opts.Directory == "" {
 		opts.Directory = "."
 	}
-	if opts.Environment == "" {
-		opts.Environment = "production"
-	}
 	if opts.ApplyOn == "" {
 		opts.ApplyOn = ApplyManual
 	}
@@ -94,7 +88,7 @@ func RenderPipeline(opts ScaffoldOptions) ([]byte, error) {
 		return nil, fmt.Errorf("-apply-on must be %q or %q", ApplyManual, ApplyMerge)
 	}
 	for name, value := range map[string]string{"branch": opts.DefaultBranch, "directory": opts.Directory, "environment": opts.Environment} {
-		if value != "." && !safeValue.MatchString(value) {
+		if value != "." && !(name == "environment" && value == "") && !safeValue.MatchString(value) {
 			return nil, fmt.Errorf("the %s %q contains unsupported characters", name, value)
 		}
 	}
@@ -169,15 +163,17 @@ func NextSteps(platform string, opts ScaffoldOptions) string {
 	steps = append(steps, "Give the pipeline access to your cloud account, using OIDC rather than stored keys. The file has a comment showing where.")
 	switch platform {
 	case PlatformGitHub:
-		steps = append(steps, "If your plan supports it, add required reviewers to the \""+opts.Environment+"\" environment to approve each apply.")
+		if opts.Environment != "" {
+			steps = append(steps, "If your plan supports it, add required reviewers to the \""+opts.Environment+"\" environment to approve each apply. Private repositories need a paid plan for this; use -environment= to leave it out.")
+		}
 	case PlatformGitLab:
 		steps = append(steps,
 			"Add a project access token with the api scope as a masked variable named BOG_CI_TOKEN, so plans can comment on merge requests.",
-			"Protect the \""+opts.Environment+"\" environment to require approval for each apply.")
+			"Protect the deployment environment to require approval for each apply.")
 	case PlatformAzure:
 		steps = append(steps,
 			"Add this file as a pipeline, and add a build validation policy to your default branch so it runs on pull requests.",
-			"Add an approval check to the \""+opts.Environment+"\" environment.")
+			"Add an approval check to the deployment environment.")
 	case PlatformBitbucket:
 		steps = append(steps, "Add an access token with pull request write access as a secured variable named BOG_CI_TOKEN, so plans can comment.")
 	}

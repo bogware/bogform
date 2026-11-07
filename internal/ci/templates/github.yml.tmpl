@@ -38,10 +38,10 @@ jobs:
       pull-requests: write # To comment with the plan.
       id-token: write # For cloud access using OIDC.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Sign in to your cloud provider here, using OIDC rather than stored keys. For example:
-      # - uses: aws-actions/configure-aws-credentials@v4
+      # - uses: aws-actions/configure-aws-credentials@v6
       #   with:
       #     role-to-assume: arn:aws:iam::123456789012:role/bogform-plan
       #     aws-region: us-east-1
@@ -65,8 +65,10 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/[[.DefaultBranch]]'
 [[- end]]
     runs-on: ubuntu-latest
+[[- if .Environment]]
     # On plans that support it, add required reviewers to this environment to approve each apply.
     environment: [[.Environment]]
+[[- end]]
     permissions:
 [[- if .GitState]]
       contents: write # The git backend stores state by pushing to a branch.
@@ -75,7 +77,7 @@ jobs:
 [[- end]]
       id-token: write # For cloud access using OIDC.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Sign in to your cloud provider here, using a role that's allowed to make changes.
 

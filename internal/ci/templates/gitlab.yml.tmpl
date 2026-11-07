@@ -39,7 +39,9 @@ bogform-plan:
 bogform-apply:
   stage: apply
   resource_group: bogform
+[[- if .Environment]]
   environment: [[.Environment]]
+[[- end]]
   rules:
     - if: $CI_COMMIT_BRANCH == "[[.DefaultBranch]]" && $CI_PIPELINE_SOURCE != "merge_request_event"
 [[- if eq .ApplyOn "manual"]]

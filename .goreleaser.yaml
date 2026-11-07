@@ -7,7 +7,7 @@ project_name: bogform
 
 before:
   hooks:
-    - sh -c "cd web && npm ci --no-audit --no-fund && npm run build"
+    - sh -c "cd web && npm ci --no-audit --no-fund && npm run build && rm -rf ../ui && cp -r dist ../ui"
     - go mod tidy
     - go generate ./...
     - make protobuf
@@ -84,9 +84,7 @@ archives:
     builds: [bogform-server]
     name_template: "bogform-server_{{ .Version }}_{{- .Os }}_{{- .Arch }}"
     files:
-      - src: web/dist/**
-        dst: ui
-        strip_parent: true
+      - ui/**
 
 dockers:
   - use: buildx
