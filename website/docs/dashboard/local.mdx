@@ -1,11 +1,14 @@
 ---
-sidebar_position: 3
-sidebar_label: Try it locally
+sidebar_position: 5
+sidebar_label: Run the server locally
 description: |-
-  Run the Bogform dashboard on your own machine.
+  Run the Bogform dashboard server on your own machine, to try it or develop it.
 ---
 
-# Try the dashboard locally
+# Run the dashboard server locally
+
+To see your own reports, [`bogform ui`](./ui.mdx) is simpler: it needs no database or Docker. This page runs
+the full server, with Postgres, to try it or to work on it.
 
 From a copy of the Bogform repository, with Docker installed:
 
@@ -41,3 +44,4 @@ If you host the server another way, run `bogform-server serve` and set these var
 | `BOG_SERVER_AUTH_PROVIDER` | `oidc`, the default, or `github` |
 | `BOG_SERVER_STATIC_DIR` | Serve the built UI from this directory |
 | `BOG_SERVER_RETENTION_DAYS` | How long to keep runs. The default is `365`, and `0` keeps them forever |
+| `BOG_SERVER_ALERT_*` | Where to send alerts. See [alerts](./alerts.mdx) |

@@ -105,6 +105,48 @@ variable "azure_pipelines" {
   default     = {}
 }
 
+variable "alert_slack" {
+  type        = bool
+  description = "Send alerts to Slack. Set the incoming webhook's address in the alert-slack-webhook parameter."
+  default     = false
+}
+
+variable "alert_teams" {
+  type        = bool
+  description = "Send alerts to Microsoft Teams. Set the Workflows webhook's address in the alert-teams-webhook parameter."
+  default     = false
+}
+
+variable "alert_webhook" {
+  type        = bool
+  description = "Send signed alerts to a webhook. Set its address in the alert-webhook-url parameter, and the signing secret in alert-webhook-secret."
+  default     = false
+}
+
+variable "alert_email_from" {
+  type        = string
+  description = "Send alerts by email through SES, from this address. Its address or domain must be a verified SES identity in this region."
+  default     = null
+}
+
+variable "alert_email_to" {
+  type        = list(string)
+  description = "Who gets email alerts. While SES is in its sandbox, these must be verified identities too."
+  default     = []
+}
+
+variable "alert_events" {
+  type        = list(string)
+  description = "Which events send alerts: any of apply_succeeded, apply_failed, plan_failed, drift_detected and drift_resolved. Empty means all."
+  default     = []
+}
+
+variable "alert_repositories" {
+  type        = list(string)
+  description = "Only send alerts for repositories matching these patterns, such as \"acme/*\". Empty means all."
+  default     = []
+}
+
 variable "retention_days" {
   type        = number
   description = "How many days to keep runs. Use 0 to keep them forever."

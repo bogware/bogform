@@ -10,7 +10,18 @@ description: |-
 The dashboard is an optional web app that you host yourself. It shows every workspace across your
 repositories, what each pipeline did, and what's drifted, and it can start a pipeline.
 
-You don't need it to use Bogform. [Pipelines](../pipelines/index.mdx) work without it.
+You don't need it to use Bogform. [Pipelines](../pipelines/index.mdx) work without it. To see your reports
+without hosting anything, run [`bogform ui`](./ui.mdx) on your own computer.
+
+## What you see
+
+- **The overview** lists each repository, and each directory and workspace in it, with its latest plan,
+  apply, and drift check, and any changes that haven't been applied. Failures come first, then drift, then
+  changes waiting to be applied, so what needs attention is at the top.
+- **Workspaces** have the full history of their runs.
+- **Runs** show which resources changed, and the error, if there was one.
+- **Alerts** tell you in Slack, Teams, email, or a webhook when an apply succeeds or fails, a plan fails, or
+  drift starts or ends. See [alerts](./alerts.mdx).
 
 ## How it works
 
@@ -40,4 +51,6 @@ small instance, or a database you already have. Check your provider's current pr
 
 - [Deploy it to AWS](./deploy.mdx)
 - [Send reports from your pipelines](./connect.mdx)
-- [Try it on your own machine](./local.mdx)
+- [Set up alerts](./alerts.mdx)
+- [See your reports locally with `bogform ui`](./ui.mdx)
+- [Run the server on your own machine](./local.mdx)

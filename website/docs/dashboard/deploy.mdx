@@ -104,6 +104,10 @@ runs.
 On GitHub, the dashboard starts `.github/workflows/bogform.yml`, which is the file that `bogform ci init`
 creates. It needs a `workflow_dispatch` trigger, which that file includes.
 
+## Send alerts
+
+To hear about failed applies and drift in Slack, Teams, email, or a webhook, see [alerts](./alerts.mdx).
+
 ## Security
 
 - Sign-in uses the authorization code flow with PKCE, state, and nonce. Sessions last eight hours, in signed
