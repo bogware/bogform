@@ -45,9 +45,9 @@ function SignIn() {
   );
 }
 
-function route(path) {
+function route(path, local) {
   let match;
-  if (path === '/') return <Overview />;
+  if (path === '/') return <Overview local={local} />;
   if (path === '/workspaces') return <Workspaces />;
   if ((match = path.match(/^\/workspaces\/(\d+)$/))) return <WorkspaceDetail key={match[1]} id={match[1]} />;
   if ((match = path.match(/^\/runs\/(\d+)$/))) return <RunDetail key={match[1]} id={match[1]} />;
@@ -103,17 +103,25 @@ export default function App() {
             Workspaces
           </Link>
         </nav>
-        <div className="account">
-          <span className="account-name" title={me.email}>
-            {me.name || me.email}
-          </span>
-          <button type="button" className="button" onClick={signOut}>
-            Sign out
-          </button>
-        </div>
+        {me.local ? (
+          <div className="account">
+            <span className="local-label" title="Read-only view of report files on this computer">
+              Local
+            </span>
+          </div>
+        ) : (
+          <div className="account">
+            <span className="account-name" title={me.email}>
+              {me.name || me.email}
+            </span>
+            <button type="button" className="button" onClick={signOut}>
+              Sign out
+            </button>
+          </div>
+        )}
       </header>
       <main id="main" className="content">
-        {route(path)}
+        {route(path, Boolean(me.local))}
       </main>
     </>
   );

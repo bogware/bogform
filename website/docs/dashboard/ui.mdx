@@ -1,0 +1,47 @@
+---
+sidebar_position: 4
+sidebar_label: Local dashboard
+description: |-
+  See your reports in the dashboard on your own computer with bogform ui, without hosting anything.
+---
+
+# The local dashboard
+
+`bogform ui` shows the dashboard on your own computer, with nothing to deploy. It reads the
+`.bogform-ci/report.json` files that `bogform ci` writes, rather than a database.
+
+```shell
+bogform ci plan   # Writes .bogform-ci/report.json
+bogform ui        # Shows every report in this repository
+```
+
+Name directories to search several repositories at once:
+
+```shell
+bogform ui ~/code/infra ~/code/site
+```
+
+The page updates when you reload it, so keep it open while you work.
+
+## What it shows
+
+The same overview as the hosted dashboard: each repository and directory, its latest plan, apply, and drift
+check, and changes that haven't been applied, with failures and drift first. Select a run to see what it
+changed and any error.
+
+`bogform ci` keeps only its latest report in each directory, so the local dashboard shows the latest run of
+each directory you've run it in. Repositories are named from their `origin` remote, unless the report came
+from a pipeline, which names its own.
+
+## Security
+
+- It only listens on this computer, and refuses requests that name another host, so a web page can't reach
+  it by pointing a domain name at your computer.
+- Its address includes a random token, which it swaps for a cookie as soon as the page loads. Other people
+  and programs on this computer can't read it without the token.
+- It's read-only. It can't start pipelines or change anything.
+
+## When to host the dashboard instead
+
+The local dashboard only knows about reports on your computer. To see every pipeline run, for everyone, keep
+a history, start pipelines, and get [alerts](./alerts.mdx), [deploy the dashboard](./deploy.mdx).

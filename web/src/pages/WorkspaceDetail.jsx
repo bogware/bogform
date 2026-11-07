@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { api, useApi } from '../api.js';
 import { ErrorMessage, Link, Loading, RunsTable, StatusBadge, TimeAgo, workspaceName } from '../components.jsx';
 
-const platformNames = { github: 'GitHub Actions', gitlab: 'GitLab CI', azure: 'Azure Pipelines', bitbucket: 'Bitbucket Pipelines' };
+const platformNames = { local: 'This computer', github: 'GitHub Actions', gitlab: 'GitLab CI', azure: 'Azure Pipelines', bitbucket: 'Bitbucket Pipelines' };
 
 function StartRun({ id, workspace }) {
   const [state, setState] = useState({ phase: 'idle' });

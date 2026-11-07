@@ -55,3 +55,6 @@ deploy/aws/.terraform
 build/
 deploy/aws/.terraform.lock.hcl
 /ui/
+
+# The dashboard page embedded in the CLI. "make webui" builds it.
+/internal/webui/assets/app/
