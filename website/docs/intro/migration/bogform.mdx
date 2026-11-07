@@ -22,12 +22,9 @@ addresses in your state stay valid.
 
 ## If you use HCP Terraform or Terraform Enterprise
 
-Bogform doesn't support the `cloud` block or the `remote` backend. Move your state to a supported
-backend, such as `s3`, `gcs`, `azurerm`, or `pg`, before you switch:
-
-1. Using your current tool, run `state pull > terraform.tfstate` in each workspace.
-2. Replace the `cloud` block or `remote` backend with the new backend's configuration.
-3. Run `bogform init`, then `bogform state push terraform.tfstate`.
+Bogform doesn't support the `cloud` block or the `remote` backend. Replace it with a supported
+backend, such as `git`, `s3`, `gcs`, `azurerm`, or `pg`, then run `bogform migrate tfc` to copy each
+workspace's state. See [Leaving HCP Terraform](hcp-terraform.mdx).
 
 ## Optional Bogform names
 

@@ -1,0 +1,80 @@
+---
+description: The bogform adopt command finds existing cloud resources and writes import blocks for them.
+---
+
+# Command: adopt
+
+The `bogform adopt` command finds resources that already exist in AWS or Azure and writes an
+[`import` block](../../language/import/index.mdx) for each one. It's the quickest way to bring
+infrastructure that was created by hand, or by another tool, under Bogform.
+
+Discovery only reads. Nothing in your cloud is changed.
+
+## Usage
+
+Usage: `bogform adopt aws [options]` or `bogform adopt azure [options]`
+
+```shell
+bogform adopt aws -prefix=myapp
+bogform init
+bogform plan -generate-config-out=generated.tf
+```
+
+1. `adopt` writes `imports.tf`, with one import block per resource.
+2. `plan -generate-config-out=generated.tf` writes configuration for them. Generated configuration
+   usually needs tidying: fix any errors the plan reports, remove arguments that only repeat
+   defaults, and replace hard-coded IDs with references.
+3. Plan again until it only imports, and doesn't change anything. Then apply.
+4. After the apply, the import blocks have no effect, and you can remove them.
+
+## AWS
+
+`bogform adopt aws` finds resources by tag, by name prefix, or both:
+
+| Option | Description |
+|---|---|
+| `-tag=KEY=VALUE` | Find resources with this tag, using the Resource Groups Tagging API. Use `KEY` alone to match any value. Can be used more than once: resources must have every tag. |
+| `-prefix=PREFIX` | Find resources whose names start with this. Supported resource types are listed with the Cloud Control API. A prefix also matches the last part of a path, so `myapp` matches the log group `/aws/lambda/myapp-api`. |
+| `-region=REGION` | The region to search. Defaults to your AWS configuration. Global services, such as CloudFront, IAM and Route 53, are always included. |
+
+With both `-tag` and `-prefix`, a resource must match both. Resources whose IDs are generated, such
+as VPCs, subnets and security groups, are only found by tag.
+
+Credentials come from the usual AWS settings, such as `AWS_PROFILE`. Read-only access, such as the
+`ReadOnlyAccess` policy, is enough.
+
+Supported services include S3, CloudFront, Lambda, IAM roles, policies and OIDC providers, DynamoDB,
+CloudWatch log groups and alarms, API Gateway, Route 53 zones, ACM, SQS, SNS, EC2 instances, VPCs,
+subnets and security groups, load balancers, RDS, ECR, ECS, EFS, KMS, Secrets Manager, SSM
+parameters, SES identities, Step Functions, EventBridge rules and Budgets. Anything else that's found
+is listed at the end, with the reason it was skipped.
+
+Child resources, such as Route 53 records and API Gateway routes, aren't discovered. Add their import
+blocks yourself.
+
+## Azure
+
+`bogform adopt azure` adopts a resource group, and everything in it:
+
+| Option | Description |
+|---|---|
+| `-resource-group=NAME` | The resource group. Required. |
+| `-subscription=ID` | The subscription. Defaults to `AZURE_SUBSCRIPTION_ID`, then the Azure CLI's current subscription. |
+
+Credentials come from the Azure CLI's login, environment variables, or a managed identity. The
+Reader role on the resource group is enough. Import IDs are written in the casing that the azurerm
+provider expects, which isn't always how Azure returns them.
+
+## Common options
+
+| Option | Description |
+|---|---|
+| `-out=FILE` | The file to write. Defaults to `imports.tf`. |
+| `-force` | Replace the file if it already exists. |
+| `-generate` | Afterwards, run `bogform plan -generate-config-out=generated.tf` in the file's directory. |
+
+## Private import IDs
+
+Import IDs appear in plan output, and so in pull request comments. Some IDs are personal: an SES email
+identity's ID is the address itself. Any ID that looks like an email address is left out of the file
+and listed instead. Import those from a workstation, with the ID in a sensitive variable.

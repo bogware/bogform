@@ -403,6 +403,8 @@ func RootCommander(help *bool, ver *bool, chdir *string) Command {
 			CICommander(),
 			BootstrapCommander(),
 			DoctorCommander(),
+			MigrateCommander(),
+			AdoptCommander(),
 		},
 		Groups: []Group{MainCommandGroup, OtherCommandGroup},
 

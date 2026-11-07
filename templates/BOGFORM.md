@@ -85,10 +85,23 @@ the state.
 
 ### Adopting existing resources
 
-To bring resources that already exist under management, write `import` blocks (`to` and `id`)
-next to the configuration. The plan shows them as "will be imported". After they've been applied,
-the blocks do nothing, so remove them in a follow-up change. An import ID must not be sensitive,
-and it's shown in the plan, so import anything personal from a workstation instead.
+To bring resources that already exist under management, let Bogform find them and write the
+`import` blocks:
+
+```sh
+bogform adopt aws -prefix=<name prefix>        # or -tag=Key=Value
+bogform adopt azure -resource-group=<group>
+bogform plan -lock=false -generate-config-out=generated.tf
+```
+
+Review and tidy `generated.tf`, and plan until the plan only imports. Then open a pull request as
+usual. The plan shows the resources as "will be imported". After they've been applied, the blocks
+do nothing, so remove them in a follow-up change. An import ID must not be sensitive, and it's
+shown in the plan, so `adopt` leaves out IDs that look like email addresses: import anything
+personal from a workstation instead.
+
+To move a workspace off HCP Terraform with its state, use `bogform migrate tfc` instead of
+importing. See "Leaving HCP Terraform" in the Bogform docs.
 
 ### Upgrading Bogform or providers
 
